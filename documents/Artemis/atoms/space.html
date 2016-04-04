@@ -259,7 +259,7 @@ settings differ by a 90 degree rotation about the <code class="docutils literal"
 coordination geometry of the output atom list will be the same with
 either of these input files, but the actual coordinates will reflect
 this 90 degree rotation.</p>
-<div class="highlight-python"><div class="highlight"><pre>title La2CuO4 structure at 10K from Radaelli et al.
+<div class="highlight-python"><div class="highlight"><pre><span></span>title La2CuO4 structure at 10K from Radaelli et al.
 title standard setting
 space c m c a
 a= 5.3269 b= 13.1640 c= 5.3819
@@ -271,7 +271,7 @@ atom
   O   0      0.1835  -0.0332  o2
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>title La2CuO4 structure at 10K from Radaelli et al.
+<div class="highlight-python"><div class="highlight"><pre><span></span>title La2CuO4 structure at 10K from Radaelli et al.
 title non standard setting, rotated by 90 degrees about A axis
 space b m a b
 a= 5.3269 b= 5.3819 c= 13.1640
@@ -338,14 +338,14 @@ forcing the user to do arithmetic invites trouble, there is a useful
 keyword called <code class="docutils literal"><span class="pre">shift</span></code>. For the Mn<sub>3</sub>O<sub>4</sub> example
 discussed above, simply insert this line in <code class="file docutils literal"><span class="pre">atoms.inp</span></code> if you have
 supplied coordinates referenced to the incorrect origin:</p>
-<div class="highlight-python"><div class="highlight"><pre>shift = 0.0  0.25 -0.125
+<div class="highlight-python"><div class="highlight"><pre><span></span>shift = 0.0  0.25 -0.125
 </pre></div>
 </div>
 <p>This vector will be added to all of the coordinates in the atom list
 after the input file is read.</p>
 <p>Here is the input file for Mn<sub>3</sub>O<sub>4</sub> using the shift
 keyword:</p>
-<div class="highlight-python"><div class="highlight"><pre>title Mn3O4, hausmannite structure, using the shift keyword
+<div class="highlight-python"><div class="highlight"><pre><span></span>title Mn3O4, hausmannite structure, using the shift keyword
 a       5.75    c       9.42  core    Mn2
 rmax    7.0     Space   i 41/a m d
 shift   0.0  0.25  -0.125
@@ -360,7 +360,7 @@ atom
 shift keyword has been removed and the shift vector has been added to
 all of the fractional coordinates. These two input files give equivalent
 output.</p>
-<div class="highlight-python"><div class="highlight"><pre>title Mn3O4, hausmannite structure, no shift keyword
+<div class="highlight-python"><div class="highlight"><pre><span></span>title Mn3O4, hausmannite structure, no shift keyword
 a       5.75    c       9.42  core      Mn2
 rmax    7.0     Space   i 41/a m d
 atom
@@ -404,7 +404,7 @@ the undecorated unit cell. They are:</p>
 <li><strong>Orthorhombic</strong>: a ≠ b ≠ c, α = β = γ = 90°</li>
 <li><strong>Tetragonal</strong>: a = b ≠ c, α = β = γ = 90°</li>
 <li><strong>Hexagonal</strong>: a = b ≠ c, α = β = 90°, γ = 120°</li>
-<li><strong>Trigonal</strong>: (rhombohedral axes): a = b = c, α = β = γ &lt; 120° ≠ 90°
+<li><strong>Trigonal</strong>: (rhombohedral axes): a = b = c, α = β = γ &lt; 120° &amp; ≠ 90°
 (hexagonal axes): a = b ≠ c, α = β = 90°, γ = 120°</li>
 <li><strong>Cubic</strong>: a = b = c, α = β = γ = 90°</li>
 </ul>
@@ -500,7 +500,7 @@ completely specify the symmetries of a space group. The first symbol is
 always a single letter specifying the Bravais lattice. The next three
 symbols specify the class of the space group. These three symbols are
 some combination of the following characters:</p>
-<div class="highlight-python"><div class="highlight"><pre>1 2 3 4 5 6 A B C D M N / -
+<div class="highlight-python"><div class="highlight"><pre><span></span>1 2 3 4 5 6 A B C D M N / -
 </pre></div>
 </div>
 <p>These are sufficient to completely specify the various planar and axial
@@ -2293,14 +2293,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -2342,7 +2344,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

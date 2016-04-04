@@ -3,6 +3,9 @@
    The Creative Commons Attribution-ShareAlike License
    http://creativecommons.org/licenses/by-sa/3.0/
 
+.. role:: guess
+.. role:: set
+
 Setting math expressions
 ========================
 
@@ -10,9 +13,10 @@ Once some paths have been dragged from the :demeter:`feff` window onto
 the Data window containing the gold foil data, it is time to begin
 defining math expressions for the path parameters. In the following
 figure, the path corresponding to the first coordination shell has
-been selected from the path list. A path is selected by left clicking
-on its label in the path list. Doing so, displays that path on the
-right side of the Data window.
+been selected from the path list. A path is selected by
+:mark:`leftclick,..` left clicking on its label in the path
+list. Doing so, displays that path on the right side of the Data
+window.
 
 At the top of the Path page are two checkboxes. One is used to include
 and exclude a path from the fitting model. In this way, you can control
@@ -63,10 +67,10 @@ This, of course, establishes the parameterization only for the first
 path.  The same editing of path parameter math expressions must happen
 for all the other paths used in the fit.
 
-The most obvious way to do this editing chore is to click on each
-successive path in the path list, then click into each text box, then
-type in the math expressions.  That, however, is both tedious and
-error-prone.
+The most obvious way to do this editing chore is to
+:mark:`leftclick,..` click on each successive path in the path list,
+then :mark:`leftclick,..` click into each text box, then type in the
+math expressions.  That, however, is both tedious and error-prone.
 
 .. _fig-pathmenu:
 .. figure:: ../../_images/path-menu.png
@@ -78,9 +82,10 @@ error-prone.
 For math expressions that are the same for every path |nd| E\ :sub:`0`
 is a common example |nd| :demeter:`artemis` provides some automation
 tools. Each of the path parameter labels on the Path page is sensitive
-to either left or right click. Either kind of click posts a menu like
-the one of the right. The top option is used to erase the contents of
-the associated text both, but only on this path.
+to either :mark:`leftclick,..` left or :mark:`rightclick,..` right
+click.  Either kind of click posts a menu like the one of the
+right. The top option is used to erase the contents of the associated
+text both, but only on this path.
 
 The next four options are used to push the math expression for the
 associated path parameter onto other paths. These four options allow
@@ -92,14 +97,14 @@ the surrounding paths.
 
 The menu that pops up for the |sigma|\ :sup:`2` parameter has two
 additional options.  One inserts a math expression for using the
-correlated Debye function for |sigma|\ :sup:`2`, the other inserts the math
-expression for an Einstein model.  `Both the Debye and Einstein
+correlated Debye function for |sigma|\ :sup:`2`, the other inserts the
+math expression for an Einstein model.  `Both the Debye and Einstein
 functions <../extended/ss.html>`__ depend on the measurement
-temeprature and a characteristic temperature.  Typically, the
-measurement temperature is a set variable and the characteristic
-temperature is a guess. When either function is inserted into the text
-box, parameters are automatically created `on the GDS page
-<../gds.html>`__.
+temperature and a characteristic temperature.  Typically, the
+measurement temperature is a :set:`set` variable and the
+characteristic temperature is a :guess:`guess`. When either function
+is inserted into the text box, parameters are automatically created
+`on the GDS page <../gds.html>`__.
 
 The Path menu on the Data page offers a way of pushing all the path
 parameters from the displayed path to other paths. The same options for

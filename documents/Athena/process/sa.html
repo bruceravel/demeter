@@ -29,7 +29,7 @@
     <link rel="next" title="9.10. Dispersive XAS" href="pixel.html" />
     <link rel="prev" title="9.8. Deconvoluting data groups" href="deconv.html" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
     <link rel="stylesheet" type="text/css" href="../_static/program.css" />
 
@@ -39,11 +39,8 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
           <a href="pixel.html" title="9.10. Dispersive XAS"
-             accesskey="N">next</a> |</li>
+             accesskey="N">next</a></li>
         <li class="right" >
           <a href="deconv.html" title="9.8. Deconvoluting data groups"
              accesskey="P">previous</a> |</li>
@@ -59,7 +56,7 @@
             
   <div class="section" id="self-absorption-approximations">
 <h1>9.9. Self-absorption approximations<a class="headerlink" href="#self-absorption-approximations" title="Permalink to this headline">¶</a></h1>
-<p><img alt="bend!" src="../_static/bend.png" align="left" hspace="5"></a> The statement that μ(E) measured in fluorescence
+<p><img alt="bend" title="This is difficult material" src="../_static/bend.png" hspace="3"></a> The statement that μ(E) measured in fluorescence
 is the ratio of the signals on the fluorescence and incident ion
 chambers is only true in the limit of very thin samples or very dilute
 samples. For thick, concentrated samples, the depth into which the
@@ -102,14 +99,14 @@ real data. There is quite a bit of useful information on this topic at
 <p>The self-absorption tool below allows you to choose between the four
 algorithms and to provide the parameters of the correction.</p>
 <div class="figure align-center" id="id1">
-<span id="fig-selfabs"></span><a class="reference external image-reference" href="../_images/selfabs.png"><img alt="../_images/selfabs.png" src="../_images/selfabs.png" style="width: 65%;" /></a>
+<span id="fig-selfabs"></span><a class="reference external image-reference" href="../_images/selfabs.png"><img alt="../_images/selfabs.png" src="../_images/selfabs.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 9.24 </span><span class="caption-text">The self-absorption tool.</span></p>
 </div>
 <p>In this example of correcting XANES data, ammonium sulfate was dissolved
 in water at three different molarities: 0.1, 0.47, and 0.94. The
 correction algorithm requires a complete description of the sample, so
 we need to determine the ratio of water to ammonium sulfate.</p>
-<div class="highlight-python"><div class="highlight"><pre>1 amu = 1.6605 x 10^-27 kg
+<div class="highlight-python"><div class="highlight"><pre><span></span>1 amu = 1.6605 x 10^-27 kg
 
 1 mole = 6.0221 x 10^23 particles
 
@@ -151,7 +148,7 @@ of self-absorption growing for the more concentrated samples.</span></p>
 is suitable for samples of finite thickness. The other three all assume
 that samples are infinitely thick.</p>
 <div class="figure align-center" id="id5">
-<span id="fig-sabooth"></span><a class="reference external image-reference" href="../_images/selfabs_booth.png"><img alt="../_images/selfabs_booth.png" src="../_images/selfabs_booth.png" style="width: 65%;" /></a>
+<span id="fig-sabooth"></span><a class="reference external image-reference" href="../_images/selfabs_booth.png"><img alt="../_images/selfabs_booth.png" src="../_images/selfabs_booth.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 9.28 </span><span class="caption-text">The self-absorption tool with copper data for correction using the
 Booth algorithm.</span></p>
 </div>
@@ -173,7 +170,7 @@ was 41 degrees. Enter these values and plot the correction. Save the
 corrected data group and compare it to the transmission data, as shown
 in the plot below.</p>
 <div class="figure align-center" id="id6">
-<span id="fig-saboothplot"></span><a class="reference external image-reference" href="../_images/selfabs_boothplot.png"><img alt="../_images/selfabs_boothplot.png" src="../_images/selfabs_boothplot.png" style="width: 45%;" /></a>
+<span id="fig-saboothplot"></span><a class="reference external image-reference" href="../_images/selfabs_boothplot.png"><img alt="../_images/selfabs_boothplot.png" src="../_images/selfabs_boothplot.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 9.29 </span><span class="caption-text">It works pretty well. The green trace is the corrected fluorescence
 spectrum, which compares well to the transmission data, albeit a little
 too big.</span></p>
@@ -183,10 +180,11 @@ fluorescence data and the transmission data. These include how the two
 data sets were normalized, the incident and outgoing angles, and the
 thickness. Try changing all those things to see how they effect the
 correction.</p>
-<div class="admonition-todo admonition" id="index-0">
-<p class="first admonition-title">Todo</p>
-<p class="last">The Booth algorithm has been updated and corrected. It now
-requires that the density of the material be provided.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.20: </span>The Booth algorithm was updated and corrected.  It now requires
+that the density of the material be provided.  There is a box for
+the density next to the thickness box.  The density box becomes
+enabled (not grayed out) when the Booth algorithm is selected.</p>
 </div>
 </div>
 <div class="section" id="information-depth">
@@ -218,36 +216,36 @@ and includes the mathematical derivation:
 <a class="reference external" href="http://www.aps.anl.gov/xfd/people/haskel/fluo.html">http://www.aps.anl.gov/xfd/people/haskel/fluo.html</a></dd>
 <dt><strong>Booth Algorithm</strong></dt>
 <dd><ul class="first simple" id="bibtex-bibliography-process/sa-0">
-<li>C&nbsp;H Booth and F&nbsp;Bridges. Improved self-absorption correction for fluorescence measurements of extended x-ray absorption fine-structure. <em>Physica Scripta</em>, 2005(T115):202, 2005. <a class="reference external" href="http://dx.doi.org/10.1238/Physica.Topical.115a00202">doi:10.1238/Physica.Topical.115a00202</a>.</li>
+<li>C&nbsp;H Booth and F&nbsp;Bridges. Improved self-absorption correction for fluorescence measurements of extended x-ray absorption fine-structure. <em>Physica Scripta</em>, 2005(T115):202, 2005. <a class="reference external" href="https://doi.org/10.1238/Physica.Topical.115a00202">doi:10.1238/Physica.Topical.115a00202</a>.</li>
 </ul>
 <p class="last">See also Corwin's web site: <a class="reference external" href="http://lise.lbl.gov/RSXAP/">http://lise.lbl.gov/RSXAP/</a></p>
 </dd>
 <dt><strong>Troger Algorithm</strong></dt>
 <dd><ul class="first last simple" id="bibtex-bibliography-process/sa-1">
-<li>L.&nbsp;Tröger, D.&nbsp;Arvanitis, K.&nbsp;Baberschke, H.&nbsp;Michaelis, U.&nbsp;Grimm, and E.&nbsp;Zschech. Full correction of the self-absorption in soft-fluorescence extended x-ray-absorption fine structure. <em>Phys. Rev. B</em>, 46:3283–3289, Aug 1992. <a class="reference external" href="http://dx.doi.org/10.1103/PhysRevB.46.3283">doi:10.1103/PhysRevB.46.3283</a>.</li>
+<li>L.&nbsp;Tröger, D.&nbsp;Arvanitis, K.&nbsp;Baberschke, H.&nbsp;Michaelis, U.&nbsp;Grimm, and E.&nbsp;Zschech. Full correction of the self-absorption in soft-fluorescence extended x-ray-absorption fine structure. <em>Phys. Rev. B</em>, 46:3283–3289, Aug 1992. <a class="reference external" href="https://doi.org/10.1103/PhysRevB.46.3283">doi:10.1103/PhysRevB.46.3283</a>.</li>
 </ul>
 </dd>
 <dt><strong>Pfalzer Algorithm</strong></dt>
 <dd><p class="first">Another interesting approach to correcting self-absorption is
 presented in</p>
 <ul class="simple" id="bibtex-bibliography-process/sa-2">
-<li>P.&nbsp;Pfalzer, J.-P. Urbach, M.&nbsp;Klemm, S.&nbsp;Horn, Marten&nbsp;L. denBoer, Anatoly&nbsp;I. Frenkel, and J.&nbsp;P. Kirkland. Elimination of self-absorption in fluorescence hard-x-ray absorption spectra. <em>Phys. Rev. B</em>, 60:9335–9339, Oct 1999. <a class="reference external" href="http://dx.doi.org/10.1103/PhysRevB.60.9335">doi:10.1103/PhysRevB.60.9335</a>.</li>
+<li>P.&nbsp;Pfalzer, J.-P. Urbach, M.&nbsp;Klemm, S.&nbsp;Horn, Marten&nbsp;L. denBoer, Anatoly&nbsp;I. Frenkel, and J.&nbsp;P. Kirkland. Elimination of self-absorption in fluorescence hard-x-ray absorption spectra. <em>Phys. Rev. B</em>, 60:9335–9339, Oct 1999. <a class="reference external" href="https://doi.org/10.1103/PhysRevB.60.9335">doi:10.1103/PhysRevB.60.9335</a>.</li>
 </ul>
-<p class="last">This is not implemented in <font size=-1 color="#033B0A">ATHENA</font> because the main result requires
+<p class="last">This is not implemented in <font size=-1 color="#8C4112">ATHENA</font> because the main result requires
 an integral over the solid angle subtended by the detector. This
 could be implemented, but the amount of solid angle subtended it is
 not something one typically writes in the lab notebook.</p>
 </dd>
 <dt><strong>Atoms Algorithm</strong></dt>
 <dd><ul class="first simple" id="bibtex-bibliography-process/sa-3">
-<li>Bruce Ravel. ATOMS: crystallography for the X-ray absorption spectroscopist. <em>Journal of Synchrotron Radiation</em>, 8(2):314–316, Mar 2001. <a class="reference external" href="http://dx.doi.org/10.1107/S090904950001493X">doi:10.1107/S090904950001493X</a>.</li>
+<li>Bruce Ravel. ATOMS: crystallography for the X-ray absorption spectroscopist. <em>Journal of Synchrotron Radiation</em>, 8(2):314–316, Mar 2001. <a class="reference external" href="https://doi.org/10.1107/S090904950001493X">doi:10.1107/S090904950001493X</a>.</li>
 </ul>
 <p class="last">See also the documentation for Atoms at Bruce's website for more
 details about it's fluorescence correction calculations.</p>
 </dd>
 <dt><strong>Elam tables of absorption coefficients</strong></dt>
 <dd><ul class="first last simple" id="bibtex-bibliography-process/sa-4">
-<li>W.&nbsp;T. Elam, B.&nbsp;D. Ravel, and J.&nbsp;R. Sieber. A new atomic database for X-ray spectroscopic calculations. <em>Radiation Physics and Chemistry</em>, 63:121–128, February 2002. <a class="reference external" href="http://dx.doi.org/10.1016/S0969-806X(01)00227-4">doi:10.1016/S0969-806X(01)00227-4</a>.</li>
+<li>W.&nbsp;T. Elam, B.&nbsp;D. Ravel, and J.&nbsp;R. Sieber. A new atomic database for X-ray spectroscopic calculations. <em>Radiation Physics and Chemistry</em>, 63:121–128, February 2002. <a class="reference external" href="https://doi.org/10.1016/S0969-806X(01)00227-4">doi:10.1016/S0969-806X(01)00227-4</a>.</li>
 </ul>
 </dd>
 </dl>
@@ -256,10 +254,10 @@ details about it's fluorescence correction calculations.</p>
 
 <br>
 <hr class="docutils" />
-<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
-copyright © 2015 Bruce Ravel</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
 <p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
-<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
 consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
 </div>
 </div>
@@ -278,10 +276,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and background removal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">9. Data processing</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="cal.html">9.1. Calibrating data groups</a></li>
@@ -299,21 +297,27 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l2"><a class="reference internal" href="sum.html">9.13. Data summation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
-<h3>Links</h3>
+<h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -345,11 +349,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
           <a href="pixel.html" title="9.10. Dispersive XAS"
-             >next</a> |</li>
+             >next</a></li>
         <li class="right" >
           <a href="deconv.html" title="9.8. Deconvoluting data groups"
              >previous</a> |</li>
@@ -358,7 +359,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

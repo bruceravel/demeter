@@ -63,7 +63,7 @@ things with it. “Interesting things” are, of course, the topic
 of the rest of this programming guide. The first interesting thing to
 discuss is plotting.</p>
 <p>One might think that topics such as background removal, normalization,
-and Fourier transforms are discussion-worthy. In fact,
+and Fourier transforms are discussion-worthy.  In fact,
 <font size=-1 color="#8C4112">DEMETER</font> goes to great lengths to assure that you do not
 need to ever worry about having to explicitly do any of those data
 processing chores.  Certainly methods exist for doing those data
@@ -81,31 +81,31 @@ re-done.</p>
 <p><font size=-1 color="#8C4112">DEMETER</font> is also aware of what data processing steps must be
 up-to-date in order to properly perform any method, including
 plotting. Thus if you do this:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;k&#39;</span><span class="p">);</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;R&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
-<p><font size=-1 color="#8C4112">DEMETER</font> knows to check wether the background removal,
+<p><font size=-1 color="#8C4112">DEMETER</font> knows to check whether the background removal,
 normalization, and forward transform are up to date and to perform
 them if they are not.</p>
 <p>Plotting in the four spaces is quite straightforward:</p>
 <dl class="docutils">
 <dt><strong>plot in energy</strong></dt>
-<dd><div class="first last highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;E&#39;</span><span class="p">);</span>
+<dd><div class="first last highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;E&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
 </dd>
 <dt><strong>plot in k</strong></dt>
-<dd><div class="first last highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;k&#39;</span><span class="p">);</span>
+<dd><div class="first last highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;k&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
 </dd>
 <dt><strong>plot in R</strong></dt>
-<dd><div class="first last highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;R&#39;</span><span class="p">);</span>
+<dd><div class="first last highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;R&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
 </dd>
 <dt><strong>plot in back-transform k</strong></dt>
-<dd><div class="first last highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;q&#39;</span><span class="p">);</span>
+<dd><div class="first last highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;q&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
 </dd>
@@ -113,36 +113,76 @@ them if they are not.</p>
 <p>There are also a number of pre-defined, specialty plots.</p>
 <div class="admonition-todo admonition" id="index-0">
 <p class="first admonition-title">Todo</p>
-<p class="last">Show examples of rmr, r123, k123, and kq.</p>
+<p class="last">Show biquad plot</p>
 </div>
 <dl class="docutils">
 <dt><strong>plot the magnitude and real part of chi(R)</strong></dt>
-<dd><div class="first last highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;rmr&#39;</span><span class="p">);</span>
-</pre></div>
-</div>
-</dd>
-<dt><strong>plot chi(k) with k-weights of 1, 2, and 3, scaled to be the same size</strong></dt>
-<dd><div class="first last highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;k123&#39;</span><span class="p">);</span>
-</pre></div>
-</div>
-</dd>
-<dt><strong>plot chi(R) with k-weights of 1, 2, and 3, scaled to be the same size</strong></dt>
-<dd><div class="first last highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;R123&#39;</span><span class="p">);</span>
-</pre></div>
-</div>
-</dd>
-<dt><strong>plot in chi(k) with the real part of chi(q)</strong></dt>
-<dd><div class="first last highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;kq&#39;</span><span class="p">);</span>
-</pre></div>
-</div>
-</dd>
-<dt><strong>quad plot with data in all four spaces</strong></dt>
-<dd><div class="first highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;quad&#39;</span><span class="p">);</span>
+<dd><div class="first highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;rmr&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
 <div class="last figure align-left" id="id1">
+<span id="fig-rmrplot"></span><a class="reference external image-reference" href="../_images/plot_r_rmr.png"><img alt="../_images/plot_r_rmr.png" src="../_images/plot_r_rmr.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.1 </span><span class="caption-text">The “rmr” plot displays a stack plot with the magnitude
+and real part of χ(R).</span></p>
+</div>
+</dd>
+</dl>
+
+<br clear="all">
+<dl class="docutils">
+<dt><strong>plot chi(k) with k-weights of 1, 2, and 3, scaled to be the same size</strong></dt>
+<dd><div class="first highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;k123&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="last figure align-left" id="id2">
+<span id="fig-k123plot"></span><a class="reference external image-reference" href="../_images/plot_k_k123.png"><img alt="../_images/plot_k_k123.png" src="../_images/plot_k_k123.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.2 </span><span class="caption-text">The “k123” plot displays a stack plot with the χ(k)
+weighted by k<sup>1</sup>, k<sup>2</sup>, and k<sup>3</sup>.  The k<sup>1</sup> and k<sup>3</sup> plots are scaled to be about the same
+size as the k<sup>2</sup> plot.</span></p>
+</div>
+</dd>
+</dl>
+
+<br clear="all">
+<dl class="docutils">
+<dt><strong>plot chi(R) with k-weights of 1, 2, and 3, scaled to be the same size</strong></dt>
+<dd><div class="first highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;R123&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="last figure align-left" id="id3">
+<span id="fig-r123plot"></span><a class="reference external image-reference" href="../_images/plot_r_r123.png"><img alt="../_images/plot_r_r123.png" src="../_images/plot_r_r123.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.3 </span><span class="caption-text">The “r123” plot displays a stack plot with the χ(R)
+with the Fourier transforms made with k<sup>1</sup>, k<sup>2</sup>,
+and k<sup>3</sup> weighting.  The k<sup>1</sup> and k<sup>3</sup>
+plots are scaled to be about the same size as the k<sup>2</sup>
+plot.</span></p>
+</div>
+</dd>
+</dl>
+
+<br clear="all">
+<dl class="docutils">
+<dt><strong>plot in chi(k) with the real part of chi(q)</strong></dt>
+<dd><div class="first highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;kq&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="last figure align-left" id="id4">
+<span id="fig-kqplot"></span><a class="reference external image-reference" href="../_images/plot_kq.png"><img alt="../_images/plot_kq.png" src="../_images/plot_kq.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.4 </span><span class="caption-text">The “k123” plot displays χ(k) and the real part of
+χ(q) overplotted.</span></p>
+</div>
+</dd>
+</dl>
+
+<br clear="all">
+<dl class="docutils">
+<dt><strong>quad plot with data in all four spaces</strong></dt>
+<dd><div class="first highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;quad&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="last figure align-left" id="id5">
 <span id="fig-quadplot"></span><a class="reference external image-reference" href="../_images/plot_quad.png"><img alt="../_images/plot_quad.png" src="../_images/plot_quad.png" /></a>
-<p class="caption"><span class="caption-number">Fig. 2.1 </span><span class="caption-text">This quad plot shows data on an Fe foil in all four spaces. The
+<p class="caption"><span class="caption-number">Fig. 2.5 </span><span class="caption-text">This quad plot shows data on an Fe foil in all four spaces. The
 current value of k-weighting in the Plot object is used in this
 kind of plot.  <em>This kind of plot cannot be made with the pgplot
 plotting backend.</em></span></p>
@@ -151,7 +191,7 @@ plotting backend.</em></span></p>
 </dl>
 <p>There are two more pre-packaged plot types which are specifically about
 visualizing merged data and its standard deviation:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;stddev&#39;</span><span class="p">);</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;stddev&#39;</span><span class="p">);</span>
 <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;variance&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -161,31 +201,46 @@ those two plot types.</p>
 setting the <code class="docutils literal"><span class="pre">chie</span></code> attribute of the Plot object to a true value. When
 that attribute is true and the data are plotted in k, the x-axis values
 will instead be absolute energy.</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">kweight</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="n">space</span> <span class="o">=&gt;</span> <span class="s">&#39;k&#39;</span><span class="p">,</span> <span class="n">chie</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">);</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">kweight</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="n">space</span> <span class="o">=&gt;</span> <span class="s">&#39;k&#39;</span><span class="p">,</span> <span class="n">chie</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">);</span>
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">;</span>
 </pre></div>
 </div>
-<p>Note that the argument of the <code class="docutils literal"><span class="pre">plot</span></code> method is case insensitive.
-Little attempt is made to glean meaning from that argument.  If it is
-not one of the strings shown above, the <code class="docutils literal"><span class="pre">plot</span></code> method will likely
-return an error.</p>
+<div class="figure align-center" id="id6">
+<span id="fig-chieplot"></span><a class="reference external image-reference" href="../_images/plot_chie.png"><img alt="../_images/plot_chie.png" src="../_images/plot_chie.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.6 </span><span class="caption-text">χ(k) plotted in energy.</span></p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The argument of the <code class="docutils literal"><span class="pre">plot</span></code> method is case insensitive.
+Little attempt is made to glean meaning from that argument.  If it
+is not one of the strings shown above, the <code class="docutils literal"><span class="pre">plot</span></code> method will
+likely return an error.</p>
+</div>
 </div>
 <div class="section" id="plotting-and-overplotting">
 <h2>2.8.2. Plotting and overplotting<a class="headerlink" href="#plotting-and-overplotting" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal"><span class="pre">plot</span></code> method typically will overplot data, that is add a new
 trace to the existing plot. If you wish to start a new plot, you must
 explicitly do so, as shown on line 8 of this example.</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
-<span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+<div class="highlight-perl"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
+ <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
-<span class="k">my</span> <span class="nv">$prj</span> <span class="o">=</span> <span class="nn">Demeter::Data::</span><span class="n">Prj</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span><span class="o">=&gt;</span><span class="s">&#39;iron_data.prj&#39;</span><span class="p">);</span>
-<span class="k">my</span> <span class="p">(</span><span class="nv">$data1</span><span class="p">,</span> <span class="nv">$data2</span><span class="p">)</span> <span class="o">=</span> <span class="nv">$prj</span> <span class="o">-&gt;</span> <span class="n">records</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span>
-<span class="nv">$_</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;k&#39;</span><span class="p">)</span> <span class="k">foreach</span> <span class="p">(</span><span class="nv">$data1</span><span class="p">,</span> <span class="nv">$data2</span><span class="p">);</span>
-<span class="nb">sleep</span> <span class="mi">3</span><span class="p">;</span>
-<span class="nv">$data1</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
-<span class="nv">$_</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;R&#39;</span><span class="p">)</span> <span class="k">foreach</span> <span class="p">(</span><span class="nv">$data1</span><span class="p">,</span> <span class="nv">$data2</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$prj</span> <span class="o">=</span> <span class="nn">Demeter::Data::</span><span class="n">Prj</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span><span class="o">=&gt;</span><span class="s">&#39;iron_data.prj&#39;</span><span class="p">);</span>
+ <span class="k">my</span> <span class="p">(</span><span class="nv">$data1</span><span class="p">,</span> <span class="nv">$data2</span><span class="p">)</span> <span class="o">=</span> <span class="nv">$prj</span> <span class="o">-&gt;</span> <span class="n">records</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span>
+ <span class="nv">$_</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;k&#39;</span><span class="p">)</span> <span class="k">foreach</span> <span class="p">(</span><span class="nv">$data1</span><span class="p">,</span> <span class="nv">$data2</span><span class="p">);</span>
+ <span class="nb">sleep</span> <span class="mi">3</span><span class="p">;</span>
+ <span class="nv">$data1</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+ <span class="nv">$_</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;R&#39;</span><span class="p">)</span> <span class="k">foreach</span> <span class="p">(</span><span class="nv">$data1</span><span class="p">,</span> <span class="nv">$data2</span><span class="p">);</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 <p>The quad plot is an exception, however. There is an implicit
 <code class="docutils literal"><span class="pre">start_plot</span></code> when a quad plot is made.</p>
 <p>The details of the funny syntax using the <code class="docutils literal"><span class="pre">po</span></code> method is explained in
@@ -193,7 +248,7 @@ explicitly do so, as shown on line 8 of this example.</p>
 </div>
 <div class="section" id="the-singlefile-plotting-backend">
 <h2>2.8.3. The singlefile plotting backend<a class="headerlink" href="#the-singlefile-plotting-backend" title="Permalink to this headline">¶</a></h2>
-<p>Although the <strong class="program">PGPLOT</strong> and <strong class="program">Gnuplot</strong> plotting
+<p>Although the <strong class="program">Gnuplot</strong> and <strong class="program">PGPLOT</strong> plotting
 backends work just fine, sometimes you would like to be able to
 replicate a particular plot in another plotting program. To that end,
 <font size=-1 color="#8C4112">DEMETER</font> provides a special plotting backend called the
@@ -202,10 +257,10 @@ column data file. The data in those columns include whatever
 y-offsets, energy shifts, or scaling factors were included in the
 plot. The plot can then be replicated in another program simply by
 importing and plotting the columns.</p>
-<p>Here is an example. The fit is the standard copper fit. At the end, the
-data, the fit, the window, and the paths are plotted usin the gnuplot
-backend. Then, at line 67, the “SingleFile” backend is used to output
-that plot to a file.</p>
+<p>Here is an example. The fit is the standard copper fit. At the end,
+the data, the fit, the window, and the paths are plotted usin the
+gnuplot backend. Then, at line 67, the “SingleFile” backend is
+used to output that plot to a file.</p>
 <div class="highlight-perl"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -283,7 +338,7 @@ that plot to a file.</p>
 75
 76
 77
-78</pre></div></td><td class="code"><div class="highlight"><pre> <span class="c1">#!/usr/bin/perl</span>
+78</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
  <span class="k">use</span> <span class="n">Demeter</span> <span class="sx">qw(:ui=screen)</span><span class="p">;</span>
  <span class="k">print</span> <span class="s">&quot;Sample fit to copper data demonstrating the singlefile plotting backend.\n&quot;</span><span class="p">;</span>
 
@@ -374,7 +429,7 @@ at line 77 to actually write out the file. It is good practice to unset
 the standard, as at line 78, to avoid future confusion.</p>
 <p>The <code class="docutils literal"><span class="pre">prep</span></code> method at line 68 is a convenience method which does the
 following:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">po</span><span class="o">-&gt;</span><span class="n">space</span><span class="p">(</span><span class="s">&#39;R&#39;</span><span class="p">);</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">po</span><span class="o">-&gt;</span><span class="n">space</span><span class="p">(</span><span class="s">&#39;R&#39;</span><span class="p">);</span>
 <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">standard</span><span class="p">;</span>
 <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">po</span><span class="o">-&gt;</span><span class="n">file</span><span class="p">(</span><span class="s">&#39;nifty_plot.dat&#39;</span><span class="p">);</span>
 <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">po</span><span class="o">-&gt;</span><span class="n">start_plot</span><span class="p">;</span>
@@ -425,8 +480,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
@@ -434,6 +489,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
@@ -441,14 +500,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 

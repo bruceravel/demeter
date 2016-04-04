@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Additional notes on installing the MacPorts package &mdash; Miscellaneous Demeter  documentation</title>
+    <title>Additional notes on installing the MacPorts package &mdash; Miscellaneous Demeter 0.9.24 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '',
+        VERSION:     '0.9.24',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/wheat.ico"/>
-    <link rel="top" title="Miscellaneous Demeter  documentation" href="index.html" />
+    <link rel="top" title="Miscellaneous Demeter 0.9.24 documentation" href="index.html" />
     <link rel="next" title="Installing Demeter from source code" href="installation.html" />
     <link rel="prev" title="Installing Demeter from packages: Windows, Mac, Linux" href="packages.html" />
 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="packages.html" title="Installing Demeter from packages: Windows, Mac, Linux"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter  documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter 0.9.24 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -68,14 +68,14 @@ Store”. If using an older operating system, you will find Xcode and
 the Command Line Tools from the <a class="reference external" href="https://developer.apple.com/">Mac Developer</a> website</p>
 </li>
 <li><p class="first">Open <strong class="program">Terminal</strong> and agree to Xcode license by typing</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">xcodebuild</span> <span class="o">--</span><span class="n">licence</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">xcodebuild</span> <span class="o">--</span><span class="n">licence</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">Install MacPorts for your version of Mac OS X from MacPorts website</p>
 </li>
 <li><p class="first">Open <strong class="program">Terminal</strong> and type in:</p>
-<div class="highlight-python"><div class="highlight"><pre>sudo port install xorg-server demeter
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo port install xorg-server demeter
 </pre></div>
 </div>
 <p>My operating system is El Capitan (Mac OS X 10.11.1) and it took me
@@ -96,11 +96,11 @@ installation; hence, it took longer time to install Demeter.</p>
 an error message of “no destroot found” occur. What you need to
 do is to clean the affected port and try again (example below is
 for libpixman port)</p>
-<div class="highlight-python"><div class="highlight"><pre>sudo port clean libpixman
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo port clean libpixman
 </pre></div>
 </div>
 <p>Then</p>
-<div class="highlight-python"><div class="highlight"><pre>sudo port install xorg-server demeter
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo port install xorg-server demeter
 </pre></div>
 </div>
 </div></blockquote>
@@ -111,16 +111,16 @@ for libpixman port)</p>
 <li><p class="first">After Launching <font size=-1 color="#8C4112">ATHENA</font> and whenever I tried to import
 data, I got a message saying that I need to install the <code class="docutils literal"><span class="pre">Encoding::</span>
 <span class="pre">FixLatin::XS</span></code> module. So, go to <strong class="program">Terminal</strong> and type</p>
-<div class="highlight-python"><div class="highlight"><pre>sudo port install p5.22-encoding-fixlatin-xs
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo port install p5.22-encoding-fixlatin-xs
 </pre></div>
 </div>
 <p>At the beginning I could not launch <font size=-1 color="#8C4112">ARTEMIS</font> and I would
 get the following message in <strong class="program">Terminal</strong>:</p>
-<div class="highlight-python"><div class="highlight"><pre>Can’t locate Heap/Fibobacci...
+<div class="highlight-python"><div class="highlight"><pre><span></span>Can’t locate Heap/Fibobacci...
 </pre></div>
 </div>
 <p>So, go to <strong class="program">Terminal</strong> and type</p>
-<div class="highlight-python"><div class="highlight"><pre>sudo port install p5.22-heap
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo port install p5.22-heap
 </pre></div>
 </div>
 </li>
@@ -148,8 +148,8 @@ deglitching and the pluck buttons probably won't work with the
 
 <br>
 <hr class="docutils" />
-<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
-copyright © 2015 Bruce Ravel</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
 <p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
 <p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
 consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
@@ -175,19 +175,21 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 </li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b></b></p>
+<p>Current version: <b>0.9.24</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -224,11 +226,11 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="packages.html" title="Installing Demeter from packages: Windows, Mac, Linux"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter  documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter 0.9.24 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

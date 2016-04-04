@@ -65,7 +65,7 @@ geometry. Here is an example of a typical Path object:</p>
 5
 6
 7
-8</pre></div></td><td class="code"><div class="highlight"><pre> <span class="k">my</span> <span class="nv">$paths</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Path</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">parent</span> <span class="o">=&gt;</span> <span class="nv">$feff_object</span><span class="p">,</span>
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="k">my</span> <span class="nv">$paths</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Path</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">parent</span> <span class="o">=&gt;</span> <span class="nv">$feff_object</span><span class="p">,</span>
                                   <span class="n">data</span>   <span class="o">=&gt;</span> <span class="nv">$data_object</span><span class="p">,</span>
                                   <span class="n">sp</span>     <span class="o">=&gt;</span> <span class="nv">$sp_object</span><span class="p">,</span>
                                   <span class="n">s02</span>    <span class="o">=&gt;</span> <span class="s">&quot;amp&quot;</span><span class="p">,</span>
@@ -77,7 +77,7 @@ geometry. Here is an example of a typical Path object:</p>
 </td></tr></table></div>
 <p>In lines 4 through 7, the path parameters are set using the names of
 <a class="reference external" href="../gds/index.html">GDS parameters</a>. More information about setting
-and querying path parameter values <a class="reference external" href="pathparams.html">later in this
+and querying path parameter values is found <a class="reference external" href="pathparams.html">later in this
 chapter</a>.</p>
 <p>Lines 1 through 3 show the hierarchy of the Path object. The Path object
 relies upon connections to <font size=-1 color="#8C4112">DEMETER</font> objects to do its work.</p>
@@ -86,37 +86,37 @@ relies upon connections to <font size=-1 color="#8C4112">DEMETER</font> objects 
 <dd>At line 1, the “parent” <a class="reference external" href="../feff/index.html">Feff object</a>. is
 identified. The parent is the Feff object that was used to run the
 <font size=-1 color="#8C4112">FEFF</font> calulcation that generated this scattering path. The Path
-object needs to know</dd>
+object uses information gleaned from the parent Feff object.</dd>
 <dt><code class="docutils literal"><span class="pre">data</span></code></dt>
 <dd><p class="first">At line 2, the <a class="reference external" href="../feff/index.html">Data object</a> containing the
 data for which this scattering path is being used to model. This
-connection is required for two reasons. The <a class="reference external" href="../feff/index.html">Fit
-object</a> uses this linkage to properly create
-the <font size=-1 color="#8C4112">IFEFFIT</font> commands involved in running the fit. The other use of
-the Data object connection is to plot the Path object properly. The
-Fourier transform parameters of the Data object are used to process
-the scattering path for plotting.</p>
-<p class="last">The <code class="docutils literal"><span class="pre">data</span></code> attribute is not stricly required. When <font size=-1 color="#8C4112">DEMETER</font> is
-imported at the beginning of your program, a <a class="reference external" href="../highlevel/methods.html">default Data
-object</a> is created using a sensible
-set of processing parameters. If the <code class="docutils literal"><span class="pre">data</span></code> attribute is not
-explicitly set, the default Data object is used. This allows you to
-sensibly plot scattering paths without actually importing data into
-a Data object. When using a Path object as part of a simulation or a
-fit, it is important to properly identify the <code class="docutils literal"><span class="pre">data</span></code> attribute so
-that the path is Fourier transformed in the same manner as its
-associated data.</p>
+connection is required for two reasons. The <a class="reference external" href="../feff/index.html">Fit object</a> uses this linkage to properly create the
+<font size=-1 color="#8C4112">IFEFFIT</font> of <font size=-1 color="#8C4112">LARCH</font> commands involved in
+running the fit.  The other use of the Data object connection is to
+plot the Path object properly.  The Fourier transform parameters of
+the Data object are used to process the scattering path for
+plotting.</p>
+<p class="last">The <code class="docutils literal"><span class="pre">data</span></code> attribute is not stricly required. When
+<font size=-1 color="#8C4112">DEMETER</font> is imported at the beginning of your program, a
+<a class="reference external" href="../highlevel/methods.html">default Data object</a> is created
+using a sensible set of processing parameters.  If the <code class="docutils literal"><span class="pre">data</span></code>
+attribute is not explicitly set, the default Data object is used.
+This allows you to sensibly plot scattering paths without actually
+importing data into a Data object.  When using a Path object as
+part of a simulation or a fit, it is important to properly
+identify the <code class="docutils literal"><span class="pre">data</span></code> attribute so that the path is Fourier
+transformed in the same manner as its associated data.</p>
 </dd>
 <dt><code class="docutils literal"><span class="pre">sp</span></code></dt>
 <dd>The final part of the Path object's hierarchy is shown in line 3.
 The ScatteringPath object is the thing that links the <font size=-1 color="#8C4112">FEFF</font>
-calculation with the Path object. This is explained in detail in
-<a class="reference external" href="paths.html">the next section</a>. As it might seem confusing that
+calculation with the Path object.  This is explained in detail in
+<a class="reference external" href="paths.html">the next section</a>.  As it might seem confusing that
 two different objects are involved in defining a scattering path,
-here is the way to think about it. The Path object is outward
+here is the way to think about it.  The Path object is the outward
 expression of the scattering path and is intended to resemble a path
 paragraph in a <code class="file docutils literal"><span class="pre">feffit.inp</span></code> file or a <code class="docutils literal"><span class="pre">path</span></code> command in an <font size=-1 color="#8C4112">IFEFFIT</font>
-script. The ScatteringPath object is aware of all the details of the
+script.  The ScatteringPath object is aware of all the details of the
 path finder and encapsolates the results of the <font size=-1 color="#8C4112">FEFF</font> calculation,
 much like the <code class="file docutils literal"><span class="pre">feffNNNN.dat</span></code> but with lots of object-oriented
 functionality surrounding it.</dd>
@@ -126,7 +126,7 @@ functionality surrounding it.</dd>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="paths.html">8.1. Calculating individual scattering paths</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="paths.html#writing-feffnnnn-dat-files">8.1.1. Writing feffNNNN.dat files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paths.html#writing-feffnnnn-dat-files">8.1.1. Writing <code class="docutils literal"><span class="pre">feffNNNN.dat</span></code> files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="paths.html#examining-the-degenerate-paths">8.1.2. Examining the degenerate paths</a></li>
 </ul>
 </li>
@@ -170,8 +170,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">8. Scattering paths</a><ul>
@@ -186,6 +186,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
@@ -193,14 +197,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 

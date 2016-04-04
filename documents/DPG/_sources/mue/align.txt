@@ -40,12 +40,12 @@ Here is a simple example:
     ## make all the E0 values the same
     $_->e0($data[0]) foreach @data[1..3];
 
-Four data sets are imported at lines 3 and 4. By calling the ``align``
-method on the first data set in the list at line 10, it is chosen as
-the standard, i.e. the one that stays in place while the others are
-shifted.  It is not a problem that the standard is passed as an
-argument of the method. :demeter:`demeter` will notice this and do the
-right thing.
+Four data sets are imported at lines 3 and 4.  By calling the
+``align`` method on the first data set in the list at line 10, it is
+chosen as the standard.  To say that again, the caller is the standard
+|nd| the one that stays in place while the others are shifted.  It is
+not a problem that the standard is passed then as an argument of the
+method. :demeter:`demeter` will notice this and do the right thing.
 
 Aligning does not also force the E\ :sub:`0` values to be the same, so
 that is done as a separate step at line 12.
@@ -56,6 +56,7 @@ of ``alignwr``).  This will use the Data objects specified in the
 alignment.  Here is how that works:
 
 .. code-block:: perl
+   :linenos:
 
     #!/usr/bin/perl
 
@@ -70,5 +71,3 @@ alignment.  Here is how that works:
     ## make the E0 values the same
     $data[2]->e0($data[0]);
 
-.. todo:: Smoothing the derivative spectra before aligning is not yet
-	  implemented.

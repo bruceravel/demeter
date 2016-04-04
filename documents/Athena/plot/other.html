@@ -1,0 +1,331 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5.3. Other plotting options &mdash; Athena 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Athena 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="5. Plotting Your Data" href="index.html" />
+    <link rel="next" title="5.4. Group specific plot parameters" href="params.html" />
+    <link rel="prev" title="5.2. Spectral resolution and k-range" href="krange.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="params.html" title="5.4. Group specific plot parameters"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="krange.html" title="5.2. Spectral resolution and k-range"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">5. Plotting Your Data</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="other-plotting-options">
+<h1>5.3. Other plotting options<a class="headerlink" href="#other-plotting-options" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="zooming-and-cursor-position">
+<h2>5.3.1. Zooming and cursor position<a class="headerlink" href="#zooming-and-cursor-position" title="Permalink to this headline">¶</a></h2>
+<p>Zooming on a region of a plot is done using <strong class="program">Gnuplot</strong>'s own
+capabilities.  In the plot window, a zoom is initiated by a right
+click <img alt="rightclick" title="Right mouse button" src="../_static/rightclick.png" hspace="3"></a>. The mouse is then dragged to cover a rectangular
+area on the plot. Right-clicking <img alt="rightclick" title="Right mouse button" src="../_static/rightclick.png" hspace="3"></a> a second time will cause
+the plot to be redisplayed on the zoomed region.</p>
+<p><strong class="program">Gnuplot</strong> displays the position of the cursor in the bottom
+part of the plot window. This is continuously updated as the mouse
+moves over the plot window.</p>
+</div>
+<div class="section" id="special-plotting-targets">
+<h2>5.3.2. Special plotting targets<a class="headerlink" href="#special-plotting-targets" title="Permalink to this headline">¶</a></h2>
+<p>The Plot menu provides a few more ways to control how your data are
+displayed. The <span class="menuselection">Plot ‣ Save last plot as</span> submenu
+allows you to send the most recent plot to a PNG or PDF file. You will
+be prompted for a filename, then the most recent plot will be written
+to that file in the format specified. Currently, only PNG and PDF are
+supported. Saving to a file does not work for quad plots – you'll have
+to rely on a screen-capture tool for that.</p>
+<p>Finally, you have the option of directing the on-screen plot to one of
+four terminals. The selected terminal, number 1 by default, is updated
+as new plots are made. When you switch to a new terminal, other active
+terminals will become unchanging. This means you can save a particular
+plot on screen while continuing to make new plots.</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last"><font size=-1 color="#8C4112">ATHENA</font> should offer other vector output images,
+like SVG or EPS.  Also should make the number of terminals a
+configurable parameter.</p>
+</div>
+</div>
+<div class="section" id="stacked-plots">
+<h2>5.3.3. Stacked plots<a class="headerlink" href="#stacked-plots" title="Permalink to this headline">¶</a></h2>
+<p>When marked group plots are made using the purple plot buttons, the
+default behavior is to overplot the various data groups. At times, it
+might be preferable to place an offset between the plots. This is done
+in general by setting the <tt><font color="#387A38">«y-axis offset»</font></tt>
+parameter. Stacking plots in a systematic manner is done using the
+stack tab. Stacking is done by setting the <tt><font color="#387A38">«y-axis offset»</font></tt> parameters
+of the marked groups sequentially.</p>
+<p>This tab contains two text entry boxes. The first is used to set the
+<tt><font color="#387A38">«y-axis offset»</font></tt> parameter of the first marked group. Subsequent marked
+groups have their <tt><font color="#387A38">«y-axis offset»</font></tt> parameters incremented by the amount
+of the second text entry box. Clicking the <kbd class="light">Apply to marked</kbd> button
+sets these values for each marked group.</p>
+<div class="figure compound align-center" id="_fig-stack">
+<div style="width: 45%" class="subfigure" id="id2">
+<span id="fig-stacktab"></span><a class="reference external image-reference" href="../_images/plot_stack.png"><img alt="../_images/plot_stack.png" src="../_images/plot_stack.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.6 </span><span class="caption-text">The plot stacking tab.</span></p>
+</div>
+<div style="width: 45%" class="subfigure" id="id3">
+<span id="fig-stacked"></span><a class="reference external image-reference" href="../_images/plot_stacked.png"><img alt="../_images/plot_stacked.png" src="../_images/plot_stacked.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.7 </span><span class="caption-text">An example of a stacked plot. Note that the stacking increment is
+negative so that that order of the colors is the same in the legend
+as in the plot.</span></p>
+</div>
+</div></div>
+<div class="section" id="indicators">
+<span id="_fig-stack"></span><h2>5.3.4. Indicators<a class="headerlink" href="#indicators" title="Permalink to this headline">¶</a></h2>
+<p>Indicators are vertical lines drawn from the top to the bottom of the
+plot frame. They are used to draw attention to specific points in plots
+of your data. This can be useful for comparing specific features in
+different data sets or for seeing how a particular feature propagates
+from energy to k to q.</p>
+<p>Points to mark by indicators are chosen using <a class="reference external" href="ui/pluck.html">the pluck buttons</a> in the indicators tab. Click on the pluck button
+then on a spot in the plot. That value will be inserted into the
+adjacent text entry box. When the check button is selected, that
+indicator lines will be plotted (if possible) in each subsequent plot.</p>
+<p>Points selected in energy, k, or q are plotted in any of those spaces.
+Points selected in R can only be plotted in R. Points outside the plot
+range are ignored.</p>
+<div class="figure compound align-center" id="_fig-indic">
+<div style="width: 45%" class="subfigure" id="id4">
+<span id="fig-indictab"></span><a class="reference external image-reference" href="../_images/plot_indic.png"><img alt="../_images/plot_indic.png" src="../_images/plot_indic.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.8 </span><span class="caption-text">The indicator tab.</span></p>
+</div>
+<div style="width: 45%" class="subfigure" id="id5">
+<span id="fig-indicplot"></span><a class="reference external image-reference" href="../_images/plot_indicplot.png"><img alt="../_images/plot_indicplot.png" src="../_images/plot_indicplot.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.9 </span><span class="caption-text">An example of a plot with indicators.  Note that plots made in E,
+k, or q will plot indicators selected in any of those three spaces.</span></p>
+</div>
+</div><p id="_fig-indic">The following <a class="reference external" href="../other/prefs.html">preferences</a> can be set to
+customize the appearance of the indicators.</p>
+<ol class="arabic simple">
+<li><font color="#636A24">♦Plot→nindicators</font>: the maximum number of indicators that can be set</li>
+<li><font color="#636A24">♦Plot→indicatorcolor</font>: the color of the indicator line</li>
+<li><font color="#636A24">♦Plot→indicatorline</font>: the line type of the indicator</li>
+</ol>
+</div>
+<div class="section" id="title-and-legend">
+<h2>5.3.5. Title and legend<a class="headerlink" href="#title-and-legend" title="Permalink to this headline">¶</a></h2>
+<p>Fine grained control over the title and legend of the plot is
+available in the <span class="guilabel">Title, legend, single file</span> tab.</p>
+<div class="figure align-center" id="id6">
+<span id="fig-plottlsf"></span><a class="reference external image-reference" href="../_images/plot_tlsf.png"><img alt="../_images/plot_tlsf.png" src="../_images/plot_tlsf.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.10 </span><span class="caption-text">The tab with controls for the title and legend of the plot as well
+as plot pausing and single file output.</span></p>
+</div>
+<p>Normally the title of a marked group plot is determined from the name
+of the project file.  If there is not yet a name for the project file,
+then the title of a marked groups plot (i.e. one made with a purple
+plot button) will be “marked groups”.</p>
+<p>This behavior can, however, be overridden by specifying a title in
+the text box labeled <span class="guilabel">Title for marked group plot</span>.  The
+text specified there will be used as the title.  The title for a
+marked group plot can be suppressed by specifying one or more spaces
+in that text box.</p>
+<p>The plot legend is place, by default, near the inner, top, right
+corner of the plot.  This sometimes interferes with the display of the
+data.  The corner can be selected using the radio buttons in the
+<span class="guilabel">Legend location</span> box.  The placement of the legend inside
+or outside of the frame of the plot is controlled by the
+<span class="guilabel">Outside</span> check button.  Checking the <span class="guilabel">Suppress
+legend</span> button causes the legend not to be displayed.</p>
+<div class="figure align-center" id="id7">
+<span id="fig-plotlegendoutside"></span><a class="reference external image-reference" href="../_images/plot_legend_outside.png"><img alt="../_images/plot_legend_outside.png" src="../_images/plot_legend_outside.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.11 </span><span class="caption-text">Plot of Fe metal showing the legend outside the plot frame and in
+the lower right corner.</span></p>
+</div>
+</div>
+<div class="section" id="pausing-display-of-data-during-import">
+<h2>5.3.6. Pausing display of data during import<a class="headerlink" href="#pausing-display-of-data-during-import" title="Permalink to this headline">¶</a></h2>
+<p>When examining a sequence of XAS scans, it can be instructive to
+focus on the scan-to-scan changes in the data,  When the text box next
+to <span class="guilabel">Marked plot pause</span> in <a class="reference internal" href="#fig-plottlsf"><span>Fig. 5.10</span></a> is set to a non zero value, there
+will be a pause introduced between the display of the groups included
+in a marked group plot.</p>
+<p>For example, consider a sequence of data in the reduction of
+hexavalent chromium to trivalent chromium.  Standards for these two
+forms of chromium are shown below.</p>
+<div class="figure align-center" id="id8">
+<span id="fig-plotcr"></span><a class="reference external image-reference" href="../_images/Cr.png"><img alt="../_images/Cr.png" src="../_images/Cr.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 5.12 </span><span class="caption-text">Hexavalent chromium, with its large pre-edge peak, plotted with
+trivalent chromium.</span></p>
+</div>
+<p>As the reduction progresses, the size of the pre-edge peak diminishes
+and the main rising edge shifts to the right.  A pause introduced to
+the marked group plot serves to animate the spectral change during
+this reduction.</p>
+<p>The value of this pause is in milliseconds.  A value of 250 or 500 is
+good starting point.  The value of zero turns off this animation
+feature and the plot will be made as quickly as possible.</p>
+</div>
+<div class="section" id="single-file-output">
+<h2>5.3.7. Single file output<a class="headerlink" href="#single-file-output" title="Permalink to this headline">¶</a></h2>
+<p><font size=-1 color="#8C4112">ATHENA</font> has some <a class="reference external" href="etc.html">fancy plots</a> hardwired.
+reproducing these plots in another plotting program using
+<font size=-1 color="#8C4112">ATHENA</font>'s <a class="reference external" href="../output/columns.html">column output files</a>
+can be tricky.</p>
+<p>To make it easier to reproduce plots made by <font size=-1 color="#8C4112">ATHENA</font>, there
+is an option to export the content of a plot to a single column data
+file.  This is enabled by toggling the <kbd class="light">Save next plot to a
+file</kbd> button shown in <a class="reference internal" href="#fig-plottlsf"><span>Fig. 5.10</span></a>.</p>
+<p>When toggled on, the next plot made will directed to a file rather
+than to the screen and you will be prompted for the name of the output
+file.  Any y-axis shifts or scaling factors will be included in the
+data written to that column data file.  Using the data from that file,
+stacked plots like <a class="reference internal" href="#fig-stacked"><span>Fig. 5.7</span></a>, k123 plots like
+<a class="reference internal" href="etc.html#fig-k123plot"><span>Fig. 5.18</span></a>, and others can be reproduced easily.</p>
+<p>Once the single file output is written, the <kbd class="light">Save next plot to
+a file</kbd> button will toggle off. The nextplot that is made will
+be directed again to the screen.</p>
+<p>Note that single file output will not include <a class="reference external" href="../bkg/norm.html#the-normalization-algorithm">plot markers</a> or <a class="reference external" href="#indicators">indicators</a>, nor can it be used to reproduce all four panels at
+once of a quad (<a class="reference internal" href="etc.html#fig-quadplot"><span>Fig. 5.15</span></a>) or bi-quad
+(<a class="reference internal" href="etc.html#fig-biquadplot"><span>Fig. 5.20</span></a>) plot.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pallas_athene_thumb.png" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and background removal</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">5. Plotting Your Data</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tabs.html">5.1. Plotting space tabs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="krange.html">5.2. Spectral resolution and k-range</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">5.3. Other plotting options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="params.html">5.4. Group specific plot parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="etc.html">5.5. Special plots for XAS data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/plot/other.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="params.html" title="5.4. Group specific plot parameters"
+             >next</a></li>
+        <li class="right" >
+          <a href="krange.html" title="5.2. Spectral resolution and k-range"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >5. Plotting Your Data</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

@@ -26,10 +26,10 @@
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
     <link rel="top" title="Athena 0.9.24 documentation" href="../index.html" />
     <link rel="up" title="3. Data import" href="index.html" />
-    <link rel="next" title="4. Normalization and the AUTOBK Algorithm" href="../bkg/index.html" />
+    <link rel="next" title="4. Normalization and background removal" href="../bkg/index.html" />
     <link rel="prev" title="3.4. Reference channel" href="ref.html" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
     <link rel="stylesheet" type="text/css" href="../_static/program.css" />
 
@@ -39,11 +39,8 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../bkg/index.html" title="4. Normalization and the AUTOBK Algorithm"
-             accesskey="N">next</a> |</li>
+          <a href="../bkg/index.html" title="4. Normalization and background removal"
+             accesskey="N">next</a></li>
         <li class="right" >
           <a href="ref.html" title="3.4. Reference channel"
              accesskey="P">previous</a> |</li>
@@ -59,7 +56,7 @@
             
   <div class="section" id="preprocessing-data">
 <span id="preprocessing-sec"></span><h1>3.5. Preprocessing data<a class="headerlink" href="#preprocessing-data" title="Permalink to this headline">¶</a></h1>
-<p>There are a number of other operations that <font size=-1 color="#033B0A">ATHENA</font> can
+<p>There are a number of other operations that <font size=-1 color="#8C4112">ATHENA</font> can
 perform on your data as it is imported. These are found in the other
 tabs on the bottom left of the column selection dialog. Note that all
 of the pre-processing chores discussed here can also be performed on
@@ -73,21 +70,21 @@ and integrations of the detector signals are stored in intervals. The
 length of these intervals and the slewing speed of the monochromator
 determine the energy width of each measurement bin. Typically these
 measurement parameters are chosen to provide adequate resolution through
-the edge -- typically a third or a half of an electron volt. This
+the edge – typically a third or a half of an electron volt. This
 results in data that are vastly over-sampled in the EXAFS region. To
 improve the statistics in the EXAFS region and to make the data arrays
 smaller, it is useful to rebin the data. This process uses a boxcar
 averaging to place the evenly spaced quick scan data onto a typical
 EXAFS grid. That grid is usually something like 10 eV in the pre-edge,
-0.5 eV through the edge, and 0.05 Å<sup>-1</sup> in the EXAFS region.</p>
+0.5 eV through the edge, and 0.05 Å <sup>-1</sup> in the EXAFS region.</p>
 <p>In this screenshot, I have imported some data on a uranyl compound
 measured in quick scan mode:</p>
 <div class="figure align-center" id="id1">
-<span id="fig-rebin"></span><a class="reference external image-reference" href="../_images/import_rebin.png"><img alt="../_images/import_rebin.png" src="../_images/import_rebin.png" style="width: 65%;" /></a>
-<p class="caption"><span class="caption-number">Fig. 3.13 </span><span class="caption-text">Rebinning data on the fly as it is imported using the column
+<span id="fig-rebin"></span><a class="reference external image-reference" href="../_images/import_rebin.png"><img alt="../_images/import_rebin.png" src="../_images/import_rebin.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 3.14 </span><span class="caption-text">Rebinning data on the fly as it is imported using the column
 selection dialog.</span></p>
 </div>
-<p>At this stage, <font size=-1 color="#033B0A">ATHENA</font> has not examined the data closely
+<p>At this stage, <font size=-1 color="#8C4112">ATHENA</font> has not examined the data closely
 enough to have guessed what edge you are measuring, so you must
 specify the element symbol of the absorbing atom. The remaining
 numeric parameters define the grid onto which these data will be
@@ -95,9 +92,9 @@ rebinned. The first two numbers define the boundaries of the edge
 region in energy, the third defines the size of the grid in the
 pre-edge, the fourth defines the size of the grid through the edge,
 and the last defines the grid in wavenumber in the EXAFS region.</p>
-<p><font size=-1 color="#033B0A">ATHENA</font> will remember the values of these parameters between
+<p><font size=-1 color="#8C4112">ATHENA</font> will remember the values of these parameters between
 data sets.  However, the default is to turn off rebinning for each new
-data set.  Therefor you must click to the rebinning tab for every data
+data set.  Therefore you must click to the rebinning tab for every data
 set you import, and click on the <span class="guilabel">Perform rebinning</span> check
 button. When you import multiple data sets, though, rebinning will be
 performed on each one without intervention according to the normal
@@ -105,15 +102,15 @@ rules of multiple data set import.</p>
 </div>
 <div class="section" id="other-pre-processing-chores">
 <h2>3.5.2. Other pre-processing chores<a class="headerlink" href="#other-pre-processing-chores" title="Permalink to this headline">¶</a></h2>
-<p><img alt="lightning!" src="../_static/lightning.png" align="left" hspace="5"></a> This tab provides controls for a number of other
+<p><img alt="lightning" title="This is material a skilled user should know" src="../_static/lightning.png" hspace="3"></a> This tab provides controls for a number of other
 things that can be done with your data as it is imported. The first
-one -- marking -- can be performed even on the first data set
+one – marking – can be performed even on the first data set
 imported. The other two require that a standard be specified. The menu
 at the top of the tab contains every item from the group list. The one
 specified in that menu is the standard.</p>
 <div class="figure align-center" id="id2">
-<span id="fig-preproc"></span><a class="reference external image-reference" href="../_images/import_preproc.png"><img alt="../_images/import_preproc.png" src="../_images/import_preproc.png" style="width: 65%;" /></a>
-<p class="caption"><span class="caption-number">Fig. 3.14 </span><span class="caption-text">Pre-processing data as it is imported using the file selection dialog.</span></p>
+<span id="fig-preproc"></span><a class="reference external image-reference" href="../_images/import_preproc.png"><img alt="../_images/import_preproc.png" src="../_images/import_preproc.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 3.15 </span><span class="caption-text">Pre-processing data as it is imported using the file selection dialog.</span></p>
 </div>
 <p>Here are descriptions of each of the pre-processing chores, seen in the
 image above:</p>
@@ -133,7 +130,7 @@ in the auto-alignment.</dd>
 <dd>If this is selected, all parameters (except for <tt><font color="#387A38">«eshift»</font></tt>) will be
 <a class="reference external" href="../params/constrain.html">set to the values of the standard</a>.</dd>
 </dl>
-<p>The pre-processing tab is one of <font size=-1 color="#033B0A">ATHENA</font>'s genuine power
+<p>The pre-processing tab is one of <font size=-1 color="#8C4112">ATHENA</font>'s genuine power
 features. With a bit of forethought, most of your data processing can
 be performed automatically. I typically import one data file and
 carefully calibrate it and set its various parameters. Having done
@@ -144,10 +141,10 @@ in. This kind of time saver is of particular value at the beam line.</p>
 
 <br>
 <hr class="docutils" />
-<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
-copyright © 2015 Bruce Ravel</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
 <p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
-<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
 consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
 </div>
 </div>
@@ -173,27 +170,33 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l2 current"><a class="current reference internal" href="">3.5. Preprocessing data</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and background removal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
-<h3>Links</h3>
+<h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -225,11 +228,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../bkg/index.html" title="4. Normalization and the AUTOBK Algorithm"
-             >next</a> |</li>
+          <a href="../bkg/index.html" title="4. Normalization and background removal"
+             >next</a></li>
         <li class="right" >
           <a href="ref.html" title="3.4. Reference channel"
              >previous</a> |</li>
@@ -238,7 +238,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

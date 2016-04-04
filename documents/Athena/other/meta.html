@@ -29,7 +29,7 @@
     <link rel="next" title="11.2. Project journal" href="journal.html" />
     <link rel="prev" title="11. Other main window chores" href="index.html" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
     <link rel="stylesheet" type="text/css" href="../_static/program.css" />
 
@@ -39,11 +39,8 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
           <a href="journal.html" title="11.2. Project journal"
-             accesskey="N">next</a> |</li>
+             accesskey="N">next</a></li>
         <li class="right" >
           <a href="index.html" title="11. Other main window chores"
              accesskey="P">previous</a> |</li>
@@ -61,13 +58,15 @@
 <h1>11.1. File metadata<a class="headerlink" href="#file-metadata" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="tracking-the-data-about-your-data">
 <h2>11.1.1. Tracking the data about your data<a class="headerlink" href="#tracking-the-data-about-your-data" title="Permalink to this headline">¶</a></h2>
-<p>Since version 0.9.21, <font size=-1 color="#033B0A">ATHENA</font> has supported import and
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.21: </span><font size=-1 color="#8C4112">ATHENA</font> has supported import and
 export of metadata using the <a class="reference external" href="https://github.com/XraySpectroscopy/XAS-Data-Interchange">XAS Data Interchange (XDI) specification</a>.</p>
+</div>
 <p>When metadata can be gleaned from the file you import, it will be stored
-in the <font size=-1 color="#033B0A">ATHENA</font> project file and used to make the header portion of any
-output files written by <font size=-1 color="#033B0A">ATHENA</font>.</p>
+in the <font size=-1 color="#8C4112">ATHENA</font> project file and used to make the header portion of any
+output files written by <font size=-1 color="#8C4112">ATHENA</font>.</p>
 <p>There are three categories of information displayed in
-<font size=-1 color="#033B0A">ATHENA</font>'s metadata display tool. At the top is versioning
+<font size=-1 color="#8C4112">ATHENA</font>'s metadata display tool. At the top is versioning
 information about the XDI specification as well versioning information
 for any data acquisition or analysis software that has touched the
 data.</p>
@@ -79,24 +78,24 @@ software that has touched the data.</p>
 associated with the file that has meaning to the user but which does not
 fit neatly into semantic groupings.</p>
 <div class="figure align-center" id="id1">
-<span id="fig-metadata"></span><a class="reference external image-reference" href="../_images/metadata.png"><img alt="../_images/metadata.png" src="../_images/metadata.png" style="width: 65%;" /></a>
+<span id="fig-metadata"></span><a class="reference external image-reference" href="../_images/metadata.png"><img alt="../_images/metadata.png" src="../_images/metadata.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 11.2 </span><span class="caption-text">The metadata display tool.</span></p>
 </div>
 <p>If the input data file is in the XDI format, all metadata and all user
-comments will be stored by <font size=-1 color="#033B0A">ATHENA</font> and displayed in this tool.</p>
+comments will be stored by <font size=-1 color="#8C4112">ATHENA</font> and displayed in this tool.</p>
 <p>Because XDI is a new standard that has not yet been widely adopted,
-<font size=-1 color="#033B0A">ATHENA</font> provides a plugin mechanism whereby an input data
+<font size=-1 color="#8C4112">ATHENA</font> provides a plugin mechanism whereby an input data
 file can be parsed for metadata as it is imported. This parsing is a
 beamline-specific chore, thus plugins are written which are tailored
 to the data files written as particular beamlines. The selection of
-beamline plugins is limited at this time. <font size=-1 color="#033B0A">DEMETER</font> ships
+beamline plugins is limited at this time. <font size=-1 color="#8C4112">DEMETER</font> ships
 with one plugin for several XAS beamlines at NSLS (many of the XAS
 beamlines at NSLS use the same data acquisition software) and another
 for the beamlines at Sector 10 at the APS.</p>
 <p>The image above shows an example of the NSLS beamline plugin. The data
 displayed in that image are from NSLS beamline X23A2. The metadata was
 either gleaned from the data file or from a small database of facility
-and beamline metadata that comes with <font size=-1 color="#033B0A">DEMETER</font>.</p>
+and beamline metadata that comes with <font size=-1 color="#8C4112">DEMETER</font>.</p>
 <p>Two pieces of metadata will always be displayed in the metadata viwewer,
 <code class="docutils literal"><span class="pre">Element.symbol</span></code> and <code class="docutils literal"><span class="pre">Element.edge</span></code>. These are two pieces of
 metadata that are required elements of the XDI specification. The
@@ -106,7 +105,7 @@ of the Cr K edge and the Ba L<sub>I</sub> edge are both 5989 eV. Without
 identification of the species of the absorbing atom and of the
 absorption edge measured, some data cannot cannot be unambiguously
 identified.</p>
-<p>Since <font size=-1 color="#033B0A">ATHENA</font> always attempts to determine those two pieces of
+<p>Since <font size=-1 color="#8C4112">ATHENA</font> always attempts to determine those two pieces of
 information for any data, those two are always available for display in
 the viewer.</p>
 </div>
@@ -115,7 +114,7 @@ the viewer.</p>
 <p>This tool is not particularly interactive. Metadata is typically
 inserted into a file by a data acquisition or analysis program and is
 not intended to be altered by the user. The one exception is the user
-comments area. In <font size=-1 color="#033B0A">ATHENA</font>, this is a normal text editing
+comments area. In <font size=-1 color="#8C4112">ATHENA</font>, this is a normal text editing
 control into which you can type whatever you want. The contents of
 this control will be saved as user comments when the <kbd class="light">Save
 comments</kbd> button is pressed.</p>
@@ -123,15 +122,15 @@ comments</kbd> button is pressed.</p>
 <div class="section" id="beamline-plugins">
 <h2>11.1.3. Beamline plugins<a class="headerlink" href="#beamline-plugins" title="Permalink to this headline">¶</a></h2>
 <p>Metadata can extracted from any data file so long as a beamline plugin
-has been written. The plugin is contained in a <code class="docutils literal"><span class="pre">.pm</span></code> file in the
-<code class="docutils literal"><span class="pre">Plugins/Beamlines/</span></code> folder of the <font size=-1 color="#033B0A">DEMETER</font>
+has been written. The plugin is contained in a <code class="file docutils literal"><span class="pre">.pm</span></code> file in the
+<code class="file docutils literal"><span class="pre">Plugins/Beamlines/</span></code> folder of the <font size=-1 color="#8C4112">DEMETER</font>
 installation. This is a piece of perl code which performs the
 following chores:</p>
 <ol class="arabic simple">
 <li>Very quickly recognize whether a file comes from the
 beamline. Speed is essential as every file will be checked
 sequentially against every beamline plugin. If a beamline plugin is
-slow to determine this, then the use of <font size=-1 color="#033B0A">ATHENA</font> or other
+slow to determine this, then the use of <font size=-1 color="#8C4112">ATHENA</font> or other
 applications will be noticeably affected.</li>
 <li>Recognize semantic content from the file header. Where possible, map
 this content onto defined XDI headers. Other semantic content is
@@ -140,27 +139,27 @@ the XDAC data acquisition program is placed into the XDAC family,
 which other metadata is placed into families defined in the XDI
 specification.</li>
 <li>Add versioning information for the data acquisition program into the
-<code class="docutils literal"><span class="pre">XDI</span> <span class="pre">extra\_version</span></code> attribute. In the example above, the data file was
+<code class="docutils literal"><span class="pre">XDI</span> <span class="pre">extra_version</span></code> attribute. In the example above, the data file was
 collected using version 1.4 of XDAC, so the string “XDAC/1.4” is
 placed among the applications.</li>
 </ol>
-<p><font size=-1 color="#033B0A">DEMETER</font> also has a small database of metadata related to
-specific beamlines. This is found in the <code class="docutils literal"><span class="pre">share/xdi/</span></code> folder of the
-<font size=-1 color="#033B0A">DEMETER</font> installation. Each of the files in that folder is a
-short .ini file containined common information about facilities and
-beamlines. Much of the metadata shown above actually came from the
+<p><font size=-1 color="#8C4112">DEMETER</font> also has a small database of metadata related to
+specific beamlines. This is found in the <code class="file docutils literal"><span class="pre">share/xdi/</span></code> folder of
+the <font size=-1 color="#8C4112">DEMETER</font> installation. Each of the files in that folder
+is a short .ini file containined common information about facilities
+and beamlines. Much of the metadata shown above actually came from the
 .ini file for NSLS beamline X23A2.</p>
-<p>To add new beamlines to this part of <font size=-1 color="#033B0A">ATHENA</font>, it is necessary to write
-the plugin and the corresponding .ini file.</p>
+<p>To add new beamlines to this part of <font size=-1 color="#8C4112">ATHENA</font>, it is
+necessary to write the plugin and the corresponding .ini file.</p>
 
 <br>
 
 <br>
 <hr class="docutils" />
-<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
-copyright © 2015 Bruce Ravel</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
 <p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
-<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
 consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
 </div>
 </div>
@@ -179,13 +178,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and background removal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">11. Other main window chores</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="">11.1. File metadata</a></li>
 <li class="toctree-l2"><a class="reference internal" href="journal.html">11.2. Project journal</a></li>
@@ -196,16 +195,22 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
-<h3>Links</h3>
+<h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -237,11 +242,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
           <a href="journal.html" title="11.2. Project journal"
-             >next</a> |</li>
+             >next</a></li>
         <li class="right" >
           <a href="index.html" title="11. Other main window chores"
              >previous</a> |</li>
@@ -250,7 +252,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

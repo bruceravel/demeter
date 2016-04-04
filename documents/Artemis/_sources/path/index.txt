@@ -10,15 +10,16 @@ In this chapter, the method for associating paths with data sets is
 explained. We will also see how to begin constructing a fitting model.
 
 Shown below is the Data window, `which we have already seen
-<../data.html>`__, with some data from a gold foil already imported. I
-have passed the cursor over the active text which says
-:guilabel:`Import crystal data or a Feff calculation`. Clicking will
-open the standard file selection dialog, prompting you for an
-:file:`atoms.inp`, :file:`feff.inp` or CIF file. The same thing can be
-done by clicking the :button:`Add,light` button above the
-:guilabel:`Feff` list in the Main window, by selecting
-:menuselection:`File --> Open project of data` in the Main window, or
-by using the :button:`Control`-:button:`o` keyboard shortcut.
+<../data.html>`__, with some data from a gold foil already imported.
+I have passed the cursor over the active text which says
+:guilabel:`Import crystal data or a Feff calculation`.
+:mark:`leftclick,..` Clicking will open the standard file selection
+dialog, prompting you for an :file:`atoms.inp`, :file:`feff.inp` or
+CIF file.  The same thing can be done by clicking the
+:button:`Add,light` button above the :guilabel:`Feff` list in the Main
+window, by selecting :menuselection:`File --> Open project of data` in
+the Main window, or by using the :button:`Control`-:button:`o`
+keyboard shortcut.
 
 .. _fig-pathempty:
 .. figure:: ../../_images/path-empty.png
@@ -57,8 +58,9 @@ Running :demeter:`atoms` then :demeter:`feff` results in this path list:
 
    The path list for the gold metal calculation.
 
-By clicking on path :guilabel:`0000` in the list then shift-clicking
-on path :guilabel:`0012`, the first 13 paths are selected
+By :mark:`leftclick,..` clicking on path :guilabel:`0000` in the list
+then shift-:mark:`leftclick,..` clicking on path :guilabel:`0012`, the
+first 13 paths are selected
 
 .. _fig-pathselected:
 .. figure:: ../../_images/path-selected.png
@@ -67,11 +69,11 @@ on path :guilabel:`0012`, the first 13 paths are selected
 
    The first 13 paths have been selected.
 
-Now click on any of the selected paths. While holding down the left
-mouse button, drag those paths over to the right side of the Data window
-and drop them by releasing the mouse button. This will place all 13 of
-those paths in the path list on the Data window containing the data on
-the gold foil.
+Now :mark:`leftclick,..` click on any of the selected paths. While
+holding down the left mouse button, drag those paths over to the right
+side of the Data window and drop them by releasing the mouse
+button. This will place all 13 of those paths in the path list on the
+Data window containing the data on the gold foil.
 
 .. _fig-pathpopulated:
 .. figure:: ../../_images/path-populated.png

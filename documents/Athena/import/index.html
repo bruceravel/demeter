@@ -28,7 +28,7 @@
     <link rel="next" title="3.1. Column selection dialog" href="columns.html" />
     <link rel="prev" title="2. Introduction to ATHENA" href="../intro.html" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
     <link rel="stylesheet" type="text/css" href="../_static/program.css" />
 
@@ -38,11 +38,8 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
           <a href="columns.html" title="3.1. Column selection dialog"
-             accesskey="N">next</a> |</li>
+             accesskey="N">next</a></li>
         <li class="right" >
           <a href="../intro.html" title="2. Introduction to ATHENA"
              accesskey="P">previous</a> |</li>
@@ -57,31 +54,31 @@
             
   <div class="section" id="data-import">
 <h1>3. Data import<a class="headerlink" href="#data-import" title="Permalink to this headline">¶</a></h1>
-<p><font size=-1 color="#033B0A">ATHENA</font> is very versatile in how she reads in data
+<p><font size=-1 color="#8C4112">ATHENA</font> is very versatile in how she reads in data
 files. Pretty much any data in the form of columns of numbers can be
-successfully read. With a few exceptions, <font size=-1 color="#033B0A">ATHENA</font> relies
-upon <font size=-1 color="#033B0A">IFEFFIT</font>'s <code class="docutils literal"><span class="pre">read_data()</span></code> command to handle the
-details of data import. <font size=-1 color="#033B0A">IFEFFIT</font> is clever about recognizing
+successfully read. With a few exceptions, <font size=-1 color="#8C4112">ATHENA</font> relies
+upon <font size=-1 color="#8C4112">IFEFFIT</font>'s <code class="docutils literal"><span class="pre">read_data()</span></code> command to handle the
+details of data import. <font size=-1 color="#8C4112">IFEFFIT</font> is clever about recognizing
 which part of a file is columns of numbers and which part is not. In
 the following, I'll explain how the <code class="docutils literal"><span class="pre">read_data()</span></code> command interprets
-files, explain the limits on its and <font size=-1 color="#033B0A">ATHENA</font>'s abilities to
+files, explain the limits on its and <font size=-1 color="#8C4112">ATHENA</font>'s abilities to
 interpret a data file, and discuss the kinds of manipulations of data
-that can and cannot be performed by <font size=-1 color="#033B0A">ATHENA</font> as data are
+that can and cannot be performed by <font size=-1 color="#8C4112">ATHENA</font> as data are
 imported.</p>
-<p><font size=-1 color="#033B0A">ATHENA</font> expects data of one of a few types. Column data in
+<p><font size=-1 color="#8C4112">ATHENA</font> expects data of one of a few types. Column data in
 which the columns represent such things as the energy grid and the
 scalars measured during the experiment are the most common sort of
-data that most people use import into
-<font size=-1 color="#033B0A">ATHENA</font>. <font size=-1 color="#033B0A">ATHENA</font>'s column selection dialog is used
-to convert the raw scalars into μ(E) data. Other common kinds of
-data files that might be read into <font size=-1 color="#033B0A">ATHENA</font> are files that
-contain μ(E) or χ(k) data in columns or the output files from
-Feff, <code class="file docutils literal"><span class="pre">xmu.dat</span></code> and <code class="file docutils literal"><span class="pre">chi.dat</span></code>.</p>
-<p>Here is an example of a data file that will make <font size=-1 color="#033B0A">ATHENA</font> as
-happy as can be. There are some header lines, followed by a line of
+data that most people use import into <font size=-1 color="#8C4112">ATHENA</font>.
+<font size=-1 color="#8C4112">ATHENA</font>'s column selection dialog is used to convert the raw
+scalars into μ(E) data. Other common kinds of data files that
+might be read into <font size=-1 color="#8C4112">ATHENA</font> are files that contain μ(E)
+or χ(k) data in columns or the output files from <font size=-1 color="#8C4112">FEFF</font>,
+<code class="file docutils literal"><span class="pre">xmu.dat</span></code> and <code class="file docutils literal"><span class="pre">chi.dat</span></code>.</p>
+<p>Here is an example of a data file that will make <font size=-1 color="#8C4112">ATHENA</font>
+quite happy. There are some header lines, followed by a line of
 dashes, followed by a line of column labels, followed by lines
 containing columns of data.</p>
-<div class="highlight-python"><div class="highlight"><pre># X15B  project: MT 9/23/04
+<div class="highlight-python"><div class="highlight"><pre><span></span># X15B  project: MT 9/23/04
 # original file: STD1.001
 # unpacked from original data as a sequence of 4-byte floats
 # -----------------------------------------------------------
@@ -93,16 +90,16 @@ containing columns of data.</p>
   ... etc ...
 </pre></div>
 </div>
-<p>In this example of a perfectly formatted file, the header lines, the
-line of dashes, and the column labels line are all preceded by a hash
-(<code class="docutils literal"><span class="pre">#</span></code>) mark. <font size=-1 color="#033B0A">IFEFFIT</font> is thus able to recognize these as
-header lines. Since <font size=-1 color="#033B0A">IFEFFIT</font> recognizes them as such,
-<font size=-1 color="#033B0A">ATHENA</font> will store them in the project along with the
+<p>In this example of a well formatted file, the header lines, the line
+of dashes, and the column labels line are all preceded by a hash
+(<code class="docutils literal"><span class="pre">#</span></code>) mark. <font size=-1 color="#8C4112">IFEFFIT</font> is thus able to recognize these as
+header lines. Since <font size=-1 color="#8C4112">IFEFFIT</font> recognizes them as such,
+<font size=-1 color="#8C4112">ATHENA</font> will store them in the project along with the
 data. Because there is a line of dashes and because it is followed
-immediately by column labels, <font size=-1 color="#033B0A">ATHENA</font> is able to use these
+immediately by column labels, <font size=-1 color="#8C4112">ATHENA</font> is able to use these
 labels in the column selection dialog. A few other common US keyboard
-symbols, such as <code class="docutils literal"><span class="pre">%</span></code> or <code class="docutils literal"><span class="pre">\*</span></code>, will also be understood as marking header
-lines.</p>
+symbols, such as <code class="docutils literal"><span class="pre">%</span></code> or <code class="docutils literal"><span class="pre">\*</span></code>, will also be understood as marking
+header lines.</p>
 <p>The numbers in the columns can be integers, floats (such as <code class="docutils literal"><span class="pre">1.234</span></code>,
 <code class="docutils literal"><span class="pre">-1.234</span></code>, .<code class="docutils literal"><span class="pre">1234</span></code> or <code class="docutils literal"><span class="pre">-.1234</span></code>), or exponentials (such as
 <code class="docutils literal"><span class="pre">1.23e45</span></code> or <code class="docutils literal"><span class="pre">-1.23E-45</span></code>). Anything interpretable as a number in the
@@ -110,24 +107,24 @@ C programming language will be interpretable in this context. The
 columns of numbers go to the end of the file. There is no text following
 the data.</p>
 <p>When data is recorded as described above, it will be fully utilized by
-<font size=-1 color="#033B0A">ATHENA</font>. The headers will be recorded, the column labels will be used,
-the data will be interpreted. <font size=-1 color="#033B0A">ATHENA</font> can, however, accommodate
+<font size=-1 color="#8C4112">ATHENA</font>. The headers will be recorded, the column labels will be used,
+the data will be interpreted. <font size=-1 color="#8C4112">ATHENA</font> can, however, accommodate
 significant deviation from the format described above.</p>
 <ul class="simple">
 <li>If the header lines are not marked by a # or some other recognizable
-marking character, <font size=-1 color="#033B0A">IFEFFIT</font> will not be able to recognize headers or
+marking character, <font size=-1 color="#8C4112">IFEFFIT</font> will not be able to recognize headers or
 column labels. As long as no text follows the data, the columns will
 still be understood as columns of data and the data can be imported
-by <font size=-1 color="#033B0A">ATHENA</font>.</li>
+by <font size=-1 color="#8C4112">ATHENA</font>.</li>
 <li>If the line of dashes is missing, again the headers and column labels
 will not be recognized, but the columns of data will be.</li>
 <li>If no headers are in the file, the columns of data will still be
 understood as data.</li>
 </ul>
-<p><font size=-1 color="#033B0A">ATHENA</font> expects that the data are recorded as a function of energy and
+<p><font size=-1 color="#8C4112">ATHENA</font> expects that the data are recorded as a function of energy and
 that one of the columns contains energy values. The assumption is that
 the first column is the energy column, but that can be changed in the
-column selection dialog. <font size=-1 color="#033B0A">ATHENA</font> works in eV. If data are recorded in
+column selection dialog. <font size=-1 color="#8C4112">ATHENA</font> works in eV. If data are recorded in
 keV, there is a menu in the column selection dialog that must be set
 accordingly.</p>
 <p>Here are some operations that can be performed as data is imported.</p>
@@ -152,19 +149,19 @@ linear detector.</li>
 <li>Conversion of data in a binary format</li>
 <li>Dead-time corrections using columns from the data file.</li>
 <li>Any math expression more complicated than sums of columns in the
-numerator and denominator, e.g. plugins allow you to multiply the If
-column by 7 and divide by the sine of the I0 column, if that's what
-you really want.</li>
+numerator and denominator, e.g. plugins allow you to multiply the
+I<sub>f</sub> column by 7 and divide by the sine of the I<sub>0</sub>
+column, if that's what you really want.</li>
 </ol>
 <p>If some of the criteria for the data file format are not met, for
 example if there is text following the data columns or if you need to
 perform one of the operations not yet supported, you will need to
-process you data before trying to import into <font size=-1 color="#033B0A">ATHENA</font>.</p>
-<p>There are examples of data files that <font size=-1 color="#033B0A">ATHENA</font> will process
-before sending off to <font size=-1 color="#033B0A">IFEFFIT</font> for import. An example is the
+process you data before trying to import into <font size=-1 color="#8C4112">ATHENA</font>.</p>
+<p>There are examples of data files that <font size=-1 color="#8C4112">ATHENA</font> will process
+before sending off to <font size=-1 color="#8C4112">IFEFFIT</font> for import. An example is the
 data file format from beamline X10C at NSLS. Files from that beamline
-cannot be imported as written by <font size=-1 color="#033B0A">IFEFFIT</font>'s <code class="docutils literal"><span class="pre">read_data()</span></code>
-command. <font size=-1 color="#033B0A">ATHENA</font> will recognize such a file and process it
+cannot be imported as written by <font size=-1 color="#8C4112">IFEFFIT</font>'s <code class="docutils literal"><span class="pre">read_data()</span></code>
+command. <font size=-1 color="#8C4112">ATHENA</font> will recognize such a file and process it
 as needed before importing it. This can be done with other
 beamlines. You should contact Bruce if you are the beamline scientist
 or a frequent user of some beamline which writes data in a way that
@@ -172,20 +169,21 @@ or a frequent user of some beamline which writes data in a way that
 <p>As a final comment, I would encourage beamline scientists and the
 authors of data acquisition software to consider their users when
 designing data file formats. While I certainly will not say that
-beamlines should be required to accommodate <font size=-1 color="#033B0A">ATHENA</font> or even
-that beamline staff have any obligation to recommend <font size=-1 color="#033B0A">ATHENA</font>
-to their users, the truth is that <font size=-1 color="#033B0A">ATHENA</font> is becoming an
-increasingly common tool in the EXAFS community. The format that best
-serves <font size=-1 color="#033B0A">ATHENA</font> is actually a fine format that can be
-imported by a very wide variety of EXAFS software, plotting software,
-spreadsheets, and other programs. It's a good format and your users
-would be well served by your adopting it.</p>
+beamlines should be required to accommodate <font size=-1 color="#8C4112">ATHENA</font> or even
+that beamline staff have any obligation to recommend <font size=-1 color="#8C4112">ATHENA</font>
+to their users, the truth is that <font size=-1 color="#8C4112">ATHENA</font> is widely used in
+the XAS community.  A format that serves <font size=-1 color="#8C4112">ATHENA</font> well is
+likely a fine format that can be imported by a very wide variety of
+XAS software, plotting software, spreadsheets, and other programs.
+Your users would be well served by your adopting it.</p>
+<hr class="docutils" />
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="columns.html">3.1. Column selection dialog</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="columns.html#converting-raw-data-to-mu-e">3.1.1. Converting raw data to mu(E)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="columns.html#data-types-and-energy-units">3.1.2. Data types and energy units</a></li>
 <li class="toctree-l2"><a class="reference internal" href="columns.html#multi-element-detector-data">3.1.3. Multi-element detector data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="columns.html#other-controls">3.1.4. Other controls</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="projsel.html">3.2. Project selection dialog</a></li>
@@ -203,10 +201,10 @@ would be well served by your adopting it.</p>
 
 <br>
 <hr class="docutils" />
-<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
-copyright © 2015 Bruce Ravel</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
 <p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
-<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
 consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
 </div>
 
@@ -231,27 +229,33 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l2"><a class="reference internal" href="preproc.html">3.5. Preprocessing data</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and background removal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
-<h3>Links</h3>
+<h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -283,11 +287,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
           <a href="columns.html" title="3.1. Column selection dialog"
-             >next</a> |</li>
+             >next</a></li>
         <li class="right" >
           <a href="../intro.html" title="2. Introduction to ATHENA"
              >previous</a> |</li>
@@ -295,7 +296,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

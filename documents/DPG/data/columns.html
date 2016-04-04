@@ -56,29 +56,40 @@
             
   <div class="section" id="column-data-files">
 <h1>2.3. Column data files<a class="headerlink" href="#column-data-files" title="Permalink to this headline">¶</a></h1>
-<p>The most common situation for data import involves raw data from a
-beamline. In this case, <font size=-1 color="#8C4112">DEMETER</font> assumes that your data are
-in columns, that one of the columns represents energy, and that two or
+<p>A common situation for data import involves raw data from a beamline.
+In this case, <font size=-1 color="#8C4112">DEMETER</font> assumes that your data are in
+columns, that one of the columns represents energy, and that two or
 more of the remaining columns represent signals on the various
-detectors. You must explicitly specify which column is which when you
+detectors.  You must explicitly specify which column is which when you
 define the Data object.</p>
 <div class="section" id="transmission-data">
 <h2>2.3.1. Transmission data<a class="headerlink" href="#transmission-data" title="Permalink to this headline">¶</a></h2>
 <p>This first example is for a file containing transmission XAS data:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
-<span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+<div class="highlight-perl"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
+ <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
-<span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">file</span>        <span class="o">=&gt;</span> <span class="s">&quot;data/fe.060.dat&quot;</span><span class="p">,</span>
-             <span class="n">name</span>        <span class="o">=&gt;</span> <span class="s">&#39;Fe 60K&#39;</span><span class="p">,</span>
-             <span class="n">energy</span>      <span class="o">=&gt;</span> <span class="s">&#39;$1&#39;</span><span class="p">,</span> <span class="c1"># column 1 is energy</span>
-             <span class="n">numerator</span>   <span class="o">=&gt;</span> <span class="s">&#39;$2&#39;</span><span class="p">,</span> <span class="c1"># column 2 is I0</span>
-             <span class="n">denominator</span> <span class="o">=&gt;</span> <span class="s">&#39;$3&#39;</span><span class="p">,</span> <span class="c1"># column 3 is It</span>
-             <span class="n">ln</span>          <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>    <span class="c1"># these are transmission data</span>
-            <span class="p">);</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;E&#39;</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
+ <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">file</span>        <span class="o">=&gt;</span> <span class="s">&quot;data/fe.060.dat&quot;</span><span class="p">,</span>
+              <span class="n">name</span>        <span class="o">=&gt;</span> <span class="s">&#39;Fe 60K&#39;</span><span class="p">,</span>
+              <span class="n">energy</span>      <span class="o">=&gt;</span> <span class="s">&#39;$1&#39;</span><span class="p">,</span> <span class="c1"># column 1 is energy</span>
+              <span class="n">numerator</span>   <span class="o">=&gt;</span> <span class="s">&#39;$2&#39;</span><span class="p">,</span> <span class="c1"># column 2 is I0</span>
+              <span class="n">denominator</span> <span class="o">=&gt;</span> <span class="s">&#39;$3&#39;</span><span class="p">,</span> <span class="c1"># column 3 is It</span>
+              <span class="n">ln</span>          <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>    <span class="c1"># these are transmission data</span>
+             <span class="p">);</span>
+ <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;E&#39;</span><span class="p">);</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 <p>The details of how to turn the columns into μ(E) data are given at
 lines 7 to 10. The energy column is identified as the first column in
 the data file. The manner in which the columns are identified,
@@ -92,19 +103,29 @@ having the <code class="docutils literal"><span class="pre">$</span></code> symb
 quotes. Another useful syntax for column speficiation would be to use
 <a class="reference external" href="http://perldoc.perl.org/perlop.html#Quote-and-Quote-like-Operators">the non-interpolating quote operator</a>,
 like so:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
-<span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+<div class="highlight-perl"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
+ <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
-<span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">file</span>        <span class="o">=&gt;</span> <span class="s">&quot;data/fe.060.dat&quot;</span><span class="p">,</span>
-             <span class="n">name</span>        <span class="o">=&gt;</span> <span class="s">&#39;Fe 60K&#39;</span><span class="p">,</span>
-             <span class="n">energy</span>      <span class="o">=&gt;</span> <span class="sx">q{$1}</span><span class="p">,</span> <span class="c1"># column 1 is energy</span>
-             <span class="n">numerator</span>   <span class="o">=&gt;</span> <span class="sx">q{$2}</span><span class="p">,</span> <span class="c1"># column 2 is I0</span>
-             <span class="n">denominator</span> <span class="o">=&gt;</span> <span class="sx">q{$3}</span><span class="p">,</span> <span class="c1"># column 3 is It</span>
-             <span class="n">ln</span>          <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>     <span class="c1"># these are transmission data</span>
-            <span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
+ <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">file</span>        <span class="o">=&gt;</span> <span class="s">&quot;data/fe.060.dat&quot;</span><span class="p">,</span>
+              <span class="n">name</span>        <span class="o">=&gt;</span> <span class="s">&#39;Fe 60K&#39;</span><span class="p">,</span>
+              <span class="n">energy</span>      <span class="o">=&gt;</span> <span class="sx">q{$1}</span><span class="p">,</span> <span class="c1"># column 1 is energy</span>
+              <span class="n">numerator</span>   <span class="o">=&gt;</span> <span class="sx">q{$2}</span><span class="p">,</span> <span class="c1"># column 2 is I0</span>
+              <span class="n">denominator</span> <span class="o">=&gt;</span> <span class="sx">q{$3}</span><span class="p">,</span> <span class="c1"># column 3 is It</span>
+              <span class="n">ln</span>          <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>     <span class="c1"># these are transmission data</span>
+             <span class="p">);</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 <p>Once the file is imported and the column information is given, the Data
 object can be used for other things, such as plotting or using in a fit.
 Using the Data object in various ways will be discussed in later
@@ -114,26 +135,35 @@ sections of the document.</p>
 transmission data, i.e. μ(E)=ln(I<sub>0</sub>/I<sub>t</sub>) . Set to
 0 (or unspecified as zero is the default), the columns will be
 processed as fluorescence data, i.e.  μ(E)=I<sub>f</sub>/I<sub>0</sub>.</p>
-<p>In this example, the I₀ detector is in column 2 of the data file and the
-I<sub>t</sub> detector is in column 3.</p>
+<p>In this example, the I<sub>0</sub> detector is in column 2 of the data
+file and the I<sub>t</sub> detector is in column 3.</p>
 </div>
-<hr class="docutils" />
 <div class="section" id="fluorescence-data">
 <h2>2.3.2. Fluorescence data<a class="headerlink" href="#fluorescence-data" title="Permalink to this headline">¶</a></h2>
 <p>The next example is for a file containing fluorescence XAS data:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
-<span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+<div class="highlight-perl"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
+ <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
-<span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">file</span>        <span class="o">=&gt;</span> <span class="s">&#39;soil.dat&#39;</span><span class="p">,</span>
-             <span class="n">name</span>        <span class="o">=&gt;</span> <span class="s">&#39;dilute soil sample&#39;</span><span class="p">,</span>
-             <span class="n">energy</span>      <span class="o">=&gt;</span> <span class="s">&#39;$1&#39;</span><span class="p">,</span>  <span class="c1"># column 1 is energy</span>
-             <span class="n">numerator</span>   <span class="o">=&gt;</span> <span class="s">&#39;$4&#39;</span><span class="p">,</span>  <span class="c1"># column 4 is If</span>
-             <span class="n">denominator</span> <span class="o">=&gt;</span> <span class="s">&#39;$2&#39;</span><span class="p">,</span>  <span class="c1"># column 2 is I0</span>
-             <span class="n">ln</span>          <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>     <span class="c1"># these are fluorescence data</span>
-            <span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
+ <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">file</span>        <span class="o">=&gt;</span> <span class="s">&#39;soil.dat&#39;</span><span class="p">,</span>
+              <span class="n">name</span>        <span class="o">=&gt;</span> <span class="s">&#39;dilute soil sample&#39;</span><span class="p">,</span>
+              <span class="n">energy</span>      <span class="o">=&gt;</span> <span class="s">&#39;$1&#39;</span><span class="p">,</span>  <span class="c1"># column 1 is energy</span>
+              <span class="n">numerator</span>   <span class="o">=&gt;</span> <span class="s">&#39;$4&#39;</span><span class="p">,</span>  <span class="c1"># column 4 is If</span>
+              <span class="n">denominator</span> <span class="o">=&gt;</span> <span class="s">&#39;$2&#39;</span><span class="p">,</span>  <span class="c1"># column 2 is I0</span>
+              <span class="n">ln</span>          <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>     <span class="c1"># these are fluorescence data</span>
+             <span class="p">);</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 <p>Here the <code class="docutils literal"><span class="pre">ln</span></code> attribute is set to 0 to indicate that these are
 fluorescence data. The <code class="docutils literal"><span class="pre">numerator</span></code> attribute is set to the column
 containing the fluorescence detector and the <code class="docutils literal"><span class="pre">denominator</span></code> attribute
@@ -146,19 +176,29 @@ the columns are set, the Data object is ready for use.</p>
 you will want to sum up the detector channels before dividing by I<sub>0</sub>.
 This is accomplished by adding multiple channels in the <code class="docutils literal"><span class="pre">numerator</span></code>
 attribute:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
-<span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+<div class="highlight-perl"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
+ <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
-<span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">file</span>        <span class="o">=&gt;</span> <span class="s">&#39;soil.dat&#39;</span><span class="p">,</span>
-             <span class="n">name</span>        <span class="o">=&gt;</span> <span class="s">&#39;dilute soil sample&#39;</span><span class="p">,</span>
-             <span class="n">energy</span>      <span class="o">=&gt;</span> <span class="s">&#39;$1&#39;</span><span class="p">,</span>
-             <span class="n">numerator</span>   <span class="o">=&gt;</span> <span class="s">&#39;$4+$5+$6+$7&#39;</span><span class="p">,</span>  <span class="c1"># four fluo channels</span>
-             <span class="n">denominator</span> <span class="o">=&gt;</span> <span class="s">&#39;$2&#39;</span><span class="p">,</span>
-             <span class="n">ln</span>          <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
+ <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">file</span>        <span class="o">=&gt;</span> <span class="s">&#39;soil.dat&#39;</span><span class="p">,</span>
+              <span class="n">name</span>        <span class="o">=&gt;</span> <span class="s">&#39;dilute soil sample&#39;</span><span class="p">,</span>
+              <span class="n">energy</span>      <span class="o">=&gt;</span> <span class="s">&#39;$1&#39;</span><span class="p">,</span>
+              <span class="n">numerator</span>   <span class="o">=&gt;</span> <span class="s">&#39;$4+$5+$6+$7&#39;</span><span class="p">,</span>  <span class="c1"># four fluo channels</span>
+              <span class="n">denominator</span> <span class="o">=&gt;</span> <span class="s">&#39;$2&#39;</span><span class="p">,</span>
+              <span class="n">ln</span>          <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="p">);</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 <p>This will add up the contents of columns 4 through 7 then divide by
 column 2.</p>
 <p>You may also wish to import each channel of the MED into individual Data
@@ -169,28 +209,43 @@ on multichannel data</a>.</p>
 <div class="section" id="preprocessing-column-data-on-the-fly">
 <h2>2.3.4. Preprocessing column data on the fly<a class="headerlink" href="#preprocessing-column-data-on-the-fly" title="Permalink to this headline">¶</a></h2>
 <p>You may have some reason to do a bit of additional processing of the
-columns in the data file. As an example, the <a class="reference external" href="http://cars9.uchicago.edu/iffwiki/FAQ/Data_Handling">data handling section of
-the Ifeffit FAQ</a>
-explains how to import data from the Ferrel Lytle database which were
-recorded as a function of motor position for the monochromator angle.
-For data like thse, it is necessary to convert motor position to energy
-using some knowledge of the monochromator crystal and motor and a few
-fundamental constants. This can be implemented in DEMETER like so:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
-<span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+columns in the data file.  As an example, the <a class="reference external" href="http://cars9.uchicago.edu/iffwiki/FAQ/Data_Handling">data handling section
+of the Ifeffit FAQ</a> explains how
+to import data from the Ferrel Lytle database which were recorded as a
+function of motor position for the monochromator angle.  For data like
+thse, it is necessary to convert motor position to energy using some
+knowledge of the monochromator crystal and motor and a few fundamental
+constants.  This can be implemented in <font size=-1 color="#8C4112">DEMETER</font> like so:</p>
+<div class="highlight-perl"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
+ <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
-<span class="c1">## d-spacing = 1.92017    steps/deg = 4000    hc = 12398.61    rads-&gt;degs = 57.29577951</span>
-<span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">file</span>        <span class="o">=&gt;</span> <span class="s">&quot;lytle.dat&quot;</span><span class="p">,</span>
-             <span class="n">name</span>        <span class="o">=&gt;</span> <span class="s">&#39;Fe 60K&#39;</span><span class="p">,</span>
-             <span class="n">energy</span>      <span class="o">=&gt;</span> <span class="s">&#39;12398.61 / (2*1.92017) / sin($1/(57.29577951*4000))&#39;</span><span class="p">,</span>
-             <span class="n">numerator</span>   <span class="o">=&gt;</span> <span class="s">&#39;$2&#39;</span><span class="p">,</span>
-             <span class="n">denominator</span> <span class="o">=&gt;</span> <span class="s">&#39;$3&#39;</span><span class="p">,</span>
-             <span class="n">ln</span>          <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="p">);</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;E&#39;</span><span class="p">);</span>
+ <span class="c1">## d-spacing = 1.92017    steps/deg = 4000    hc = 12398.61    rads-&gt;degs = 57.29577951</span>
+ <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
+ <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">file</span>        <span class="o">=&gt;</span> <span class="s">&quot;lytle.dat&quot;</span><span class="p">,</span>
+              <span class="n">name</span>        <span class="o">=&gt;</span> <span class="s">&#39;some weird old data&#39;</span><span class="p">,</span>
+              <span class="n">energy</span>      <span class="o">=&gt;</span> <span class="s">&#39;12398.61 / (2*1.92017) / sin($1/(57.29577951*4000))&#39;</span><span class="p">,</span>
+              <span class="n">numerator</span>   <span class="o">=&gt;</span> <span class="s">&#39;$2&#39;</span><span class="p">,</span>
+              <span class="n">denominator</span> <span class="o">=&gt;</span> <span class="s">&#39;$3&#39;</span><span class="p">,</span>
+              <span class="n">ln</span>          <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
+             <span class="p">);</span>
+ <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;E&#39;</span><span class="p">);</span>
 </pre></div>
-</div>
+</td></tr></table></div>
+<p>This example demonstrates why the dollar sign (<code class="docutils literal"><span class="pre">$</span></code>) is needed to
+indicate column number.  Using that sigil allows for <code class="docutils literal"><span class="pre">energy</span></code>,
+<code class="docutils literal"><span class="pre">numerator</span></code>, and <code class="docutils literal"><span class="pre">denominator</span></code> to take math expressions as values.</p>
 <p>As another example, you might wish to do a simple deadtime correction
 for MED data based on the measured input and output count-rates of the
 detectors. This information is often recorded as columns in the data
@@ -201,19 +256,29 @@ accurate measure of the lost count rate in any region of interest (ROI)
 of the detector. Thus the counts in the ROI can be corrected by
 multiplying by the measured input/output ratio. This can be implemented
 for a single channel like so:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
-<span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+<div class="highlight-perl"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
+ <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
-<span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">file</span>        <span class="o">=&gt;</span> <span class="s">&#39;soil.dat&#39;</span><span class="p">,</span>
-             <span class="n">name</span>        <span class="o">=&gt;</span> <span class="s">&#39;dilute soil sample, DT corrected&#39;</span><span class="p">,</span>
-             <span class="n">energy</span>      <span class="o">=&gt;</span> <span class="s">&#39;$1&#39;</span><span class="p">,</span>
-             <span class="n">numerator</span>   <span class="o">=&gt;</span> <span class="s">&#39;$4*$8/$12&#39;</span><span class="p">,</span>
-             <span class="n">denominator</span> <span class="o">=&gt;</span> <span class="s">&#39;$2&#39;</span><span class="p">,</span>
-             <span class="n">ln</span>          <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
+ <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">file</span>        <span class="o">=&gt;</span> <span class="s">&#39;soil.dat&#39;</span><span class="p">,</span>
+              <span class="n">name</span>        <span class="o">=&gt;</span> <span class="s">&#39;dilute soil sample, DT corrected&#39;</span><span class="p">,</span>
+              <span class="n">energy</span>      <span class="o">=&gt;</span> <span class="s">&#39;$1&#39;</span><span class="p">,</span>
+              <span class="n">numerator</span>   <span class="o">=&gt;</span> <span class="s">&#39;$4*$8/$12&#39;</span><span class="p">,</span>
+              <span class="n">denominator</span> <span class="o">=&gt;</span> <span class="s">&#39;$2&#39;</span><span class="p">,</span>
+              <span class="n">ln</span>          <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="p">);</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 <p>In this example, column 4 contains the signal in the ROI for one of the
 detector channels, column 8 contains the input count rate for the
 channel, and column 12 contains the output count rate for that channel.</p>
@@ -259,8 +324,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
@@ -268,6 +333,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
@@ -275,14 +344,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 

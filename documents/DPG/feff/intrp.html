@@ -59,7 +59,7 @@
 <p>The hard part of using <font size=-1 color="#8C4112">FEFF</font> effectively is keeping track of
 all the paths. The main tool <font size=-1 color="#8C4112">DEMETER</font> offers for this is the
 path interpretation.</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/perl</span>
 <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
 <span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Feff</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;feff/feff.inp&quot;</span><span class="p">);</span>
@@ -70,7 +70,7 @@ path interpretation.</p>
 </pre></div>
 </div>
 <p>or, using the serialization file introduced in the last section,</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/perl</span>
 <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
 <span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Feff</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">yaml</span> <span class="o">=&gt;</span> <span class="s">&quot;feff/feff.yaml&quot;</span><span class="p">);</span>
@@ -78,7 +78,7 @@ path interpretation.</p>
 </pre></div>
 </div>
 <p>Here is what gets printed out by the line with the <code class="docutils literal"><span class="pre">intrp</span></code> method:</p>
-<div class="highlight-python"><div class="highlight"><pre># Hg at site 15 in thymidine
+<div class="highlight-python"><div class="highlight"><pre><span></span># Hg at site 15 in thymidine
 # This paths.dat file was written by Demeter 0.3.0
 # The central atom is denoted by this token: &lt;+&gt;
 # Cluster size = 4.50000 Angstrom, containing 21 atoms
@@ -125,6 +125,9 @@ on some heuristics for the likelihood that the path will contribute
 significantly to the fit. The high importance paths with value 2 are
 the single scattering and colinear multiple scattering paths. The mid
 importance paths tend to be short triangles.</p>
+<p>The configuration parameters <font color="#636A24">♦Pathfinder→rank_high</font> and
+<font color="#636A24">♦Pathfinder→rank_low</font> are used to determine the heuristic
+importance from the path ranking.</p>
 <p>The last column is a description of the shape of the path. The header
 contains some statistics about the cluster and the values of some of the
 relevant configuration parameters.</p>
@@ -137,14 +140,14 @@ format the path interpretation. The argument can be either a string or
 <a class="reference external" href="http://perldoc.perl.org/perlref.html">an anonymous hash</a>. The
 string can be either <code class="docutils literal"><span class="pre">latex</span></code> or <code class="docutils literal"><span class="pre">css</span></code>. With those, the path
 interpretation will be mark-up such that it can be inserted into a
-latex document using a tabular environment or into an html document
-using CSS and span tags to format the text. This formatting works by
-inserting text at the beginning and ending of each line appropriate to
-the header or to the importance of the path.</p>
+latex document using a LaTeX tabular environment or into an HTML
+document using CSS and span tags to format the text. This formatting
+works by inserting text at the beginning and ending of each line
+appropriate to the header or to the importance of the path.</p>
 <p>The anonymous hash option allows you to specify a different set of
 starting and ending tags for the lines in the interpretation. It looks
 like this:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="k">my</span> <span class="nv">$formatting</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;comment&#39;</span> <span class="o">=&gt;</span> <span class="nv">$comment_start_tag</span><span class="p">,</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="k">my</span> <span class="nv">$formatting</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;comment&#39;</span> <span class="o">=&gt;</span> <span class="nv">$comment_start_tag</span><span class="p">,</span>
                   <span class="s">&#39;close&#39;</span>   <span class="o">=&gt;</span> <span class="nv">$closing_tag</span><span class="p">,</span>
                   <span class="s">&#39;1&#39;</span>       <span class="o">=&gt;</span> <span class="nv">$mid_start_tag</span><span class="p">,</span>
                   <span class="s">&#39;2&#39;</span>       <span class="o">=&gt;</span> <span class="nv">$high_start_tag</span><span class="p">,</span>
@@ -183,8 +186,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">7. Feff</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="input.html">7.1. Input data for Feff</a></li>
@@ -198,6 +201,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
@@ -205,14 +212,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 

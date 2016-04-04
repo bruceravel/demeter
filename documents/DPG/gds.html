@@ -56,7 +56,7 @@
 <h1>9. Guess/Def/Set Parameters<a class="headerlink" href="#guess-def-set-parameters" title="Permalink to this headline">¶</a></h1>
 <p>In <font size=-1 color="#8C4112">DEMETER</font>, every part of a fit is an object. The same is true of the
 parameters of the fit. A new guess parameter is defined like so:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="k">my</span> <span class="nv">$new_param</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">GDS</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">gds</span>     <span class="o">=&gt;</span> <span class="s">&#39;guess&#39;</span><span class="p">,</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="k">my</span> <span class="nv">$new_param</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">GDS</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">gds</span>     <span class="o">=&gt;</span> <span class="s">&#39;guess&#39;</span><span class="p">,</span>
                                   <span class="n">name</span>    <span class="o">=&gt;</span> <span class="s">&#39;deltar&#39;</span><span class="p">,</span>
                                   <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="mf">0.0</span><span class="p">);</span>
 </pre></div>
@@ -74,12 +74,12 @@ evaluated by <font size=-1 color="#8C4112">IFEFFIT</font>.</p>
 object and can be treated like attributes of any object. So, for
 instance, if you wish to change the starting value of the <code class="docutils literal"><span class="pre">deltar</span></code>
 parameter, you can do like so:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="k">my</span> <span class="nv">$new_param</span> <span class="o">=</span> <span class="n">mathexp</span><span class="p">(</span><span class="mf">0.025</span><span class="p">);</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="k">my</span> <span class="nv">$new_param</span> <span class="o">=</span> <span class="n">mathexp</span><span class="p">(</span><span class="mf">0.025</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>Here is another example, this time for a def parameter that takes an
 actual math expression:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="k">my</span> <span class="nv">$new_param</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">GDS</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">gds</span>     <span class="o">=&gt;</span> <span class="s">&#39;def&#39;</span><span class="p">,</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="k">my</span> <span class="nv">$new_param</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">GDS</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">gds</span>     <span class="o">=&gt;</span> <span class="s">&#39;def&#39;</span><span class="p">,</span>
                                   <span class="n">name</span>    <span class="o">=&gt;</span> <span class="s">&#39;c&#39;</span><span class="p">,</span>
                                   <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="s">&#39;(a + b) * tan(angle/2) / (a - b)&#39;</span><span class="p">);</span>
 </pre></div>
@@ -94,7 +94,7 @@ sugar, the <font size=-1 color="#8C4112">DEMETER</font> base class offers a meth
 character string as its sole argument.  That character string is
 parsed the same way as a parameter definition in a <code class="file docutils literal"><span class="pre">feffit.inp</span></code>
 file.</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="k">my</span> <span class="nv">$new_param</span> <span class="o">=</span> <span class="nv">$any_object</span><span class="o">-&gt;</span><span class="n">simpleGDS</span><span class="p">(</span><span class="s">&#39;guess deltar = 0.0&#39;</span><span class="p">);</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="k">my</span> <span class="nv">$new_param</span> <span class="o">=</span> <span class="nv">$any_object</span><span class="o">-&gt;</span><span class="n">simpleGDS</span><span class="p">(</span><span class="s">&#39;guess deltar = 0.0&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>The <code class="docutils literal"><span class="pre">simpleGDS</span></code> simply parses the string and uses that to create a
@@ -118,28 +118,29 @@ the fit.</dd>
 <dd>A parameter which is evaluated at the beginning of the fit and
 remains unchanged after that.</dd>
 <dt><span class="lguess">lguess</span></dt>
-<dd>A locally guessed parameter. In a multiple data set fit, this will
-be expanded to one <span class="guess">guess</span> parameter per data set. See <a class="reference external" href="../lgcv.html">the
-section on local guess parameters</a> for more
-details.</dd>
+<dd>A <span class="lguess">locally guessed</span> parameter. In a multiple data set fit,
+this will be expanded to one <span class="guess">guess</span> parameter per data
+set. See <a class="reference external" href="../lgcv.html">the section on local guess parameters</a>
+for more details.</dd>
 <dt><span class="restrain">restrain</span></dt>
-<dd>A restrain parameter is defined in an <font size=-1 color="#8C4112">IFEFFIT</font> script as
-a <span class="def">def</span> parameter but is used as a restraint in the call to
-<font size=-1 color="#8C4112">IFEFFIT</font>'s <code class="docutils literal"><span class="pre">feffit</span></code> command. In a multiple data set
-fit, all restraints are defined in the first call to the
+<dd>A <span class="restrain">restrain</span> parameter is defined in an
+<font size=-1 color="#8C4112">IFEFFIT</font> script as a <span class="def">def</span> parameter but is used as
+a <span class="restrain">restraint</span> in the call to <font size=-1 color="#8C4112">IFEFFIT</font>'s
+<code class="docutils literal"><span class="pre">feffit</span></code> command.  In a multiple data set fit, all
+<span class="restrain">restraints</span> are defined in the first call to the
 <code class="docutils literal"><span class="pre">feffit</span></code> command.</dd>
 <dt><span class="skip">skip</span></dt>
-<dd>A skip is a parameter that is defined but then ignored. Setting a
-variable to a <span class="skip">skip</span> is useful in a GUI as a way of
-“commenting out” a parameter without removing it from the
-fitting project.</dd>
+<dd>A <span class="skip">skip</span> is a parameter that is defined but then
+ignored.  Setting a variable to a <span class="skip">skip</span> is useful in a GUI
+as a way of “commenting out” a parameter without removing
+it from the fitting project.</dd>
 <dt><span class="after">after</span></dt>
 <dd>This is like a <span class="def">def</span> parameter, but is not used in the
 fitting model and only evaluated when the fit finishes. It is then
 reported in the log file.</dd>
 <dt><span class="penalty">penalty</span></dt>
 <dd>This is like a <span class="def">def</span> parameter, but is used as a user-defined
-penalty to the <a class="reference external" href="../fit/happiness.html">happiness parameter</a>,
+subtraction from the <a class="reference external" href="../fit/happiness.html">happiness parameter</a>,
 which is evaluated at the end of the fit.  <em>This is not currently
 implemented.</em></dd>
 <dt><span class="merge">merge</span></dt>
@@ -166,7 +167,7 @@ objects. Along with direct examination of the attributes, such as
 <code class="docutils literal"><span class="pre">bestfit</span></code> and <code class="docutils literal"><span class="pre">error</span></code>, there are several kinds of textual reports
 on the state of the GDS object and its parameter. This example shows
 three of these:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="k">my</span> <span class="nv">$amp_param</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">GDS</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span>     <span class="o">=&gt;</span> <span class="s">&#39;guess&#39;</span><span class="p">,</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="k">my</span> <span class="nv">$amp_param</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">GDS</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span>     <span class="o">=&gt;</span> <span class="s">&#39;guess&#39;</span><span class="p">,</span>
                                     <span class="n">name</span>    <span class="o">=&gt;</span> <span class="s">&#39;amp&#39;</span><span class="p">,</span>
                                     <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">);</span>
 <span class="c1">## ... some time later, after a fit ...</span>
@@ -180,7 +181,7 @@ annotation for a <span class="guess">guess</span> parameter is set after a fit u
 best fit value and the uncertainty, as shown below. For most other
 parameter types, annotation is set using the evaluation of the
 parameter as stored in the <code class="docutils literal"><span class="pre">bestfit</span></code> attribute.</p>
-<div class="highlight-python"><div class="highlight"><pre>amp:   0.98096480 +/-   0.08074672
+<div class="highlight-text"><div class="highlight"><pre><span></span>amp:   0.98096480 +/-   0.08074672
 </pre></div>
 </div>
 <p>There is the option of annotating a parameter to a user-defined string.
@@ -188,18 +189,18 @@ When explicitly set, the automatic annotation after a fit finishes does
 not happen. The purpose of the annotation is to store a description of
 the purpose served in a fitting model by a parameter.  In the example
 used here, you might annotate the parameter like so:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$amp_param</span> <span class="o">-&gt;</span> <span class="n">note</span><span class="p">(</span><span class="s">&quot;This parameter represents S_0^2.&quot;</span><span class="p">);</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$amp_param</span> <span class="o">-&gt;</span> <span class="n">note</span><span class="p">(</span><span class="s">&quot;This parameter represents S_0^2.&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>The <code class="docutils literal"><span class="pre">report</span></code> method is used after a fit to write out parameter
 results to a log file. It looks like this, giving the best fit value,
 the uncertainty, and the initial guess in brackets:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">amp</span>                <span class="o">=</span>   <span class="mf">0.98096480</span>    <span class="c"># +/-   0.08074672     [1]</span>
+<div class="highlight-text"><div class="highlight"><pre><span></span>amp                =   0.98096480    # +/-   0.08074672     [1]
 </pre></div>
 </div>
 <p>The <code class="docutils literal"><span class="pre">full_report</span></code> writes out a more complete description of the state
 of the object. It looks like this:</p>
-<div class="highlight-python"><div class="highlight"><pre>amp
+<div class="highlight-text"><div class="highlight"><pre><span></span>amp
   guess parameter
   math expression: 1
   evaluates to   0.98096480 +/-   0.08074672
@@ -233,8 +234,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="intro.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data/index.html">2. The basics of data processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mue/index.html">3. Processing μ(E) data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="xanes/index.html">4. Analysis of XANES data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="highlevel/index.html">4. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xanes/index.html">5. Analysis of XANES data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="feff/index.html">7. Feff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="paths/index.html">8. Scattering paths</a></li>
@@ -247,6 +248,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="fit/index.html">10. Fitting EXAFS data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="perl.html">11. Using perl to structure a fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output.html">15. Output formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
@@ -254,14 +259,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 

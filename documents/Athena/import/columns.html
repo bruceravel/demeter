@@ -29,7 +29,7 @@
     <link rel="next" title="3.2. Project selection dialog" href="projsel.html" />
     <link rel="prev" title="3. Data import" href="index.html" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
     <link rel="stylesheet" type="text/css" href="../_static/program.css" />
 
@@ -39,11 +39,8 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
           <a href="projsel.html" title="3.2. Project selection dialog"
-             accesskey="N">next</a> |</li>
+             accesskey="N">next</a></li>
         <li class="right" >
           <a href="index.html" title="3. Data import"
              accesskey="P">previous</a> |</li>
@@ -67,12 +64,12 @@ data files from your computer's file manager and drop them onto the
 group list. A file selection dialog opens. On my Linux computer, it
 looks like this:</p>
 <div class="figure align-center" id="id1">
-<span id="fig-importfiledialog"></span><a class="reference external image-reference" href="../_images/import_filedialog.png"><img alt="../_images/import_filedialog.png" src="../_images/import_filedialog.png" style="width: 60%;" /></a>
+<span id="fig-importfiledialog"></span><a class="reference external image-reference" href="../_images/import_filedialog.png"><img alt="../_images/import_filedialog.png" src="../_images/import_filedialog.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 3.1 </span><span class="caption-text">The file selection dialog on a Linux computer.</span></p>
 </div>
 <p>It looks somewhat different on Windows, but behaves the same. It allows
 you to navigate your disk to find the file you want to import. Once you
-find that file, click on it then click on the <kbd class="dark">Open</kbd> button.</p>
+find that file, click on it then click on the <kbd class="light">Open</kbd> button.</p>
 <p>Once you have selected a file to import the column selection dialog,
 shown below, appears.</p>
 <p>On the right side of this dialog, the contents of the data file are
@@ -85,12 +82,12 @@ of numbers. These columns need to be combined depending on the nature of
 the experiment. For a transmission experiment, the incident channel is
 divided by transmission channel and the natural log is taken at each
 point. For fluorescence data, the fluorescence channel is divided by the
-incidence channel. Electron yield data is like fluorescence data -- the
+incidence channel. Electron yield data is like fluorescence data – the
 yield channel is divided by the incident channel.</p>
 <p>The controls in the tabs at the bottom left are the discussed in later
 sections.</p>
 <div class="figure align-center" id="id2">
-<span id="fig-importcolsel"></span><a class="reference external image-reference" href="../_images/import_colsel.png"><img alt="../_images/import_colsel.png" src="../_images/import_colsel.png" style="width: 75%;" /></a>
+<span id="fig-importcolsel"></span><a class="reference external image-reference" href="../_images/import_colsel.png"><img alt="../_images/import_colsel.png" src="../_images/import_colsel.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 3.2 </span><span class="caption-text">The column selection dialog.</span></p>
 </div>
 <p>In the example shown, the incident channel is, for some reason, called
@@ -114,7 +111,7 @@ to ask the beamline scientist!</p>
 </div>
 <div class="section" id="data-types-and-energy-units">
 <h2>3.1.2. Data types and energy units<a class="headerlink" href="#data-types-and-energy-units" title="Permalink to this headline">¶</a></h2>
-<p>Occasionally, <font size=-1 color="#033B0A">ATHENA</font> needs a bit more information to
+<p>Occasionally, <font size=-1 color="#8C4112">ATHENA</font> needs a bit more information to
 interpret your data correctly. The data types menu is shown in the
 figure below. The default is for data to be imported as μ(E).</p>
 <p>The other choices are:</p>
@@ -122,46 +119,46 @@ figure below. The default is for data to be imported as μ(E).</p>
 <li>xanes(E) : μ(E) data measured over a limited data range and for which
 you do not need to look at the χ(k)</li>
 <li>norm(E) : μ(E) data that have already been normalized in some other
-way. These data will not be normalized by <font size=-1 color="#033B0A">ATHENA</font></li>
+way. These data will not be normalized by <font size=-1 color="#8C4112">ATHENA</font></li>
 <li>chi(k) : χ(k) data, that is data that have already been background
 subtracted from μ(E)</li>
-<li>xmu.dat : the xmu.dat file from FEFF</li>
+<li>xmu.dat : the xmu.dat file from <font size=-1 color="#8C4112">FEFF</font></li>
 </ul>
 <div class="figure align-center" id="id3">
-<span id="fig-importtypes"></span><a class="reference external image-reference" href="../_images/import_types.png"><img alt="../_images/import_types.png" src="../_images/import_types.png" style="width: 75%;" /></a>
+<span id="fig-importtypes"></span><a class="reference external image-reference" href="../_images/import_types.png"><img alt="../_images/import_types.png" src="../_images/import_types.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 3.3 </span><span class="caption-text">Data types in the column selection dialog.</span></p>
-</div>
-<div class="figure align-center" id="id4">
-<span id="fig-importchangetype"></span><a class="reference external image-reference" href="../_images/import_changetype.png"><img alt="../_images/import_changetype.png" src="../_images/import_changetype.png" style="width: 35%;" /></a>
-<p class="caption"><span class="caption-number">Fig. 3.4 </span><span class="caption-text">The dialog for changing data type of a group.</span></p>
 </div>
 <p>If you make a mistake and import your data as the wrong data type, you
 can change between any of the energy-valued (μ(E), normalized μ(E), XANES, or detector) record types at any time by select
 <span class="menuselection">Group ‣ Change data type</span> and selecting the
 correct choice from the popup dialog, shown here. This dialog cannot,
 however, be used to change χ(k) data to an energy-value type or
-vice-versa, nor to change one of the <font size=-1 color="#033B0A">FEFF</font> types to a
-non-<font size=-1 color="#033B0A">FEFF</font> type.</p>
-<p><font size=-1 color="#033B0A">ATHENA</font> uses electron volts as its energy unit. It uses a
+vice-versa, nor to change one of the <font size=-1 color="#8C4112">FEFF</font> types to a
+non-<font size=-1 color="#8C4112">FEFF</font> type.</p>
+<div class="figure align-center" id="id4">
+<span id="fig-importchangetype"></span><a class="reference external image-reference" href="../_images/import_changetype.png"><img alt="../_images/import_changetype.png" src="../_images/import_changetype.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 3.4 </span><span class="caption-text">The dialog for changing data type of a group.</span></p>
+</div>
+<p><font size=-1 color="#8C4112">ATHENA</font> uses electron volts as its energy unit. It uses a
 simple heuristic to figure out if an input file is in eV or keV. In
-case <font size=-1 color="#033B0A">ATHENA</font> gets it wrong, you can specify the energy unit
+case <font size=-1 color="#8C4112">ATHENA</font> gets it wrong, you can specify the energy unit
 with the <span class="guilabel">Energy units</span> menu. <a class="reference external" href="../process/pixel.html">Dispersive XAS</a>, i.e. data which is a function of pixel
 index, requires special treatment.</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.9.20: </span>There is now a label on the main page right
 next to the <span class="guilabel">Freeze</span> check button which identifies the file
 type of the data. You can toggle between xanes and xmu data by
-<kbd class="dark">Control</kbd>-<kbd class="dark">Alt</kbd>-<kbd class="dark">Left</kbd> clicking on that label.</p>
+<kbd class="dark">Control</kbd>-<kbd class="dark">Alt</kbd>-<img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> on that label.</p>
 </div>
 </div>
 <div class="section" id="multi-element-detector-data">
 <h2>3.1.3. Multi-element detector data<a class="headerlink" href="#multi-element-detector-data" title="Permalink to this headline">¶</a></h2>
-<p><font size=-1 color="#033B0A">ATHENA</font>'s column selection dialog has some special features for dealing
-with multi-element detectors. You can select all the channels of the MED
-as elements of the numerator, as shown in this example of the column
-selection dialog.</p>
+<p><font size=-1 color="#8C4112">ATHENA</font>'s column selection dialog has some special features
+for dealing with multi-element detectors. You can select all the
+channels of the MED as elements of the numerator, as shown in this
+example of the column selection dialog.</p>
 <div class="figure align-center" id="id5">
-<span id="fig-importmed"></span><a class="reference external image-reference" href="../_images/import_med.png"><img alt="../_images/import_med.png" src="../_images/import_med.png" style="width: 65%;" /></a>
+<span id="fig-importmed"></span><a class="reference external image-reference" href="../_images/import_med.png"><img alt="../_images/import_med.png" src="../_images/import_med.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 3.5 </span><span class="caption-text">Importing multi-element data in the column selection dialog.</span></p>
 </div>
 <p>Importing the data will then add up the channels on the fly and put a
@@ -169,7 +166,7 @@ group containing the summation of the channels in the group list.</p>
 <p>You have the option of clicking the check button that says
 <span class="guilabel">Save each channel as its own group</span>, as shown here.</p>
 <div class="figure align-center" id="id6">
-<span id="fig-importmedch"></span><a class="reference external image-reference" href="../_images/import_medch.png"><img alt="../_images/import_medch.png" src="../_images/import_medch.png" style="width: 75%;" /></a>
+<span id="fig-importmedch"></span><a class="reference external image-reference" href="../_images/import_medch.png"><img alt="../_images/import_medch.png" src="../_images/import_medch.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 3.6 </span><span class="caption-text">Importing multi-element data in the column selection dialog and saving
 each channel as a group.</span></p>
 </div>
@@ -178,18 +175,44 @@ will be imported as an individual group and given its own entry in the
 group list. This is handy for examining the channels and discarding any
 that are not of usable quality.</p>
 <div class="figure align-center" id="id7">
-<span id="fig-importmedchimported"></span><a class="reference external image-reference" href="../_images/import_medchimported.png"><img alt="../_images/import_medchimported.png" src="../_images/import_medchimported.png" style="width: 65%;" /></a>
+<span id="fig-importmedchimported"></span><a class="reference external image-reference" href="../_images/import_medchimported.png"><img alt="../_images/import_medchimported.png" src="../_images/import_medchimported.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 3.7 </span><span class="caption-text">After importing the channels of multi-element data as individual groups.</span></p>
 </div>
+</div>
+<div class="section" id="other-controls">
+<h2>3.1.4. Other controls<a class="headerlink" href="#other-controls" title="Permalink to this headline">¶</a></h2>
+<p>At the top of the page are three buttons for refining how the column
+selection dialog interacts with your data.  The <kbd class="light">Select
+range</kbd> button pops open a dialog which allows you to specify a
+range of numerator buttons to click all at once.</p>
+<div class="figure align-center" id="id8">
+<span id="fig-importcolumnrange"></span><a class="reference external image-reference" href="../_images/import_columnrange.png"><img alt="../_images/import_columnrange.png" src="../_images/import_columnrange.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 3.8 </span><span class="caption-text">The dialog for selecting a range of columns.</span></p>
+</div>
+<p>This expects column <em>numbers</em> not labels.  The main purpose of this
+dialog is to deal with MED data with a large number of columns.  It
+would be tedious and error prone to click through a lot of columns.
+This dialog is a way of quickly accomplishing that.</p>
+<p>You can specify a list of comma-separated column numbers or indicate a
+range using a dash.  In the first example in the text in
+<a class="reference internal" href="#fig-importcolumnrange"><span>Fig. 3.8</span></a>, columns 8 through 20 would
+be selected.  In the second, column 7 and column 9 along with columns
+12, 13, 14, and 15 would be selected.</p>
+<p>The <kbd class="light">Clear numerator</kbd> button unselects all the numerator
+check button.</p>
+<p>The <kbd class="light">Pause plotting</kbd> button will suppress the re-display
+of the plots as you select check buttons in the column selection
+dialog.  This is handy if, for some reason, the re-display of the plot
+is slow or otherwise undesirable.</p>
 
 <br>
 
 <br>
 <hr class="docutils" />
-<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
-copyright © 2015 Bruce Ravel</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
 <p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
-<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
 consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
 </div>
 </div>
@@ -215,27 +238,33 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l2"><a class="reference internal" href="preproc.html">3.5. Preprocessing data</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and background removal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
-<h3>Links</h3>
+<h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -267,11 +296,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
           <a href="projsel.html" title="3.2. Project selection dialog"
-             >next</a> |</li>
+             >next</a></li>
         <li class="right" >
           <a href="index.html" title="3. Data import"
              >previous</a> |</li>
@@ -280,7 +306,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

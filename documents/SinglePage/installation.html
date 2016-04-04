@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installing Demeter from source code &mdash; Miscellaneous Demeter  documentation</title>
+    <title>Installing Demeter from source code &mdash; Miscellaneous Demeter 0.9.24 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '',
+        VERSION:     '0.9.24',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/wheat.ico"/>
-    <link rel="top" title="Miscellaneous Demeter  documentation" href="index.html" />
+    <link rel="top" title="Miscellaneous Demeter 0.9.24 documentation" href="index.html" />
     <link rel="next" title="David Hughes&#39; guide to Demeter Installation on Ubuntu" href="demeter_nonroot.html" />
     <link rel="prev" title="Additional notes on installing the MacPorts package" href="macports.html" />
 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="macports.html" title="Additional notes on installing the MacPorts package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter  documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter 0.9.24 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -103,7 +103,7 @@ site</a>.</p>
 <li><p class="first">Run the <strong class="command">PGPLOT_install</strong> script. This streamlines the
 rather unwieldy chore of building <strong class="program">PGPLOT</strong>. This step
 will require root access to the computer.</p>
-<div class="highlight-python"><div class="highlight"><pre>sudo ./PGPLOT_install
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo ./PGPLOT_install
 </pre></div>
 </div>
 </li>
@@ -138,11 +138,11 @@ different in your distribution)</li>
 to manage the Demeter source code, installed on your
 computer. On Ubuntu machines, the package is called
 “git-core”.  At the command line, do:</p>
-<div class="highlight-python"><div class="highlight"><pre>git clone https://github.com/bruceravel/demeter.git
+<div class="highlight-python"><div class="highlight"><pre><span></span>git clone https://github.com/bruceravel/demeter.git
 </pre></div>
 </div>
 <p>then follow along with developments by doing</p>
-<div class="highlight-python"><div class="highlight"><pre>git pull
+<div class="highlight-python"><div class="highlight"><pre><span></span>git pull
 </pre></div>
 </div>
 <p>to download future modifications to the code.</p>
@@ -163,7 +163,7 @@ keep up more easily as Demeter evolves.</p>
 <div><p>After checking out a copy of <font size=-1 color="#8C4112">DEMETER</font> from git (or
 unpacking the archive), <strong class="command">cd</strong> into the new subdirectory
 and do</p>
-<div class="highlight-python"><div class="highlight"><pre>perl ./Build.PL
+<div class="highlight-python"><div class="highlight"><pre><span></span>perl ./Build.PL
 </pre></div>
 </div>
 <p>If this is the first time you are installing <font size=-1 color="#8C4112">DEMETER</font> on
@@ -177,11 +177,11 @@ Step 4.</p>
 program to download most of the dependencies from <a class="reference external" href="http://metacpan.org">the CPAN
 repository</a>. You can make this process
 easier by configuring the cpan program. Start cpan:</p>
-<div class="highlight-python"><div class="highlight"><pre>sudo cpan
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo cpan
 </pre></div>
 </div>
 <p>At the <code class="docutils literal"><span class="pre">cpan&gt;</span></code> prompt, issue the following commands:</p>
-<div class="highlight-python"><div class="highlight"><pre>o conf build_requires_install_policy yes
+<div class="highlight-python"><div class="highlight"><pre><span></span>o conf build_requires_install_policy yes
 o conf prerequisites_policy follow
 o conf commit
 </pre></div>
@@ -195,7 +195,7 @@ automatically follow them.</p>
 <p><strong>Step 3b: Install Demeter's dependencies (not optional!)</strong></p>
 <blockquote>
 <div><p>Now that cpan is correctly configured, do the following</p>
-<div class="highlight-python"><div class="highlight"><pre>sudo ./Build installdeps
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo ./Build installdeps
 </pre></div>
 </div>
 <p>Go get a cup of coffee. This takes a while.</p>
@@ -223,7 +223,7 @@ modules has its own tree of dependencies.  All in all, a couple
 hundred packages get downloaded, built, and installed when do the
 <strong class="command">./Build installdeps</strong> step.</p>
 <p>Sometimes, a few of these fail.  This is not a disaster.  In most
-cases, the problem can be dispatched easily.  See <a class="reference external" href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-July/012608.html">this post</a>
+cases, the problem can be dispatched easily.  See <a class="reference external" href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-July/008086.html">this post</a>
 to the <font size=-1 color="#8C4112">IFEFFIT</font> Mailing List about some strategies for
 dealing with failed builds of dependencies.</p>
 <p>“PDL::Stats” presents a special challange.  There is a
@@ -233,7 +233,7 @@ writing, Aug. 2015) in the upstream source.  If possible, use your
 system's pre-built package (the Debian package is called
 “libpdl-stats-perl”).</p>
 <p>If you cannot use a package and you are unable to build
-L&lt;PDL::Stats&gt;, as <a class="reference external" href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-August/012679.html">discussed in this mailing list thread</a>,
+L&lt;PDL::Stats&gt;, as <a class="reference external" href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-August/008158.html">discussed in this mailing list thread</a>,
 do the following:</p>
 <ol class="arabic">
 <li><p class="first">Download PDL::Stats from https://metacpan.org/pod/PDL::Stats</p>
@@ -244,12 +244,12 @@ do the following:</p>
 directory into the PDL:Stats top directory</p>
 </li>
 <li><p class="first">Apply the patch</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">patch</span> <span class="o">-</span><span class="n">p0</span> <span class="o">&lt;</span> <span class="n">glm</span><span class="o">.</span><span class="n">patch</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">patch</span> <span class="o">-</span><span class="n">p0</span> <span class="o">&lt;</span> <span class="n">glm</span><span class="o">.</span><span class="n">patch</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">Build and install PDL::Stats</p>
-<div class="highlight-python"><div class="highlight"><pre>perl Makefile.PL
+<div class="highlight-python"><div class="highlight"><pre><span></span>perl Makefile.PL
 make
 make test
 make install
@@ -260,7 +260,7 @@ make install
 </div></blockquote>
 <p><strong>Step 4: Build and install Demeter</strong></p>
 <p>Almost done! Just do each of the following:</p>
-<div class="highlight-python"><div class="highlight"><pre>perl Build.PL
+<div class="highlight-python"><div class="highlight"><pre><span></span>perl Build.PL
 ./Build
 ./Build test
 sudo ./Build install
@@ -280,20 +280,30 @@ you should report them to Bruce. The best report includes a complete
 capture of everything written to the screen. The easiest way to
 capture screen text is to use <a class="reference external" href="http://www.gnu.org/software/coreutils/manual/coreutils.html#tee-invocation">tee</a>.
 Here is an example:</p>
-<div class="highlight-python"><div class="highlight"><pre>./Build test | tee screen_messages.txt
+<div class="highlight-python"><div class="highlight"><pre><span></span>./Build test | tee screen_messages.txt
 </pre></div>
 </div>
 </div>
 <div class="section" id="special-cases">
 <h2>Special cases<a class="headerlink" href="#special-cases" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="a-demeter-program-fails-complaining-that-carp-clan-is-missing">
+<h3>A Demeter program fails, complaining that Carp::Clan is missing<a class="headerlink" href="#a-demeter-program-fails-complaining-that-carp-clan-is-missing" title="Permalink to this headline">¶</a></h3>
+<p>This may happen after an upgrade.  A recent version of one of
+Demeter's dependencies <a class="reference external" href="https://metacpan.org/pod/MooseX::Types">(MooseX::Types)</a> depends on <a class="reference external" href="https://metacpan.org/pod/Carp::Clan">(Carp::Clan)</a> but may not be installed after
+an OS upgrade.  If this happens, either use CPAN to install Carp::Clan:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo cpanm Carp::Clan
+</pre></div>
+</div>
+<p>or install the debian package <cite>libcarp-clan-perl</cite>.</p>
+</div>
 <div class="section" id="installing-demeter-without-root-privileges">
 <h3>Installing Demeter without root privileges<a class="headerlink" href="#installing-demeter-without-root-privileges" title="Permalink to this headline">¶</a></h3>
 <p>In step 1, replace the command</p>
-<div class="highlight-python"><div class="highlight"><pre>./configure
+<div class="highlight-python"><div class="highlight"><pre><span></span>./configure
 </pre></div>
 </div>
 <p>with</p>
-<div class="highlight-python"><div class="highlight"><pre>./configure --prefix=/path/to/installation/location
+<div class="highlight-python"><div class="highlight"><pre><span></span>./configure --prefix=/path/to/installation/location
 </pre></div>
 </div>
 <p>Here you need to specify a location in your own disk space in which to
@@ -301,7 +311,7 @@ install Ifeffit and all the rest.  I'd recommend something like
 <code class="file docutils literal"><span class="pre">$HOME/local</span></code>.  You will also need to put
 <code class="file docutils literal"><span class="pre">$HOME/local/bin/</span></code> in your execution path, which can be done by
 adding this to your <code class="file docutils literal"><span class="pre">.bashrc</span></code> file:</p>
-<div class="highlight-python"><div class="highlight"><pre>export PATH=$PATH:$HOME/local/bin/
+<div class="highlight-python"><div class="highlight"><pre><span></span>export PATH=$PATH:$HOME/local/bin/
 </pre></div>
 </div>
 <p>Even if you are installing <font size=-1 color="#8C4112">DEMETER</font> without root, it is
@@ -312,19 +322,19 @@ to install Carlo Segre's pre-built versions of <font size=-1 color="#8C4112">IFE
 <a class="reference external" href="http://debian-xray.iit.edu/">http://debian-xray.iit.edu/</a>.</p>
 <p>Prior to Step 3a, go to <a class="reference external" href="https://metacpan.org/module/local::lib">https://metacpan.org/module/local::lib</a> and
 download the latest version of the “local::lib” module.
-Unpack it and cd into the newly created directory.  (<a class="reference external" href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2014-June/011828.html">See this mailing
+Unpack it and cd into the newly created directory.  (<a class="reference external" href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2014-June/007306.html">See this mailing
 list post</a>
 for an explanation of why you want to use “local::lib”.)</p>
 <p>Do</p>
-<div class="highlight-python"><div class="highlight"><pre>perl Makefile.PL --bootstrap
+<div class="highlight-python"><div class="highlight"><pre><span></span>perl Makefile.PL --bootstrap
 </pre></div>
 </div>
 <p>Then do</p>
-<div class="highlight-python"><div class="highlight"><pre>make test &amp;&amp; make install
+<div class="highlight-python"><div class="highlight"><pre><span></span>make test &amp;&amp; make install
 </pre></div>
 </div>
 <p>If you use the bash shell, do</p>
-<div class="highlight-python"><div class="highlight"><pre>echo &#39;eval $(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)&#39; &gt;&gt;~/.bashrc
+<div class="highlight-python"><div class="highlight"><pre><span></span>echo &#39;eval $(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)&#39; &gt;&gt;~/.bashrc
 </pre></div>
 </div>
 <p>If you use a shell that uses C shell syntax, follow the instructions
@@ -350,16 +360,16 @@ follow, you will need to replace that with the correct proxy
 configuration for your institution.</p>
 <ol class="arabic">
 <li><p class="first">To have <strong class="program">git</strong> talk through the proxy, I had to do this:</p>
-<div class="highlight-python"><div class="highlight"><pre>git config --global https.proxy http://192.168.1.130:3128
+<div class="highlight-python"><div class="highlight"><pre><span></span>git config --global https.proxy http://192.168.1.130:3128
 </pre></div>
 </div>
 </li>
 <li><p class="first">To use <strong class="program">cpan:</strong>, first, fire up C&lt;cpan&gt; as root</p>
-<div class="highlight-python"><div class="highlight"><pre>sudo cpan
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo cpan
 </pre></div>
 </div>
 <p>At the <code class="docutils literal"><span class="pre">cpan&gt;</span></code> prompt, issue the following commands:</p>
-<div class="highlight-python"><div class="highlight"><pre>o conf http_proxy http://192.168.1.130:3128
+<div class="highlight-python"><div class="highlight"><pre><span></span>o conf http_proxy http://192.168.1.130:3128
 o conf ftp_proxy http://192.168.1.130:3128
 o conf commit
 </pre></div>
@@ -420,8 +430,8 @@ fixed in SL 6?</p>
 
 <br>
 <hr class="docutils" />
-<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
-copyright © 2015 Bruce Ravel</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
 <p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
 <p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
 consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
@@ -442,6 +452,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li><a class="reference internal" href="#">Installing Demeter from source code</a><ul>
 <li><a class="reference internal" href="#build-demeter-and-its-dependencies">Build DEMETER and its dependencies</a></li>
 <li><a class="reference internal" href="#special-cases">Special cases</a><ul>
+<li><a class="reference internal" href="#a-demeter-program-fails-complaining-that-carp-clan-is-missing">A Demeter program fails, complaining that Carp::Clan is missing</a></li>
 <li><a class="reference internal" href="#installing-demeter-without-root-privileges">Installing Demeter without root privileges</a></li>
 <li><a class="reference internal" href="#working-behind-a-proxy-server">Working behind a proxy server</a></li>
 <li><a class="reference internal" href="#installing-and-using-source-code-on-windows">Installing and using source code on Windows</a></li>
@@ -453,19 +464,21 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 </li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b></b></p>
+<p>Current version: <b>0.9.24</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -502,11 +515,11 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="macports.html" title="Additional notes on installing the MacPorts package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter  documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter 0.9.24 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

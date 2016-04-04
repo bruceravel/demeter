@@ -29,7 +29,7 @@
     <link rel="next" title="3.3. Multiple data set import" href="multiple.html" />
     <link rel="prev" title="3.1. Column selection dialog" href="columns.html" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
     <link rel="stylesheet" type="text/css" href="../_static/program.css" />
 
@@ -39,11 +39,8 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
           <a href="multiple.html" title="3.3. Multiple data set import"
-             accesskey="N">next</a> |</li>
+             accesskey="N">next</a></li>
         <li class="right" >
           <a href="columns.html" title="3.1. Column selection dialog"
              accesskey="P">previous</a> |</li>
@@ -60,16 +57,16 @@
   <div class="section" id="project-selection-dialog">
 <span id="project-selection-sec"></span><h1>3.2. Project selection dialog<a class="headerlink" href="#project-selection-dialog" title="Permalink to this headline">¶</a></h1>
 <p>The project selection dialog is used to importing data from
-<font size=-1 color="#033B0A">ATHENA</font> project files.  <a class="reference external" href="../output/project.html">Project files</a> are <font size=-1 color="#033B0A">ATHENA</font>'s mechanism for
+<font size=-1 color="#8C4112">ATHENA</font> project files.  <a class="reference external" href="../output/project.html">Project files</a> are <font size=-1 color="#8C4112">ATHENA</font>'s mechanism for
 saving the state of an analysis project. The project selection dialog,
 shown below, provides a way of selectively importing part or all of
 the contents of the project file.</p>
 <div class="figure align-center" id="id1">
-<span id="fig-projsel"></span><a class="reference external image-reference" href="../_images/import_projsel.png"><img alt="../_images/import_projsel.png" src="../_images/import_projsel.png" style="width: 40%;" /></a>
-<p class="caption"><span class="caption-number">Fig. 3.8 </span><span class="caption-text">The project selection dialog.</span></p>
+<span id="fig-projsel"></span><a class="reference external image-reference" href="../_images/import_projsel.png"><img alt="../_images/import_projsel.png" src="../_images/import_projsel.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 3.9 </span><span class="caption-text">The project selection dialog.</span></p>
 </div>
 <p>Project files, like any other files are imported using the file
-selection dialog (<a class="reference internal" href="columns.html#fig-importfiledialog"><span>Fig. 3.1</span></a>). <font size=-1 color="#033B0A">ATHENA</font>
+selection dialog (<a class="reference internal" href="columns.html#fig-importfiledialog"><span>Fig. 3.1</span></a>). <font size=-1 color="#8C4112">ATHENA</font>
 will recognize a project file and present the project selection dialog.
 Alternately, you can drag one or more project files from your computer's
 file manager and drop them onto the group list.</p>
@@ -79,29 +76,26 @@ listed in the box at the top right. When you click on one of the data
 groups in the list on the left, it gets plotted and its title lines are
 inserted into the box at the lower right. Using these parts of the
 dialog, you can examine the contents of your project file before
-importing them into <font size=-1 color="#033B0A">ATHENA</font>.</p>
+importing them into <font size=-1 color="#8C4112">ATHENA</font>.</p>
+<p>The plot that is made when you select a data group is controlled by
+the <span class="guilabel">Plot as</span> box of radio buttons.  These buttons have no
+impact on how the data imported into <font size=-1 color="#8C4112">ATHENA</font>.  They are only
+used to determine how the data are displayed to you as you select data
+groups for import.</p>
 <p>By selecting some of the projects from the list, you can import a subset
 of the project file. The group listing uses extended selection:</p>
-<ul>
-<li><p class="first">Click on an item in the list to select one group</p>
-</li>
-<li><dl class="first docutils">
-<dt><kbd class="dark">Control</kbd>-<kbd class="dark">Left</kbd> (i.e. hold down the <kbd class="dark">Control</kbd> key</dt>
-<dd><p class="first last">while clicking the left mouse button) on an item in the list to add
-it to the selection</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt><kbd class="dark">Shift</kbd>-<kbd class="dark">click</kbd> to on a group to select all groups between</dt>
-<dd><p class="first last">it and the previously selected group.</p>
-</dd>
-</dl>
-</li>
+<ul class="simple">
+<li>Click on an item in the list to select one group</li>
+<li><kbd class="dark">Control</kbd>-<img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> (i.e. hold down the
+<kbd class="dark">Control</kbd> key while clicking the left mouse button) on an
+item in the list to add it to the selection</li>
+<li><kbd class="dark">Shift</kbd>-<img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> to on a group to select all
+groups between it and the previously selected group.</li>
 </ul>
-<p>The buttons labeled <kbd class="light">Select all</kbd>, and <kbd class="light">Select none</kbd> can be
-used to select all groups or to clear the selection. The
-<kbd class="light">Invert</kbd> button will invert the selection of each group.</p>
+<p>The buttons labeled <kbd class="light">Select all</kbd> and <kbd class="light">Select
+none</kbd> can be used to select all groups or to clear the
+selection. The <kbd class="light">Invert</kbd> button will invert the selection
+of each group.</p>
 <p>Below those three buttons are a series of controls allowing somewhat
 finer grained control over how items from the group list are selected.
 The <kbd class="light">Select every</kbd> line allows selection by a regular
@@ -109,17 +103,22 @@ pattern.  <kbd class="light">Select matching</kbd> allows you to select groups
 that match a specified pattern using the full strength of perl's
 <a class="reference external" href="../ui/mark.html#using-regular-expressions-to-mark-groups">regular expressions</a>.</p>
 <p>Once you have selected the groups you want to import, click the
-<kbd class="light">Import selected data</kbd> button.  If no groups are selected
-then <em>all</em> the groups will be imported.</p>
+<kbd class="light">Import selected data</kbd> button.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If no groups are selected then <em>all</em> the groups will be
+imported.  The <kbd class="light">Select all</kbd> button is not,
+strictly speaking, necessary.</p>
+</div>
 
 <br>
 
 <br>
 <hr class="docutils" />
-<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
-copyright © 2015 Bruce Ravel</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
 <p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
-<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
 consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
 </div>
 
@@ -144,27 +143,33 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l2"><a class="reference internal" href="preproc.html">3.5. Preprocessing data</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and background removal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
-<h3>Links</h3>
+<h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -196,11 +201,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
           <a href="multiple.html" title="3.3. Multiple data set import"
-             >next</a> |</li>
+             >next</a></li>
         <li class="right" >
           <a href="columns.html" title="3.1. Column selection dialog"
              >previous</a> |</li>
@@ -209,7 +211,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

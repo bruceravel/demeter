@@ -1,3 +1,8 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
+
 
 Merging data groups
 ===================
@@ -37,7 +42,7 @@ each data set is weighted the same in the merge.
 
 After a merge is made, a plot is displayed showing the merge in some
 manner. The type of merge plot is controled by the
-:configparam:`athena,merge\_plot` `configuration parameter
+:configparam:`Athena,merge\_plot` `configuration parameter
 <../other/prefs.html>`__. The default is to show the data along with
 the data ± the standard devaition, as shown below. The other options
 are the `the variance plot

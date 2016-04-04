@@ -1,3 +1,8 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
+
 
 Self-absorption approximations
 ==============================
@@ -55,10 +60,8 @@ The self-absorption tool below allows you to choose between the four
 algorithms and to provide the parameters of the correction.
 
 .. _fig-selfabs:
-
 .. figure:: ../../_images/selfabs.png
    :target: ../_images/selfabs.png
-   :width: 65%
    :align: center
 
    The self-absorption tool.
@@ -97,7 +100,6 @@ the corrected spectra are shown on the bottom.
 .. subfigstart::
 
 .. _fig-saplot:
-
 .. figure:: ../../_images/selfabs_plot.png
    :target: ../_images/selfabs_plot.png
    :width: 100%
@@ -105,7 +107,6 @@ the corrected spectra are shown on the bottom.
    This is the 0.94M data corrected by this algorithm.
 
 .. _fig-sabefore:
-
 .. figure:: ../../_images/selfabs_before.png 
    :target: ../_images/selfabs_before.png
    :width: 100%
@@ -114,7 +115,6 @@ the corrected spectra are shown on the bottom.
    of self-absorption growing for the more concentrated samples.
 
 .. _fig-saafter:
-
 .. figure:: ../../_images/selfabs_after.png 
    :target: ../_images/selfabs_after.png
    :width: 100%
@@ -138,10 +138,8 @@ is suitable for samples of finite thickness. The other three all assume
 that samples are infinitely thick.
 
 .. _fig-sabooth:
-
 .. figure:: ../../_images/selfabs_booth.png
    :target: ../_images/selfabs_booth.png
-   :width: 65%
    :align: center
 
    The self-absorption tool with copper data for correction using the
@@ -169,10 +167,8 @@ corrected data group and compare it to the transmission data, as shown
 in the plot below.
 
 .. _fig-saboothplot:
-
 .. figure:: ../../_images/selfabs_boothplot.png
    :target: ../_images/selfabs_boothplot.png
-   :width: 45%
    :align: center
 
    It works pretty well. The green trace is the corrected fluorescence
@@ -185,10 +181,12 @@ data sets were normalized, the incident and outgoing angles, and the
 thickness. Try changing all those things to see how they effect the
 correction.
 
-.. todo:: The Booth algorithm has been updated and corrected. It now
-   requires that the density of the material be provided.
+.. versionadded:: 0.9.20 
 
-
+   The Booth algorithm was updated and corrected.  It now requires
+   that the density of the material be provided.  There is a box for
+   the density next to the thickness box.  The density box becomes
+   enabled (not grayed out) when the Booth algorithm is selected.
 
 Information depth
 -----------------
@@ -205,7 +203,6 @@ provides a useful metric for whether a film sample can be considered
 .. subfigstart::
 
 .. _fig-sainfoe:
-
 .. figure:: ../../_images/sa_info_e.png
    :target: ../_images/sa_info_e.png
    :width: 100%
@@ -213,7 +210,6 @@ provides a useful metric for whether a film sample can be considered
    The information depth for an iron/gallium alloy, plotted in energy.
 
 .. _fig-sainfok:
-
 .. figure:: ../../_images/sa_info_k.png
    :target: ../_images/sa_info_k.png
    :width: 100%

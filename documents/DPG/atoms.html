@@ -26,7 +26,7 @@
     <link rel="shortcut icon" href="_static/wheat.ico"/>
     <link rel="top" title="Demeter Programming Guide 0.9.24 documentation" href="index.html" />
     <link rel="next" title="7. Feff" href="feff/index.html" />
-    <link rel="prev" title="5.5. Other high level object methods" href="highlevel/methods.html" />
+    <link rel="prev" title="5.4. Difference spectra" href="xanes/diff.html" />
 
     <link rel="stylesheet" type="text/css" href="_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="_static/keys.css" />
@@ -41,7 +41,7 @@
           <a href="feff/index.html" title="7. Feff"
              accesskey="N">next</a></li>
         <li class="right" >
-          <a href="highlevel/methods.html" title="5.5. Other high level object methods"
+          <a href="xanes/diff.html" title="5.4. Difference spectra"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li> 
       </ul>
@@ -65,11 +65,7 @@ Importing data from one is as simple as specifying the file when the
 Atoms object is created. In this example, an <code class="file docutils literal"><span class="pre">atoms.inp</span></code> file is
 imported and an input file for <font size=-1 color="#8C4112">FEFF6</font> is written to standard
 output.</p>
-<div class="admonition-todo admonition" id="index-0">
-<p class="first admonition-title">Todo</p>
-<p class="last">link to atoms.inp documentation</p>
-</div>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/perl</span>
 <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
 <span class="k">my</span> <span class="nv">$atoms</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Atoms</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;ybco.inp&quot;</span><span class="p">);</span>
@@ -81,10 +77,10 @@ output.</p>
 beyond this example.</p>
 <p>Importing crystal data from a CIF file is no more difficult, however
 you need to explicitly tell the Atoms object that the input data is in
-CIF format. The Atoms object assumes that the value of the <code class="docutils literal"><span class="pre">file</span></code>
+CIF format.  The Atoms object assumes that the value of the <code class="docutils literal"><span class="pre">file</span></code>
 attribute points at an <code class="file docutils literal"><span class="pre">atoms.inp</span></code> file, so the <code class="docutils literal"><span class="pre">cif</span></code>
 attribute must be used to specify a CIF file.</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/perl</span>
 <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
 <span class="k">my</span> <span class="nv">$atoms</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Atoms</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">cif</span> <span class="o">=&gt;</span> <span class="s">&quot;Fe2N_ICSD.cif&quot;</span><span class="p">);</span>
@@ -104,20 +100,22 @@ attribute. Note that the counting is zero based, so this example is
 importing the second record in the CIF file.  In a GUI like
 <font size=-1 color="#8C4112">ARTEMIS</font>, it is probably wise to let the user count from 1
 and to do the translation behind the scenes.</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/perl</span>
 <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
 <span class="k">my</span> <span class="nv">$atoms</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Atoms</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">cif</span> <span class="o">=&gt;</span> <span class="s">&quot;AuCl.cif&quot;</span><span class="p">,</span> <span class="n">record</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">);</span>
 <span class="k">print</span> <span class="nv">$atoms</span><span class="o">-&gt;</span><span class="n">Write</span><span class="p">(</span><span class="s">&quot;feff6&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
+<p><a class="reference external" href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">The Artemis document</a>
+offers more discussion of the content of the <code class="file docutils literal"><span class="pre">atoms.inp</span></code> file.</p>
 </div>
 <div class="section" id="object-methods">
 <h2>6.2. Object methods<a class="headerlink" href="#object-methods" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="manually-inputing-crystal-data">
 <h3>6.2.1. Manually inputing crystal data<a class="headerlink" href="#manually-inputing-crystal-data" title="Permalink to this headline">¶</a></h3>
 <p>Starting with this <code class="file docutils literal"><span class="pre">atoms.inp</span></code> file</p>
-<div class="highlight-python"><div class="highlight"><pre>title YBCO: Y Ba2 Cu3 O7
+<div class="highlight-python"><div class="highlight"><pre><span></span>title YBCO: Y Ba2 Cu3 O7
 space P M M M
 rmax=5.2              a 3.823   b 3.886 c 11.681
 core=cu2
@@ -153,7 +151,7 @@ straight-forward, brute-force approach is shown in this example:</p>
 15
 16
 17
-18</pre></div></td><td class="code"><div class="highlight"><pre> <span class="c1">#!/usr/bin/perl</span>
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
  <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
  <span class="k">my</span> <span class="nv">$atoms</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Atoms</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">();</span>
@@ -177,7 +175,8 @@ straight-forward, brute-force approach is shown in this example:</p>
 object will take care of populating the cell and explanding the cluster.</p>
 <p>Note the odd syntax in lines 8 through 15 for loading the <code class="docutils literal"><span class="pre">sites</span></code>
 attribute. The elements of that array are strings of
-vertical-bar-separated values of</p>
+vertical-bar-separated (awkward, perhaps, but that's how it works)
+values of</p>
 <blockquote>
 <div><ul class="simple">
 <li>element symbol</li>
@@ -194,7 +193,7 @@ value of the <code class="docutils literal"><span class="pre">core</span></code>
 </div>
 <div class="section" id="other-methods">
 <h2>6.3. Other methods<a class="headerlink" href="#other-methods" title="Permalink to this headline">¶</a></h2>
-<div class="admonition-todo admonition" id="index-1">
+<div class="admonition-todo admonition" id="index-0">
 <p class="first admonition-title">Todo</p>
 <ul class="last simple">
 <li>Absorption calculations: xsec, deltamu density mcmaster i0 selfsig
@@ -210,7 +209,7 @@ that this is capitalized to avoid any possible confusion (by perl or by
 a syntax highlighting text editor) with perl's <a class="reference external" href="http://perldoc.perl.org/functions/write.html">write
 function</a>, as shown in
 this example:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/perl</span>
 <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
 <span class="k">my</span> <span class="nv">$atoms</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Atoms</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;ybco.inp&quot;</span><span class="p">);</span>
@@ -234,7 +233,7 @@ come with <font size=-1 color="#8C4112">DEMETER</font> are:</p>
 <dt><code class="docutils literal"><span class="pre">p1</span></code></dt>
 <dd><p class="first">Input file for <font size=-1 color="#8C4112">ATOMS</font> using the <code class="docutils literal"><span class="pre">P</span> <span class="pre">1</span></code> spacegroup and the fully
 populated unit cell. Here's an example:</p>
-<div class="last highlight-python"><div class="highlight"><pre>title = YBCO: Y Ba2 Cu3 O7
+<div class="last highlight-python"><div class="highlight"><pre><span></span>title = YBCO: Y Ba2 Cu3 O7
 space = P M M M
 a     =   3.82300    b    =   3.88600    c     =  11.68100
 alpha =  90.00000    beta =  90.00000    gamma =  90.00000
@@ -261,19 +260,19 @@ atoms
 <dt><code class="docutils literal"><span class="pre">absorption</span></code></dt>
 <dd><p class="first">A file containing several interesting calculations using tables of
 absorption coefficients. Here's an example:</p>
-<div class="last highlight-python"><div class="highlight"><pre><span class="c">## --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--</span>
-<span class="c">##  total mu*x=1:  8.160 microns,  unit edge step:  23.243 microns</span>
-<span class="c">##  specific gravity:  6.375</span>
-<span class="c">## --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--</span>
-<span class="c">##  normalization correction:     0.00046 ang^2</span>
-<span class="c">## --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--</span>
+<div class="last highlight-text"><div class="highlight"><pre><span></span>## --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+##  total mu*x=1:  8.160 microns,  unit edge step:  23.243 microns
+##  specific gravity:  6.375
+## --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+##  normalization correction:     0.00046 ang^2
+## --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
 </pre></div>
 </div>
 </dd>
 <dt><code class="docutils literal"><span class="pre">spacegroup</span></code></dt>
 <dd><p class="first">A file containing a description of the space group. Here's an
 example:</p>
-<div class="last highlight-python"><div class="highlight"><pre># title = YBCO: Y Ba2 Cu3 O7
+<div class="last highlight-python"><div class="highlight"><pre><span></span># title = YBCO: Y Ba2 Cu3 O7
 # space = P M M M
 # a     =   3.82300    b    =   3.88600    c     =  11.68100
 # alpha =  90.00000    beta =  90.00000    gamma =  90.00000
@@ -315,11 +314,19 @@ Spacegroup P M M M (#47)
 </pre></div>
 </div>
 </dd>
+<dt><code class="docutils literal"><span class="pre">xyz</span></code> and <code class="docutils literal"><span class="pre">alchemy</span></code></dt>
+<dd>These are two common formats for molecule visualization software.</dd>
+<dt><code class="docutils literal"><span class="pre">overfull</span></code></dt>
+<dd><p class="first">This is an <code class="docutils literal"><span class="pre">xyz</span></code> file containing the contents of the fully
+decorated unit cell, also including atoms that are near to all the
+corners, edges, and walls.  This helps to make a figure like this
+of a well-decorated unit cell:</p>
+<img alt="_images/fivesix-prussian-blue.png" src="_images/fivesix-prussian-blue.png" />
+<p class="last">The <font color="#636A24">♦Atoms→overfull_margin</font> parameter is used to set
+what is meant by “near” the remaining corners, edges, and
+walls.</p>
+</dd>
 </dl>
-<div class="admonition-todo admonition" id="index-2">
-<p class="first admonition-title">Todo</p>
-<p class="last">Show overfull, xyz, and alchemy output</p>
-</div>
 
 <br>
 
@@ -347,8 +354,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="intro.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data/index.html">2. The basics of data processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mue/index.html">3. Processing μ(E) data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="xanes/index.html">4. Analysis of XANES data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="highlevel/index.html">4. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xanes/index.html">5. Analysis of XANES data</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">6. Atoms</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#input-crystal-data">6.1. Input crystal data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#object-methods">6.2. Object methods</a></li>
@@ -362,6 +369,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="fit/index.html">10. Fitting EXAFS data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="perl.html">11. Using perl to structure a fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output.html">15. Output formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
@@ -369,14 +380,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -411,7 +424,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
           <a href="feff/index.html" title="7. Feff"
              >next</a></li>
         <li class="right" >
-          <a href="highlevel/methods.html" title="5.5. Other high level object methods"
+          <a href="xanes/diff.html" title="5.4. Difference spectra"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li> 
       </ul>

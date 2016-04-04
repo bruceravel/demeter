@@ -1,3 +1,8 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
+
 .. _splinerange_sec:
 
 Spline range in background removal
@@ -35,10 +40,8 @@ This shows an example of a change in the upper bound of the spline
 range.
 
 .. _fig-bkg_splinerange:
-
 .. figure:: ../../_images/bkg_splinerange.png
    :target: ../_images/bkg_splinerange.png
-   :width: 45%
    :align: center
 
    Gold foil data showing the effect of changing the upper end of the
@@ -52,5 +55,5 @@ spectrum in the plot.
 
 When you are working on data for which a good background removal is
 difficult, changing the spline range is one of the tricks you can pull
-out of your tool bag.
+out of your tool box.
 

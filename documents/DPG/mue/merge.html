@@ -59,21 +59,25 @@
 <p>Merging data is one of the essential data processing steps. As with
 every thing, <font size=-1 color="#8C4112">DEMETER</font> tries to make merging as easy as
 possible:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="k">my</span> <span class="nv">$merged</span> <span class="o">=</span> <span class="nv">$data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">merge</span><span class="p">(</span><span class="s">&#39;e&#39;</span><span class="p">,</span> <span class="nv">@data</span><span class="p">);</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="k">my</span> <span class="nv">$merged</span> <span class="o">=</span> <span class="nv">$data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">merge</span><span class="p">(</span><span class="s">&#39;e&#39;</span><span class="p">,</span> <span class="nv">@data</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>The first argument to the <code class="docutils literal"><span class="pre">merge</span></code> method specifies which spectrum is
 merged: <code class="docutils literal"><span class="pre">e</span></code> means to merge μ(E), <code class="docutils literal"><span class="pre">n</span></code> means to merge normalized
 μ(E), and <code class="docutils literal"><span class="pre">k</span></code> means to merge χ(k).</p>
-<p>Care is taken not to double count the caller. This is a convenience
-because, as shown above, you can pass an entire array which also
-contains the caller.</p>
+<p>The caller is included in the merge.  Care is taken not to double
+count the caller – if the caller will be removed from the argument
+list.  This is a convenience because, as shown above, you can simply
+pass an entire array which also contains the caller.</p>
 <p>The <code class="docutils literal"><span class="pre">merge</span></code> method returns a new Data object.</p>
-<p>Both of the plot types below (<code class="docutils literal"><span class="pre">stddev</span></code> and <code class="docutils literal"><span class="pre">varience</span></code>) plot ignore
-many setting of the Plot object in order to plot the data in the form in
-which it was merged. Attempting to plot the standard deviation or
-variance plots with a Data object that does not contain merged data will
-return as error.</p>
+<p>Both of the plot types below (<code class="docutils literal"><span class="pre">stddev</span></code> and <code class="docutils literal"><span class="pre">varience</span></code>) ignore many
+settings of the Plot object in order to plot the data in the form in
+which it was merged.  That is, <font size=-1 color="#8C4112">DEMETER</font> does not in any way
+propagate the uncertainty array through background removal or Fourier
+transforms.  Trying to make one of these plots in a space other than
+the merge space will not work.  Attempting to plot the standard
+deviation or variance plots with a Data object that does not contain
+merged data will return as error.</p>
 <div class="section" id="plot-merged-data-with-standard-deviation">
 <h2>3.2.1. Plot merged data with standard deviation<a class="headerlink" href="#plot-merged-data-with-standard-deviation" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-perl"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
@@ -95,7 +99,7 @@ return as error.</p>
 17
 18
 19
-20</pre></div></td><td class="code"><div class="highlight"><pre>   <span class="c1">#!/usr/bin/perl</span>
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span>   <span class="c1">#!/usr/bin/perl</span>
    <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
    <span class="k">my</span> <span class="nv">@common</span> <span class="o">=</span> <span class="p">(</span><span class="n">energy</span> <span class="o">=&gt;</span> <span class="s">&#39;$1&#39;</span><span class="p">,</span> <span class="n">numerator</span> <span class="o">=&gt;</span> <span class="s">&#39;$2&#39;</span><span class="p">,</span> <span class="n">denominator</span> <span class="o">=&gt;</span> <span class="s">&#39;$3&#39;</span><span class="p">,</span> <span class="n">ln</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,);</span>
    <span class="k">my</span> <span class="nv">$prj</span> <span class="o">=</span> <span class="nn">Demeter::Data::</span><span class="n">Prj</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span><span class="o">=&gt;</span><span class="s">&#39;U_DNA.prj&#39;</span><span class="p">);</span>
@@ -117,38 +121,34 @@ return as error.</p>
    <span class="nv">$merged</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;stddev&#39;</span><span class="p">);</span>
 </pre></div>
 </td></tr></table></div>
-<div class="figure align-left" id="id2">
+<div class="figure align-center" id="id1">
 <span id="fig-stddev"></span><a class="reference external image-reference" href="../_images/merge_stddev.png"><img alt="../_images/merge_stddev.png" src="../_images/merge_stddev.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 3.1 </span><span class="caption-text">This shows the merge of μ(E) of 3 iron foil scans along with
 the standard deviation array.</span></p>
 </div>
-
-<br clear="all">
 <p>The standard deviation has been added to and subtracted from the
 μ(E) spectrum, so the red trace is an error margin for the
 μ(E) spectrum. Note that this plot type can only be plotted using
-a Data object which contains the data from a merge. Trying to plot a
+a Data object which contains the data from a merge.  Trying to plot a
 non-merged Data object in this way will return a warning without
 plotting anything.</p>
 </div>
-<div class="section" id="id1">
-<h2>3.2.2. Plot merged data with standard deviation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<p>Change line 20 in the script shown above to this:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$merged</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;variance&#39;</span><span class="p">);</span>
+<div class="section" id="plot-merged-data-with-variance">
+<h2>3.2.2. Plot merged data with variance<a class="headerlink" href="#plot-merged-data-with-variance" title="Permalink to this headline">¶</a></h2>
+<p>Change line 20 in the script above to this:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$merged</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;variance&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
-<div class="figure align-left" id="id3">
+<div class="figure align-center" id="id2">
 <span id="fig-variance"></span><a class="reference external image-reference" href="../_images/merge_variance.png"><img alt="../_images/merge_variance.png" src="../_images/merge_variance.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 3.2 </span><span class="caption-text">This shows the merge of μ(E) of 3 iron foil scans along with
 the standard deviation array.</span></p>
 </div>
-
-<br clear="all">
 <p>The standard deviation has been scaled to plot with the μ(E)
-spectrum, with the scaling factor is given in the legend. This, then,
+spectrum, with the scaling factor is given in the legend.  This, then,
 is a way of visualizing how the standard deviation is distributed
-across the spectrum. Note that this plot type can only be plotted
-using a Data object which contains the data from a merge. Trying to
+across the spectrum.  Note that this plot type can only be plotted
+using a Data object which contains the data from a merge.  Trying to
 plot a non-merged Data object in this way will return a warning
 without plotting anything.</p>
 
@@ -190,8 +190,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l2"><a class="reference internal" href="dispersive.html">3.10. Processing dispersive XAS data</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
@@ -199,6 +199,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
@@ -206,14 +210,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 

@@ -1,3 +1,8 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
+
 
 Deglitching and truncating data
 ===============================
@@ -23,10 +28,8 @@ The process by which glitchy points are removed from the data is called
 deglitching. Yes, I also think that's a funny sounding word.
 
 .. _fig-deglitch:
-
 .. figure:: ../../_images/deglitch.png
    :target: ../../_images/deglitch.png
-   :width: 65%
    :align: center
 
    The deglitching tool.
@@ -48,16 +51,16 @@ memory. The data on disk are never altered.
 There are two methods of deglitching offered by :demeter:`athena`'s
 deglitching tool, shown above. The first involves selecting and
 removing the glitches one by one. The points are selected by clicking
-the :button:`Choose a point,light` button then clicking on the glitch in
-the plot. After clicking on the plot window, the selected point is
-indicated with an orange circle, as on the left of the next
-figure. Clicking the :button:`Remove point,light` button removes that
-point from the data, shown in the bottom panel.
+the :button:`Choose a point,light` button then :mark:`leftclick,..`
+double-clicking on the glitch in the plot. After :mark:`leftclick,..`
+double-clicking on the plot
+window, the selected point is indicated with an orange circle, as on
+the left of the next figure. Clicking the :button:`Remove point,light`
+button removes that point from the data, shown in the bottom panel.
 
 .. subfigstart::
 
 .. _fig-degplot:
-
 .. figure::  ../../_images/deglitch_plot.png
    :target: ../_images/deglitch_plot.png
    :width: 100%
@@ -68,7 +71,6 @@ point from the data, shown in the bottom panel.
    resulted in occasionally spikes in the data.
 
 .. _fig-degpoint:
-
 .. figure::  ../../_images/deglitch_point.png
    :target: ../_images/deglitch_point.png
    :width: 100%
@@ -77,7 +79,6 @@ point from the data, shown in the bottom panel.
    removal is indicated with a little orange circle.
 
 .. _fig-degpointremoved:
-
 .. figure::  ../../_images/deglitch_pointremoved.png
    :target: ../_images/deglitch_pointremoved.png
    :width: 100%
@@ -120,7 +121,6 @@ the data. In this figure we see |mu| (E) data for U\ :sub:`3`\ O\
 .. subfigstart::
 
 .. _fig-degchiemu:
-
 .. figure::  ../../_images/deglitch_chie_mu.png
    :target: ../_images/deglitch_chie_mu.png
    :width: 100%
@@ -129,7 +129,6 @@ the data. In this figure we see |mu| (E) data for U\ :sub:`3`\ O\
    hidden in the high energy region.
 
 .. _fig-degchiek:
-
 .. figure::  ../../_images/deglitch_chie_k.png
    :target: ../_images/deglitch_chie_k.png
    :width: 100%
@@ -138,7 +137,6 @@ the data. In this figure we see |mu| (E) data for U\ :sub:`3`\ O\
    these |chi| (k) data is clearly seen.
 
 .. _fig-degchie:
-
 .. figure::  ../../_images/deglitch_chie.png
    :target: ../_images/deglitch_chie.png
    :width: 100%
@@ -157,8 +155,9 @@ identical to how it used with |mu| (E) data. The advantage is that
 small glitches might be easier to see and to pluck from the data when
 the data is plotted as |chi| (E). The point-by-point deglitching
 algorithm works on the |chi| (E) data in the same manner as for
-|mu| (E) data. Points are selected by clicking on the plot, then
-removed by clicking the :button:`Remove point,light` button.
+|mu| (E) data. Points are selected by :mark:`leftclick,..`
+double-clicking on the plot, then removed by clicking the
+:button:`Remove point,light` button.
 
 
 
@@ -175,10 +174,8 @@ chosen by typing in the box or by using `the pluck button
 <../ui/pluck.html>`__.
 
 .. _fig-trunplot:
-
 .. figure:: ../../_images/truncate_plot.png
    :target: ../_images/truncate_plot.png
-   :width: 45%
    :align: center
 
    Tin oxide data with some spurious points near the end of the scan.
@@ -195,10 +192,8 @@ Ba L\ :sub:`III` edge is at 5247 eV. A careless choice of spline and
 normalization range will lead to a data processing disaster.
 
 .. _fig-trunbto:
-
 .. figure:: ../../_images/truncate_batio3.png
    :target: ../_images/truncate_batio3.png
-   :width: 45%
    :align: center
 
    The Ti K and Ba L\ :sub:`III` edges of BaTiO\ :sub:`3`.

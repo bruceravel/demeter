@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.4. Config object &mdash; Demeter Programming Guide 0.9.24 documentation</title>
+    <title>4.4. Config object &mdash; Demeter Programming Guide 0.9.24 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -25,9 +25,9 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
     <link rel="top" title="Demeter Programming Guide 0.9.24 documentation" href="../index.html" />
-    <link rel="up" title="5. High level actions of the object model" href="index.html" />
-    <link rel="next" title="5.5. Other high level object methods" href="methods.html" />
-    <link rel="prev" title="5.3. Plot object" href="plot.html" />
+    <link rel="up" title="4. High level actions of the object model" href="index.html" />
+    <link rel="next" title="4.5. Other high level object methods" href="methods.html" />
+    <link rel="prev" title="4.3. Plot object" href="plot.html" />
 
     <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
@@ -39,13 +39,13 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="methods.html" title="5.5. Other high level object methods"
+          <a href="methods.html" title="4.5. Other high level object methods"
              accesskey="N">next</a></li>
         <li class="right" >
-          <a href="plot.html" title="5.3. Plot object"
+          <a href="plot.html" title="4.3. Plot object"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">5. High level actions of the object model</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">4. High level actions of the object model</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -55,35 +55,33 @@
           <div class="body" role="main">
             
   <div class="section" id="config-object">
-<h1>5.4. Config object<a class="headerlink" href="#config-object" title="Permalink to this headline">¶</a></h1>
-<p>The Config object is a <a class="reference external" href="http://en.wikipedia.org/wiki/Singleton_pattern">singleton
-object</a> which is used
-to contain all of <font size=-1 color="#8C4112">DEMETER</font>'s configuration parameters as well as
-providing an simple way for user-defined parameters to be stored and
-made available to the <a class="reference external" href="dispose.html">templating system</a>.</p>
+<h1>4.4. Config object<a class="headerlink" href="#config-object" title="Permalink to this headline">¶</a></h1>
+<p>The Config object contains all of <font size=-1 color="#8C4112">DEMETER</font>'s configuration
+parameters as well as providing an simple way for user-defined
+parameters to be stored and made available to the <a class="reference external" href="dispose.html">templating system</a>.</p>
 <p>At start-up, <font size=-1 color="#8C4112">DEMETER</font> reads the <font size=-1 color="#8C4112">DEMETER</font>
-configuration files, then updates those values from the demeter.ini
-file, which is stored in <code class="file docutils literal"><span class="pre">$HOME/.horae</span></code> on unix systems and in
-<code class="file docutils literal"><span class="pre">%APPDATA%/demeter</span></code> on Windows systems.</p>
+configuration files, then updates those values from the
+<code class="file docutils literal"><span class="pre">demeter.ini</span></code> file, which is stored in <code class="file docutils literal"><span class="pre">$HOME/.horae</span></code> on
+unix systems and in <code class="file docutils literal"><span class="pre">%APPDATA%/demeter</span></code> on Windows systems.</p>
 <p>To make the Config object readily accessible at all times in your
 program, the <code class="docutils literal"><span class="pre">co</span></code> method is a method of the base class and is
-inherited by all <font size=-1 color="#8C4112">DEMETER</font> objects. Thus, given any object,
+inherited by all <font size=-1 color="#8C4112">DEMETER</font> objects.  Thus, given any object,
 you can “find” the Config object like so:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$the_config_object</span> <span class="o">=</span> <span class="nv">$any_object</span> <span class="o">-&gt;</span> <span class="n">co</span><span class="p">;</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$the_config_object</span> <span class="o">=</span> <span class="nv">$any_object</span> <span class="o">-&gt;</span> <span class="n">co</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>Any method of the plot object is easily called by chaining with the
-<code class="docutils literal"><span class="pre">co</span></code> method. For example to get the configured default value for the
+<code class="docutils literal"><span class="pre">co</span></code> method.  For example to get the configured default value for the
 <code class="docutils literal"><span class="pre">bkg_rbkg</span></code> attribute of the Data object, you do this</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$any_object</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">default</span><span class="p">(</span><span class="s">&#39;bkg&#39;</span><span class="p">,</span> <span class="s">&#39;rbkg&#39;</span><span class="p">);</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$any_object</span> <span class="o">-&gt;</span> <span class="n">co</span> <span class="o">-&gt;</span> <span class="n">default</span><span class="p">(</span><span class="s">&#39;bkg&#39;</span><span class="p">,</span> <span class="s">&#39;rbkg&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
 <div class="section" id="the-configuration-file-format">
-<h2>5.4.1. The configuration file format<a class="headerlink" href="#the-configuration-file-format" title="Permalink to this headline">¶</a></h2>
+<h2>4.4.1. The configuration file format<a class="headerlink" href="#the-configuration-file-format" title="Permalink to this headline">¶</a></h2>
 <p>This is the configuration file for the parameters controlling the
 back-Fourier transform of data. The format of the file is somewhat rigid
 in order to simplify the parsing of these files.</p>
-<div class="highlight-text"><div class="highlight"><pre>######################################################################
+<div class="highlight-text"><div class="highlight"><pre><span></span>######################################################################
 section=bft
 section_description
   These parameters determine how backward Fourier transforms
@@ -123,16 +121,16 @@ description
 </div>
 </div>
 <div class="section" id="user-defined-configuration-files">
-<h2>5.4.2. User-defined configuration files<a class="headerlink" href="#user-defined-configuration-files" title="Permalink to this headline">¶</a></h2>
+<h2>4.4.2. User-defined configuration files<a class="headerlink" href="#user-defined-configuration-files" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="using-and-resetting-configuration-parameters">
-<h2>5.4.3. Using and resetting configuration parameters<a class="headerlink" href="#using-and-resetting-configuration-parameters" title="Permalink to this headline">¶</a></h2>
+<h2>4.4.3. Using and resetting configuration parameters<a class="headerlink" href="#using-and-resetting-configuration-parameters" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="the-config-object-and-the-templating-system">
-<h2>5.4.4. The Config object and the templating system<a class="headerlink" href="#the-config-object-and-the-templating-system" title="Permalink to this headline">¶</a></h2>
+<h2>4.4.4. The Config object and the templating system<a class="headerlink" href="#the-config-object-and-the-templating-system" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="wxwidgets-and-the-configuration-system">
-<h2>5.4.5. WxWidgets and the configuration system<a class="headerlink" href="#wxwidgets-and-the-configuration-system" title="Permalink to this headline">¶</a></h2>
+<h2>4.4.5. WxWidgets and the configuration system<a class="headerlink" href="#wxwidgets-and-the-configuration-system" title="Permalink to this headline">¶</a></h2>
 
 <br>
 
@@ -160,15 +158,15 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">5. High level actions of the object model</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="dispose.html">5.1. Command disposal and command templates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mode.html">5.2. Mode object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html">5.3. Plot object</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">5.4. Config object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="methods.html">5.5. Other high level object methods</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">4. High level actions of the object model</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="dispose.html">4.1. Command disposal and command templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mode.html">4.2. Mode object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html">4.3. Plot object</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">4.4. Config object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="methods.html">4.5. Other high level object methods</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
@@ -176,6 +174,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
@@ -183,14 +185,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -222,13 +226,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="methods.html" title="5.5. Other high level object methods"
+          <a href="methods.html" title="4.5. Other high level object methods"
              >next</a></li>
         <li class="right" >
-          <a href="plot.html" title="5.3. Plot object"
+          <a href="plot.html" title="4.3. Plot object"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >5. High level actions of the object model</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="index.html" >4. High level actions of the object model</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

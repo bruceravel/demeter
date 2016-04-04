@@ -1,6 +1,10 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
 
-Data analysis in ATHENA
-=======================
+Data analysis
+=============
 
 :demeter:`athena` provides various kinds of data analysis. None of the
 data analysis capabilities in :demeter:`athena` require the use of
@@ -19,10 +23,11 @@ section of the main menu, as shown below.
 
 .. figure:: ../../_images/analysis.png
    :target: ../_images/analysis.png
-   :width: 65%
    :align: center
 
    The data analysis tools in the main menu.
+
+----------------
 
 .. toctree::
    :maxdepth: 2

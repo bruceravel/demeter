@@ -29,7 +29,7 @@
     <link rel="next" title="9.3. Merging data groups" href="merge.html" />
     <link rel="prev" title="9.1. Calibrating data groups" href="cal.html" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
     <link rel="stylesheet" type="text/css" href="../_static/program.css" />
 
@@ -39,11 +39,8 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
           <a href="merge.html" title="9.3. Merging data groups"
-             accesskey="N">next</a> |</li>
+             accesskey="N">next</a></li>
         <li class="right" >
           <a href="cal.html" title="9.1. Calibrating data groups"
              accesskey="P">previous</a> |</li>
@@ -60,8 +57,8 @@
   <div class="section" id="aligning-data-groups">
 <h1>9.2. Aligning data groups<a class="headerlink" href="#aligning-data-groups" title="Permalink to this headline">¶</a></h1>
 <p>Aligning data is the process of moving a data group in energy onto an
-absolute energy grid defined by some standard. In <font size=-1 color="#033B0A">ATHENA</font> that standard
-is chosen fairly arbitrarily -- it is simply one of the other groups in
+absolute energy grid defined by some standard. In <font size=-1 color="#8C4112">ATHENA</font> that standard
+is chosen fairly arbitrarily – it is simply one of the other groups in
 the group list. The alignment is done by adjusting the <tt><font color="#387A38">«Energy shift»</font></tt>
 parameter.</p>
 <p>This adjustment can be done simply by manually editing the
@@ -74,7 +71,7 @@ displayed via the context menu attached to the
 <tt><font color="#387A38">«Energy shift»</font></tt> label on the main page.</p>
 </div>
 <div class="figure align-center" id="id1">
-<span id="fig-align"></span><a class="reference external image-reference" href="../_images/align.png"><img alt="../_images/align.png" src="../_images/align.png" style="width: 65%;" /></a>
+<span id="fig-align"></span><a class="reference external image-reference" href="../_images/align.png"><img alt="../_images/align.png" src="../_images/align.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 9.4 </span><span class="caption-text">The data alignment tool.</span></p>
 </div>
 <p>There are several variations on how the alignment is performed and
@@ -84,7 +81,7 @@ plot), or the smoothed derivative of μ(E). A three-point smoothing
 function is applied three times to the derivative of the μ(E) if
 that plotting option is selected.</p>
 <div class="figure align-center" id="id2">
-<span id="fig-alignplot"></span><a class="reference external image-reference" href="../_images/align_plot.png"><img alt="../_images/align_plot.png" src="../_images/align_plot.png" style="width: 45%;" /></a>
+<span id="fig-alignplot"></span><a class="reference external image-reference" href="../_images/align_plot.png"><img alt="../_images/align_plot.png" src="../_images/align_plot.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 9.5 </span><span class="caption-text">As you work on aligning your data, the current data group is
 plotted along with the standard. This gives you visual feedback on
 how well your data are aligned.</span></p>
@@ -130,7 +127,7 @@ important for comparing edge energies in XANES studies.</p>
 <div class="admonition caution">
 <p class="first admonition-title">Caution</p>
 <p class="last">It is very important to align your data well. Many other
-parts of <font size=-1 color="#033B0A">ATHENA</font> assume that you have already
+parts of <font size=-1 color="#8C4112">ATHENA</font> assume that you have already
 done a good job of aligning the data. <a class="reference external" href="../process/merge.html">Merging</a> and <a class="reference external" href="../analysis/lcf.html">linear combination
 fitting</a> are examples of this.</p>
 </div>
@@ -150,10 +147,10 @@ sufficient to prepare my data for merging and further analysis.</p>
 
 <br>
 <hr class="docutils" />
-<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
-copyright © 2015 Bruce Ravel</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
 <p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
-<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
 consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
 </div>
 
@@ -171,10 +168,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and background removal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">9. Data processing</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="cal.html">9.1. Calibrating data groups</a></li>
@@ -192,21 +189,27 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l2"><a class="reference internal" href="sum.html">9.13. Data summation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
-<h3>Links</h3>
+<h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -238,11 +241,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
           <a href="merge.html" title="9.3. Merging data groups"
-             >next</a> |</li>
+             >next</a></li>
         <li class="right" >
           <a href="cal.html" title="9.1. Calibrating data groups"
              >previous</a> |</li>
@@ -251,7 +251,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

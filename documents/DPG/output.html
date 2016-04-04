@@ -1,0 +1,408 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>15. Output formats &mdash; Demeter Programming Guide 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/wheat.ico"/>
+    <link rel="top" title="Demeter Programming Guide 0.9.24 documentation" href="index.html" />
+    <link rel="next" title="16. Full examples" href="examples/index.html" />
+    <link rel="prev" title="14. User interfaces" href="ui.html" />
+
+    <link rel="stylesheet" type="text/css" href="_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="examples/index.html" title="16. Full examples"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="ui.html" title="14. User interfaces"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="output-formats">
+<h1>15. Output formats<a class="headerlink" href="#output-formats" title="Permalink to this headline">¶</a></h1>
+<p><font size=-1 color="#8C4112">DEMETER</font> offers a large number of output formats for the
+various kinds of data handled by the various kinds of objects.</p>
+<div class="section" id="single-object-column-data-files">
+<h2>15.1. Single object column data files<a class="headerlink" href="#single-object-column-data-files" title="Permalink to this headline">¶</a></h2>
+<p>There are a number of ways to save Data, Path, and path-like objects
+into column data files that can be plotted using other plotting programs
+or imported into a spreadsheet program.</p>
+<p>The available single object output types are:</p>
+<dl class="docutils">
+<dt><strong>xmu</strong></dt>
+<dd>This file has 7 columns : energy, data as μ(E), background,
+pre-edge, post-edge line, derivative, and second derivative for a
+Data object.</dd>
+<dt><strong>norm</strong></dt>
+<dd>This file has 7 columns: energy, data as normalized μ(E), normalized
+background, flattened μ(E), flattened background, derivative of the
+normalized μ(E), and second derivative of the normalized μ(E) for a
+Data object.</dd>
+<dt><strong>chi</strong></dt>
+<dd>This file has 6 columns: wavenumber, χ(k), k χ(k),
+k<sup>2</sup> χ(k), k<sup>3</sup> χ(k),
+and the window function in k for a Data, Path, or pathlike object.</dd>
+<dt><strong>r</strong></dt>
+<dd>This file has 6 columns: R, real part of χ(R), imaginary part,
+magnitude, phase, and the window function in R for a Data, Path, or
+pathlike object. The current value of k-weighting in the Plot object
+is used to generate the data for this file.</dd>
+<dt><strong>q</strong></dt>
+<dd>This file has 6 columns: q, real part of χ(q), imaginary part,
+magnitude, phase, and the window function in k for a Data, Path, or
+pathlike object. The current value of k-weighting in the Plot object
+is used to generate the data for this file.</dd>
+</dl>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data_object</span> <span class="o">-&gt;</span> <span class="n">save</span><span class="p">(</span><span class="s">&#39;xmu&#39;</span><span class="p">,</span>  <span class="s">&#39;myfit.dat&#39;</span><span class="p">)</span>
+<span class="nv">$path_object</span> <span class="o">-&gt;</span> <span class="n">save</span><span class="p">(</span><span class="s">&#39;chir&#39;</span><span class="p">,</span> <span class="s">&#39;mypath.dat&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="column-data-file-headers">
+<h3>15.1.1. Column data file headers<a class="headerlink" href="#column-data-file-headers" title="Permalink to this headline">¶</a></h3>
+<p>The header of the fit and bkgsub file types is generated using the
+<code class="docutils literal"><span class="pre">data_parameter_report</span></code> method which, in turn, takes its formatting
+from the data_report.tmpl <a class="reference external" href="highlevel/dispose.html">template file</a>.</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">The following is out of date, now using XDI headers</p>
+</div>
+<p>This line of code:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="k">print</span> <span class="nv">$data_object</span> <span class="o">-&gt;</span> <span class="n">data_parameter_report</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>generates this text:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>.  Element=Au   Edge=l3
+Background parameters
+.  E0=11919.166  Eshift=0  Rbkg=1.6
+.  Standard=None
+.  k-weight=1  Edge step=0.8548872
+.  Fixed step=no    Flatten=yes
+.  Pre-edge range: [ -150 : -30 ]
+.  Pre-edge line: 2.404416 - 0.000174619 * energy
+.  Normalization range: [ 150 : 869.877293080001 ]
+.  Post-edge polynomial: 4.337632 - 0.000197019 * en - 5.71097e-09 * en^2
+.  Spline range (energy): [ 0.000 : 969.877 ]   Clamps: 0/24
+.  Spline range (k): [ 0.000 : 15.955 ]
+Foreward FT parameters
+.  Kweight=1   Window=kaiser-bessel   Phase correction=0
+.  k-range: [ 2 : 13 ]   dk=1
+Backward FT parameters
+.  R-range: [ 1 : 3 ]
+.  dR=0.2   Window=kaiser-bessel
+Plotting parameters
+.  Multiplier=1   Y-offset=0.0000
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="fit-result-column-data-files">
+<h2>15.2. Fit result column data files<a class="headerlink" href="#fit-result-column-data-files" title="Permalink to this headline">¶</a></h2>
+<p>The results of a fit can be saved in one of two special column data
+files:</p>
+<dl class="docutils">
+<dt><strong>fit</strong></dt>
+<dd>This file of 5 or 6 columns uses the fitting space for the first
+column (i.e. wavenumber for a fit in k or q; distance for a fit in
+R), followed by the data, the fit, the residual, the background if
+it was fitted, and the appropriate window function. This is only for
+a Data object that has been used in a fit.</dd>
+<dt><strong>bkgsub</strong></dt>
+<dd>This file has 3 columns: k, χ(k) with the background function
+subtracted, and the k-space window. This is only for a Data object
+that has been used in a fit.</dd>
+</dl>
+<p>The <code class="docutils literal"><span class="pre">save</span></code> method takes an additional argument used only for the fit
+type. It specifies what form of the data and the other parts to write to
+the file. It can take a value of <code class="docutils literal"><span class="pre">k</span></code>, <code class="docutils literal"><span class="pre">k1</span></code>, <code class="docutils literal"><span class="pre">k2</span></code>, <code class="docutils literal"><span class="pre">k3</span></code>,
+<code class="docutils literal"><span class="pre">rmag</span></code>, <code class="docutils literal"><span class="pre">rre</span></code>, <code class="docutils literal"><span class="pre">rim</span></code>, <code class="docutils literal"><span class="pre">qmag</span></code>, <code class="docutils literal"><span class="pre">qre</span></code>, or <code class="docutils literal"><span class="pre">qim</span></code> to indicate
+the space, the k-weighting for k-space output, or the part of the
+complex function for R- or q-space output. The default (no argument) is
+<code class="docutils literal"><span class="pre">k</span></code>, i.e. un-k-weighted χ(k).</p>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$dobject</span><span class="o">-&gt;</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;fit&quot;</span><span class="p">,</span> <span class="s">&quot;cufit.fit&quot;</span><span class="p">);</span>
+<span class="nv">$dobject</span><span class="o">-&gt;</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;fit&quot;</span><span class="p">,</span> <span class="s">&quot;rmag.fit&quot;</span><span class="p">,</span> <span class="s">&#39;rmag&#39;</span><span class="p">);</span>
+<span class="nv">$dobject</span><span class="o">-&gt;</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;fit&quot;</span><span class="p">,</span> <span class="s">&quot;rre.fit&quot;</span><span class="p">,</span> <span class="s">&#39;rre&#39;</span><span class="p">);</span>
+<span class="nv">$dobject</span><span class="o">-&gt;</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;fit&quot;</span><span class="p">,</span> <span class="s">&quot;rim.fit&quot;</span><span class="p">,</span> <span class="s">&#39;rim&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="section" id="id1">
+<h3>15.2.1. Column data file headers<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>The header of the fit and bkgsub file types is generated using the
+<code class="docutils literal"><span class="pre">fit_parameter_report</span></code> method which, in turn, takes its formatting
+from the fit_report.tmpl <a class="reference external" href="highlevel/dispose.html">template file</a>.</p>
+<p>This line of code:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="k">print</span> <span class="nv">$data_object</span> <span class="o">-&gt;</span> <span class="n">fit_parameter_report</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>generates this text:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>Demeter fit file -- Demeter 0.4.1
+: file                = cu10k.chi
+: name                = My copper data
+: k-range             = 3.000 - 14.000
+: dk                  = 1
+: k-window            = hanning
+: k-weight            = 1,2,3
+: R-range             = 1.6 - 4.3
+: dR                  = 0.0
+: R-window            = hanning
+: fitting space       = r
+: background function = no
+: phase correction    = 0
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="multiple-object-column-data-files">
+<h2>15.3. Multiple object column data files<a class="headerlink" href="#multiple-object-column-data-files" title="Permalink to this headline">¶</a></h2>
+<p><font size=-1 color="#8C4112">DEMETER</font> offers the <code class="docutils literal"><span class="pre">save_many</span></code> method as a way to export
+many Data, Path, and pathlike objects to a single column data file
+which can be easily imported into a plotting or spreadsheet
+program. The x-axis of the export space will be in the first column,
+followed by one column for each object exported. Those columns will be
+in the order specified in the method call.</p>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">save_many</span><span class="p">(</span><span class="s">&quot;many.out&quot;</span><span class="p">,</span> <span class="s">&#39;chik3&#39;</span><span class="p">,</span> <span class="nv">$paths</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nv">$paths</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nv">$carbon</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The first argument is the output file name. The second argument is the
+kind of data to write out (see the list below). The remaining arguments
+are Data, Path, or pathlike objects to wrtie to the file. The calling
+object (which san be any Data, Path, or pathlike object) will be added
+to the front of the list of objects to export. Care is taken not to
+export the caller twice if it also appears in the argument list and the
+caller appears in the second column of the output file.</p>
+<p>Every item in the list is interpolated (if necessary) to the grid of the
+caller.</p>
+<p>The available types are as follows (note that trying to write energy
+data with Path or pathlike objects in the argument list will trigger an
+error):</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">xmu</span></code>: save μ(E) for all objects in the argument list.</li>
+<li><code class="docutils literal"><span class="pre">norm</span></code>: save normalized μ(E) for all objects in the argument list.</li>
+<li><code class="docutils literal"><span class="pre">der</span></code>: save the derivative of μ(E) for all objects in the argument
+list.</li>
+<li><code class="docutils literal"><span class="pre">nder</span></code>: save the derivative of normalized μ(E) for all objects in
+the argument list.</li>
+<li><code class="docutils literal"><span class="pre">sec</span></code>: save the second derivative of μ(E) for all objects in the
+argument list.</li>
+<li><code class="docutils literal"><span class="pre">nsec</span></code>: save the second derivative of normalized μ(E) for all
+objects in the argument list.</li>
+<li><code class="docutils literal"><span class="pre">chi</span></code>: save unweighted χ(k) for all objects in the argument list.</li>
+<li><code class="docutils literal"><span class="pre">chik</span></code>: save k<sup>1</sup>-weighted χ(k) for all objects in the argument list.</li>
+<li><code class="docutils literal"><span class="pre">chik2</span></code>: save k<sup>2</sup>-weighted χ(k) for all objects in the argument
+list.</li>
+<li><code class="docutils literal"><span class="pre">chik3</span></code>: save k<sup>3</sup>-weighted χ(k) for all objects in the argument
+list.</li>
+<li><code class="docutils literal"><span class="pre">chir_mag</span></code>: save the magnitude of χ(R) for all objects in the
+argument list.</li>
+<li><code class="docutils literal"><span class="pre">chir_re</span></code>: save the real part of χ(R) for all objects in the
+argument list.</li>
+<li><code class="docutils literal"><span class="pre">chir_im</span></code>: save the imaginary part of χ(R) for all objects in the
+argument list.</li>
+<li><code class="docutils literal"><span class="pre">chiq_mag</span></code>: save the magnitude of χ(q) for all objects in the
+argument list.</li>
+<li><code class="docutils literal"><span class="pre">chiq_re</span></code>: save the real part of χ(q) for all objects in the
+argument list.</li>
+<li><code class="docutils literal"><span class="pre">chiq_im</span></code>: save the imaginary part of χ(q) for all objects in the
+argument list.</li>
+</ul>
+</div>
+<div class="section" id="athena-project-files">
+<h2>15.4. Athena project files<a class="headerlink" href="#athena-project-files" title="Permalink to this headline">¶</a></h2>
+<p>You can export an <font size=-1 color="#8C4112">ATHENA</font> project files from a group of data
+objects like so:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">write_athena</span><span class="p">(</span><span class="s">&quot;myproject.prj&quot;</span><span class="p">,</span> <span class="nv">@list_of_data</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The first argument is the filename for the project file. This is
+followed by a list additional data objects to export. The caller will be
+the first group in the project file, followed by the addition data in
+the order supplied. If the caller is also in the list, it will not be
+written twice to the project file.</p>
+<p>This is, in every way, a normal <font size=-1 color="#8C4112">ATHENA</font> project file that
+can be imported by <font size=-1 color="#8C4112">ATHENA</font> or <font size=-1 color="#8C4112">ARTEMIS</font>.</p>
+</div>
+<div class="section" id="serialization-files">
+<h2>15.5. Serialization files<a class="headerlink" href="#serialization-files" title="Permalink to this headline">¶</a></h2>
+<p>Every <font size=-1 color="#8C4112">DEMETER</font> object type has a serialization format. The purpose of
+this is to freeze the state of an object to disk in a form that can be
+easily reimported to recover the state of the object.</p>
+<p>These files use the <a class="reference external" href="http://www.yaml.org/">YAML data serialization</a>
+format. YAML is a fairly simple, text-only way of recording state of
+an object. Although you should never need to do so, you can examine or
+even edit a YAML file with any text editor. To save a little space,
+<font size=-1 color="#8C4112">DEMETER</font> compresses the files using the same algorithm as
+the <a class="reference external" href="http://www.gzip.org/">gzip program</a>. This kind of compressed
+file can be read by most compression or archiving programs on all
+platforms.</p>
+<p>An object is written to a yaml file using the <code class="docutils literal"><span class="pre">freeze</span></code> method. It's
+argument is the name of the output file.</p>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">freeze</span><span class="p">(</span><span class="s">&quot;data.yaml&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>You can import one of these serialization using the <code class="docutils literal"><span class="pre">thaw</span></code> method.
+It's argument is the name of the file to import. It returns the object.</p>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$new_object</span> <span class="o">=</span> <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">thaw</span><span class="p">(</span><span class="s">&quot;data.yaml&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="log-files">
+<h2>15.6. Log files<a class="headerlink" href="#log-files" title="Permalink to this headline">¶</a></h2>
+<p>The Fit object has a <code class="docutils literal"><span class="pre">logfile</span></code> method.</p>
+</div>
+<div class="section" id="project-files">
+<h2>15.7. Project files<a class="headerlink" href="#project-files" title="Permalink to this headline">¶</a></h2>
+<p>Project files are zip files filled with YAML files and other things.</p>
+</div>
+<div class="section" id="atoms-and-feff-i-o">
+<h2>15.8. Atoms and feff I/O<a class="headerlink" href="#atoms-and-feff-i-o" title="Permalink to this headline">¶</a></h2>
+<p><font size=-1 color="#8C4112">ATOMS</font> and <font size=-1 color="#8C4112">FEFF</font> I/O</p>
+</div>
+<div class="section" id="scripts">
+<h2>15.9. Scripts<a class="headerlink" href="#scripts" title="Permalink to this headline">¶</a></h2>
+<p><font size=-1 color="#8C4112">DEMETER</font> and <font size=-1 color="#8C4112">IFEFFIT</font> scripts</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/Isis-Sothis-Demeter_sm.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data/index.html">2. The basics of data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mue/index.html">3. Processing μ(E) data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="highlevel/index.html">4. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xanes/index.html">5. Analysis of XANES data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atoms.html">6. Atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="feff/index.html">7. Feff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="paths/index.html">8. Scattering paths</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gds.html">9. Guess/Def/Set Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fit/index.html">10. Fitting EXAFS data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="perl.html">11. Using perl to structure a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ui.html">14. User interfaces</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">15. Output formats</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#single-object-column-data-files">15.1. Single object column data files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fit-result-column-data-files">15.2. Fit result column data files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multiple-object-column-data-files">15.3. Multiple object column data files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#athena-project-files">15.4. Athena project files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#serialization-files">15.5. Serialization files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#log-files">15.6. Log files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#project-files">15.7. Project files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#atoms-and-feff-i-o">15.8. Atoms and feff I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scripts">15.9. Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">16. Full examples</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/output.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="examples/index.html" title="16. Full examples"
+             >next</a></li>
+        <li class="right" >
+          <a href="ui.html" title="14. User interfaces"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

@@ -72,20 +72,25 @@ stealthy way that should require the attention of the programmer using
 <p>Creating a Feff object and populating it with the contents of a
 <code class="file docutils literal"><span class="pre">feff.inp</span></code> file is done in a way that should be quite familiar
 at this point:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
-<span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+<div class="highlight-perl"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
+ <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
-<span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Feff</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;feff/feff.inp&quot;</span><span class="p">);</span>
-<span class="nv">$feff</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="n">workspace</span><span class="o">=&gt;</span><span class="s">&quot;feff/&quot;</span><span class="p">,</span> <span class="n">screen</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Feff</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;feff/feff.inp&quot;</span><span class="p">);</span>
+ <span class="nv">$feff</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="n">workspace</span><span class="o">=&gt;</span><span class="s">&quot;feff/&quot;</span><span class="p">,</span> <span class="n">screen</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">);</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 <p>Because <font size=-1 color="#8C4112">FEFF</font> is heavily dependent on disk-based IO to do
 its work, you must specify a <code class="docutils literal"><span class="pre">workspace</span></code>. This is a directory on
 disk where the various files that <font size=-1 color="#8C4112">FEFF</font> needs to do its
 business can be written. In the example that will be running through
 this section, that workspace is a subdirectory called <code class="file docutils literal"><span class="pre">feff/</span></code>.</p>
 <p>The <code class="docutils literal"><span class="pre">screen</span></code> attribute is a boolean which will suppress the messages
-the FEFF would normally write to standard output when set to 0.</p>
+that <font size=-1 color="#8C4112">FEFF</font> would normally write to standard output when set
+to 0.</p>
 <p>When the <code class="docutils literal"><span class="pre">file</span></code> attribute is set, that input file will be parsed and
 its contents stored as attributes of the Feff object. At this point, the
 new Feff object is fully instrumented and ready to start being used for
@@ -100,18 +105,23 @@ also allows you to skip the step fo explicitly writing the
 the Feff object, you can set the <code class="docutils literal"><span class="pre">atoms</span></code> attribute to an Atoms
 object.  The <code class="file docutils literal"><span class="pre">feff.inp</span></code> still gets generated, but it is done
 behind the scenes using a temporary file that is quickly discarded.</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
-<span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+<div class="highlight-perl"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
+ <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
-<span class="k">my</span> <span class="nv">$atoms</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Atoms</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&#39;atoms.inp&#39;</span><span class="p">);</span>
-<span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Feff</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">atoms</span> <span class="o">=&gt;</span> <span class="nv">$atoms</span><span class="p">);</span>
-<span class="nv">$feff</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="n">workspace</span><span class="o">=&gt;</span><span class="s">&quot;feff/&quot;</span><span class="p">,</span> <span class="n">screen</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$atoms</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Atoms</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&#39;atoms.inp&#39;</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Feff</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">atoms</span> <span class="o">=&gt;</span> <span class="nv">$atoms</span><span class="p">);</span>
+ <span class="nv">$feff</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="n">workspace</span><span class="o">=&gt;</span><span class="s">&quot;feff/&quot;</span><span class="p">,</span> <span class="n">screen</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">);</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 <p>When the <code class="docutils literal"><span class="pre">atoms</span></code> attribute is set, the <code class="file docutils literal"><span class="pre">feff.inp</span></code> file is created,
 parsed, then deleted. Its contents are stored as attributes of the Feff
 object. At this point, the new Feff object is fully instrumented and
-ready to start being used for interesting work.</p>
+ready to be used for interesting work.</p>
 <p>This approach is convenient in any situation for which you do not need
 to modify <font size=-1 color="#8C4112">FEFF</font> input data in any way from the form that the
 <font size=-1 color="#8C4112">ATOMS</font> calculation generates. In that situation, this
@@ -153,8 +163,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">7. Feff</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="">7.1. Input data for Feff</a></li>
@@ -168,6 +178,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
@@ -175,14 +189,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 

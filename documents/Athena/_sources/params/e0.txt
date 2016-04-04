@@ -1,3 +1,7 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
 
 Setting E0
 ==========
@@ -29,9 +33,9 @@ algorithm.
 The `calibration <../process/cal.html>`__ and `alignment
 <../process/align.html>`__ tools can be used to refine the values for
 :procparam:`e0`. You can also edit its value directly by typing in its
-entry box. The right-click context menu for :procparam:`e0` and the
-:guilabel:`Energy` menu have several options for other ways of setting
-:procparam:`e0`.
+entry box. The :mark:`rightclick,..` right-click context menu for
+:procparam:`e0` and the :guilabel:`Energy` menu have several options
+for other ways of setting :procparam:`e0`.
 
 There are a few situations where the default algorithm will fail. Very
 noisy data can result in a spurious identification of
@@ -41,13 +45,9 @@ chosen. Materials with huge edge peaks, such as K\ :sub:`2`\ CrO\
 :sub:`4`, will have a point in the leading edge of the peak chosen
 rather than a point in the main edge.
 
-.. versionadded:: 0.9.18
-		  features related to E\ :sub:`0` moved from the Group
-		  menu to the Energy menu.
+.. versionadded:: 0.9.18 features related to E\ :sub:`0` moved from
+   the :guilabel:`Group` menu to the :guilabel:`Energy` menu.
 
-
-Other ways of setting e0
-------------------------
 
 Aside from the default method described above, :demeter:`athena`
 offers a few other algorithms for setting :procparam:`E0`.

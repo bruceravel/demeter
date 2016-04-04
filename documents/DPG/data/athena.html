@@ -69,7 +69,7 @@ lexical analysis of the project file. Methods of the <a class="reference externa
 are then used to generate Data objects. Here is a simple example of
 extracting the first record from a project file and creating a Data
 object from that record.</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/perl</span>
 <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
 <span class="k">my</span> <span class="nv">$prj</span> <span class="o">=</span> <span class="nn">Demeter::Data::</span><span class="n">Prj</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span><span class="o">=&gt;</span><span class="s">&#39;iron_data.prj&#39;</span><span class="p">);</span>
@@ -78,15 +78,15 @@ object from that record.</p>
 </pre></div>
 </div>
 <p>The <code class="docutils literal"><span class="pre">$data</span></code> scalar contains a Data object. Internally, the <code class="docutils literal"><span class="pre">record</span></code>
-method does the following</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">();</span>
+method does the following behind the scenes:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">();</span>
 </pre></div>
 </div>
-<p>setting attributes appropriately and pushing the associated data arrays
-into <font size=-1 color="#8C4112">IFEFFIT</font>.</p>
+<p>then sets attributes from values in the project file.  It then pushes the
+associated data arrays into <font size=-1 color="#8C4112">IFEFFIT</font> (or <font size=-1 color="#8C4112">LARCH</font>).</p>
 <p>You can import several records at a time by specifying a list of record
 identifiers:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/perl</span>
 <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
 <span class="k">my</span> <span class="nv">$prj</span> <span class="o">=</span> <span class="nn">Demeter::Data::</span><span class="n">Prj</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span><span class="o">=&gt;</span><span class="s">&#39;iron_data.prj&#39;</span><span class="p">);</span>
@@ -95,11 +95,11 @@ identifiers:</p>
 </pre></div>
 </div>
 <p>Note that <code class="docutils literal"><span class="pre">records</span></code> is just an alias for <code class="docutils literal"><span class="pre">record</span></code>. They point at the
-same method. The two spellings are offered as a nod to English grammer.
+same method. The two spellings are offered as a nod to English grammar.
 The method will recognize if it is called in scalar or list context and
 properly return a single Data object or an array of Data objects.</p>
 <p>You can import all records easily using the <code class="docutils literal"><span class="pre">slurp</span></code> method.</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/perl</span>
 <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
 <span class="k">my</span> <span class="nv">$prj</span> <span class="o">=</span> <span class="nn">Demeter::Data::</span><span class="n">Prj</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span><span class="o">=&gt;</span><span class="s">&#39;iron_data.prj&#39;</span><span class="p">);</span>
@@ -110,10 +110,10 @@ properly return a single Data object or an array of Data objects.</p>
 </div>
 <div class="section" id="obtaining-other-information-from-project-files">
 <h2>2.4.2. Obtaining other information from project files<a class="headerlink" href="#obtaining-other-information-from-project-files" title="Permalink to this headline">¶</a></h2>
-<p>You can query an <font size=-1 color="#8C4112">ATHENA</font> project file for its content in several ways. To
-obtain a listing of contents of the project file, use the <code class="docutils literal"><span class="pre">list</span></code>
-method.</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="k">print</span> <span class="nv">$prj</span> <span class="o">-&gt;</span> <span class="n">list</span><span class="p">;</span>
+<p>You can query an <font size=-1 color="#8C4112">ATHENA</font> project file for its content in
+several ways. To obtain a listing of contents of the project file, use
+the <code class="docutils literal"><span class="pre">list</span></code> method.</p>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="k">print</span> <span class="nv">$prj</span> <span class="o">-&gt;</span> <span class="n">list</span><span class="p">;</span>
    <span class="c1">## ==prints==&gt;</span>
    <span class="c1">#  #     record</span>
    <span class="c1">#  # -------------------------------------------</span>
@@ -124,7 +124,7 @@ method.</p>
 </div>
 <p>To create a simple table of parameter values, supply a list of attribute
 names to the <code class="docutils literal"><span class="pre">list</span></code> method.</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="k">print</span> <span class="nv">$prj</span> <span class="o">-&gt;</span> <span class="n">list</span><span class="p">(</span><span class="sx">qw(bkg_rbkg fft_kmin)</span><span class="p">);</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="k">print</span> <span class="nv">$prj</span> <span class="o">-&gt;</span> <span class="n">list</span><span class="p">(</span><span class="sx">qw(bkg_rbkg fft_kmin)</span><span class="p">);</span>
   <span class="c1">## ==prints==&gt;</span>
   <span class="c1">#  #     record         bkg_rbkg   fft_kmin</span>
   <span class="c1">#  # -------------------------------------------</span>
@@ -136,8 +136,8 @@ names to the <code class="docutils literal"><span class="pre">list</span></code>
 <p>The <code class="docutils literal"><span class="pre">list</span></code> method is used extensively by the <code class="docutils literal"><span class="pre">lsprj</span></code> program, which
 is distributed with <font size=-1 color="#8C4112">DEMETER</font>.</p>
 <p>The <code class="docutils literal"><span class="pre">allnames</span></code> method will return an array of record labels (the
-strings in the groups list in <font size=-1 color="#8C4112">ATHENA</font>). For complete details on these
-methods, see the Demeter::Data::Prj documentation.</p>
+strings in the groups list in <font size=-1 color="#8C4112">ATHENA</font>).  For complete
+details on these methods, see the Demeter::Data::Prj documentation.</p>
 
 <br>
 
@@ -175,8 +175,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
@@ -184,6 +184,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
@@ -191,14 +195,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 

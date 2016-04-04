@@ -44,8 +44,8 @@ created in the Data list, a window for interacting with the FeS\
 The next step is to prepare for the :demeter:`feff` calculation using
 the known FeS\ :sub:`2` crystal structure. Clicking on the line in the
 Data window that says :guilabel:`Import crystal data or a Feff
-calculation` will post a file selection ddialog. Click to find the
-atoms.inp file containing the FeS\ :sub:`2` crystal structure.
+calculation` will post a file selection dialog.  Click to find the
+:file:`atoms.inp` file containing the FeS\ :sub:`2` crystal structure.
 
 .. _fig-fes2importatoms:
 .. figure:: ../../_images/fes2-importatoms.png
@@ -65,11 +65,12 @@ potentials and to run the pathfinder.
 Once the :demeter:`feff` calculation is finished, the path
 intepretation list is shown in the Paths tab. This is the list of
 scattering paths, sorted by increasing path length. Select the first
-11 paths by clicking on the path :guilabel:`0000`, then shift-clicking
-on path :guilabel:`0010`. These group of selected paths will be
-highlighted. Click on one of the highlighted paths and, without
-letting go of the mouse button, drag the paths over to the Data
-window. Drop the paths on the empty Path list.
+11 paths by :mark:`leftclick,..` clicking on the path
+:guilabel:`0000`, then :button:`Shift`-:mark:`leftclick,..` clicking
+on path :guilabel:`0010`.  The selected paths will be highlighted.
+:mark:`leftclick,..` Click on one of the highlighted paths and,
+without letting go of the mouse button, drag the paths over to the
+Data window.  Drop the paths on the empty Path list.
 
 .. _fig-fes2pathsdnd:
 .. figure:: ../../_images/fes2-pathsdnd.png
@@ -146,8 +147,8 @@ What about the multiple scattering paths?
 To examine those, first clear the Plotting list by clicking the
 :button:`Clear,light` button at the bottom of the Plot
 window. Transfer the FeS\ :sub:`2` data back to the Plotting list by
-clicking its transfer button, |transfer button|. Mark the first three
-multiple scattering paths by clicking their mark buttons. Select
+clicking its transfer button: |transfer button|. Mark the first three
+multiple scattering paths by clicking their mark buttons.  Select
 :menuselection:`Actions --> Transfer marked`.
 
 With the Plotting list newly populated, make a new plot of \| |chi|\ (R)\|.

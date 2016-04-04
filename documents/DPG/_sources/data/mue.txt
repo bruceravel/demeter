@@ -15,7 +15,7 @@ Importing a data file of this sort is very simple, as shown in this
 example:
 
 .. code-block:: perl
-
+   :linenos:
 
     #!/usr/bin/perl
     use Demeter;
@@ -26,7 +26,7 @@ example:
     $data -> plot('E');
 
 As always, the program begins by importing the :demeter:`demeter` package. At line
-4, the Data object is created -- as all :demeter:`demeter` objects are created --
+4, the Data object is created |nd| as all :demeter:`demeter` objects are created |nd|
 by the ``new`` method. The object is given a name and the file
 containing the data is specified. The name will be used whenever the
 data needs to be identified, for instance in the legend of a plot.

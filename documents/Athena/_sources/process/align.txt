@@ -1,10 +1,15 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
+
 
 Aligning data groups
 ====================
 
 Aligning data is the process of moving a data group in energy onto an
 absolute energy grid defined by some standard. In :demeter:`athena` that standard
-is chosen fairly arbitrarily -- it is simply one of the other groups in
+is chosen fairly arbitrarily |nd| it is simply one of the other groups in
 the group list. The alignment is done by adjusting the :procparam:`Energy shift`
 parameter.
 
@@ -18,10 +23,8 @@ tool, shown below, to make this somewhat easier.
 		  :procparam:`Energy shift` label on the main page.
 
 .. _fig-align:
-
 .. figure:: ../../_images/align.png
    :target: ../_images/align.png
-   :width: 65%
    :align: center
 
    The data alignment tool.
@@ -34,10 +37,8 @@ function is applied three times to the derivative of the |mu| (E) if
 that plotting option is selected.
 
 .. _fig-alignplot:
-
 .. figure:: ../../_images/align_plot.png
    :target: ../_images/align_plot.png
-   :width: 45%
    :align: center
 
    As you work on aligning your data, the current data group is

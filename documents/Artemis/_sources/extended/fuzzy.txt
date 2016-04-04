@@ -81,7 +81,7 @@ it.
 The resulting path list is guaranteed to be sorted by increasing path
 length. The list is then examined to find :quoted:`degenerate`
 paths. Degenerate paths are ones that contribute identically to the
-EXAFS. A simple example owuld be the single scattering paths from the
+EXAFS. A simple example would be the single scattering paths from the
 various atoms in the first coordination shell. Since each atom is the
 same distance away from the absorber, each contributes identically to
 the EXAFS. Thus these paths are degenerate. After being screened for
@@ -230,3 +230,8 @@ two nearly degenerate paths into separate scattering paths.
 To make the pathfinder neglect fuzzy degeneracy, thus behaving like
 :demeter:`feff`'s pathfinder, set :configparam:`Pathfinder,fuzz` to 0.
 
+Fuzzy degeneracy is discussed in
+
+.. bibliography:: ../artemis.bib
+   :filter: author % "Ravel" and year == '2014'
+   :list: bullet

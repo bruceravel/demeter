@@ -1,0 +1,422 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>16.1. Methyltin chloride &mdash; Demeter Programming Guide 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Demeter Programming Guide 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="16. Full examples" href="index.html" />
+    <link rel="next" title="16.2. Silver/gold alloy" href="agau.html" />
+    <link rel="prev" title="16. Full examples" href="index.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="agau.html" title="16.2. Silver/gold alloy"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="index.html" title="16. Full examples"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">16. Full examples</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="methyltin-chloride">
+<h1>16.1. Methyltin chloride<a class="headerlink" href="#methyltin-chloride" title="Permalink to this headline">¶</a></h1>
+<p>Topics demonstrated:</p>
+<ul class="simple">
+<li>object cloning</li>
+<li>multiple data sets</li>
+<li>multiple k-weights</li>
+</ul>
+<p>This example will deomnstrate several features of DEMETER, including
+object cloning, multiple data set fitting, and multiple k-weights in a
+fit. The data are dimethyl tin dichloride and monomethyl tin
+trichloride, both in solution. These organic tin compounds consist of a
+tin atom surrounded tetrahedrally by chlorine atoms and methyl
+(CH:sub:<cite>3</cite>) groups.</p>
+<p>Obviously, this is not a crystal. To start, I found structural
+information for the dimethyltin molecule in the form of a Protein
+Databank File. This is shown here:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>COMPND    5261536
+HETATM    1  C1  LIG     1      -0.027   2.146   0.014  1.00  0.00
+HETATM    2 SN2  LIG     1       0.002  -0.004   0.002  1.00  0.00
+HETATM    3  C3  LIG     1       1.042  -0.716   1.744  1.00  0.00
+HETATM    4 CL4  LIG     1      -2.212  -0.821   0.019  1.00  0.00
+HETATM    5 CL5  LIG     1       1.107  -0.765  -1.940  1.00  0.00
+HETATM    6 1H1  LIG     1       0.996   2.523   0.006  1.00  0.00
+HETATM    7 2H1  LIG     1      -0.554   2.507  -0.869  1.00  0.00
+HETATM    8 3H1  LIG     1      -0.537   2.497   0.911  1.00  0.00
+HETATM    9 1H3  LIG     1       0.532  -0.365   2.641  1.00  0.00
+HETATM   10 2H3  LIG     1       1.057  -1.806   1.738  1.00  0.00
+HETATM   11 3H3  LIG     1       2.065  -0.339   1.736  1.00  0.00
+END
+</pre></div>
+</div>
+<div class="figure align-center" id="id1">
+<span id="fig-dimethyltin"></span><a class="reference external image-reference" href="../_images/dimethyltin.png"><img alt="../_images/dimethyltin.png" src="../_images/dimethyltin.png" style="width: 30%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 16.1 </span><span class="caption-text">This structure is shown here as a ball-and-stick figure. The
+monomethyl tin looks just like this, except that one of the methyl
+groups is replaced by another chlorine atoms.</span></p>
+</div>
+<p>This is simply converted to a <code class="file docutils literal"><span class="pre">feff.inp</span></code> file by cutting and
+pasting the atomic coordinates and fleshing out the input file with a
+potentials list and <font size=-1 color="#8C4112">FEFF</font> boilerplate.  Note that the
+central atom need not be at (0,0,0) nor does it need to be the first
+item in the atoms list. To constrain the muffin tin potentials and
+assure physically reasonable muffin tin radii, it might be prudent to
+insert a shell of waters around the molecule.  Without some theoretical
+(molecular dynamics, for instance) help, doing so would be pretty ad
+hoc.  Not doing so is certainly the simplest way to proceed, so let's
+do that.  The <code class="file docutils literal"><span class="pre">feff.inp</span></code> is shown here:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>TITLE dimethyltin dichloride
+
+HOLE 1   1.0
+
+*         mphase,mpath,mfeff,mchi
+CONTROL   1      1     1     1
+PRINT     1      0     0     0
+
+RMAX        6.0
+NLEG         4
+
+POTENTIALS
+*    ipot   Z  element
+       0   50   Sn
+       1   17   Cl
+       2    6   C
+       3    1   H
+
+ATOMS
+*   x          y          z
+  -0.027   2.146   0.014  2
+   0.002  -0.004   0.002  0
+   1.042  -0.716   1.744  2
+  -2.212  -0.821   0.019  1
+   1.107  -0.765  -1.940  1
+   0.996   2.523   0.006  3
+  -0.554   2.507  -0.869  3
+  -0.537   2.497   0.911  3
+   0.532  -0.365   2.641  3
+   1.057  -1.806   1.738  3
+   2.065  -0.339   1.736  3
+</pre></div>
+</div>
+<p>Armed with a <code class="file docutils literal"><span class="pre">feff.inp</span></code> file, we are ready to proceed with the
+fit.</p>
+<div class="highlight-perl"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
+ <span class="k">use</span> <span class="n">Demeter</span> <span class="sx">qw(:ui=screen :plotwith=gnuplot)</span><span class="p">;</span>
+
+ <span class="c1">## -------- Import data from a project file</span>
+ <span class="k">my</span> <span class="nv">$prj</span> <span class="o">=</span> <span class="nn">Demeter::Data::</span><span class="n">Prj</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span><span class="o">=&gt;</span><span class="s">&#39;methyltin.prj&#39;</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">@common</span> <span class="o">=</span> <span class="p">(</span><span class="n">fft_kmin</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="n">fft_kmax</span> <span class="o">=&gt;</span> <span class="mf">10.5</span><span class="p">,</span>
+               <span class="n">bft_rmin</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">bft_rmax</span> <span class="o">=&gt;</span> <span class="mf">2.4</span><span class="p">,</span>
+               <span class="n">fit_k1</span>   <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">fit_k2</span>   <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>    <span class="n">fit_k3</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$mmt</span> <span class="o">=</span> <span class="nv">$prj</span><span class="o">-&gt;</span><span class="n">record</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+ <span class="nv">$mmt</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">name</span> <span class="o">=&gt;</span> <span class="s">&quot;Monomethyltin trichloride&quot;</span><span class="p">,</span> <span class="nv">@common</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$dmt</span> <span class="o">=</span> <span class="nv">$prj</span><span class="o">-&gt;</span><span class="n">record</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+ <span class="nv">$dmt</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">name</span> <span class="o">=&gt;</span> <span class="s">&quot;Dimethyltin dichloride&quot;</span><span class="p">,</span> <span class="nv">@common</span><span class="p">);</span>
+
+ <span class="c1">## -------- make a Feff calculation</span>
+ <span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Feff</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span><span class="o">=&gt;</span><span class="s">&#39;methyltin.inp&#39;</span><span class="p">);</span>
+ <span class="nv">$feff</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">workspace</span><span class="o">=&gt;</span><span class="s">&#39;feff&#39;</span><span class="p">,</span> <span class="n">screen</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">);</span>
+ <span class="nv">$feff</span> <span class="o">-&gt;</span> <span class="n">make_workspace</span><span class="p">;</span>
+ <span class="nv">$feff</span> <span class="o">-&gt;</span> <span class="n">run</span><span class="p">;</span>
+ <span class="k">my</span> <span class="nv">@list</span> <span class="o">=</span> <span class="nv">$feff</span> <span class="o">-&gt;</span> <span class="n">list_of_paths</span><span class="p">;</span>
+
+ <span class="c1">## -------- make some guess parameters</span>
+ <span class="k">my</span> <span class="nv">@gds</span> <span class="o">=</span> <span class="p">(</span><span class="nn">Demeter::</span><span class="n">GDS</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">name</span><span class="o">=&gt;</span><span class="s">&#39;amp&#39;</span><span class="p">,</span>     <span class="n">gds</span><span class="o">=&gt;</span><span class="s">&#39;guess&#39;</span><span class="p">,</span> <span class="n">mathexp</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">),</span>
+            <span class="nn">Demeter::</span><span class="n">GDS</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">name</span><span class="o">=&gt;</span><span class="s">&#39;enot&#39;</span><span class="p">,</span>    <span class="n">gds</span><span class="o">=&gt;</span><span class="s">&#39;guess&#39;</span><span class="p">,</span> <span class="n">mathexp</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">),</span>
+            <span class="nn">Demeter::</span><span class="n">GDS</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">name</span><span class="o">=&gt;</span><span class="s">&#39;delr_c&#39;</span><span class="p">,</span>  <span class="n">gds</span><span class="o">=&gt;</span><span class="s">&#39;guess&#39;</span><span class="p">,</span> <span class="n">mathexp</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">),</span>
+            <span class="nn">Demeter::</span><span class="n">GDS</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">name</span><span class="o">=&gt;</span><span class="s">&#39;ss_c&#39;</span><span class="p">,</span>    <span class="n">gds</span><span class="o">=&gt;</span><span class="s">&#39;guess&#39;</span><span class="p">,</span> <span class="n">mathexp</span><span class="o">=&gt;</span><span class="mf">0.003</span><span class="p">),</span>
+            <span class="nn">Demeter::</span><span class="n">GDS</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">name</span><span class="o">=&gt;</span><span class="s">&#39;delr_cl&#39;</span><span class="p">,</span> <span class="n">gds</span><span class="o">=&gt;</span><span class="s">&#39;guess&#39;</span><span class="p">,</span> <span class="n">mathexp</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">),</span>
+            <span class="nn">Demeter::</span><span class="n">GDS</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">name</span><span class="o">=&gt;</span><span class="s">&#39;ss_cl&#39;</span><span class="p">,</span>   <span class="n">gds</span><span class="o">=&gt;</span><span class="s">&#39;guess&#39;</span><span class="p">,</span> <span class="n">mathexp</span><span class="o">=&gt;</span><span class="mf">0.003</span><span class="p">),</span>
+           <span class="p">);</span>
+
+ <span class="c1">## -------- define some paths</span>
+ <span class="k">my</span> <span class="nv">@paths</span> <span class="o">=</span> <span class="p">(</span><span class="nn">Demeter::</span><span class="n">Path</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">name</span>    <span class="o">=&gt;</span> <span class="s">&quot;carbon neighbor&quot;</span><span class="p">,</span>
+                                 <span class="n">sp</span>      <span class="o">=&gt;</span> <span class="nv">$list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                 <span class="n">parent</span>  <span class="o">=&gt;</span> <span class="nv">$feff</span><span class="p">,</span>
+                                 <span class="n">data</span>    <span class="o">=&gt;</span> <span class="nv">$dmt</span><span class="p">,</span>
+                                 <span class="n">n</span>       <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span>
+                                 <span class="n">s02</span>     <span class="o">=&gt;</span> <span class="s">&#39;amp&#39;</span><span class="p">,</span>
+                                 <span class="n">e0</span>      <span class="o">=&gt;</span> <span class="s">&#39;enot&#39;</span><span class="p">,</span>
+                                 <span class="n">delr</span>    <span class="o">=&gt;</span> <span class="s">&#39;delr_c&#39;</span><span class="p">,</span>
+                                 <span class="n">sigma2</span>  <span class="o">=&gt;</span> <span class="s">&#39;ss_c&#39;</span><span class="p">,),</span>
+              <span class="nn">Demeter::</span><span class="n">Path</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">name</span>    <span class="o">=&gt;</span> <span class="s">&quot;chlorine neighbor&quot;</span><span class="p">,</span>
+                                 <span class="n">sp</span>      <span class="o">=&gt;</span> <span class="nv">$list</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                 <span class="n">parent</span>  <span class="o">=&gt;</span> <span class="nv">$feff</span><span class="p">,</span>
+                                 <span class="n">data</span>    <span class="o">=&gt;</span> <span class="nv">$dmt</span><span class="p">,</span>
+                                 <span class="n">n</span>       <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span>
+                                 <span class="n">s02</span>     <span class="o">=&gt;</span> <span class="s">&#39;amp&#39;</span><span class="p">,</span>
+                                 <span class="n">e0</span>      <span class="o">=&gt;</span> <span class="s">&#39;enot&#39;</span><span class="p">,</span>
+                                 <span class="n">delr</span>    <span class="o">=&gt;</span> <span class="s">&#39;delr_cl&#39;</span><span class="p">,</span>
+                                 <span class="n">sigma2</span>  <span class="o">=&gt;</span> <span class="s">&#39;ss_cl&#39;</span><span class="p">,)</span>
+             <span class="p">);</span>
+ <span class="nb">push</span> <span class="nv">@paths</span><span class="p">,</span> <span class="nv">$paths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">Clone</span><span class="p">(</span><span class="n">n</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">,</span> <span class="n">data</span><span class="o">=&gt;</span><span class="nv">$mmt</span><span class="p">);</span>
+ <span class="nb">push</span> <span class="nv">@paths</span><span class="p">,</span> <span class="nv">$paths</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">Clone</span><span class="p">(</span><span class="n">n</span><span class="o">=&gt;</span><span class="mi">3</span><span class="p">,</span> <span class="n">data</span><span class="o">=&gt;</span><span class="nv">$mmt</span><span class="p">);</span>
+
+ <span class="c1">## -------- and fit!</span>
+ <span class="k">my</span> <span class="nv">$fit</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Fit</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">data</span>  <span class="o">=&gt;</span> <span class="p">[</span><span class="nv">$dmt</span><span class="p">,</span> <span class="nv">$mmt</span><span class="p">],</span>
+                             <span class="n">paths</span> <span class="o">=&gt;</span> <span class="o">\</span><span class="nv">@paths</span><span class="p">,</span>
+                             <span class="n">gds</span>   <span class="o">=&gt;</span> <span class="o">\</span><span class="nv">@gds</span><span class="p">);</span>
+ <span class="nv">$fit</span> <span class="o">-&gt;</span> <span class="n">fit</span><span class="p">;</span>
+ <span class="nv">$fit</span> <span class="o">-&gt;</span> <span class="n">interview</span><span class="p">;</span>
+</pre></div>
+</td></tr></table></div>
+<p>The data on the two methyltin molecules is imported from an
+<font size=-1 color="#8C4112">ATHENA</font> project file at lines 5-12.  The <font size=-1 color="#8C4112">FEFF</font>
+calculation is made at lines 15-18 and the list of ScatteringPath
+objects is imported at line 19 using the <code class="docutils literal"><span class="pre">list_of_path</span></code> method,
+which is a convenience method which returns a list rather than a
+reference to a list.  The ScatteringPath object representing scattering
+from the carboin atom in the methyl group is the first item in this
+list, the ScatteringPath for the chlorine atom is the second item in
+this list.</p>
+<p>At lines 31-49, these two paths are parameterized and assigned to the
+dimethyl tin data.  At lines 50 and 51, these two paths are cloned and
+assigned to the monomethyl tin data.  The <code class="docutils literal"><span class="pre">n</span></code> attributes of the two
+cloned paths are set to 1 and 4 – appropriate for the monomethyl tin
+trichloride.</p>
+<p>This is a fairly simple fitting model that assumes that the tin-carbon
+and tin-chlorine bonds behave identically for each molecule.  This simple
+assumption is made by changing the <code class="docutils literal"><span class="pre">n</span></code> attributes of the cloned paths,
+but not any of the other path parameters.  Of course, new GDS parameters
+could be introduced to the fit to lift this constraint and explore that
+assumption.</p>
+<p>Finally, note that all three values for the fitting k-weights are used.
+This is indicated at line 8 then applied to both Data objects at lines
+10 and 12.  Doing a multiple k-weight fit is really that easy.</p>
+<div class="figure align-center" id="id2">
+<span id="fig-dimethyltinfit"></span><a class="reference external image-reference" href="../_images/methyltin_fit.png"><img alt="../_images/methyltin_fit.png" src="../_images/methyltin_fit.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 16.2 </span><span class="caption-text">Fit to the two methyltin data sets, with a nicely stacked plot.</span></p>
+</div>
+<p>The lines below replaced the <code class="docutils literal"><span class="pre">interview</span></code> method to produce this plot
+of the result of the fit.  Note the Data and Path objects are
+conveniently wrapped up in a <code class="docutils literal"><span class="pre">foreach</span></code> loop.  The plotting syntax is
+transparent for these two object types and the Path objects use the
+<code class="docutils literal"><span class="pre">y_offset</span></code> attribute of the associated Data object.  This is one of
+the reasons why every Path must have an associated Data object.</p>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$fit</span><span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">plot_fit</span> <span class="o">=&gt;</span>  <span class="mi">1</span><span class="p">,</span>
+                 <span class="n">r_pl</span>     <span class="o">=&gt;</span> <span class="s">&#39;m&#39;</span><span class="p">,</span>
+                 <span class="n">kweight</span>  <span class="o">=&gt;</span>  <span class="mi">2</span><span class="p">);</span>
+<span class="nv">$mmt</span><span class="o">-&gt;</span> <span class="n">y_offset</span><span class="p">(</span><span class="mf">1.0</span><span class="p">);</span>
+<span class="nv">$_</span>  <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">foreach</span> <span class="p">(</span><span class="nv">$dmt</span><span class="p">,</span> <span class="nv">@paths</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span>
+                          <span class="nv">$mmt</span><span class="p">,</span> <span class="nv">@paths</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]);</span>
+<span class="nv">$mmt</span><span class="o">-&gt;</span> <span class="n">pause</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>As a final note, I want to comment on lines 32 and 41 where the <code class="docutils literal"><span class="pre">sp</span></code>
+attribute of the Path objects is set to the proper ScatteringPath
+objects from the <font size=-1 color="#8C4112">FEFF</font> calculation.  Choosing the correct
+ScatteringPaths from <code class="docutils literal"><span class="pre">&#64;list</span></code> requires having specific knowledge of
+the order of the paths from the <font size=-1 color="#8C4112">FEFF</font>'s pathfinder.  That is
+not difficult to obtain using the <a class="reference external" href="../feff/intrp.html">intrp method</a> of the Feff object, however it is something
+that is difficult to put in-line in a script like this.  Of course, in
+this case, it is fairly obvious that the first two paths are the C and
+Cl single scattering paths.  In general, though, it is hard to know a
+priori the order of paths that come from the pathfinder.</p>
+<p><a class="reference external" href="../paths/semantic.html">Semantic path descriptions</a> are the solution
+to this problem. In this case, the <code class="docutils literal"><span class="pre">find_path</span></code> method of the Feff
+object could be used like so:</p>
+<p>The <code class="docutils literal"><span class="pre">find_path</span></code> method can be relied upon to find the correct path
+regardless of the order of things after the pathfinder has done its
+work.</p>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Isis-Sothis-Demeter_sm.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">9. Guess/Def/Set Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">16. Full examples</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">16.1. Methyltin chloride</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agau.html">16.2. Silver/gold alloy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="uranyl.html">16.3. Uranyl ion in solution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="histo.html">16.4. Histogram</a></li>
+</ul>
+</li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/examples/methyltin.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="agau.html" title="16.2. Silver/gold alloy"
+             >next</a></li>
+        <li class="right" >
+          <a href="index.html" title="16. Full examples"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >16. Full examples</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

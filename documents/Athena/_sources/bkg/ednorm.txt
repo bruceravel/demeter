@@ -1,3 +1,8 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
+
 .. _ednorm_sec:
 
 Energy-dependent normalization
@@ -65,17 +70,15 @@ near the bottom of the background removal section of controls, as seen
 in the following screenshot.
 
 .. _fig-bkg_ednorm:
-
 .. figure:: ../../_images/bkg_ednorm.png
    :target: ../_images/bkg_ednorm.png
-   :width: 45%
    :align: center
 
    S K-edge EXAFS data measured in fluorescence. Note that the control
    for turning on the energy-dependent normalization is enabled.
 
 This control is normally disabled. To enable it, you must toggle on the
-:configparam:`athena,show\_funnorm` `configuration
+:configparam:`Athena,show\_funnorm` `configuration
 parameter <../other/prefs.html>`__. If you import a project file which
 has one or more groups using the energy-dependent normalization, then
 the control will be turned on automatically.

@@ -1,3 +1,8 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
+
 
 Pluck buttons
 =============
@@ -16,10 +21,8 @@ and data analysis tools use pluck buttons, as does the
 `indicator <../plot/indic.html>`__ plot options tab.
 
 .. _fig-pluck:
-
 .. figure:: ../../_images/ui_pluck.png
    :target: ../_images/ui_pluck.png
-   :width: 65%
    :align: center
 
    Using the pluck button for the upper edge of the normalization range.
@@ -28,7 +31,6 @@ and data analysis tools use pluck buttons, as does the
 .. subfigstart::
 
 .. _fig-pluckpoint:
-
 .. figure:: ../../_images/ui_pluckpoint.png
    :target: ../_images/ui_pluckpoint.png
    :width: 100%
@@ -39,14 +41,13 @@ and data analysis tools use pluck buttons, as does the
    button.
 
 .. _fig-plucked:
-
 .. figure:: ../../_images/ui_plucked.png
    :target: ../_images/ui_plucked.png
    :width: 100%
 
    After clicking on the point shown in the
    previous figure, the value of about 243 is inserted as the value of
-   the upper edge of the normalization range – clearly a better value
+   the upper edge of the normalization range |nd| clearly a better value
    for that parameter.
 
 .. subfigend::

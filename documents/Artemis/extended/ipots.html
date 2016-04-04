@@ -57,7 +57,7 @@
   <div class="section" id="unique-potential-styles">
 <h1>15.8. Unique potential styles<a class="headerlink" href="#unique-potential-styles" title="Permalink to this headline">¶</a></h1>
 <p>Consider this <code class="file docutils literal"><span class="pre">atoms.inp</span></code> file for sodium uranyl triacetate:</p>
-<div class="highlight-python"><div class="highlight"><pre>title = Templeton et al.
+<div class="highlight-python"><div class="highlight"><pre><span></span>title = Templeton et al.
 title = Redetermination and Absolute configuration of Sodium Uranyl(VI) triacetate.
 title = Acta Cryst 1985 C41 1439-1441
 space = P 21 3
@@ -89,7 +89,7 @@ these work using sodium uranyl triacetate.</p>
 <p>Choosing the <span class="guilabel">elements</span> style assigns a unique potenitial to
 each atomic species in the crystal. Using this style results in the
 following <code class="file docutils literal"><span class="pre">feff.inp</span></code> file:</p>
-<div class="highlight-python"><div class="highlight"><pre>TITLE Templeton et al.
+<div class="highlight-python"><div class="highlight"><pre><span></span>TITLE Templeton et al.
 TITLE Redetermination and Absolute configuration of Sodium Uranyl(VI) triacetate.
 TITLE Acta Cryst 1985 C41 1439-1441
 
@@ -137,11 +137,11 @@ introduces a more chemically reasonable potential model.</p>
 <div class="section" id="each-tag-gets-a-unique-potential">
 <h2>15.8.2. Each tag gets a unique potential<a class="headerlink" href="#each-tag-gets-a-unique-potential" title="Permalink to this headline">¶</a></h2>
 <p>The two oxygen types can get differnt unique potentials by choosing
-the <span class="guilabel">tags</span> style. Note that in the atoms.inp pairs of oxygen
-sites were given the tags “Oax” and “Oeq”. Also note
-that the two carbon sites were given the same tag. With all this, we
-get the following <code class="file docutils literal"><span class="pre">feff.inp</span></code> file:</p>
-<div class="highlight-python"><div class="highlight"><pre>TITLE Templeton et al.
+the <span class="guilabel">tags</span> style. Note that, in the <code class="file docutils literal"><span class="pre">atoms.inp</span></code> file,
+pairs of oxygen sites were given the tags “Oax” and
+“Oeq”.  Also note that the two carbon sites were given the
+same tag. With all this, we get the following <code class="file docutils literal"><span class="pre">feff.inp</span></code> file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>TITLE Templeton et al.
 TITLE Redetermination and Absolute configuration of Sodium Uranyl(VI) triacetate.
 TITLE Acta Cryst 1985 C41 1439-1441
 
@@ -190,7 +190,7 @@ file below, but it also issues this warning.</p>
 <span id="fig-feffsiteserror"></span><a class="reference external image-reference" href="../_images/feff-siteserror.png"><img alt="../_images/feff-siteserror.png" src="../_images/feff-siteserror.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 15.30 </span><span class="caption-text">The sites error dialog.</span></p>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>TITLE Templeton et al.
+<div class="highlight-python"><div class="highlight"><pre><span></span>TITLE Templeton et al.
  TITLE Redetermination and Absolute configuration of Sodium Uranyl(VI) triacetate.
  TITLE Acta Cryst 1985 C41 1439-1441
 
@@ -293,14 +293,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -342,7 +344,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

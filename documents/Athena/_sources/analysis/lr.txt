@@ -1,3 +1,8 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
+
 .. _lr_sec:
 
 Log-ratio/phase-difference analysis
@@ -38,7 +43,7 @@ the χ(q) function.
 These are fit using the cumulant expansion:
 
 
-::
+.. code-block:: text
    
       Log-Ratio(q)  = c_0 + 2*c_2 * q^2 + (2/3)*c_4 * q^4
       Phase-diff(q) = 2 * c_1 * q - (4/3) * c_3 * q^3
@@ -76,7 +81,6 @@ replaced with the log-ratio/phase-difference tool, shown below.
 
 .. figure:: ../../_images/lr.png
    :target: ../_images/lr.png
-   :width: 65%
    :align: center
 
    The log-ratio/phase-difference tool.

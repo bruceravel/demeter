@@ -96,7 +96,7 @@ interesting plot using the two data sets and their fits.</p>
 12
 13
 14
-15</pre></div></td><td class="code"><div class="highlight"><pre> <span class="c1">### ... picking up at line 61 of the previous example ...</span>
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">### ... picking up at line 61 of the previous example ...</span>
 
  <span class="c1">## do the fit</span>
  <span class="nv">$fit</span> <span class="o">-&gt;</span> <span class="n">fit</span><span class="p">;</span>
@@ -121,12 +121,13 @@ arguments, both set to empty strings in this example, contain
 user-specified text that is written to the beginning and end of log
 file.</dd>
 <dt><strong>Fit serialization</strong></dt>
-<dd>At line 10 the fit is serialized. This serialization file is simply
-a normal zip file containing the serializations of all the objects
-used in the fit along with a log file and a few other results of the
-fit. The convention is for this zip file to have the extension
-<code class="docutils literal"><span class="pre">.dpj</span></code> (i.e. <font size=-1 color="#8C4112">DEMETER</font> project).</dd>
-<dt><strong>Saving column data</strong></dt>
+<dd>At line 10 the fit is serialized. This serialization file is
+simply a normal zip file containing the serializations of all the
+objects used in the fit along with a log file and a few other
+results of the fit. The convention is for this zip file to have
+the extension <code class="docutils literal"><span class="pre">.dpj</span></code> (i.e. <font size=-1 color="#8C4112">DEMETER</font> project).  Note
+that the <code class="docutils literal"><span class="pre">.dpj</span></code> file can be imported into <font size=-1 color="#8C4112">ARTEMIS</font>.</dd>
+<dt><strong>Column data</strong></dt>
 <dd>At lines 12 and 13, the results of the fit to each data set are
 saved as column data files. These files contain columns with the k,
 data, the fit, the window, the residual, and the background function
@@ -173,8 +174,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
@@ -188,6 +189,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
@@ -195,14 +200,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 

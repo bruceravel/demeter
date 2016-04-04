@@ -1,3 +1,8 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
+
 .. _preprocessing_sec:
 
 Preprocessing data
@@ -21,7 +26,7 @@ and integrations of the detector signals are stored in intervals. The
 length of these intervals and the slewing speed of the monochromator
 determine the energy width of each measurement bin. Typically these
 measurement parameters are chosen to provide adequate resolution through
-the edge -- typically a third or a half of an electron volt. This
+the edge |nd| typically a third or a half of an electron volt. This
 results in data that are vastly over-sampled in the EXAFS region. To
 improve the statistics in the EXAFS region and to make the data arrays
 smaller, it is useful to rebin the data. This process uses a boxcar
@@ -33,10 +38,8 @@ In this screenshot, I have imported some data on a uranyl compound
 measured in quick scan mode:
 
 .. _fig-rebin:
-
 .. figure:: ../../_images/import_rebin.png
    :target: ../_images/import_rebin.png
-   :width: 65%
    :align: center
 
    Rebinning data on the fly as it is imported using the column
@@ -53,7 +56,7 @@ and the last defines the grid in wavenumber in the EXAFS region.
 
 :demeter:`athena` will remember the values of these parameters between
 data sets.  However, the default is to turn off rebinning for each new
-data set.  Therefor you must click to the rebinning tab for every data
+data set.  Therefore you must click to the rebinning tab for every data
 set you import, and click on the :guilabel:`Perform rebinning` check
 button. When you import multiple data sets, though, rebinning will be
 performed on each one without intervention according to the normal
@@ -65,16 +68,14 @@ Other pre-processing chores
 
 :mark:`lightning,..` This tab provides controls for a number of other
 things that can be done with your data as it is imported. The first
-one -- marking -- can be performed even on the first data set
+one |nd| marking |nd| can be performed even on the first data set
 imported. The other two require that a standard be specified. The menu
 at the top of the tab contains every item from the group list. The one
 specified in that menu is the standard.
 
 .. _fig-preproc:
-
 .. figure:: ../../_images/import_preproc.png
    :target: ../_images/import_preproc.png
-   :width: 65%
    :align: center
 
    Pre-processing data as it is imported using the file selection dialog.

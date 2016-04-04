@@ -1,3 +1,8 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
+
 
 Plot styles
 ===========
@@ -14,10 +19,8 @@ persist between sessions.
 You can discard a plot style by double clicking on it.
 
 .. _fig-styles:
-
 .. figure:: ../../_images/ui_plotstyles.png
    :target: ../_images/ui_plotstyles.png
-   :width: 65%
    :align: center
 
    Plot styles controls displayed from the :guilabel:`Plot options` tabs.

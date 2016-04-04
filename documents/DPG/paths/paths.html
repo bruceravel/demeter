@@ -60,7 +60,7 @@
 attribute filled with a reference to a list of ScatteringPath objects.
 The ScatteringPath object is an abstract representation of a
 scattering path. In <font size=-1 color="#8C4112">DEMETER</font>, the ScatteringPath object is
-somewhat like a <code class="file docutils literal"><span class="pre">feffNNNN.dat</span></code> is to <font size=-1 color="#8C4112">IFEFFIT</font> -- it
+somewhat like a <code class="file docutils literal"><span class="pre">feffNNNN.dat</span></code> is to <font size=-1 color="#8C4112">IFEFFIT</font> – it
 does indeed describe the path, but it needs to imported and
 parametrized before it can be used to make a plot or a fit.</p>
 <p>The ScatteringPath object has attributes which describe all the geometry
@@ -102,7 +102,7 @@ shortest paths from a <font size=-1 color="#8C4112">FEFF</font> calculation.</p>
 11
 12
 13
-14</pre></div></td><td class="code"><div class="highlight"><pre> <span class="c1">#!/usr/bin/perl</span>
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
  <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
  <span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Feff</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;feff/feff.inp&quot;</span><span class="p">);</span>
@@ -119,12 +119,12 @@ shortest paths from a <font size=-1 color="#8C4112">FEFF</font> calculation.</p>
 </pre></div>
 </td></tr></table></div>
 <p>At line 9, the reference to the list of ScatteringPath objects is read
-into a normal array (the <code class="docutils literal"><span class="pre">&#64;{</span> <span class="pre">}</span></code> syntax dereferences the array). The
-first 6 elements of this array is then looped over and a Path object is
-created using those 6 ScatteringPath objects. Each Path object is then
-plotted at line 13.</p>
+into a normal array (the <code class="docutils literal"><span class="pre">&#64;{</span> <span class="pre">}</span></code> syntax <a class="reference external" href="http://perldoc.perl.org/perlref.html#Using-References">dereferences</a> the
+array).  The first 6 elements of this array is then looped over and a
+Path object is created using those 6 ScatteringPath objects. Each Path
+object is then plotted at line 13.</p>
 <div class="section" id="writing-feffnnnn-dat-files">
-<h2>8.1.1. Writing feffNNNN.dat files<a class="headerlink" href="#writing-feffnnnn-dat-files" title="Permalink to this headline">¶</a></h2>
+<h2>8.1.1. Writing <code class="docutils literal"><span class="pre">feffNNNN.dat</span></code> files<a class="headerlink" href="#writing-feffnnnn-dat-files" title="Permalink to this headline">¶</a></h2>
 <p>As demonstrated above, generation of the individual
 <code class="file docutils literal"><span class="pre">feffNNNN.dat</span></code> files is something that happens behind the
 scenes. <font size=-1 color="#8C4112">DEMETER</font> goes to great lengths to ensure that you do
@@ -149,7 +149,7 @@ something like this:</p>
 4
 5
 6
-7</pre></div></td><td class="code"><div class="highlight"><pre> <span class="c1">#!/usr/bin/perl  use Demeter;</span>
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl  use Demeter;</span>
 
  <span class="c1">## Deserialize feff.yaml;</span>
  <span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Feff</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">yaml</span> <span class="o">=&gt;</span> <span class="s">&quot;feff/feff.yaml&quot;</span><span class="p">);</span>
@@ -180,7 +180,7 @@ so.</p>
 scattering geometries contributing to the degeneracy of a path is one of
 the major new features DEMETER's path finder. If you ever want to
 examine the degenerate list, you can do something like this:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/perl</span>
 <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
 <span class="c1">## Deserializing feff.yaml;</span>
@@ -197,7 +197,7 @@ examine the degenerate list, you can do something like this:</p>
 </div>
 <p>What gets printed out is something like this, which is in the form of a
 <code class="file docutils literal"><span class="pre">paths.dat</span></code> file and can be used by the <em>genfmt</em> part of <font size=-1 color="#8C4112">FEFF</font>.</p>
-<div class="highlight-python"><div class="highlight"><pre>1001    2   6.000  index, nleg, degeneracy, r= 3.6100
+<div class="highlight-python"><div class="highlight"><pre><span></span>1001    2   6.000  index, nleg, degeneracy, r= 3.6100
     x           y           z     ipot  label      rleg      beta        eta
   3.610000    0.000000    0.000000   1 &#39;Cu_2  &#39;     3.6100  180.0000    0.0000
   0.000000    0.000000    0.000000   0 &#39;abs   &#39;     3.6100  180.0000    0.0000
@@ -255,8 +255,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">8. Scattering paths</a><ul class="current">
@@ -271,6 +271,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
@@ -278,14 +282,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 

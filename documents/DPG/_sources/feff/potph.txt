@@ -6,12 +6,11 @@
 Computng potentials
 ===================
 
-The part of :demeter:`feff` that computes potentials is one of its
-essential parts and is used by :demeter:`demeter`. Continuing with the
-example from the previous section, we can use an instrumented Feff
-object to compute potentials.
+Continuing with the example from the previous section, we can use an
+instrumented Feff object to compute potentials.
 
 .. code-block:: perl
+   :linenos:
 
     #!/usr/bin/perl
     use Demeter;

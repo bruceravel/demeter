@@ -34,12 +34,12 @@ in which your question will be hashed out in much more detail than you
 would see in a response from a single person.
 
 Don't believe me?  `Here is a nice example
-<http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2011-September/010201.html>`_
+<http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-January/008418.html>`_
 of a question asked which prompted answers from several different
 people.  Follow the links that say :quoted:`next message` to read the
 various answers to the question.  After an interesting and useful
 discussion, the person with the original question `had this to say
-<http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2011-September/010215.html>`_.
+<http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-January/008424.html>`_.
 
 `Here is a searchable archive
 <http://www.mail-archive.com/ifeffit@millenia.cars.aps.anl.gov/>`_ of
@@ -116,10 +116,10 @@ the Microsoft Media Server (``mms:``) links on that page if you are
 using Linux and Firefox.  Presumably, similar solutions exist for
 other browsers.)
 
-This is an good overview of XAS: 
+These are good overviews of XAS: 
 
 .. bibliography:: singlefile.bib
-   :filter: author % "Kelly"
+   :filter: author % "Kelly" or author % "Newville"
    :list: bullet
 
 Scott Calvin's book *XAFS for Everyone* is my favorite XAFS textbook.

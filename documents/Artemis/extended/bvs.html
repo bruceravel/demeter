@@ -67,8 +67,8 @@ s<sub>ij</sub>= exp((R<sub>0,ij</sub> - R<sub>ij</sub>)/B),
 where R<sub>ij</sub> is the contact distance
 and R<sub>0,ij</sub> and B are empirically determined parameters.</p>
 <ul class="simple" id="bibtex-bibliography-extended/bvs-0">
-<li>D.&nbsp;Altermatt and I.&nbsp;D. Brown. The automatic searching for chemical bonds in inorganic crystal structures. <em>Acta Crystallographica Section B</em>, 41(4):240–244, Aug 1985. <a class="reference external" href="http://dx.doi.org/10.1107/S0108768185002051">doi:10.1107/S0108768185002051</a>.</li>
-<li>I.&nbsp;D. Brown and D.&nbsp;Altermatt. Bond-valence parameters obtained from a systematic analysis of the Inorganic Crystal Structure Database. <em>Acta Crystallographica Section B</em>, 41(4):244–247, Aug 1985. <a class="reference external" href="http://dx.doi.org/10.1107/S0108768185002063">doi:10.1107/S0108768185002063</a>.</li>
+<li>D.&nbsp;Altermatt and I.&nbsp;D. Brown. The automatic searching for chemical bonds in inorganic crystal structures. <em>Acta Crystallographica Section B</em>, 41(4):240–244, Aug 1985. <a class="reference external" href="https://doi.org/10.1107/S0108768185002051">doi:10.1107/S0108768185002051</a>.</li>
+<li>I.&nbsp;D. Brown and D.&nbsp;Altermatt. Bond-valence parameters obtained from a systematic analysis of the Inorganic Crystal Structure Database. <em>Acta Crystallographica Section B</em>, 41(4):244–247, Aug 1985. <a class="reference external" href="https://doi.org/10.1107/S0108768185002063">doi:10.1107/S0108768185002063</a>.</li>
 </ul>
 <p>They searched through the Inorganic Crystal Structures Database to
 determine empirical values for s<sub>ij</sub> for over 150 cation/anion
@@ -130,35 +130,36 @@ the feedback box in bold red text.</p>
 </div>
 <div class="section" id="using-a-bond-valance-sum-as-a-restraint">
 <h2>15.6.2. Using a bond valance sum as a restraint<a class="headerlink" href="#using-a-bond-valance-sum-as-a-restraint" title="Permalink to this headline">¶</a></h2>
-<p>The bond valence sum can be used a restraint on a fit. That is, the
-relationship between formal valence, coordination number, and bond
-distance can be used as prior knowledge guiding the fit. If the
-absorber/scatterer pair are in the bond valence database, values for
-R<sub>0,ij</sub>, B, and the formal valence of the obsorber can be defined
-as set parameters. The bond valence sum is expressed as a def parameter.
-Finally, the difference between the bond valence sum and the formal
-valence are expressed as a restrain parameter. These are shown below for
-the Fe-O bond in FeO. In FeO the iron atom is of valence 2+ and the
-oxygen is 2-.</p>
+<p>The bond valence sum can be used a <span class="restrain">restraint</span> on a
+fit. That is, the relationship between formal valence, coordination
+number, and bond distance can be used as prior knowledge guiding the
+fit. If the absorber/scatterer pair are in the bond valence database,
+values for R<sub>0,ij</sub>, B, and the formal valence of the obsorber
+can be defined as set parameters. The bond valence sum is expressed as
+a def parameter.  Finally, the difference between the bond valence sum
+and the formal valence are expressed as a <span class="restrain">restrain</span>
+parameter. These are shown below for the Fe-O bond in FeO. In FeO the
+iron atom is of valence 2+ and the oxygen is 2-.</p>
 <div class="figure align-center" id="id2">
 <span id="fig-bvsrestrain"></span><a class="reference external image-reference" href="../_images/bvs_restrain.png"><img alt="../_images/bvs_restrain.png" src="../_images/bvs_restrain.png" /></a>
-<p class="caption"><span class="caption-number">Fig. 15.17 </span><span class="caption-text">Defining a group of parameters to make a restraint based on a bond
-valence sum.</span></p>
+<p class="caption"><span class="caption-number">Fig. 15.17 </span><span class="caption-text">Defining a group of parameters to make a <span class="restrain">restraint</span>
+based on a bond valence sum.</span></p>
 </div>
-<p>When the fit is evaluated, the restrain parameter will be added in
-quadrature to the evaluation of χ<sup>2</sup>. This sum will be
-minimized in the fit. In a fit to FeO, the coordination number is
-fixed to 6, the value known from crystallography. By using this
-restraint, the value of ΔR will be encouraged to assume a value
-that results in a bond valence sum of 2. By increasing the value of
-the scale parameter, the strength of the restraint is increased. For a
-very large value of scale, ΔR will constrained to a value that
-forces the bond valence sum to 2. For a very small value of scale, the
-restraint will be weak and ΔR will be given more freedom to
-deviate from a value that casues a bond valence sum of 2.</p>
+<p>When the fit is evaluated, the <span class="restrain">restrain</span> parameter will be
+added in quadrature to the evaluation of χ<sup>2</sup>. This sum
+will be minimized in the fit. In a fit to FeO, the coordination number
+is fixed to 6, the value known from crystallography. By using this
+<span class="restrain">restraint</span>, the value of ΔR will be encouraged to
+assume a value that results in a bond valence sum of 2. By increasing
+the value of the scale parameter, the strength of the
+<span class="restrain">restraint</span> is increased. For a very large value of scale,
+ΔR will constrained to a value that forces the bond valence sum
+to 2. For a very small value of scale, the <span class="restrain">restraint</span> will
+be weak and ΔR will be given more freedom to deviate from a
+value that casues a bond valence sum of 2.</p>
 <p>This example shows the simplest case of a single scattering path
 contributing to the bond valence sum. The math expressions to establish
-the restraint would be more complicated for a more disrodered first
+the <span class="restrain">restraint</span> would be more complicated for a more disrodered first
 shell, but those math expressions would follow the same pattern as this
 example.</p>
 </div>
@@ -167,7 +168,7 @@ example.</p>
 <p>The last <font size=-1 color="#8C4112">ARTEMIS</font> trick related to evaluations of bond
 valence sums is to use an <a class="reference external" href="../gds.html#parameter-types">after parameter</a> to record the bond valence sum to the
 <a class="reference external" href="../logjournal.html">log file</a>.  Using the same set of parameters
-as in the restraint example, set the BVS formula instead to an
+as in the <span class="restrain">restraint</span> example, set the BVS formula instead to an
 <span class="after">after</span> parameter.</p>
 <div class="figure align-center" id="id3">
 <span id="fig-bvsafter"></span><a class="reference external image-reference" href="../_images/bvs_after.png"><img alt="../_images/bvs_after.png" src="../_images/bvs_after.png" /></a>
@@ -177,7 +178,7 @@ bond valence sum to the log file.</span></p>
 <p>At the end of the fit, the BVS will be evaluated and reported in the
 log file just below the <span class="guess">guess</span>, <span class="def">def</span>, and <span class="set">set</span>
 parameters, like so:</p>
-<div class="highlight-python"><div class="highlight"><pre>after parameters:
+<div class="highlight-python"><div class="highlight"><pre><span></span>after parameters:
   bvs                =   2.04154071    # [6*exp( (rij-(2.139+delr)) / b)]
 </pre></div>
 </div>
@@ -240,14 +241,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -289,7 +292,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

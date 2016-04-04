@@ -58,17 +58,17 @@
 <h1>2.2. χ(k) data files<a class="headerlink" href="#chi-k-data-files" title="Permalink to this headline">¶</a></h1>
 <p>On occassion, you will need to import a data file containing χ(k)
 data, that is, data that have already been processed to have the
-background removed and to be properly normalized. This is allowed in
-<font size=-1 color="#8C4112">DEMETER</font> but is strongly discouraged. Many features of
+background removed and to be properly normalized.  This is allowed in
+<font size=-1 color="#8C4112">DEMETER</font> but is strongly discouraged.  Many features of
 <font size=-1 color="#8C4112">DEMETER</font> that are nominally related to the χ(k) data
-still make use of earlier aspects of the data processing. An example
+still make use of earlier aspects of the data processing.  An example
 of this is explained in <a class="reference external" href="../fit/sanity.html">the section on sanity checking of fitting
-models</a>. One of those sanity checks is to have
+models</a>.  One of those sanity checks is to have
 the beginning of the fitting range in R-space come before the R<sub>bkg</sub> value used in the background removal. That check cannot
 possibly happen for a Data object that begins as imported χ(k)
 data.</p>
 <p>Importing χ(k) data is done like so:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/perl</span>
 <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
 <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span>      <span class="o">=&gt;</span> <span class="s">&quot;cu10k.chi&quot;</span><span class="p">,</span>
@@ -81,17 +81,17 @@ data.</p>
 <p>For a data file containing χ(k) data, it is usually not necessary
 to explicitly identify the data as such. <font size=-1 color="#8C4112">DEMETER</font> will
 analyze the contents of the data file and recognize it as χ(k)
-data. In the rare case that χ(k) data is not recognized as such,
-it can be explicitly specified like so:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">datatype</span><span class="p">(</span><span class="s">&#39;chi&#39;</span><span class="p">);</span>
+data.  In case that χ(k) data is not recognized as such, it can
+be explicitly specified like so:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">datatype</span><span class="p">(</span><span class="s">&#39;chi&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>Note also that data that are imported as χ(k) cannot be plotted in
-energy. Attempting to do so will trigger an error and end your program.
-Note that you can set attributes related to normalization or background
-removal for a χ(k). Data object without consequence. Those attribute
-values will mostly never be used but there is no penalty for accessing
-them.</p>
+<p>Note also that data that are imported as χ(k) cannot be plotted
+in energy.  Attempting to do so will trigger an error and end your
+program.  Note that you can set attributes related to normalization or
+background removal for a χ(k) Data object without consequence.
+Those attribute values will mostly never be used but there is no
+penalty for accessing them.</p>
 
 <br>
 
@@ -128,8 +128,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
@@ -137,6 +137,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
@@ -144,14 +148,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 

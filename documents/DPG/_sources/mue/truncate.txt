@@ -14,7 +14,7 @@ second argument is the energy value before/after which all data points
 are removed.
 
 Truncating changes the representation of the data within both
-:demeter:`demeter` and :demeter:`ifeffit`.  (But not on disk --
+:demeter:`demeter` and :demeter:`ifeffit`.  (But not on disk |nd|
 :demeter:`demeter` never alters the original data.)  This method *does
 not* return a new object.
 

@@ -54,27 +54,27 @@
             
   <div class="section" id="fitting-exafs-data">
 <h1>10. Fitting EXAFS data<a class="headerlink" href="#fitting-exafs-data" title="Permalink to this headline">¶</a></h1>
-<p>Here is a complete fitting example. In this example, data on a copper
+<p>Here is a complete fitting example.  In this example, data on a copper
 foil are fit using a model considering isotropic expansion and a
 correlated Debye model.</p>
 <p>Everything up to line 44 should be familiar to you if you have read
-all the previous parts of this programming guide. An <font size=-1 color="#8C4112">ATHENA</font>
-project file is imported at line 5. A record from that project file is
+all the previous parts of this programming guide.  An <font size=-1 color="#8C4112">ATHENA</font>
+project file is imported at line 5.  A record from that project file is
 imported into a Data obejct at line 8 and various parameters of the
 Data object are set at lines 9-15.</p>
-<p>A <font size=-1 color="#8C4112">FEFF</font> calculation is made at lines 17-19. Note the use of
+<p>A <font size=-1 color="#8C4112">FEFF</font> calculation is made at lines 17-19.  Note the use of
 chained method calls at line 19. This is possible because the
 <code class="docutils literal"><span class="pre">potph</span></code> method returns the calling object. (So does <code class="docutils literal"><span class="pre">pathfinder</span></code>,
 for that matter, although its return value is thrown away here.) The
 path list is dereferenced for convenience at line 20.</p>
 <p>Various guess and set parameters are defined at lines 23-28 and stored
-in an array. The parameters will be used to set up a simple fitting
+in an array.  The parameters will be used to set up a simple fitting
 model consisting of an amplitude term, an E<sub>0</sub> shift, an isotropic
 expnasion model for ΔR for each path, and a correlated Debye
 model for the σ<sup>2</sup> for each path.</p>
 <p>At lines 33-42, various Path objects are defined using the
-ScatteringPath objects from the <font size=-1 color="#8C4112">FEFF</font> calculation. The path
-parameters are assigned mathexpressions using the appropriate GDS
+ScatteringPath objects from the <font size=-1 color="#8C4112">FEFF</font> calculation.  The path
+parameters are assigned math expressions using the appropriate GDS
 parameters.</p>
 <div class="highlight-perl"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -136,7 +136,7 @@ parameters.</p>
 58
 59
 60
-61</pre></div></td><td class="code"><div class="highlight"><pre> <span class="c1">#!/usr/bin/perl</span>
+61</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
  <span class="k">use</span> <span class="n">Demeter</span> <span class="sx">qw(:ui=screen)</span><span class="p">;</span>
 
  <span class="c1">## import an Athena project file with copper metal in it</span>
@@ -200,25 +200,25 @@ parameters.</p>
 </pre></div>
 </td></tr></table></div>
 <p>As I said, everything up to this point has been covered already. The
-fitting magic happens at lines 46-49. A Fit object is defined as a
-collection of GDS, Data, and Path objects. Those three attributes of the
-Fit object each takes an anonymous array (as at line 47) or references
-to named arrays (as at lines 46 and 48). That's it! That's how you make
-a fit.</p>
+fitting magic happens at lines 45-48.  A Fit object is defined as a
+collection of GDS, Data, and Path objects.  Those three attributes of
+the Fit object each takes an anonymous array (as at line 46) or
+references to named arrays (as at lines 45 and 47).  That's it!
+That's how you make a fit.</p>
 <p>Although the first 42 lines of code do not constitute a substantial
 savings of effort compared to a writing <font size=-1 color="#8C4112">FEFFIT</font> input file
 or an <font size=-1 color="#8C4112">IFEFFIT</font> script in terms of the amount of typing that
-you have to do. That changes substantially once the fit is
-defined. When the fit is requested at line 52, <font size=-1 color="#8C4112">DEMETER</font> does
+you have to do.  That changes substantially once the fit is
+defined.  When the fit is requested at line 52, <font size=-1 color="#8C4112">DEMETER</font> does
 a lot of work disentangle the contents of the arrays containing the
-GDS, Data, and Path objects. As discussed <a class="reference external" href="sanity.html">in an upcoming section</a> extensive checks are run to confirm that all aspects
+GDS, Data, and Path objects.  As discussed <a class="reference external" href="sanity.html">in an upcoming section</a> extensive checks are run to confirm that all aspects
 of the fitting model make sense and that there are no obvious errors
 in the fitting model (e.g. guess parameters that are defined but not
 used).</p>
 <div class="figure align-center" id="id1">
 <span id="fig-cufit"></span><a class="reference external image-reference" href="../_images/cufit.png"><img alt="../_images/cufit.png" src="../_images/cufit.png" /></a>
-<p class="caption"><span class="caption-number">Fig. 10.1 </span><span class="caption-text">Lines 54-58 in the script above defined how the plot at line 61
-will appear. Various flags of the Plot object are set such that the
+<p class="caption"><span class="caption-number">Fig. 10.1 </span><span class="caption-text">Lines 54-58 in the script above defined how the plot at line 60
+will appear.  Various flags of the Plot object are set such that the
 data and fit are plotted alonmg with a window showing the fitting
 range and the running R-factor, which is a way of visualizing how
 the misfit is distributed over the fitting range.  A k-weight of 2
@@ -277,8 +277,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
@@ -292,6 +292,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
@@ -299,14 +303,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 

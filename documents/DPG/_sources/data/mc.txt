@@ -22,8 +22,8 @@ same set of temporary arrays, use the Data::MultiChannel object.
 Importing multi-element detector data
 -------------------------------------
 
-Like the `Data::Prj object <athena.html>`__, The Data::MultiChannel
-object is a transitional object from which Data objects are created.
+Like the Data\::Prj, The Data\::MultiChannel object is a transitional
+object from which Data objects are created.
 
 In this example, a four-element detector was used to measure
 fluorescence data and each data channel is imported into an individual
@@ -31,6 +31,7 @@ Data object. Once all the channels are imported, they are plotted in
 energy for direct comparison.
 
 .. code-block:: perl
+   :linenos:
 
     #!/usr/bin/perl
     use Demeter;
@@ -47,10 +48,10 @@ energy for direct comparison.
                               ln          =>  0,   name        => 'MED Channel 4', );
     $_ -> plot('E') foreach @data;
 
-The Data::MultiChannel object is defined at line 5. This object is
+The Data\::MultiChannel object is defined at line 5. This object is
 inherited from the normal Data object, which allows it to use the Data
 object's existing methods for file import. Although the
-Data::MultiChannel object has all the same attributes as the Data
+Data\::MultiChannel object has all the same attributes as the Data
 object, the only two that matter are ``file`` and ``energy``. The column
 containing the energy must be specified so that the data can be sorted
 (:demeter:`demeter` deals gracefully with data that are not in monotonically
@@ -59,7 +60,7 @@ XAS). This value for the ``energy`` attribute is pushed onto the Data
 object created using the ``make_data`` method.
 
 The ``make_data`` method is used to generate a Data object from the
-Data::MultiChannel object. You **must** specify the ``numerator``,
+Data\::MultiChannel object. You **must** specify the ``numerator``,
 ``denominator``, and ``ln`` attributes as arguments of the ``make_data``
 method. You can specify any other Data attributes in the same manner as
 the Data creator method, ``new``.
@@ -77,7 +78,7 @@ data and do the summation on the fly, like so
 
 The performance penalty discussed above wouold not be a problem for the
 on-the-fly summation. However, importing each individual channel into
-its own Data object is certainly better done with the Data::MultiChannel
+its own Data object is certainly better done with the Data\::MultiChannel
 transitional object.
 
 
@@ -86,11 +87,11 @@ transitional object.
 Importing data and reference
 ----------------------------
 
-Another common use of the Data::MultiChannel object is to import the
+Another common use of the Data\::MultiChannel object is to import the
 reference channel from a normal XAS data file. Here is an example:
 
 .. code-block:: perl
-
+   :linenos:
 
     #!/usr/bin/perl
     use Demeter;
@@ -117,15 +118,21 @@ applied to the data.
 Multicolumn transmission data
 -----------------------------
 
-Using the four-channel ionization chamber described in B. Ravel, et al.,
-*J. Synchrotron Rad.*, **17**, (2010) p. 380 yields files which contain
-four independent transmission measurements on a common energy axis. For
-each measurement, there is a I\ :sub:`0` and an I\ :sub:`t` column. The following
-script disentangles these columns by constructing the four measurements,
-plotting the four XANES spectra, and writing out an :demeter:`athena` project file.
+Using the four-channel ionization chamber described by B. Ravel, et
+al., yields files which contain four independent transmission
+measurements on a common energy axis.  For each measurement, there is a
+I\ :sub:`0` and an I\ :sub:`t` column.  The following script
+disentangles these columns by constructing the four measurements,
+plotting the four XANES spectra, and writing out an :demeter:`athena`
+project file.
+
+.. bibliography:: ../dpg.bib
+   :filter: author % "Scorzato"
+   :list: bullet
+
 
 .. code-block:: perl
-
+   :linenos:
 
     #!/usr/bin/perl
     use Demeter; # qw(:plotwith=gnuplot);

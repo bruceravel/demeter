@@ -7,19 +7,22 @@
 Forward
 =======
 
-:demeter:`artemis` is:
+.. admonition:: :demeter:`artemis` is
 
-- a graphical front-end for :demeter:`feff` and :demeter:`ifeffit` (or
-  :demeter:`larch`) built using :demeter:`demeter`
-
-- a tool which makes easy analysis problems easy and hard analysis
-  problem possible
-
-- in use by hundreds of scientists world-wide
+   - a graphical interface for EXAFS data analysis 
+   - a front-end for :demeter:`feff` and :demeter:`ifeffit` (or
+     :demeter:`larch`) built using :demeter:`demeter`
+   - a tool which makes easy analysis problems easy and hard analysis
+     problem possible
+   - in use by hundreds of scientists world-wide
 
 
 .. todo:: 
-   #. section numbering in chapters with sections in index.rst
+   #. `Data citations <#id1>`_
+   #. Finish `FeS2 section <examples/fes2.html>`_
+   #. Write `methyltin section <examples/methyltin.html>`_
+   #. Write `constraints and restraints section <extended/constraints.html>`_
+   #. Document histograms
       
 
 Layout and typesetting conventions
@@ -60,6 +63,10 @@ presentation media.
   :guilabel:`fit` section of the `preferences tool <other/prefs.html>`__ and
   then click on :guilabel:`k1`
 
+- A click of the left mouse button is often indicated with this icon:
+  :mark:`leftclick,.`.  A click of the right mouse button is indicated
+  by this icon: :mark:`rightclick,.`.
+
 .. CAUTION::
    Points that require special attention are indicated
    like this.
@@ -94,14 +101,14 @@ display correctly in very old browsers.
 Acknowledgments
 ----------------
 
-I have to thank Matt Newville, of course. Without :demeter:`ifeffit`
-and :demeter:`larch` there wouldn't be an :demeter:`artemis`. Some
+I have to thank Matt Newville, of course.  Without :demeter:`ifeffit`
+and :demeter:`larch` there wouldn't be an :demeter:`artemis`.  Some
 content of this document was inspired by a recent XAS review article
 by Shelly Kelly and Dean Hesterberg, the first draft of which I had
-the pleasure of editing and the final draft of which I ended up on the
-author list. I have a huge debt of gratitude to all the folks on the
-:demeter:`ifeffit` mailing list. Without the incredible support and
-wonderful feedback that I've received over the years,
+the pleasure of reviewing and the final draft of which I ended up on
+the author list.  I have a huge debt of gratitude to all the folks on
+the :demeter:`ifeffit` mailing list.  Without the incredible support
+and wonderful feedback that I've received over the years,
 :demeter:`artemis` would be a shadow of what it is today.
 
 .. bibliography:: artemis.bib
@@ -147,6 +154,12 @@ The following great software tools were used to create this document:
   
 - The `keys.css stylesheet <https://github.com/michaelhue/keyscss>`_,
   which I modified to add options for purple and orange stylings.
+
+- The left-click :mark:`leftclick,.` and right-click :mark:`rightclick,.` mouse icons
+  were made by `Freepik <http://www.freepik.com>`_ from
+  http://www.flaticon.com and are available under `the Creative
+  Commons Attribution License 3.0
+  <http://creativecommons.org/licenses/by/3.0/>`_.
   
 Almost all screenshots were made of either :demeter:`artemis` or the
 `Gnuplot <http://gnuplot.info/>`__ window on my `KDE desktop
@@ -161,7 +174,8 @@ by Matthew Marcus.
 <http://commons.wikimedia.org/wiki/File:Brauron_-_Votive_Relief1.jpg>`_
 is a votive relief from the Archaeological Museum of Brauron in
 Brauron, Greece and is in the public domain.  It depicts a family of
-worshippers sacrificing a goat to the goddess Artemis.
+worshippers sacrificing a goat to the goddess Artemis.  Good advice!
+You should do that, too.
 
 
 The image used as the :demeter:`artemis` program icon is Detail from
@@ -177,7 +191,7 @@ desktop image in some screen shots is by `Thomas Shanan
 <https://www.flickr.com/photos/opoterser/>`_ and is licensed under a
 `Creative Commons attribution, non-commercial, no-derivatives
 <https://creativecommons.org/licenses/by-nc-nd/2.0/>`_ license.
-
+You should check out his macro photography.  It's amazing!
 
 
 Data citations
@@ -192,10 +206,10 @@ Installing ATHENA on your computer
 **Linux, BSD, and other unixes**
     It is not especially hard to build :demeter:`artemis`
     from source code. The 
-    procedure is explained in detail on this web page:
-    http://bruceravel.github.io/demeter/pods/installation.pod.html. An
-    excellent addendum to those instructions is at
-    https://gist.github.com/3959252.
+    procedure is explained in detail `at this link
+    <http://bruceravel.github.io/demeter/documents/SinglePage/installation.html>`_. An
+    excellent addendum to those instructions was `provided by David Hughes
+    <http://bruceravel.github.io/demeter/documents/SinglePage/demeter_nonroot.html>`_
 **Windows**
     Follow the links to `the Windows instructions on the Demeter
     homepage <http://bruceravel.github.io/demeter/#windows>`__ to download the

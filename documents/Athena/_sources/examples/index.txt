@@ -1,3 +1,7 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
 
 Worked examples
 ===============
@@ -15,6 +19,7 @@ example data <https://s3.amazonaws.com/XAS-Education/Examples.zip>`_.
     data measured on a system of cyanobacteria chemically reducing gold
     chloride to metallic gold.
 
+----------------
 
 .. toctree::
    :maxdepth: 2

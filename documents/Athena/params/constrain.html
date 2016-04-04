@@ -25,11 +25,11 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
     <link rel="top" title="Athena 0.9.24 documentation" href="../index.html" />
-    <link rel="up" title="7. Setting parameters in ATHENA" href="index.html" />
+    <link rel="up" title="7. Setting parameters" href="index.html" />
     <link rel="next" title="7.2. Setting E0" href="e0.html" />
-    <link rel="prev" title="7. Setting parameters in ATHENA" href="index.html" />
+    <link rel="prev" title="7. Setting parameters" href="index.html" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
     <link rel="stylesheet" type="text/css" href="../_static/program.css" />
 
@@ -39,16 +39,13 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
           <a href="e0.html" title="7.2. Setting E0"
-             accesskey="N">next</a> |</li>
+             accesskey="N">next</a></li>
         <li class="right" >
-          <a href="index.html" title="7. Setting parameters in ATHENA"
+          <a href="index.html" title="7. Setting parameters"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">7. Setting parameters in ATHENA</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">7. Setting parameters</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -59,10 +56,10 @@
             
   <div class="section" id="constraining-parameters-between-data-groups">
 <h1>7.1. Constraining parameters between data groups<a class="headerlink" href="#constraining-parameters-between-data-groups" title="Permalink to this headline">¶</a></h1>
-<p><img alt="lightning!" src="../_static/lightning.png" align="left" hspace="5"></a> In <font size=-1 color="#033B0A">ATHENA</font>, a <em>constraint</em> is the
+<p><img alt="lightning" title="This is material a skilled user should know" src="../_static/lightning.png" hspace="3"></a> In <font size=-1 color="#8C4112">ATHENA</font>, a <em>constraint</em> is the
 setting of a parameter to be the same for two or more data
 groups. (That word is used in a different context in
-<font size=-1 color="#033B0A">ARTEMIS</font>.) <font size=-1 color="#033B0A">ATHENA</font> gives you a high level of
+<font size=-1 color="#8C4112">ARTEMIS</font>.) <font size=-1 color="#8C4112">ATHENA</font> gives you a high level of
 control over the values of the parameters used to process your
 data. This control is very fine-grained in the sense that every group
 can have its own values for any parameters, thus allowing you to
@@ -70,16 +67,17 @@ customize the data processing for each individual data group.</p>
 <p>Often, however, your data groups are sufficiently similar that it is
 expedient to use identical values for some or all parameters. Were you
 forced to click through the data groups setting each parameter value
-for each group individually, then <font size=-1 color="#033B0A">ATHENA</font> would be very
+for each group individually, then <font size=-1 color="#8C4112">ATHENA</font> would be very
 tedious to use.  Fortunately, there are a number of tools dedicated to
 the problem of constraining parameter values.</p>
 <div class="section" id="constraining-individual-parameters">
 <h2>7.1.1. Constraining individual parameters<a class="headerlink" href="#constraining-individual-parameters" title="Permalink to this headline">¶</a></h2>
-<p>The first such tool is used to constrain individual parameters. A <em>right
-mouse click</em> on any of the parameter labels on the main window will post
-a context menu, as shown in this figure.</p>
+<p>The first such tool is used to constrain individual parameters. A
+<img alt="rightclick" title="Right mouse button" src="../_static/rightclick.png" hspace="3"></a> <em>right mouse click</em> on any of the parameter
+labels on the main window will post a context menu, as shown in this
+figure.</p>
 <div class="figure align-center" id="id1">
-<span id="fig-paramparam"></span><a class="reference external image-reference" href="../_images/param_param.png"><img alt="../_images/param_param.png" src="../_images/param_param.png" style="width: 65%;" /></a>
+<span id="fig-paramparam"></span><a class="reference external image-reference" href="../_images/param_param.png"><img alt="../_images/param_param.png" src="../_images/param_param.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 7.1 </span><span class="caption-text">Posting a context menu for an individual parameter.</span></p>
 </div>
 <p>The first two items in this context menu are used to set the values of
@@ -113,21 +111,21 @@ randomly a number of times. Each normalization will be plotted. The
 standard devaition of the edge steps will be computed and displayed
 in the echo area.</li>
 <li>The Fourier transform <tt><font color="#387A38">«krange»</font></tt> context menu has an option
-for setting the upper bound to <font size=-1 color="#033B0A">IFEFFIT</font>'s suggestion,
+for setting the upper bound to <font size=-1 color="#8C4112">IFEFFIT</font>'s suggestion,
 which is based on the level of noise in the data.</li>
 </ul>
 </div>
 <div class="section" id="constraining-groups-of-parameters">
 <h2>7.1.2. Constraining groups of parameters<a class="headerlink" href="#constraining-groups-of-parameters" title="Permalink to this headline">¶</a></h2>
 <p>In the main window, the parameters are grouped into sets of related
-parameters. All of the parameters associated with background removal are
-in one box, all the Fourier transform parameters are in another box, and
-so on. The labels at the top of each box are sensitive to mouse clicks
-much like the entry box labels. A left click posts a helpful message in
-the echo area, while a right click posts a context menu, as shown in the
-picture below.</p>
+parameters. All of the parameters associated with background removal
+are in one box, all the Fourier transform parameters are in another
+box, and so on. The labels at the top of each box are sensitive to
+<img alt="rightclick" title="Right mouse button" src="../_static/rightclick.png" hspace="3"></a> mouse clicks much like the entry box labels. A
+<img alt="rightclick" title="Right mouse button" src="../_static/rightclick.png" hspace="3"></a> right click posts a context menu, as shown in
+the picture below.</p>
 <div class="figure align-center" id="id2">
-<span id="fig-paramgroup"></span><a class="reference external image-reference" href="../_images/param_group.png"><img alt="../_images/param_group.png" src="../_images/param_group.png" style="width: 65%;" /></a>
+<span id="fig-paramgroup"></span><a class="reference external image-reference" href="../_images/param_group.png"><img alt="../_images/param_group.png" src="../_images/param_group.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 7.2 </span><span class="caption-text">Posting a context menu for a group of parameters.</span></p>
 </div>
 <p>The various options behave much the same as in the individual parameter
@@ -147,23 +145,23 @@ to perform the same constraining operations on all parameters at once.
 These all-parameter operations are found in the Group menu, as shown in
 this picture.</p>
 <div class="figure align-center" id="id3">
-<span id="fig-paramall"></span><a class="reference external image-reference" href="../_images/param_all.png"><img alt="../_images/param_all.png" src="../_images/param_all.png" style="width: 65%;" /></a>
+<span id="fig-paramall"></span><a class="reference external image-reference" href="../_images/param_all.png"><img alt="../_images/param_all.png" src="../_images/param_all.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 7.3 </span><span class="caption-text">The <span class="guilabel">Group</span> menu, which contains the options for
 constraining all parameters at once.</span></p>
 </div>
 <p>Again, these operations work identically to the explanation above,
 except that every parameter is effected, with the exceptions of
-<tt><font color="#387A38">«file»</font></tt> and <tt><font color="#387A38">«energy shift»</font></tt>, which would not be sensible to
-constrain.</p>
+<tt><font color="#387A38">«file»</font></tt> and <tt><font color="#387A38">«energy shift»</font></tt>, which would not be
+sensible to constrain in this way.</p>
 
 <br>
 
 <br>
 <hr class="docutils" />
-<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
-copyright © 2015 Bruce Ravel</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
 <p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
-<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
 consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
 </div>
 </div>
@@ -182,10 +180,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">7. Setting parameters in ATHENA</a><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and background removal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. User Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">7. Setting parameters</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="">7.1. Constraining parameters between data groups</a></li>
 <li class="toctree-l2"><a class="reference internal" href="e0.html">7.2. Setting E0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="defaults.html">7.3. Default parameter values</a></li>
@@ -193,21 +191,27 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
-<h3>Links</h3>
+<h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -239,20 +243,17 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
           <a href="e0.html" title="7.2. Setting E0"
-             >next</a> |</li>
+             >next</a></li>
         <li class="right" >
-          <a href="index.html" title="7. Setting parameters in ATHENA"
+          <a href="index.html" title="7. Setting parameters"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >7. Setting parameters in ATHENA</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="index.html" >7. Setting parameters</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

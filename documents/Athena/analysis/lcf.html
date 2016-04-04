@@ -25,11 +25,11 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
     <link rel="top" title="Athena 0.9.24 documentation" href="../index.html" />
-    <link rel="up" title="10. Data analysis in ATHENA" href="index.html" />
+    <link rel="up" title="10. Data analysis" href="index.html" />
     <link rel="next" title="10.2. Principle components analysis" href="pca.html" />
-    <link rel="prev" title="10. Data analysis in ATHENA" href="index.html" />
+    <link rel="prev" title="10. Data analysis" href="index.html" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
     <link rel="stylesheet" type="text/css" href="../_static/program.css" />
 
@@ -39,16 +39,13 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
           <a href="pca.html" title="10.2. Principle components analysis"
-             accesskey="N">next</a> |</li>
+             accesskey="N">next</a></li>
         <li class="right" >
-          <a href="index.html" title="10. Data analysis in ATHENA"
+          <a href="index.html" title="10. Data analysis"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">10. Data analysis in ATHENA</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">10. Data analysis</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -61,7 +58,7 @@
 <span id="lcf-sec"></span><h1>10.1. Linear combination fitting<a class="headerlink" href="#linear-combination-fitting" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="interpreting-data-as-a-mixture-of-standards">
 <h2>10.1.1. Interpreting data as a mixture of standards<a class="headerlink" href="#interpreting-data-as-a-mixture-of-standards" title="Permalink to this headline">¶</a></h2>
-<p><font size=-1 color="#033B0A">ATHENA</font> has a capability of fitting a linear combination of
+<p><font size=-1 color="#8C4112">ATHENA</font> has a capability of fitting a linear combination of
 standard spectra to an unknown spectra. These fits can be done using
 normalized μ(E), derivative of μ(E), or χ(k) spectra. One
 use of this sort of analysis might be to interpret the kinetics of
@@ -76,7 +73,7 @@ manual</a>.</p>
 the main menu. The normal parameter view will be replaced by the tool
 in the following figure for performing the linear combination fit.</p>
 <div class="figure align-center" id="id1">
-<span id="fig-lcf"></span><a class="reference external image-reference" href="../_images/lcf.png"><img alt="../_images/lcf.png" src="../_images/lcf.png" style="width: 65%;" /></a>
+<span id="fig-lcf"></span><a class="reference external image-reference" href="../_images/lcf.png"><img alt="../_images/lcf.png" src="../_images/lcf.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 10.2 </span><span class="caption-text">The linear combination fitting tool.</span></p>
 </div>
 </div>
@@ -100,14 +97,15 @@ fits.</p>
 <p>To do the fit, weighting parameters are defined for each standards
 spectrum except for the last one in the list. The weight for the last
 spectrum is one minus the sum of the other weights, thus constraining
-the standards to be 100 percent of the unknown. Thus, if you used three
-standards, the first two would have weights <code class="docutils literal"><span class="pre">x</span></code> and <code class="docutils literal"><span class="pre">y</span></code> and the
-third would have weight <code class="docutils literal"><span class="pre">1-x-y</span></code>. <code class="docutils literal"><span class="pre">x</span></code> and <code class="docutils literal"><span class="pre">y</span></code> would then be varied
-to best fit the data. Each standard spectrum is interpolated onto the
-energy grid of the unknown when the fit is performed as normalized or
-derivative μ(E). The fit is performed over the data range indicated by
-the text boxes near the top of the window. There are pluck buttons which
-can be used to set the fitting range by clicking on a plot of the data.</p>
+the standards to be 100 percent of the unknown. Thus, if you used
+three standards, the first two would have weights <code class="docutils literal"><span class="pre">x</span></code> and <code class="docutils literal"><span class="pre">y</span></code> and
+the third would have weight <code class="docutils literal"><span class="pre">1-x-y</span></code>. <code class="docutils literal"><span class="pre">x</span></code> and <code class="docutils literal"><span class="pre">y</span></code> would then be
+varied to best fit the data. Each standard spectrum is interpolated
+onto the energy grid of the unknown when the fit is performed as
+normalized or derivative μ(E). The fit is performed over the data
+range indicated by the text boxes near the top of the window. There
+are pluck buttons which can be used to set the fitting range by
+<img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> double-clicking on a plot of the data.</p>
 <p>Fitting normalized μ(E), derivative μ(E), or χ(k) is chosen using the
 radio buttons just above the table of standards. When fitting χ(k)
 spectra, you have the option of fitting a single spectrum to the data.</p>
@@ -138,7 +136,7 @@ E<sub>0</sub> for the data or standards will be unnecessary.</p>
 </div>
 <div class="section" id="constraints-and-modifications-to-the-fit">
 <h2>10.1.3. Constraints and modifications to the fit<a class="headerlink" href="#constraints-and-modifications-to-the-fit" title="Permalink to this headline">¶</a></h2>
-<p><font size=-1 color="#033B0A">ATHENA</font>'s linear combination tool offers several constraints to the
+<p><font size=-1 color="#8C4112">ATHENA</font>'s linear combination tool offers several constraints to the
 fitting parameters. The constraints are set and unset using the
 checkbuttons near the bottom of the tool.</p>
 <dl class="docutils">
@@ -147,7 +145,7 @@ checkbuttons near the bottom of the tool.</p>
 clicking on the button labeled <span class="guilabel">Weights between 0 &amp; 1</span>.
 In this case, each weight used is computed from the variable using
 this formula:</p>
-<div class="highlight-python"><div class="highlight"><pre>guess  weight_varied = 0.5
+<div class="highlight-python"><div class="highlight"><pre><span></span>guess  weight_varied = 0.5
 def    weight        = max(0, min(1, weight_varied))
 </pre></div>
 </div>
@@ -170,7 +168,7 @@ constraint might yield fit results that are hard to interpret. If
 the constraint that weights must be between 0 and 1 is in place,
 then the weight of the last standard in the fit is computed by this
 formula:</p>
-<div class="highlight-python"><div class="highlight"><pre>def  weight_final = max(0, 1 - (w1 + w2 + ... wn))
+<div class="highlight-python"><div class="highlight"><pre><span></span>def  weight_final = max(0, 1 - (w1 + w2 + ... wn))
 </pre></div>
 </div>
 <p class="last">This forces the final weight to be positive, but may result in a
@@ -186,11 +184,11 @@ all the standards and using an E<sub>0</sub> shift on the unknown data.</dd>
 <dt><strong>Adding noise to the data</strong></dt>
 <dd>It is sometimes useful to check the robustness of the fit against
 noisy data. This is particularly true for a data set wherein some
-data are much noisier than others. To this end, <font size=-1 color="#033B0A">ATHENA</font> allows you to
+data are much noisier than others. To this end, <font size=-1 color="#8C4112">ATHENA</font> allows you to
 add pseudo-random noise to the data before performing the fit. This
 is done by generating an array of psuedo-random numbers and adding
 this array to the data. Given that normalized μ(E) is used in lCF
-fits, σ(the scale of the noise) has a simple interpretation -- it
+fits, σ(the scale of the noise) has a simple interpretation – it
 is a fraction of the edge step. A bit of trial and error might be
 necessary to find a suitable level of noise for your test. For fits
 to χ(k), note that the noise is added to the data <strong>before</strong>
@@ -218,23 +216,23 @@ independent measurements in the XANES spectrum. That number is certainly
 less than the number of data points measured. Nonetheless, when the
 chi-square is evaluated, the number of data points is used as the number
 of measurements.</p>
-<p>Second, <font size=-1 color="#033B0A">ATHENA</font> has no way of evaluating a measurement
+<p>Second, <font size=-1 color="#8C4112">ATHENA</font> has no way of evaluating a measurement
 uncertainty ε for the XANES measurement. A value of 1 is used for
 ε in the equation for chi-square.</p>
 <p>These two issues, taken together, mean that chi-square and reduced
-chi-square tend to be very small numbers -- much smaller than 1. As a
+chi-square tend to be very small numbers – much smaller than 1. As a
 result, it is impossible to use reduced chi-square to evaluate the
 quality of a single fit. Relative changes in chi-square between fits are
 probably meaningful. However, given the two problems described above,
 chi-square does not have a very different meaning from the R-factor.</p>
 <p>The R-factor reported in the text box is</p>
-<div class="highlight-python"><div class="highlight"><pre> sum ( (data - fit)^2 )
+<div class="highlight-python"><div class="highlight"><pre><span></span> sum ( (data - fit)^2 )
 ------------------------
  sum (     data^2     )
 </pre></div>
 </div>
 <p>where the sums are over the data points in the fitting region. The
-chi-square and reduced chi-square are those reported by <font size=-1 color="#033B0A">IFEFFIT</font>.</p>
+chi-square and reduced chi-square are those reported by <font size=-1 color="#8C4112">IFEFFIT</font>.</p>
 <p>Interpretation of the statistical parameters requires you to be mindful
 of what you know about the system you are measuring. The statistical
 parameters alone are not sufficient to evaluate the fit results. The
@@ -289,7 +287,7 @@ above.</p>
 what's actually in a sample. One approach to figuring this out is to
 measure all plausible standard compounds and try fitting a large
 number of different combinations of the standards to the
-data. <font size=-1 color="#033B0A">ATHENA</font> provides a tool for automating this. Here is
+data. <font size=-1 color="#8C4112">ATHENA</font> provides a tool for automating this. Here is
 how it works:</p>
 <ol class="arabic simple">
 <li>Load all of the standards that you want to consider into the table of
@@ -312,29 +310,29 @@ the combinatorial problem.</li>
 <li>Click <kbd class="light">Fit all possible combinations</kbd> in the actions list and go get
 a cup of coffee. If the number of possible standards is large, this
 series of fits could take a while. For example, with 11 standards and
-considering up to the quaternary combinations, <font size=-1 color="#033B0A">ATHENA</font> will perform
+considering up to the quaternary combinations, <font size=-1 color="#8C4112">ATHENA</font> will perform
 550 fits. (Really! C(11, 2) + C(11, 3) + C(11, 4) = 550!)</li>
 </ol>
 <p>Once this series of fits finishes, the tab labeled <span class="guilabel">Combinatorics</span> will
 become active and raise to the top. In this tab, you will see two
 tables. The top table concisely summarizes all the fits that were
 performed, in order of increasing R-factor. Initially, the first item in
-the list -- which has the lowest R-factor -- is selected (i.e.
+the list – which has the lowest R-factor – is selected (i.e.
 highlighted in pale red).</p>
 <div class="figure align-center" id="id2">
-<span id="fig-lcfcombo"></span><a class="reference external image-reference" href="../_images/lcf_combo.png"><img alt="../_images/lcf_combo.png" src="../_images/lcf_combo.png" style="width: 65%;" /></a>
+<span id="fig-lcfcombo"></span><a class="reference external image-reference" href="../_images/lcf_combo.png"><img alt="../_images/lcf_combo.png" src="../_images/lcf_combo.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 10.3 </span><span class="caption-text">The combinatorial fitting results tab.</span></p>
 </div>
 <p>The second table contains each of the standards and its weight and
 E<sub>0</sub> from the fit selected in the upper table.</p>
-<p>You can select a fit from the upper table by clicking on its line. When
-you do so, that fit becomes highlighted in pale red, its fitting results
-are inserted in the bottom table, its best fit function is plotted along
-with the data, and its results are inserted into the other two tabs. In
-this way, you can examine any fit from the series, as seen in the plot
-below.</p>
+<p>You can select a fit from the upper table by <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a>
+clicking on its line. When you do so, that fit becomes highlighted in
+pale red, its fitting results are inserted in the bottom table, its
+best fit function is plotted along with the data, and its results are
+inserted into the other two tabs. In this way, you can examine any fit
+from the series, as seen in the plot below.</p>
 <div class="figure align-center" id="id3">
-<span id="fig-lcfcombofit"></span><a class="reference external image-reference" href="../_images/lcf_combofit.png"><img alt="../_images/lcf_combofit.png" src="../_images/lcf_combofit.png" style="width: 45%;" /></a>
+<span id="fig-lcfcombofit"></span><a class="reference external image-reference" href="../_images/lcf_combofit.png"><img alt="../_images/lcf_combofit.png" src="../_images/lcf_combofit.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 10.4 </span><span class="caption-text">The best fit from a combinatorial sequence.</span></p>
 </div>
 <p>Depending on the selection of standards, it is reasonable that two or
@@ -343,13 +341,14 @@ that those fits are statistically indistinguishable or you might be able
 to invoke some a priori knowledge to help choose between the similar
 fits. Other fits farther down in the list will be obviously worse both
 by statistical metric and by examination of their results.</p>
-<p>Clicking the right mouse button on a fit in the upper table will post a
-context menu with options relevant to the selected fit. These options
-include saving the fit as a data group; writing a data file with columns
-for the data, fit, residual, and each weighted standard; saving the
-report from the <span class="guilabel">Fit results</span> tab to a file; and writing a
-comma-separated-value report for the entire combinatorial sequence which
-can be imported into a spreadsheet program.</p>
+<p><img alt="rightclick" title="Right mouse button" src="../_static/rightclick.png" hspace="3"></a> Clicking the right mouse button on a fit in the
+upper table will post a context menu with options relevant to the
+selected fit. These options include saving the fit as a data group;
+writing a data file with columns for the data, fit, residual, and each
+weighted standard; saving the report from the <span class="guilabel">Fit results</span>
+tab to a file; and writing a comma-separated-value report for the
+entire combinatorial sequence which can be imported into a spreadsheet
+program.</p>
 <p>Beneath the tables is a button labeled <kbd class="light">Write CSV report for all
 fits</kbd>.  Clicking this will prompt you for a file name and
 location, then write a comma-separated-value report of all fits.</p>
@@ -360,10 +359,10 @@ manual</a>.</p>
 
 <br>
 <hr class="docutils" />
-<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
-copyright © 2015 Bruce Ravel</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
 <p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
-<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
 consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
 </div>
 </div>
@@ -382,13 +381,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and background removal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">10. Data analysis in ATHENA</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">10. Data analysis</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="">10.1. Linear combination fitting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pca.html">10.2. Principle components analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="peak.html">10.3. Peak fitting</a></li>
@@ -400,16 +399,22 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
-<h3>Links</h3>
+<h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -441,20 +446,17 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
           <a href="pca.html" title="10.2. Principle components analysis"
-             >next</a> |</li>
+             >next</a></li>
         <li class="right" >
-          <a href="index.html" title="10. Data analysis in ATHENA"
+          <a href="index.html" title="10. Data analysis"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >10. Data analysis in ATHENA</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="index.html" >10. Data analysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

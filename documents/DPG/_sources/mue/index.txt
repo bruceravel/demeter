@@ -7,11 +7,15 @@ Processing |mu| (E) data
 ========================
 
 In this chapter, much of the functionality associated with
-:demeter:`athena` is exaplained. In the examples folder of the
-:demeter:`demeter` source tree, there is a program called harness
-which deomnstrates all of the things explained in this chapter. The
-scripts that program uses are all located in the
+:demeter:`athena` is explained.  In the :file:`examples/` folder of
+the :demeter:`demeter` source tree, there is a program called
+:program:`harness` which demonstrates all of the things explained in
+this chapter.  The scripts that program uses are all located in the
 :file:`examples/tests/` folder.
+
+.. todo:: calibrate, `noise <noise.html>`_, `smoothing
+   <smooth.html>`_, `convolve <convolve.html>`_, `rebin
+   <rebin.html>`_,
 
 ---------------------
 

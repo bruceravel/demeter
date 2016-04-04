@@ -1,3 +1,8 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
+
 
 File type plugins
 =================
@@ -11,7 +16,7 @@ Extending ATHENA to read new file types
 <http://xraypy.github.io/xraylarch/data/index.html>`__ function to
 import data. This means that :demeter:`athena`'s notion of what is an
 acceptable data format is completely identical to :demeter:`ifeffit`'s
-(or :demeter:`larch`'s) notion. The contrapositive is also true -- if
+(or :demeter:`larch`'s) notion. The contrapositive is also true |nd| if
 :demeter:`ifeffit` (or :demeter:`larch`) can read a data file, so can
 :demeter:`athena`.
 
@@ -305,10 +310,8 @@ the list (so be sure to choose a suitable and suitably short value for
 that variable).
 
 .. _fig-plugin:
-
 .. figure:: ../../_images/import_plugin.png
    :target: ../_images/import_plugin.png
-   :width: 65%
    :align: center
 
    The plugin registry.
@@ -320,11 +323,11 @@ alphabetically. If you want your system plugins to be checked against
 the data first, choose a name that comes early in the alphabetical
 sense.
 
-Right-clicking on an item in the registry posts the context menu shown
-in the figure above. All such context menus have at least one item for
-reading the documentation contained in the plugin source code file. Some
-plugins, such as the one shown, also provide a way of configuring the
-behavior of the plugin.
+Right-clicking :mark:`rightclick,..` on an item in the registry posts the
+context menu shown in the figure above. All such context menus have at
+least one item for reading the documentation contained in the plugin
+source code file. Some plugins, such as the one shown, also provide a
+way of configuring the behavior of the plugin.
 
 
 

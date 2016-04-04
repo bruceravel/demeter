@@ -30,12 +30,13 @@ finder (line 7), however both must be run before anything else
     $feff -> freeze("feff/feff.yaml");
 
 At line 9, the attributes of the Feff object, including results of the
-path finder, are written to a save file. This save file is in the `YAML
-format <http://search.cpan.org/~adamk/YAML/>`__, which is a simple,
-textual serialization format for data structures. As you will see in
-subsequent sections, these YAML files (along with the phase.bin) can be
-used to restore a :demeter:`feff` calculation for future use.
-
+path finder, are written to a save file. This save file is in the
+`YAML format
+<https://metacpan.org/pod/distribution/YAML/lib/YAML.pod>`__, which is
+a simple, textual serialization format for data structures. As you
+will see in subsequent sections, these YAML files (along with the
+:file:`phase.bin`) can be used to restore a :demeter:`feff`
+calculation for future use.
 
 This can be made a little more efficient.  ``run`` at line 6 below is
 a thin wrapper around the ``potph`` and ``pathfinder`` method calls.

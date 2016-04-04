@@ -34,7 +34,7 @@ this window. Below the descriptive fitting properties displayed at the
 top in blue text are the main fitting statistics, including |chi|\
 :sup:`2`, |chi|\ :sup:`2`\ :sub:`v`, the R-factor, |epsilon| (k),
 |epsilon| (R), and counts of the number of independent points and the
-number of guess parameters. Those are followed by the details of `the
+number of :guess:`guess` parameters. Those are followed by the details of `the
 happiness evaluation <fit/happiness.html>`__. Two lines of the fitting
 statistics are colored with the same color determined from the
 happiness and used for the Fit button and the various plotting

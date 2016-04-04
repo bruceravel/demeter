@@ -1,3 +1,8 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
+
 
 Smoothing data
 ==============
@@ -38,19 +43,15 @@ makes a group out of the smoothed data and places it in the group
 list.
 
 .. _fig-smooth:
-
 .. figure:: ../../_images/smooth.png
    :target: ../_images/smooth.png
-   :width: 65%
    :align: center
 
    The smoothing tool.
 
 .. _fig-smoothplot:
-
 .. figure:: ../../_images/smooth_plot.png
    :target: ../_images/smooth_plot.png
-   :width: 45%
    :align: center
 
    Some noisy gold oxide data that has been smoothed using the boxcar

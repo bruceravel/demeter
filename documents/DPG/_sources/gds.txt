@@ -98,23 +98,24 @@ introduced by :demeter:`demeter`.
     remains unchanged after that.
 
 :lguess:`lguess`
-    A locally guessed parameter. In a multiple data set fit, this will
-    be expanded to one :guess:`guess` parameter per data set. See `the
-    section on local guess parameters <../lgcv.html>`__ for more
-    details.
+    A :lguess:`locally guessed` parameter. In a multiple data set fit,
+    this will be expanded to one :guess:`guess` parameter per data
+    set. See `the section on local guess parameters <../lgcv.html>`__
+    for more details.
 
 :restrain:`restrain`
-    A restrain parameter is defined in an :demeter:`ifeffit` script as
-    a :def:`def` parameter but is used as a restraint in the call to
-    :demeter:`ifeffit`'s ``feffit`` command. In a multiple data set
-    fit, all restraints are defined in the first call to the
+    A :restrain:`restrain` parameter is defined in an
+    :demeter:`ifeffit` script as a :def:`def` parameter but is used as
+    a :restrain:`restraint` in the call to :demeter:`ifeffit`'s
+    ``feffit`` command.  In a multiple data set fit, all
+    :restrain:`restraints` are defined in the first call to the
     ``feffit`` command.
 
 :skip:`skip`
-    A skip is a parameter that is defined but then ignored. Setting a
-    variable to a :skip:`skip` is useful in a GUI as a way of
-    :quoted:`commenting out` a parameter without removing it from the
-    fitting project.
+    A :skip:`skip` is a parameter that is defined but then
+    ignored.  Setting a variable to a :skip:`skip` is useful in a GUI
+    as a way of :quoted:`commenting out` a parameter without removing
+    it from the fitting project.
 
 :after:`after`
     This is like a :def:`def` parameter, but is not used in the
@@ -123,7 +124,7 @@ introduced by :demeter:`demeter`.
 
 :penalty:`penalty`
     This is like a :def:`def` parameter, but is used as a user-defined
-    penalty to the `happiness parameter <../fit/happiness.html>`__,
+    subtraction from the `happiness parameter <../fit/happiness.html>`__,
     which is evaluated at the end of the fit.  *This is not currently
     implemented.*
 
@@ -167,7 +168,7 @@ best fit value and the uncertainty, as shown below. For most other
 parameter types, annotation is set using the evaluation of the
 parameter as stored in the ``bestfit`` attribute.
 
-::
+.. code-block:: text
 
     amp:   0.98096480 +/-   0.08074672
 
@@ -185,14 +186,14 @@ The ``report`` method is used after a fit to write out parameter
 results to a log file. It looks like this, giving the best fit value,
 the uncertainty, and the initial guess in brackets:
 
-::
+.. code-block:: text
 
     amp                =   0.98096480    # +/-   0.08074672     [1]
 
 The ``full_report`` writes out a more complete description of the state
 of the object. It looks like this:
 
-::
+.. code-block:: text
 
     amp
       guess parameter

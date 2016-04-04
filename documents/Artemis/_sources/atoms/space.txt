@@ -383,7 +383,7 @@ the undecorated unit cell. They are:
 
 - **Hexagonal**: a = b |neq| c, |alpha| = |beta| = 90\ |deg|, |gamma| = 120\ |deg|
 
-- **Trigonal**: (rhombohedral axes): a = b = c, |alpha| = |beta| = |gamma| < 120\ |deg| |neq| 90\ |deg|
+- **Trigonal**: (rhombohedral axes): a = b = c, |alpha| = |beta| = |gamma| < 120\ |deg| & |neq| 90\ |deg|
   (hexagonal axes): a = b |neq| c, |alpha| = |beta| = 90\ |deg|, |gamma| = 120\ |deg|
 
 - **Cubic**: a = b = c, |alpha| = |beta| = |gamma| = 90\ |deg|

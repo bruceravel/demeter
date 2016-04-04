@@ -29,7 +29,7 @@
     <link rel="next" title="8.3. Parameter report files" href="report.html" />
     <link rel="prev" title="8.1. Column output files" href="column.html" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
     <link rel="stylesheet" type="text/css" href="../_static/program.css" />
 
@@ -39,11 +39,8 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
           <a href="report.html" title="8.3. Parameter report files"
-             accesskey="N">next</a> |</li>
+             accesskey="N">next</a></li>
         <li class="right" >
           <a href="column.html" title="8.1. Column output files"
              accesskey="P">previous</a> |</li>
@@ -59,15 +56,6 @@
             
   <div class="section" id="project-files">
 <h1>8.2. Project files<a class="headerlink" href="#project-files" title="Permalink to this headline">¶</a></h1>
-<div class="admonition-todo admonition" id="index-0">
-<p class="first admonition-title">Todo</p>
-<ol class="last arabic simple">
-<li>Save button, change indicator, update discussion of file format.</li>
-<li>Explain how the metadata dictionary works.</li>
-<li>Serialization of analysis results (i.e. LCF, peak fitting, PCA)</li>
-</ol>
-</div>
-<hr class="docutils" />
 <p>The most important type of output file is the project file. A project
 file contains all of the data you have imported, all of the parameters
 associated with each data file, the content of the journal, and several
@@ -75,9 +63,9 @@ other collections of important data. All of this gets saved in a single,
 easily transportable file.</p>
 <p>The primary purpose of the project file is to save you work. When you
 open a saved project file, all of the data and all of their parameters
-are imported into <font size=-1 color="#033B0A">ATHENA</font>, returning <font size=-1 color="#033B0A">ATHENA</font> to
-the state it was in when saved the project file. <font size=-1 color="#033B0A">ARTEMIS</font>
-(<font size=-1 color="#033B0A">ATHENA</font>'s sister program intended for analysis of EXAFS
+are imported into <font size=-1 color="#8C4112">ATHENA</font>, returning <font size=-1 color="#8C4112">ATHENA</font> to
+the state it was in when saved the project file. <font size=-1 color="#8C4112">ARTEMIS</font>
+(<font size=-1 color="#8C4112">ATHENA</font>'s sister program intended for analysis of EXAFS
 data) can read these project files. Thus the project file is the best
 way of moving your data between the two programs.</p>
 <p>Even better, the project file is a form of collaboration. The format of
@@ -88,38 +76,51 @@ site, or sent to a collaborator by email.</p>
 <p>To save a project file, simply select one of the <span class="guilabel">File</span> menu
 options highlighted in this figure.</p>
 <div class="figure align-center" id="id1">
-<span id="fig-exportproject"></span><a class="reference external image-reference" href="../_images/export_project.png"><img alt="../_images/export_project.png" src="../_images/export_project.png" style="width: 65%;" /></a>
+<span id="fig-exportproject"></span><a class="reference external image-reference" href="../_images/export_project.png"><img alt="../_images/export_project.png" src="../_images/export_project.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 8.4 </span><span class="caption-text">Saving a project file.</span></p>
 </div>
 <p>The first two options saves the entire current state of
-<font size=-1 color="#033B0A">ATHENA</font>. If the project has already been saved, the
+<font size=-1 color="#8C4112">ATHENA</font>.  If the project has already been saved, the
 <span class="guilabel">Save project</span> option overwrites the previous file with the
-new state of your project. Hitting <kbd class="dark">Control</kbd>-<kbd class="dark">s</kbd> does the
-same thing. Clicking on the modified indicator -- the other
-highlighted region in the screenshot -- also saves the project.
-Alternately, you can select <span class="guilabel">Save project as...</span> and you
-will be prompted for a new file name for the project.</p>
+new state of your project.  Hitting <kbd class="dark">Control</kbd>-<kbd class="dark">s</kbd> does
+the same thing.  Alternately, you can select <span class="guilabel">Save
+project as...</span> and you will be prompted for a new file name for the
+project.</p>
 <p>The final option will write only the marked groups to a project file.
 You can think of this as a sort of “sub-project” file. This is another
-of the many ways that the group markings are used by <font size=-1 color="#033B0A">ATHENA</font>.</p>
-<p>The <kbd class="light">Save</kbd> button at the top of the screen will save the
-current project, prompting for a file name if needed. As you work with
-<font size=-1 color="#033B0A">ATHENA</font>.  this button turns increasingly red, reminding you
-of the need to save your work early and often.</p>
+of the many ways that the group markings are used by <font size=-1 color="#8C4112">ATHENA</font>.</p>
+<p>The <kbd class="light">Save</kbd> button at the top of the screen is another
+way to save the current project, prompting for a file name if
+needed. As you work with <font size=-1 color="#8C4112">ATHENA</font>.  this button turns
+increasingly red, reminding you of the need to save your work early
+and often.</p>
 <div class="admonition caution">
 <p class="first admonition-title">Caution</p>
 <p class="last">As with any software, you should save your work early and
-often. <font size=-1 color="#033B0A">ATHENA</font> and <font size=-1 color="#033B0A">IFEFFIT</font> have
+often. <font size=-1 color="#8C4112">ATHENA</font> and <font size=-1 color="#8C4112">IFEFFIT</font> have
 their flaws. It would be a shame to discover one of them
 after having done a lot of unsaved work.</p>
 </div>
+<div class="section" id="the-nagging-button">
+<h2>8.2.1. The nagging button<a class="headerlink" href="#the-nagging-button" title="Permalink to this headline">¶</a></h2>
+<p>At the top of the main window is a <kbd class="dark">Save</kbd> button that serves
+the same purpose as selecting <span class="menuselection">File ‣ Save project</span>.
+As you work with <font size=-1 color="#8C4112">ATHENA</font>, this button will slowly change
+color, becoming a brighter and brighter shade of red.  This is a
+reminder that you should save your project file.  Once you save the
+project, the button is restored to its original color.</p>
+<p>The pace at which the <kbd class="dark">Save</kbd> button turns red is controlled by
+the <font color="#636A24">♦Athena→save_alert</font> <a class="reference external" href="../other/prefs.html">configuration parameter</a>.  Setting this to a smaller number will make
+the button turn red faster, larger will make it turn slower.  Setting
+it to 0 will turn the nagging feature off entirely.</p>
+</div>
 <div class="section" id="the-project-file-format-and-compatibility-with-older-versions">
-<h2>8.2.1. The project file format and compatibility with older versions<a class="headerlink" href="#the-project-file-format-and-compatibility-with-older-versions" title="Permalink to this headline">¶</a></h2>
-<p>The <font size=-1 color="#033B0A">ATHENA</font> project file is designed to be quick and easy
-for <font size=-1 color="#033B0A">ATHENA</font> to read. Unfortunately, the file format is not
+<h2>8.2.2. The project file format and compatibility with older versions<a class="headerlink" href="#the-project-file-format-and-compatibility-with-older-versions" title="Permalink to this headline">¶</a></h2>
+<p>The <font size=-1 color="#8C4112">ATHENA</font> project file is designed to be quick and easy
+for <font size=-1 color="#8C4112">ATHENA</font> to read. Unfortunately, the file format is not
 particularly human-friendly.  Most of the lines of the project file
 are in the form written out by perl's <a class="reference external" href="http://cpan.uwinnipeg.ca/dist/Data-Dumper">Data::Dumper</a> module. This freezes
-<font size=-1 color="#033B0A">ATHENA</font>'s internal data structures into perl code.  When the
+<font size=-1 color="#8C4112">ATHENA</font>'s internal data structures into perl code.  When the
 project file is imported, these lines of perl code are
 evaluated. (This evaluation is performed in a <a class="reference external" href="https://metacpan.org/module/Safe">Safe</a> compartment, i.e. a memory space
 with restricted access to perl's system functionality. This provides a
@@ -128,33 +129,33 @@ malicious intent.)</p>
 <p>The project file is written using compression in the format of the
 popular <a class="reference external" href="http://www.gzip.org/">gzip</a> program using the highest
 level of compression, albeit without the common <code class="docutils literal"><span class="pre">.gz</span></code> file
-extension. Both <font size=-1 color="#033B0A">ATHENA</font> and <font size=-1 color="#033B0A">ARTEMIS</font> use these
+extension. Both <font size=-1 color="#8C4112">ATHENA</font> and <font size=-1 color="#8C4112">ARTEMIS</font> use these
 files.</p>
 </div>
 <div class="section" id="the-new-json-style-project-file">
-<h2>8.2.2. The new JSON-style project file<a class="headerlink" href="#the-new-json-style-project-file" title="Permalink to this headline">¶</a></h2>
+<h2>8.2.3. The new JSON-style project file<a class="headerlink" href="#the-new-json-style-project-file" title="Permalink to this headline">¶</a></h2>
 <div class="versionadded">
-<p><span class="versionmodified">New in version 0.9.21: </span>A new feature in <font size=-1 color="#033B0A">ATHENA</font> allows one
+<p><span class="versionmodified">New in version 0.9.21: </span>A new feature in <font size=-1 color="#8C4112">ATHENA</font> allows one
 to write project files in the form of a compressed <a class="reference external" href="http://www.json.org/">JSON</a> file.  That is, the data that are
 compressed can be interpreted by any JSON parser.  Thus, if you
 want to use some other language to handle data processed by
-<font size=-1 color="#033B0A">ATHENA</font> and you want a good pipeline from
-<font size=-1 color="#033B0A">ATHENA</font> into your code, you could save your project file
+<font size=-1 color="#8C4112">ATHENA</font> and you want a good pipeline from
+<font size=-1 color="#8C4112">ATHENA</font> into your code, you could save your project file
 in the new, JSON format.  See the
-<font color="#636A24">♦athena→project_format</font> <a class="reference external" href="../other/prefs.html">configuration parameter</a>.</p>
+<font color="#636A24">♦Athena→project_format</font> <a class="reference external" href="../other/prefs.html">configuration parameter</a>.</p>
 </div>
 <p>Note, however, that this project file format is entirely incompatible
-with earlier versions of <font size=-1 color="#033B0A">ATHENA</font>.  Versions since 0.9.21
+with earlier versions of <font size=-1 color="#8C4112">ATHENA</font>.  Versions since 0.9.21
 will recognize and read the JSON-style project file regardless of the
-value of <font color="#636A24">♦athena→project_format</font>.</p>
+value of <font color="#636A24">♦Athena→project_format</font>.</p>
 <div class="section" id="summary">
-<h3>8.2.2.1. Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.3.1. Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>JSON-style project file is valid JSON, possibly gzipped</li>
 <li>File contains a single dictionary</li>
 <li>An entry with the key <code class="docutils literal"><span class="pre">_____header1</span></code> contains the string and is
 in the first four lines of the file. This is used by
-<font size=-1 color="#033B0A">DEMETER</font> to recognize the project file.</li>
+<font size=-1 color="#8C4112">DEMETER</font> to recognize the project file.</li>
 <li>An entry with the key <code class="docutils literal"><span class="pre">_____order</span></code> takes a list of strings as
 its value. This is used to presevre the order of presentation of
 the data regardless of how a JSON parser orders the keys in the
@@ -170,24 +171,24 @@ array. Other optional arrays are possible.</li>
 <code class="docutils literal"><span class="pre">datatype</span></code>, which is used to interpret the content of <code class="docutils literal"><span class="pre">x</span></code> and
 <code class="docutils literal"><span class="pre">y</span></code>.</li>
 <li>Other data processing attributes can be specified in <code class="docutils literal"><span class="pre">args</span></code> or
-<font size=-1 color="#033B0A">ATHENA</font> can be relied upon to set sensible defaults.</li>
+<font size=-1 color="#8C4112">ATHENA</font> can be relied upon to set sensible defaults.</li>
 <li>A project journal is optionally specified with the key
 <code class="docutils literal"><span class="pre">_____journal</span></code> and a list of strings containing the jounral text.</li>
 </ol>
 </div>
 <div class="section" id="fields-in-the-json-file">
-<h3>8.2.2.2. Fields in the JSON file<a class="headerlink" href="#fields-in-the-json-file" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.3.2. Fields in the JSON file<a class="headerlink" href="#fields-in-the-json-file" title="Permalink to this headline">¶</a></h3>
 <p>The JSON-style project file is typically saved as a gzipped file with
-a <code class="docutils literal"><span class="pre">.prj</span></code> extension. <font size=-1 color="#033B0A">ATHENA</font>/<font size=-1 color="#033B0A">ARTEMIS</font> are able to
+a <code class="docutils literal"><span class="pre">.prj</span></code> extension. <font size=-1 color="#8C4112">ATHENA</font>/<font size=-1 color="#8C4112">ARTEMIS</font> are able to
 read the file gzipped or as plain text. That is, an external
-application can save an <font size=-1 color="#033B0A">ATHENA</font> project file with or without
+application can save an <font size=-1 color="#8C4112">ATHENA</font> project file with or without
 compression.</p>
 <p>The project file is a single serialized dictionary. (I'll use pythonic
 language in this document. By dictionary, I mean what another language
 might call a hash or an associative array.) Each entry has a key and a
 value. The value is typically a dictionary or a list.</p>
 <p>There are several special fields that the JSON-style project file must
-contain so that <font size=-1 color="#033B0A">ATHENA</font> can properly process the file and
+contain so that <font size=-1 color="#8C4112">ATHENA</font> can properly process the file and
 preserve the order of display of the data contained in the file.</p>
 <p>Special fields all begin with 5 underscores. That's a bit wacky, but 5
 preceeding underscores is unlikely to carry special meaning in any
@@ -195,11 +196,11 @@ programming language, yet underscores are likely to be valid characters
 for variable or dictionary key names in most languages.</p>
 </div>
 <div class="section" id="headers">
-<h3>8.2.2.3. Headers<a class="headerlink" href="#headers" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.3.3. Headers<a class="headerlink" href="#headers" title="Permalink to this headline">¶</a></h3>
 <p>Standard JSON does not have comments, so special headers are used to
 carry material that might have gone into comments.</p>
 <p>The first several lines should look something like this</p>
-<div class="code json highlight-python"><div class="highlight"><pre>{&quot;_____emacs_mode&quot;: &quot;-*- mode: json; truncate-lines: t -*-&quot;,
+<div class="code json highlight-python"><div class="highlight"><pre><span></span>{&quot;_____emacs_mode&quot;: &quot;-*- mode: json; truncate-lines: t -*-&quot;,
  &quot;_____header1&quot;: &quot;# Athena project file -- Demeter version 0.9.21&quot;,
  &quot;_____header2&quot;: &quot;# This file created at 2015-02-04T17:23:22&quot;,
  &quot;_____header3&quot;: &quot;# Using Demeter 0.9.21 with perl 5.018002 and using Larch 0.9.24 on linux&quot;,
@@ -209,15 +210,15 @@ carry material that might have gone into comments.</p>
 cause the file to display in a helpful way in Emacs, which will help
 him troubleshoot problems.  That line is <strong>not required</strong>, but Bruce
 will be grateful if you include it.</p>
-<p>The <code class="docutils literal"><span class="pre">_____headerN</span></code> lines identify the file as an <font size=-1 color="#033B0A">ATHENA</font>
+<p>The <code class="docutils literal"><span class="pre">_____headerN</span></code> lines identify the file as an <font size=-1 color="#8C4112">ATHENA</font>
 project file, identify the moment of creation, and identify the
 program that and computing environment that did the creating.</p>
 <p>The <code class="docutils literal"><span class="pre">_____header1</span></code> line is <strong>required</strong> and it <strong>must</strong> appear in
 the first four lines of the file or
-<font size=-1 color="#033B0A">ATHENA</font>/<font size=-1 color="#033B0A">ARTEMIS</font> will not recognize the file as a
-project file. In fact, <font size=-1 color="#033B0A">DEMETER</font> tries to match this regexp
+<font size=-1 color="#8C4112">ATHENA</font>/<font size=-1 color="#8C4112">ARTEMIS</font> will not recognize the file as a
+project file. In fact, <font size=-1 color="#8C4112">DEMETER</font> tries to match this regexp
 in the first four lines:</p>
-<div class="code perl highlight-python"><div class="highlight"><pre>m{_____header\d.+Athena project file}
+<div class="code perl highlight-python"><div class="highlight"><pre><span></span>m{_____header\d.+Athena project file}
 </pre></div>
 </div>
 <p>This regexp is insensitive to the type of quote or the amount of
@@ -229,43 +230,43 @@ including them is good form and may help with troubleshooting. It is
 <strong>recommended</strong> that <code class="docutils literal"><span class="pre">_____header2</span></code> use an <a class="reference external" href="https://en.wikipedia.org/wiki/ISO_8601#Combined_date_and_time_representations">ISO 8601</a>
 combined date and time timestamp. It is <strong>recommended</strong> that
 <code class="docutils literal"><span class="pre">_____header3</span></code> clearly identify the tool that wrote the file. That
-said, those two headers are not used in any way by <font size=-1 color="#033B0A">ATHENA</font>
-or <font size=-1 color="#033B0A">ARTEMIS</font>.</p>
+said, those two headers are not used in any way by <font size=-1 color="#8C4112">ATHENA</font>
+or <font size=-1 color="#8C4112">ARTEMIS</font>.</p>
 </div>
 <div class="section" id="other-fields">
-<h3>8.2.2.4. Other fields<a class="headerlink" href="#other-fields" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.3.4. Other fields<a class="headerlink" href="#other-fields" title="Permalink to this headline">¶</a></h3>
 <p>There <strong>must</strong> be a field called <code class="docutils literal"><span class="pre">_____order</span></code> which is a list of
 group names in the order of display. Because the decoded JSON file is
 a dictionary, the order of entries cannot be guaranteed once
-decoded. The <font size=-1 color="#033B0A">ATHENA</font> user expects to see the data in the
+decoded. The <font size=-1 color="#8C4112">ATHENA</font> user expects to see the data in the
 same order when a project file is re-opened. , then, is used to
 specify the order.</p>
 <p>Here is an example from a project file with two data groups:</p>
-<div class="code json highlight-python"><div class="highlight"><pre>&quot;_____order&quot;: [&quot;ftaja&quot;,&quot;cyrlv&quot;]
+<div class="code json highlight-python"><div class="highlight"><pre><span></span>&quot;_____order&quot;: [&quot;ftaja&quot;,&quot;cyrlv&quot;]
 </pre></div>
 </div>
 <p>A field called <code class="docutils literal"><span class="pre">_____journal</span></code> is optional. If provided, it is a list
 of strings that together are user-supplied commentary on the project
-file. In the context of <font size=-1 color="#033B0A">ATHENA</font>, this is the content of the
+file. In the context of <font size=-1 color="#8C4112">ATHENA</font>, this is the content of the
 <a class="reference external" href="../other/journal.html">project journal</a>.</p>
 </div>
 <div class="section" id="data-fields">
-<h3>8.2.2.5. Data fields<a class="headerlink" href="#data-fields" title="Permalink to this headline">¶</a></h3>
-<p>A data field has a key which is used as the <font size=-1 color="#033B0A">DEMETER</font> group
-attribute, the <font size=-1 color="#033B0A">IFEFFIT</font> group name, and the <font size=-1 color="#033B0A">LARCH</font>
-group name. In the <font size=-1 color="#033B0A">LARCH</font> context, a data group might be
+<h3>8.2.3.5. Data fields<a class="headerlink" href="#data-fields" title="Permalink to this headline">¶</a></h3>
+<p>A data field has a key which is used as the <font size=-1 color="#8C4112">DEMETER</font> group
+attribute, the <font size=-1 color="#8C4112">IFEFFIT</font> group name, and the <font size=-1 color="#8C4112">LARCH</font>
+group name. In the <font size=-1 color="#8C4112">LARCH</font> context, a data group might be
 defined like so:</p>
-<div class="code highlight-python"><div class="highlight"><pre><span class="n">ftaja</span> <span class="o">=</span> <span class="n">read_ascii</span><span class="p">(</span><span class="s">&#39;mydata.dat&#39;</span><span class="p">)</span>
+<div class="code highlight-python"><div class="highlight"><pre><span></span><span class="n">ftaja</span> <span class="o">=</span> <span class="n">read_ascii</span><span class="p">(</span><span class="s1">&#39;mydata.dat&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>while in the <font size=-1 color="#033B0A">IFEFFIT</font> context</p>
-<div class="code highlight-python"><div class="highlight"><pre><span class="n">read_data</span><span class="p">(</span><span class="nb">file</span><span class="o">=</span><span class="n">mydata</span><span class="o">.</span><span class="n">dat</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">raw</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">ftaja</span><span class="p">)</span>
+<p>while in the <font size=-1 color="#8C4112">IFEFFIT</font> context</p>
+<div class="code highlight-python"><div class="highlight"><pre><span></span><span class="n">read_data</span><span class="p">(</span><span class="nb">file</span><span class="o">=</span><span class="n">mydata</span><span class="o">.</span><span class="n">dat</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">raw</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">ftaja</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>In each case, “ftaja” is the group name which should be used
-as the key for the data field. In <font size=-1 color="#033B0A">DEMETER</font>, “ftaja”
+as the key for the data field. In <font size=-1 color="#8C4112">DEMETER</font>, “ftaja”
 will be the return value of</p>
-<div class="code perl highlight-python"><div class="highlight"><pre>$data_object-&gt;group;
+<div class="code perl highlight-python"><div class="highlight"><pre><span></span>$data_object-&gt;group;
 </pre></div>
 </div>
 <p>Each data field consists of a dictionary of attributes, and 2 or more
@@ -313,13 +314,13 @@ lists of numbers representing data arrays associated with the group.</p>
 </tr>
 </tbody>
 </table>
-<p><font size=-1 color="#033B0A">ATHENA</font> figures out whether to interpret <code class="docutils literal"><span class="pre">x</span></code> and <code class="docutils literal"><span class="pre">y</span></code> as
+<p><font size=-1 color="#8C4112">ATHENA</font> figures out whether to interpret <code class="docutils literal"><span class="pre">x</span></code> and <code class="docutils literal"><span class="pre">y</span></code> as
 energy/μor k/χbased on the value of the attribute from the
 <code class="docutils literal"><span class="pre">args</span></code> dictionary.</p>
 <p>Here's an example of a data field for a group named
-“ftaja”. (<font size=-1 color="#033B0A">ATHENA</font> uses, but does not require, random
+“ftaja”. (<font size=-1 color="#8C4112">ATHENA</font> uses, but does not require, random
 5-character strings as group names.)</p>
-<div class="code json highlight-python"><div class="highlight"><pre>&quot;ftaja&quot;: {
+<div class="code json highlight-python"><div class="highlight"><pre><span></span>&quot;ftaja&quot;: {
           &quot;args&quot;: {&quot;key1&quot;: &quot;val1&quot;, ..., &quot;keyN&quot;: &quot;valN&quot;},
           &quot;x&quot;: [&quot;6911.98862&quot;,&quot;6916.99353&quot;, ...],
           &quot;y&quot;: [&quot;0.044142489773191296&quot;,&quot;0.041334046117570016&quot;, ...],
@@ -329,37 +330,37 @@ energy/μor k/χbased on the value of the attribute from the
 </pre></div>
 </div>
 <p>A proper JSON parser is used to read the project file. The content must
-be valid JSON, but can be linted in any way. <font size=-1 color="#033B0A">ATHENA</font> writes the data
+be valid JSON, but can be linted in any way. <font size=-1 color="#8C4112">ATHENA</font> writes the data
 subfields as single lines, but that is <strong>not required</strong>.</p>
 </div>
 <div class="section" id="attributes">
-<h3>8.2.2.6. Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.3.6. Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h3>
 <p>The following tables explain all the attributes found in a project
-file written by <font size=-1 color="#033B0A">ATHENA</font>. They are all listed here for the
+file written by <font size=-1 color="#8C4112">ATHENA</font>. They are all listed here for the
 sake of completeness and to document the contents of an
-<font size=-1 color="#033B0A">ATHENA</font>-written <font size=-1 color="#033B0A">ATHENA</font> project file.</p>
+<font size=-1 color="#8C4112">ATHENA</font>-written <font size=-1 color="#8C4112">ATHENA</font> project file.</p>
 <p>Every input parameter has a sensible default, thus any or all of these
 can be skipped in a project file written outside of
-<font size=-1 color="#033B0A">ATHENA</font>. <font size=-1 color="#033B0A">ATHENA</font> will do the right thing with any
+<font size=-1 color="#8C4112">ATHENA</font>. <font size=-1 color="#8C4112">ATHENA</font> will do the right thing with any
 that are missing.</p>
 <p>For example, a project file can have only parameters related to
-<font size=-1 color="#033B0A">AUTOBK</font>.  Those will be used by <font size=-1 color="#033B0A">ATHENA</font> and
-<font size=-1 color="#033B0A">ATHENA</font>'s defaults will be used elsewhere.</p>
+<font size=-1 color="#8C4112">AUTOBK</font>.  Those will be used by <font size=-1 color="#8C4112">ATHENA</font> and
+<font size=-1 color="#8C4112">ATHENA</font>'s defaults will be used elsewhere.</p>
 <p>Attributes described with things like <em>output</em>, <em>determined from
 data</em>, or <em>user-supplied</em> can be ignored by an external application
 writing a project file. Those attributes are either evaluated by
-<font size=-1 color="#033B0A">ATHENA</font> during normal operation or can safely be ignored.</p>
+<font size=-1 color="#8C4112">ATHENA</font> during normal operation or can safely be ignored.</p>
 <p>The lexicon of attribute names is open for discussion. The
-<font size=-1 color="#033B0A">ATHENA</font> project file is basically a serialization of
-<font size=-1 color="#033B0A">DEMETER</font> Data objects and the keys of the <code class="docutils literal"><span class="pre">args</span></code>
+<font size=-1 color="#8C4112">ATHENA</font> project file is basically a serialization of
+<font size=-1 color="#8C4112">DEMETER</font> Data objects and the keys of the <code class="docutils literal"><span class="pre">args</span></code>
 dictionary are the attribute names used by that object.</p>
-<p>The <a class="reference external" href="https://metacpan.org/pod/Moose">object system</a> used by <font size=-1 color="#033B0A">DEMETER</font>
+<p>The <a class="reference external" href="https://metacpan.org/pod/Moose">object system</a> used by <font size=-1 color="#8C4112">DEMETER</font>
 has a convenient aliasing system for symbol names. It will be
-sufficiently easy for <font size=-1 color="#033B0A">DEMETER</font> to be retrofitted to use a different
+sufficiently easy for <font size=-1 color="#8C4112">DEMETER</font> to be retrofitted to use a different
 lexicon.</p>
 </div>
 <div class="section" id="essential-attributes">
-<h3>8.2.2.7. Essential attributes<a class="headerlink" href="#essential-attributes" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.3.7. Essential attributes<a class="headerlink" href="#essential-attributes" title="Permalink to this headline">¶</a></h3>
 <p>A data entry in the project file cannot be considered complete without
 these attributes included in the <code class="docutils literal"><span class="pre">args</span></code> dictionary.</p>
 <table border="1" class="docutils">
@@ -399,7 +400,7 @@ used as the key. Hmmm....</p>
 be.</p>
 </div>
 <div class="section" id="background-removal-attributes">
-<h3>8.2.2.8. Background removal attributes<a class="headerlink" href="#background-removal-attributes" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.3.8. Background removal attributes<a class="headerlink" href="#background-removal-attributes" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="docutils">
 <colgroup>
 <col width="16%" />
@@ -409,7 +410,7 @@ be.</p>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">attribute name</th>
 <th class="head">description</th>
-<th class="head"><font size=-1 color="#033B0A">DEMETER</font>'s default</th>
+<th class="head"><font size=-1 color="#8C4112">DEMETER</font>'s default</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -573,7 +574,7 @@ be.</p>
 </table>
 </div>
 <div class="section" id="forward-transform-parameters">
-<h3>8.2.2.9. Forward transform parameters<a class="headerlink" href="#forward-transform-parameters" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.3.9. Forward transform parameters<a class="headerlink" href="#forward-transform-parameters" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="docutils">
 <colgroup>
 <col width="20%" />
@@ -583,7 +584,7 @@ be.</p>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">attribute name</th>
 <th class="head">description</th>
-<th class="head"><font size=-1 color="#033B0A">DEMETER</font>'s default</th>
+<th class="head"><font size=-1 color="#8C4112">DEMETER</font>'s default</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -627,7 +628,7 @@ be.</p>
 </table>
 </div>
 <div class="section" id="backward-transform-parameters">
-<h3>8.2.2.10. Backward transform parameters<a class="headerlink" href="#backward-transform-parameters" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.3.10. Backward transform parameters<a class="headerlink" href="#backward-transform-parameters" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="docutils">
 <colgroup>
 <col width="18%" />
@@ -637,7 +638,7 @@ be.</p>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">attribute name</th>
 <th class="head">description</th>
-<th class="head"><font size=-1 color="#033B0A">DEMETER</font>'s default</th>
+<th class="head"><font size=-1 color="#8C4112">DEMETER</font>'s default</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -659,12 +660,12 @@ be.</p>
 </tr>
 </tbody>
 </table>
-<p>Note that the fitting range in <font size=-1 color="#033B0A">ARTEMIS</font> is the
-back-transform range in <font size=-1 color="#033B0A">ATHENA</font> and uses the same
+<p>Note that the fitting range in <font size=-1 color="#8C4112">ARTEMIS</font> is the
+back-transform range in <font size=-1 color="#8C4112">ATHENA</font> and uses the same
 attributes.</p>
 </div>
 <div class="section" id="fitting-parameters">
-<h3>8.2.2.11. Fitting parameters<a class="headerlink" href="#fitting-parameters" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.3.11. Fitting parameters<a class="headerlink" href="#fitting-parameters" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="docutils">
 <colgroup>
 <col width="16%" />
@@ -674,7 +675,7 @@ attributes.</p>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">attribute name</th>
 <th class="head">description</th>
-<th class="head"><font size=-1 color="#033B0A">DEMETER</font>'s default</th>
+<th class="head"><font size=-1 color="#8C4112">DEMETER</font>'s default</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -704,7 +705,7 @@ attributes.</p>
 </tr>
 <tr class="row-even"><td>fit_epsilon</td>
 <td>measurement uncertainty</td>
-<td>0 (i.e. use <font size=-1 color="#033B0A">LARCH</font>'s estimate)</td>
+<td>0 (i.e. use <font size=-1 color="#8C4112">LARCH</font>'s estimate)</td>
 </tr>
 <tr class="row-odd"><td>fit_cormin</td>
 <td>smallest correlation to report in log file</td>
@@ -744,11 +745,11 @@ attributes.</p>
 </tr>
 </tbody>
 </table>
-<p>Note that the fitting range in <font size=-1 color="#033B0A">ARTEMIS</font> is the back-transform range in
-<font size=-1 color="#033B0A">ATHENA</font> and uses the same attributes.</p>
+<p>Note that the fitting range in <font size=-1 color="#8C4112">ARTEMIS</font> is the back-transform range in
+<font size=-1 color="#8C4112">ATHENA</font> and uses the same attributes.</p>
 </div>
 <div class="section" id="plotting-parameters">
-<h3>8.2.2.12. Plotting parameters<a class="headerlink" href="#plotting-parameters" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.3.12. Plotting parameters<a class="headerlink" href="#plotting-parameters" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="docutils">
 <colgroup>
 <col width="15%" />
@@ -758,7 +759,7 @@ attributes.</p>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">attribute name</th>
 <th class="head">description</th>
-<th class="head"><font size=-1 color="#033B0A">DEMETER</font>'s default</th>
+<th class="head"><font size=-1 color="#8C4112">DEMETER</font>'s default</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -778,9 +779,9 @@ attributes.</p>
 </table>
 </div>
 <div class="section" id="parameters-related-to-contructing-data-from-column-ascii-files">
-<h3>8.2.2.13. Parameters related to contructing data from column ascii files<a class="headerlink" href="#parameters-related-to-contructing-data-from-column-ascii-files" title="Permalink to this headline">¶</a></h3>
-<p>An external application saving an <font size=-1 color="#033B0A">ATHENA</font> project file can probably
-ignore this group of attributes. In <font size=-1 color="#033B0A">ATHENA</font>, for a derived data group (a
+<h3>8.2.3.13. Parameters related to contructing data from column ascii files<a class="headerlink" href="#parameters-related-to-contructing-data-from-column-ascii-files" title="Permalink to this headline">¶</a></h3>
+<p>An external application saving an <font size=-1 color="#8C4112">ATHENA</font> project file can probably
+ignore this group of attributes. In <font size=-1 color="#8C4112">ATHENA</font>, for a derived data group (a
 merge of data, for example) the string attributes are set to an empty
 string and the booleans are set to false.</p>
 <table border="1" class="docutils">
@@ -792,7 +793,7 @@ string and the booleans are set to false.</p>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">attribute name</th>
 <th class="head">description</th>
-<th class="head"><font size=-1 color="#033B0A">DEMETER</font>'s default</th>
+<th class="head"><font size=-1 color="#8C4112">DEMETER</font>'s default</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -864,7 +865,7 @@ string and the booleans are set to false.</p>
 </table>
 </div>
 <div class="section" id="other-data-processing-parameters">
-<h3>8.2.2.14. Other data processing parameters<a class="headerlink" href="#other-data-processing-parameters" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.3.14. Other data processing parameters<a class="headerlink" href="#other-data-processing-parameters" title="Permalink to this headline">¶</a></h3>
 <p>Again, these are all things that an external program is unlikely to need
 to specify.</p>
 <table border="1" class="docutils">
@@ -876,7 +877,7 @@ to specify.</p>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">attribute name</th>
 <th class="head">description</th>
-<th class="head"><font size=-1 color="#033B0A">DEMETER</font>'s default</th>
+<th class="head"><font size=-1 color="#8C4112">DEMETER</font>'s default</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -932,9 +933,9 @@ to specify.</p>
 </table>
 </div>
 <div class="section" id="and-all-the-rest">
-<h3>8.2.2.15. And all the rest<a class="headerlink" href="#and-all-the-rest" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.3.15. And all the rest<a class="headerlink" href="#and-all-the-rest" title="Permalink to this headline">¶</a></h3>
 <p>Much of this need not be written by an external application.  Some of
-this is chaff. I've been working on <font size=-1 color="#033B0A">ATHENA</font> for a loooong
+this is chaff. I've been working on <font size=-1 color="#8C4112">ATHENA</font> for a loooong
 time now....</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -945,7 +946,7 @@ time now....</p>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">attribute name</th>
 <th class="head">description</th>
-<th class="head"><font size=-1 color="#033B0A">DEMETER</font>'s default</th>
+<th class="head"><font size=-1 color="#8C4112">DEMETER</font>'s default</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -1120,10 +1121,10 @@ time now....</p>
 
 <br>
 <hr class="docutils" />
-<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
-copyright © 2015 Bruce Ravel</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
 <p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
-<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
 consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
 </div>
 </div>
@@ -1143,10 +1144,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and background removal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">8. Data export</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="column.html">8.1. Column output files</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="">8.2. Project files</a></li>
@@ -1154,21 +1155,27 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
-<h3>Links</h3>
+<h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -1200,11 +1207,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
           <a href="report.html" title="8.3. Parameter report files"
-             >next</a> |</li>
+             >next</a></li>
         <li class="right" >
           <a href="column.html" title="8.1. Column output files"
              >previous</a> |</li>
@@ -1213,7 +1217,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

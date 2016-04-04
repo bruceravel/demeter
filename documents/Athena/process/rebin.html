@@ -29,7 +29,7 @@
     <link rel="next" title="9.5. Deglitching and truncating data" href="deg.html" />
     <link rel="prev" title="9.3. Merging data groups" href="merge.html" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
     <link rel="stylesheet" type="text/css" href="../_static/program.css" />
 
@@ -39,11 +39,8 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
           <a href="deg.html" title="9.5. Deglitching and truncating data"
-             accesskey="N">next</a> |</li>
+             accesskey="N">next</a></li>
         <li class="right" >
           <a href="merge.html" title="9.3. Merging data groups"
              accesskey="P">previous</a> |</li>
@@ -65,14 +62,15 @@ implementation of this works by driving the mono at a given speed and
 reading the measurement channels continuously. The signal is
 integrated for bins of time. After each time interval, the integrated
 signals are stored in a buffer. At the end of the scan, the buffer is
-dumped to disk. At my old beamline (<a class="reference external" href="http://mrcat.iit.edu">MRCAT, Sector 10 at the APS</a>), a typical EXAFS scan measured in this mode
-takes 3 minutes or less.</p>
+dumped to disk.  When I was at my old beamline (<a class="reference external" href="http://mrcat.iit.edu">MRCAT, Sector 10 at
+the APS</a>), a typical EXAFS scan measured in
+this mode took 3 minutes or less back in those days.</p>
 <p>The drawback of this measurement mode (other than the generation of tons
 of data that needs to be analyzed!) is that the data are vastly over
 sampled. The energy grid is typically 0.3 to 0.5 eV. That is fine in the
 edge region, but much too fine for the EXAFS region.</p>
 <div class="figure align-center" id="id1">
-<span id="fig-rebintool"></span><a class="reference external image-reference" href="../_images/rebin.png"><img alt="../_images/rebin.png" src="../_images/rebin.png" style="width: 65%;" /></a>
+<span id="fig-rebintool"></span><a class="reference external image-reference" href="../_images/rebin.png"><img alt="../_images/rebin.png" src="../_images/rebin.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 9.8 </span><span class="caption-text">The rebinning tool.</span></p>
 </div>
 <p>The tool shown above allows you to specify a simple three-region grid.
@@ -94,7 +92,7 @@ take a while, depending on how many groups are being processed.</p>
 feature</a> of the column
 selection dialog.</p>
 <div class="figure align-center" id="id2">
-<span id="fig-rebinplot"></span><a class="reference external image-reference" href="../_images/rebin_plot.png"><img alt="../_images/rebin_plot.png" src="../_images/rebin_plot.png" style="width: 45%;" /></a>
+<span id="fig-rebinplot"></span><a class="reference external image-reference" href="../_images/rebin_plot.png"><img alt="../_images/rebin_plot.png" src="../_images/rebin_plot.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 9.9 </span><span class="caption-text">Quick scan data that have been rebinned onto a normal EXAFS energy grid.</span></p>
 </div>
 <p>This uses a boxcar averaging to put the measured data on the chosen
@@ -105,10 +103,10 @@ can see in the plot above.</p>
 
 <br>
 <hr class="docutils" />
-<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
-copyright © 2015 Bruce Ravel</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
 <p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
-<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
 consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
 </div>
 
@@ -126,10 +124,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and background removal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">9. Data processing</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="cal.html">9.1. Calibrating data groups</a></li>
@@ -147,21 +145,27 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l2"><a class="reference internal" href="sum.html">9.13. Data summation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
-<h3>Links</h3>
+<h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -193,11 +197,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
           <a href="deg.html" title="9.5. Deglitching and truncating data"
-             >next</a> |</li>
+             >next</a></li>
         <li class="right" >
           <a href="merge.html" title="9.3. Merging data groups"
              >previous</a> |</li>
@@ -206,7 +207,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

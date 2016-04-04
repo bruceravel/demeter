@@ -1,0 +1,395 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>16.4. Histogram &mdash; Demeter Programming Guide 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Demeter Programming Guide 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="16. Full examples" href="index.html" />
+    <link rel="prev" title="16.3. Uranyl ion in solution" href="uranyl.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="uranyl.html" title="16.3. Uranyl ion in solution"
+             accesskey="P">previous</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">16. Full examples</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="histogram">
+<h1>16.4. Histogram<a class="headerlink" href="#histogram" title="Permalink to this headline">¶</a></h1>
+<p>Topics demonstrated:</p>
+<ul class="simple">
+<li>Fitting using an arbitrary distribution of atoms</li>
+</ul>
+<p>In a simple fitting model, such as the fit to <a class="reference external" href="../fit/index.html">copper
+metal</a>, we assume that the neighboring atoms are
+Gaussian distributed and that all disorder about the near-neighbor
+scattering distance can be described by the application of the σ² term
+in the EXAFS equation. Often, this is quite enough. For well-ordered
+materials, it is probably even true. For small levels of structural
+disorder, the additional disorder thus introduced can often be
+approximated by having a larger σ² value or by introducing a small
+number of additional scattering paths at slightly different distances.</p>
+<p>Some systems, however, are not well described by a Gaussian
+distribution. When the structural disorder is sufficeintly large, a
+simple Gaussian is inadequate to describe the distribution. In the EXAFS
+literature, higher cumulants are often used in this situation. But even
+this approach is limited in that, in practice, one can only measure
+small third and fourth cumulants (i.e. a skew and a kurtosis of the
+distribution) with any precision.</p>
+<p>In this example, I explain one method for incorporating the results of a
+molecular dynamics simulation into an EXAFS analysis. The system is a
+very small metallic gold nanoparticle. The very large ratio of surface
+area to volume introduces substantial distortions to the local structure
+of the particle. These local structural distortions are seen in the MD
+simulations. From these MD simulations, we have files containing the
+local structure in the form of a histogram. These files contain some
+measure of the probability of finding a neighboring atom on a grid of
+radial distances. It looks something like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>0.000  0.000000E+00
+.
+  .
+    .
+2.636  2.818836E-01
+2.642  3.801608E+00
+2.649  1.245984E+01
+2.656  1.017059E+00
+2.662  1.660477E-01
+2.668  6.903760E-02
+2.675  5.119136E-02
+2.681  6.556027E-02
+2.688  1.158219E-01
+.
+  .
+    . and so on out to about 6.5 A
+</pre></div>
+</div>
+<div class="figure align-center" id="id1">
+<span id="fig-histogram"></span><a class="reference external image-reference" href="../_images/histogram.png"><img alt="../_images/histogram.png" src="../_images/histogram.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 16.8 </span><span class="caption-text">Here is a plot of one calculated pair distribution function for
+these metallic gold nanoparticles. The main plot shows the
+distribution of atoms in the first two coordination shells. The bin
+populations have been normalized such that the first coordination
+shell contains 12 atoms. The inset shows a blow-up of the first
+coordination shell along with a Gaussian fitted to that
+distribution.</span></p>
+</div>
+<p>From the inset to this figure, we see that a Gaussian is not a very good
+representation of this distribution. It does an ok job of representing
+the bulk of the coordination shell, but it completely fails to represent
+the smaller population of shorter Au-Au distances which, presumably,
+result from truncation effects at the relatively large surface.</p>
+<p>The approach the <font size=-1 color="#8C4112">DEMETER</font> offers is to compute an <a class="reference external" href="../pathlike/sspath.html">SSPath</a> at each bin of the histogram. The at each
+bin is set to the population of that bin. Each bin should get the same
+E<sub>0</sub> parameter. If the histogram accurately represents all
+soruces of disorder – both structural and thermal, something that is
+certainly possible in an MD simulation – then no σ<sup>2</sup> or
+ΔR parameters would be needed. Of course, they could be
+introduced to account for any shortcomings of the MD simulation
+compared to the measured data.</p>
+<div class="highlight-perl"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
+ <span class="k">use</span> <span class="n">Demeter</span> <span class="sx">qw(:plotwith=gnuplot :ui=screen)</span><span class="p">;</span>
+
+ <span class="c1">## -------- Import the results of a Feff calculation on bulk Au</span>
+ <span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Feff</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">yaml</span><span class="o">=&gt;</span><span class="s">&#39;Au_feff.yaml&#39;</span><span class="p">);</span>
+ <span class="nv">$feff</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="n">workspace</span><span class="o">=&gt;</span><span class="s">&quot;./&quot;</span><span class="p">,</span> <span class="n">screen</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">,);</span>
+ <span class="k">my</span> <span class="nv">@list_of_paths</span> <span class="o">=</span> <span class="nv">@</span><span class="p">{</span> <span class="nv">$feff</span><span class="o">-&gt;</span><span class="n">pathlist</span> <span class="p">};</span>
+
+ <span class="c1">## -------- Import some data</span>
+ <span class="k">my</span> <span class="nv">$data</span>  <span class="o">=</span> <span class="nn">Demeter::Data::</span><span class="n">Prj</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span><span class="o">=&gt;</span><span class="s">&#39;Aunano.prj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">record</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+ <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">fft_kmin</span> <span class="o">=&gt;</span> <span class="mi">3</span><span class="p">,</span>      <span class="n">fft_kmax</span> <span class="o">=&gt;</span> <span class="mi">13</span><span class="p">,</span>
+              <span class="n">bft_rmin</span> <span class="o">=&gt;</span> <span class="mf">1.992</span><span class="p">,</span>  <span class="n">bft_rmax</span> <span class="o">=&gt;</span> <span class="mf">3.399</span><span class="p">,</span>
+              <span class="n">fit_k1</span>   <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>      <span class="n">fit_k2</span>   <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>     <span class="n">fit_k3</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">,</span> <span class="p">);</span>
+
+ <span class="c1">## -------- Import the first scattering path object and use it</span>
+ <span class="c1">##          to populate a histogram defined by an external file.</span>
+ <span class="c1">##          Also define a VPath containing the entire first</span>
+ <span class="c1">##          shell of the histogram.</span>
+ <span class="k">my</span> <span class="nv">$firstshell</span> <span class="o">=</span> <span class="nv">$list_of_paths</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+ <span class="k">my</span> <span class="p">(</span><span class="nv">$rx</span><span class="p">,</span> <span class="nv">$ry</span><span class="p">)</span> <span class="o">=</span> <span class="nv">$firstshell</span><span class="o">-&gt;</span><span class="n">histogram_from_file</span><span class="p">(</span><span class="s">&#39;histogram_file&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$common</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="o">=&gt;</span><span class="nv">$data</span><span class="p">,</span> <span class="n">sigma2</span> <span class="o">=&gt;</span> <span class="s">&#39;sigsqr&#39;</span><span class="p">,</span> <span class="n">e0</span> <span class="o">=&gt;</span> <span class="s">&#39;enot&#39;</span><span class="p">,</span> <span class="n">delr</span> <span class="o">=&gt;</span> <span class="s">&#39;alpha*reff&#39;</span><span class="p">];</span>
+
+ <span class="k">my</span> <span class="nv">$paths</span> <span class="o">=</span> <span class="nv">$firstshell</span> <span class="o">-&gt;</span> <span class="n">make_histogram</span><span class="p">(</span><span class="nv">$rx</span><span class="p">,</span> <span class="nv">$ry</span><span class="p">,</span> <span class="s">&#39;amp&#39;</span><span class="p">,</span> <span class="sx">q{}</span><span class="p">,</span> <span class="nv">$common</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$vpath</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">VPath</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">name</span><span class="o">=&gt;</span><span class="s">&#39;histo&#39;</span><span class="p">);</span>
+ <span class="nv">$vpath</span><span class="o">-&gt;</span><span class="n">include</span><span class="p">(</span><span class="nv">@$paths</span><span class="p">);</span>
+
+ <span class="c1">## -------- Some parameters</span>
+ <span class="k">my</span> <span class="nv">@gds</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nn">Demeter::</span><span class="n">GDS</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">gds</span><span class="o">=&gt;</span><span class="s">&#39;guess&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=&gt;</span><span class="s">&#39;amp&#39;</span><span class="p">,</span>    <span class="n">mathexp</span><span class="o">=&gt;</span><span class="mi">6</span><span class="p">),</span>
+            <span class="nn">Demeter::</span><span class="n">GDS</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">gds</span><span class="o">=&gt;</span><span class="s">&#39;guess&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=&gt;</span><span class="s">&#39;enot&#39;</span><span class="p">,</span>   <span class="n">mathexp</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">),</span>
+            <span class="nn">Demeter::</span><span class="n">GDS</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">gds</span><span class="o">=&gt;</span><span class="s">&#39;set&#39;</span><span class="p">,</span>   <span class="n">name</span><span class="o">=&gt;</span><span class="s">&#39;alpha&#39;</span><span class="p">,</span>  <span class="n">mathexp</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">),</span>
+            <span class="nn">Demeter::</span><span class="n">GDS</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">gds</span><span class="o">=&gt;</span><span class="s">&#39;set&#39;</span><span class="p">,</span>   <span class="n">name</span><span class="o">=&gt;</span><span class="s">&#39;sigsqr&#39;</span><span class="p">,</span> <span class="n">mathexp</span><span class="o">=&gt;</span><span class="mf">0.0</span><span class="p">),</span>
+           <span class="p">);</span>
+ <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">po</span><span class="o">-&gt;</span><span class="n">kweight</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+
+ <span class="c1">## -------- Do the fit</span>
+ <span class="k">my</span> <span class="nv">$fit</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Fit</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">gds</span><span class="o">=&gt;\</span><span class="nv">@gds</span><span class="p">,</span> <span class="n">data</span><span class="o">=&gt;</span><span class="p">[</span><span class="nv">$data</span><span class="p">],</span> <span class="n">paths</span><span class="o">=&gt;</span><span class="nv">$paths</span><span class="p">);</span>
+ <span class="nv">$fit</span><span class="o">-&gt;</span><span class="n">fit</span><span class="p">;</span>
+ <span class="nv">$fit</span><span class="o">-&gt;</span><span class="n">interview</span><span class="p">;</span>
+</pre></div>
+</td></tr></table></div>
+<p>At line 5-7 a <font size=-1 color="#8C4112">FEFF</font> calculation on gold metal is imported.
+This calculation was made and frozen to the Au_feff.yaml file ahead
+of time.  (See <a class="reference external" href="../feff/pathfinder.html">here</a> for details.) We
+will only be using the first ScatteringPath object from the path
+list. That is the contribution from the first coordination shell and
+will be used as the basis for the historgram.</p>
+<p>At lines 10-13, data are imported from an <font size=-1 color="#8C4112">ATHENA</font> project
+file.  At line 19, a reference to the ScatteringPath object for the
+first coordination shell is stored in the <code class="docutils literal"><span class="pre">$firstshell</span></code> variable.</p>
+<p>All the interesting stuff in this example happens between lines 21 and
+26. First, the locations and populations of the histogram are read from
+a column data file at line 21. The <code class="docutils literal"><span class="pre">histogram_from_file</span></code> method (which
+is a method of the ScatteringPath object) takes 5 arguments – the file
+name, the column numbers of the bin positions and bin populations, and
+the range in R-space. Bins in the histogram that lie outside the R-range
+will not be considered. An example of a histogram file is shown above.
+This method returns two scalars which are references to the arrays
+containing the bin positions and populations, i.e. the x and y arrays of
+the histogram. To examine these arrays, you would have to dereference
+these scalars:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="k">my</span> <span class="nv">@bin_positions</span> <span class="o">=</span> <span class="nv">@$rx</span>
+</pre></div>
+</div>
+<p>At line 22, an anonymous array of path parameters values is created.
+These values will be used for every Path object created by histogram
+generating method. Note that I am using this anonymous array to pass
+various attributes to the Path objects in the histogram. Passing these
+in this way is just a convenience – they could be set after the fact
+instead.</p>
+<p>At line 24, the set of Path objects representing the contribution from
+each bin of the histogram is actually generated using the
+<code class="docutils literal"><span class="pre">make_histogram</span></code> method (also a method of the ScatteringPath object).
+This method takes 4 arguments. The first two are the array references
+returned by the <code class="docutils literal"><span class="pre">histogram_from_file</span></code> method. The last argument is the
+array reference created at line 22. Each item in the array will be
+passed on to each of the Path objects that gets generated.</p>
+<p>The third argument of the <code class="docutils literal"><span class="pre">make_histogram</span></code> method is very important!
+It is the name of the amplitude parameter that will be varied in the
+fit. Each path parameter for every generated path will be given a math
+expression that is this amplitude parameter multiplied by the
+unit-normalized bin population. Since the histogram is unit normalized,
+this parameter represents the total coordination number multiplied by
+the S<sup>2</sup><sub>0</sub>  value.</p>
+<p>At lines 25 and 26, a <a class="reference external" href="../pathlike/vpath.html">VPath</a> object is
+created to hold the contribution from the entire histogram. This is
+particularly handy as a visualization tool if the histogram is just one
+part of the fit.</p>
+<p>Finally a set of GDS object are defined and the fit is run. Note that
+an overall σ<sup>2</sup> parameter has been defined but set
+to 0. An isotropic expansion parameter has also been defined but set
+to zero.</p>
+<div class="figure align-center" id="id2">
+<span id="fig-histofitnoss"></span><a class="reference external image-reference" href="../_images/histo_fit_noss.png"><img alt="../_images/histo_fit_noss.png" src="../_images/histo_fit_noss.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 16.9 </span><span class="caption-text">Here is the result of the fit varying on S<sup>2</sup><sub>0</sub> and
+E<sub>0</sub>. The σ<sup>2</sup> parameter has been fixed
+to 0. This fit isn't great, but it is not horrible either. It seems
+safe to say that the distribution used here is not an adequate
+representation of the complete structural and thermal disorder in
+this particular system.</span></p>
+</div>
+<div class="figure align-center" id="id3">
+<span id="fig-histofitwithss"></span><a class="reference external image-reference" href="../_images/histo_fit_withss.png"><img alt="../_images/histo_fit_withss.png" src="../_images/histo_fit_withss.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 16.10 </span><span class="caption-text">In this fit, the σ<sup>2</sup> parameter has been set to be a
+guess parameter. It returns a non-zero value and substantially
+improves the fit.  Whatever disorder was not considered in the
+input configuration was accounted for to some extent by the
+addition of this parameter.</span></p>
+</div>
+<p>To fully understand how the histogram concept works, it is useful to see
+the contribution from each bin in the histogram along with the data and
+the fit.</p>
+<div class="figure compound align-center" id="_fig-histowpaths">
+<div style="width: 45%" class="subfigure" id="id4">
+<span id="fig-histofitwpaths"></span><a class="reference external image-reference" href="../_images/histo_fit_wpaths.png"><img alt="../_images/histo_fit_wpaths.png" src="../_images/histo_fit_wpaths.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 16.11 </span><span class="caption-text">The fit with σ<sup>2</sup> floated showing the contributions
+from each bin of the histogram. Each individual bin contributes
+only a small amount of the spectral weight, but together they add
+up to the result.</span></p>
+</div>
+<div style="width: 45%" class="subfigure" id="id5">
+<span id="fig-fitwpathszoom"></span><a class="reference external image-reference" href="../_images/histo_fit_wpaths_zoom.png"><img alt="../_images/histo_fit_wpaths_zoom.png" src="../_images/histo_fit_wpaths_zoom.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 16.12 </span><span class="caption-text">Zooming in on the contributions from each bin. Note the complicated
+phase relationship of these paths which contributes to the overall
+fit.</span></p>
+</div>
+</div>
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Isis-Sothis-Demeter_sm.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">9. Guess/Def/Set Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">16. Full examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="methyltin.html">16.1. Methyltin chloride</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agau.html">16.2. Silver/gold alloy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="uranyl.html">16.3. Uranyl ion in solution</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">16.4. Histogram</a></li>
+</ul>
+</li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/examples/histo.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="uranyl.html" title="16.3. Uranyl ion in solution"
+             >previous</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >16. Full examples</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

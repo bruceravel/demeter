@@ -3,41 +3,39 @@
    The Creative Commons Attribution-ShareAlike License
    http://creativecommons.org/licenses/by-sa/3.0/
 
+.. role:: penalty
+
 The non-statistical happiness metric
 ====================================
 
-One of the new fitting features introduced by :demeter:`demeter` that
-was not available in earlier version of :demeter:`artemis` is the fit
-:quoted:`happiness`.  This is a non-statistical metric that evaluates
-the fit in a semantic sense. As explained elsewhere,
-:demeter:`ifeffit` uses a Levenberg-Marquardt fitting algorithm and
-applies Gaussian statistics to the EXAFS analysis problem.  For a host
-of reasons, the application of Gaussian statistics is troublesome for
-EXAFS. The most striking result is that the reduced |chi|\ :sup:`2` of
-a good fit is rarely close to 1, as one would expect for a properly
-conceived Gaussian problem.  Even for a very good fit to a metallic
-standard which returns very sensible parameter values, the reduced
-|chi|\ :sup:`2` is likely to be in the 10s or 100s.
+The :quoted:`happiness` is a non-statistical metric that evaluates the
+fit in a semantic sense.  As explained elsewhere, :demeter:`ifeffit`
+uses a Levenberg-Marquardt fitting algorithm and applies Gaussian
+statistics to the EXAFS analysis problem.  For a host of reasons, the
+application of Gaussian statistics is troublesome for EXAFS.  The most
+striking result is that the reduced |chi|\ :sup:`2` of a good fit is
+rarely close to 1, as one would expect for a properly conceived
+Gaussian problem.  Even for a very good fit to a metallic standard
+which returns very sensible parameter values, the reduced |chi|\
+:sup:`2` is likely to be in the 10s or 100s.
 
 Although the Gaussian problem is ill-posed, years of experience
 fitting EXAFS data has taught us much about what constitutes as a good
 fit.  We expect that the R-factor is small.  We expect that S\
-:sup:`2`\ :sub:`0` and |sigma|\ :sup:`2` are non-negative. We expact
+:sup:`2`\ :sub:`0` and |sigma|\ :sup:`2` are non-negative.  We expact
 neither |Delta| R nor E\ :sub:`0` will be too large.  We know that we
 should not use too many of the independent points contained in the
 data.
 
-All of those are things that we consider when examining the results of a
-fit. When one or more of those things does not hold for a fit, we are
-unhappy and thus wary of the fit. If, however, all of them hold true,
-then we might have confidence in the fit, thus making us happy.
+All of those are things that we consider when examining the results of
+a fit. When one or more of those things does not hold for a fit, we
+are unhappy and thus wary of the fit.  If, however, all of them hold
+true, then we might have confidence in the fit, thus making us happy.
 
 
 
 A semantic parameter
 --------------------
-
-Discuss cognitive load here....
 
 :demeter:`demeter` has a simple mechanism for parameterizing the
 results of the fit to evaluate a semantic assessment of the fit. Each
@@ -51,7 +49,7 @@ result of your fit.
 .. caution:: The word :quoted:`happiness` was chosen for this
    parameter because it is silly. This is an ad-hoc, semantic metric.
    It has no basis in formal statistics. It is, therefore, meaningless
-   and should never be published.
+   and should **never** be published.
 
 
 
@@ -60,16 +58,16 @@ How the happiness is calculated
 
 The fit's happiness is computed using a bunch of `configuration
 parameters <../highlevel/config.html>`__ from the ``happiness``
-configuration group. Here is a summary of how the happiness is
+configuration group.  Here is a summary of how the happiness is
 calculated.  All numbers given in the following descriptions can be
 set using the configuration system.
 
 #. It should have a small R-factor. An R-factor below 0.2 gives no
-   penalty.  An R-factor above 0.6 gives a penalty of 40. R-factors
+   penalty.  An R-factor above 0.6 gives a penalty of 40.  R-factors
    between those values scale linearly between 0 and 40.
 
 #. If the number of guess parameters is fewer than 2/3 of the number
-   of independent points, no penalty is given. As the number of guess
+   of independent points, no penalty is given.  As the number of guess
    parameters approaches the number of independent points, the penalty
    grows.
 
@@ -102,12 +100,12 @@ Bruce so that your experience can be folded back into
 :demeter:`demeter`.
 
 .. todo:: In a future version of :demeter:`demeter` it will be
-   possible to define a penalty parameter, which is a special kind of
-   GDS object. It will be like an after parameter in the sense that it
-   is evaluated at the end of the fit. Its evaluation will be used as
-   an additional, user-defined penalty to the happiness. This will
-   give a dynamic, aspect to the happiness evaluation which is
-   specific to the fitting model.
+   possible to define a :penalty:`penalty` parameter, which is a
+   special kind of GDS object. It will be like an after parameter in
+   the sense that it is evaluated at the end of the fit. Its
+   evaluation will be used as an additional, user-defined subtraction
+   from the happiness. This will give a dynamic, aspect to the
+   happiness evaluation which is specific to the fitting model.
 
 
 

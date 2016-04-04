@@ -72,12 +72,13 @@ interesting plot using the two data sets and their fits.
     user-specified text that is written to the beginning and end of log
     file.
 **Fit serialization**
-    At line 10 the fit is serialized. This serialization file is simply
-    a normal zip file containing the serializations of all the objects
-    used in the fit along with a log file and a few other results of the
-    fit. The convention is for this zip file to have the extension
-    ``.dpj`` (i.e. :demeter:`demeter` project).
-**Saving column data**
+    At line 10 the fit is serialized. This serialization file is
+    simply a normal zip file containing the serializations of all the
+    objects used in the fit along with a log file and a few other
+    results of the fit. The convention is for this zip file to have
+    the extension ``.dpj`` (i.e. :demeter:`demeter` project).  Note
+    that the ``.dpj`` file can be imported into :demeter:`artemis`.
+**Column data**
     At lines 12 and 13, the results of the fit to each data set are
     saved as column data files. These files contain columns with the k,
     data, the fit, the window, the residual, and the background function

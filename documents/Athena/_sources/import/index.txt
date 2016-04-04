@@ -1,3 +1,7 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
 
 Data import
 ===========
@@ -17,15 +21,15 @@ imported.
 :demeter:`athena` expects data of one of a few types. Column data in
 which the columns represent such things as the energy grid and the
 scalars measured during the experiment are the most common sort of
-data that most people use import into
-:demeter:`athena`. :demeter:`athena`'s column selection dialog is used
-to convert the raw scalars into |mu| (E) data. Other common kinds of
-data files that might be read into :demeter:`athena` are files that
-contain |mu| (E) or |chi| (k) data in columns or the output files from
-Feff, :file:`xmu.dat` and :file:`chi.dat`.
+data that most people use import into :demeter:`athena`.
+:demeter:`athena`'s column selection dialog is used to convert the raw
+scalars into |mu| (E) data. Other common kinds of data files that
+might be read into :demeter:`athena` are files that contain |mu| (E)
+or |chi| (k) data in columns or the output files from :demeter:`feff`,
+:file:`xmu.dat` and :file:`chi.dat`.
 
-Here is an example of a data file that will make :demeter:`athena` as
-happy as can be. There are some header lines, followed by a line of
+Here is an example of a data file that will make :demeter:`athena`
+quite happy. There are some header lines, followed by a line of
 dashes, followed by a line of column labels, followed by lines
 containing columns of data.
 
@@ -42,16 +46,16 @@ containing columns of data.
         2404.5039    60531.0508       42.2500       78.2500
       ... etc ...
 
-In this example of a perfectly formatted file, the header lines, the
-line of dashes, and the column labels line are all preceded by a hash
+In this example of a well formatted file, the header lines, the line
+of dashes, and the column labels line are all preceded by a hash
 (``#``) mark. :demeter:`ifeffit` is thus able to recognize these as
 header lines. Since :demeter:`ifeffit` recognizes them as such,
 :demeter:`athena` will store them in the project along with the
 data. Because there is a line of dashes and because it is followed
 immediately by column labels, :demeter:`athena` is able to use these
 labels in the column selection dialog. A few other common US keyboard
-symbols, such as ``%`` or ``\*``, will also be understood as marking header
-lines.
+symbols, such as ``%`` or ``\*``, will also be understood as marking
+header lines.
 
 The numbers in the columns can be integers, floats (such as ``1.234``,
 ``-1.234``, .\ ``1234`` or ``-.1234``), or exponentials (such as
@@ -115,9 +119,9 @@ architecture <../other/plugin.html>`__.
 #. Dead-time corrections using columns from the data file.
 
 #. Any math expression more complicated than sums of columns in the
-   numerator and denominator, e.g. plugins allow you to multiply the If
-   column by 7 and divide by the sine of the I0 column, if that's what
-   you really want.
+   numerator and denominator, e.g. plugins allow you to multiply the
+   I\ :sub:`f` column by 7 and divide by the sine of the I\ :sub:`0`
+   column, if that's what you really want.
 
 If some of the criteria for the data file format are not met, for
 example if there is text following the data columns or if you need to
@@ -139,12 +143,13 @@ authors of data acquisition software to consider their users when
 designing data file formats. While I certainly will not say that
 beamlines should be required to accommodate :demeter:`athena` or even
 that beamline staff have any obligation to recommend :demeter:`athena`
-to their users, the truth is that :demeter:`athena` is becoming an
-increasingly common tool in the EXAFS community. The format that best
-serves :demeter:`athena` is actually a fine format that can be
-imported by a very wide variety of EXAFS software, plotting software,
-spreadsheets, and other programs. It's a good format and your users
-would be well served by your adopting it.
+to their users, the truth is that :demeter:`athena` is widely used in
+the XAS community.  A format that serves :demeter:`athena` well is
+likely a fine format that can be imported by a very wide variety of
+XAS software, plotting software, spreadsheets, and other programs.
+Your users would be well served by your adopting it.
+
+----------------
 
 .. toctree::
    :maxdepth: 2

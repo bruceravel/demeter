@@ -1,3 +1,7 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
 
 Configuring ATHENA to work for you
 ----------------------------------
@@ -10,10 +14,8 @@ proper value for a parameter, I chose a default and made an entry for
 it in the preference tool. The preference tool is shown here.
 
 .. _fig-prefs:
-
 .. figure:: ../../_images/prefs.png
    :target: ../_images/prefs.png
-   :width: 65%
    :align: center
 
    The preferences tool.
@@ -28,10 +30,11 @@ The preference parameters are divided into related groups. For
 example, there are groups for background removal parameters, alignment
 parameters, colors, and so on.
 
-To view a group of preferences, click on the little cross sign next to
-the group's name in the list on the left side of the tool. This will
-open a branch containing all the parameters in tat group. Click on one
-of them and it will be displayed in the controls on the left.
+To view a group of preferences, :mark:`leftclick,..` click on the
+little cross sign next to the group's name in the list on the left
+side of the tool. This will open a branch containing all the
+parameters in that group.  :mark:`leftclick,..` Click on one of them
+and it will be displayed in the controls on the left.
 
 Click on the :button:`default,light` button to restore
 :demeter:`athena`'s default value or use the control below the

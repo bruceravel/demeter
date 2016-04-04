@@ -28,6 +28,7 @@ Creating a Feff object and populating it with the contents of a
 at this point:
 
 .. code-block:: perl
+   :linenos:
 
     #!/usr/bin/perl
     use Demeter;
@@ -42,7 +43,8 @@ business can be written. In the example that will be running through
 this section, that workspace is a subdirectory called :file:`feff/`.
 
 The ``screen`` attribute is a boolean which will suppress the messages
-the FEFF would normally write to standard output when set to 0.
+that :demeter:`feff` would normally write to standard output when set
+to 0.
 
 When the ``file`` attribute is set, that input file will be parsed and
 its contents stored as attributes of the Feff object. At this point, the
@@ -63,6 +65,7 @@ object.  The :file:`feff.inp` still gets generated, but it is done
 behind the scenes using a temporary file that is quickly discarded.
 
 .. code-block:: perl
+   :linenos:
 
     #!/usr/bin/perl
     use Demeter;
@@ -74,7 +77,7 @@ behind the scenes using a temporary file that is quickly discarded.
 When the ``atoms`` attribute is set, the :file:`feff.inp` file is created,
 parsed, then deleted. Its contents are stored as attributes of the Feff
 object. At this point, the new Feff object is fully instrumented and
-ready to start being used for interesting work.
+ready to be used for interesting work.
 
 This approach is convenient in any situation for which you do not need
 to modify :demeter:`feff` input data in any way from the form that the

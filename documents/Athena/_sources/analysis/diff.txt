@@ -1,3 +1,8 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
+
 .. _diff-sec:
 
 Difference spectra
@@ -14,7 +19,6 @@ desorbed, resulting in measurable changes in the spectra.
 
 .. figure:: ../../_images/diff_mu.png
    :target: ../_images/diff_mu.png
-   :width: 45%
    :align: center
 
    The dehydrogenation sequence of a Pt-bearing catalyst.
@@ -34,19 +38,18 @@ that you take great care with `selecting parameters
 
 .. figure:: ../../_images/diff.png
    :target: ../_images/diff.png
-   :width: 65%
    :align: center
 
    The difference spectrum tool with data taken from the ``diff.prj``
    demo file.
 
-As you click on each group in the group list, the difference spectrum
+As you :mark:`leftclick,..` click on each group in the group list, the difference spectrum
 is computed as the difference between the groups selected as the
 standard by menu control at the top of the window and the selected
 group from the group list. The difference spectrum will be plotted,
 optionally along with the data and standard used to make the
-subtraction. The form of the difference spectrum – |mu| (E),
-normalized |mu| (E), and derivative or second derivative of |mu| (E) –
+subtraction. The form of the difference spectrum |nd| |mu| (E),
+normalized |mu| (E), and derivative or second derivative of |mu| (E) |nd|
 is selected from the menu labeled :guilabel:`Form`. The multiplier is a
 scaling factor that can be applied to the standard before subtraction.
 
@@ -58,7 +61,7 @@ and integrate the area under that part of the spectrum.
 
 The difference spectra saved to data groups. Those data groups are
 treated in every way like any other data group. By default, difference
-groups are marked as normalized groups – that is, a flag is set which
+groups are marked as normalized groups |nd| that is, a flag is set which
 skips the normalization algorithm. The :button:`renormalize,light` button can
 be ticked to make the resulting group a normal |mu| (E) group. When
 the form of the difference is set to plain |mu| (E), that button will
@@ -118,7 +121,6 @@ of this shown below.
 
 .. figure:: ../../_images/diff_areas.png
    :target: ../_images/diff_areas.png
-   :width: 45%
    :align: center
 
    Integrated areas for a sequence of difference spectra.
@@ -135,7 +137,7 @@ Here are some example uses of difference spectra:
 **Experimental corrections**
     Certain kinds of corrections for nonlinearities in the XAS
     measurement can be corrected by normalizing measured data by a blank
-    scan – that is a measurement through the same energy range using the
+    scan |nd| that is a measurement through the same energy range using the
     same instrumentation, but measured without the sample in the beam
     path. This sort of correction, as shown in by Chantler, Barnea, et al.,
     is equivalent to a difference spectrum measured in plain |mu| (E)

@@ -65,24 +65,24 @@ available path parameters are</p>
 <dt><code class="docutils literal"><span class="pre">degen</span></code></dt>
 <dd>The path degeneracy. This typically is set the degeneracy of the
 ScatteringPath object when the <code class="docutils literal"><span class="pre">sp</span></code> attribute is set, but can be
-modified by the user as part o fthe fitting model.</dd>
+modified by the user as part of the fitting model.</dd>
 <dt><code class="docutils literal"><span class="pre">s02</span></code></dt>
 <dd>Nominally, this is the amplitude reduction factor, but can be
 parameterized to include any amplitude effects in the fitting model.</dd>
 <dt><code class="docutils literal"><span class="pre">e0</span></code></dt>
-<dd>The energy shift, which changes the zero of k.</dd>
+<dd>The energy shift, in units of eV, which changes the zero of k.</dd>
 <dt><code class="docutils literal"><span class="pre">delr</span></code></dt>
-<dd>A change in the path length.</dd>
+<dd>A change in the path length, in units of Å.</dd>
 <dt><code class="docutils literal"><span class="pre">sigma2</span></code></dt>
-<dd>The mean square disorder parameters, σ<sup>2</sup>.</dd>
+<dd>The mean square disorder parameters, σ<sup>2</sup>, in units of Å<sup>2</sup>.</dd>
 <dt><code class="docutils literal"><span class="pre">ei</span></code></dt>
-<dd>An adjustment to the “simaginary energy”, which has the effect of
-adjusting the broadening due to core-hole lifetime, instrumental
-resolution, etc. This has usings of eV.</dd>
+<dd>An adjustment to the “imaginary energy”, which has the
+effect of adjusting the broadening due to core-hole lifetime,
+instrumental resolution, etc.  This has units of eV.</dd>
 <dt><code class="docutils literal"><span class="pre">third</span></code></dt>
-<dd>The third cumulant of the partial pair distribution.</dd>
+<dd>The third cumulant of the partial pair distribution in units of Å<sup>3</sup>.</dd>
 <dt><code class="docutils literal"><span class="pre">fourth</span></code></dt>
-<dd>The fourth cumulant of the partial pair distribution.</dd>
+<dd>The fourth cumulant of the partial pair distribution in units of Å<sup>4</sup>.</dd>
 <dt><code class="docutils literal"><span class="pre">dphase</span></code></dt>
 <dd>A constant offset to the scattering phase shift. Note that this
 should only be used for fits to χ(k) data derived from a DAFS or
@@ -95,7 +95,7 @@ strings which are for interpretion as math expressions by
 <font size=-1 color="#8C4112">IFEFFIT</font>.</p>
 <p>The accessor methods for each of these path parameters is label in the
 list above. For example:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">## get path parameter math expression:</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="c1">## get path parameter math expression:</span>
 <span class="nb">printf</span> <span class="s">&quot;deltaR=%s and sigma2=%s\n&quot;</span><span class="p">,</span> <span class="nv">$path</span><span class="o">-&gt;</span><span class="n">delr</span><span class="p">,</span> <span class="nv">$path</span><span class="o">-&gt;</span><span class="n">sigma2</span><span class="p">;</span>
 <span class="c1">## set a path parameter:</span>
 <span class="nv">$path</span><span class="o">-&gt;</span><span class="n">s02</span><span class="p">(</span><span class="s">&quot;(1-x) * amp&quot;</span><span class="p">);</span>
@@ -111,7 +111,7 @@ will usually have no effect as the value will be overwritten the next
 time <font size=-1 color="#8C4112">DEMETER</font> uses the path.  However, the <code class="docutils literal"><span class="pre">_value</span></code>
 attributes are very useful for obtaining the evaluations of the math
 expressions:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">## get path parameter math expression:</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="c1">## get path parameter math expression:</span>
 <span class="nb">printf</span> <span class="s">&quot;deltaR evaluated to =%.5d\n&quot;</span><span class="p">,</span> <span class="nv">$path</span><span class="o">-&gt;</span><span class="n">delr_value</span><span class="p">;</span>
 </pre></div>
 </div>
@@ -123,7 +123,7 @@ logfile</a>.</p>
 <h3>8.3.1.1. The R method<a class="headerlink" href="#the-r-method" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal"><span class="pre">R</span></code> method is used to return the fitted half path length, that is
 the sum of R<sub>eff</sub> and <code class="docutils literal"><span class="pre">delr</span></code>.</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="nb">printf</span> <span class="s">&quot;half path length is %.5d\n&quot;</span><span class="p">,</span> <span class="nv">$path</span><span class="o">-&gt;</span><span class="n">R</span><span class="p">;</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nb">printf</span> <span class="s">&quot;half path length is %.5d\n&quot;</span><span class="p">,</span> <span class="nv">$path</span><span class="o">-&gt;</span><span class="n">R</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>
@@ -133,7 +133,7 @@ the sum of R<sub>eff</sub> and <code class="docutils literal"><span class="pre">
 evaluation of the Path's math expressions. This text looks very much
 like the text that <font size=-1 color="#8C4112">IFEFFIT</font> returns when you use
 <font size=-1 color="#8C4112">IFEFFIT</font>'s <code class="docutils literal"><span class="pre">show</span> <span class="pre">&#64;group</span></code> command.</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="k">print</span> <span class="nv">$path_object</span> <span class="o">-&gt;</span> <span class="n">paragraph</span><span class="p">;</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="k">print</span> <span class="nv">$path_object</span> <span class="o">-&gt;</span> <span class="n">paragraph</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>
@@ -175,7 +175,7 @@ of this path.</li>
 </ul>
 <p>This line resets the default Path label to a string that includes the
 half path length and the path degeneracy</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$path_object</span> <span class="o">-&gt;</span> <span class="n">co</span> <span class="o">-&gt;</span> <span class="n">set_default</span><span class="p">(</span><span class="s">&quot;pathfinder&quot;</span><span class="p">,</span> <span class="s">&quot;label&quot;</span><span class="p">,</span> <span class="s">&#39;%r (%d)&#39;</span><span class="p">;</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$path_object</span> <span class="o">-&gt;</span> <span class="n">co</span> <span class="o">-&gt;</span> <span class="n">set_default</span><span class="p">(</span><span class="s">&quot;pathfinder&quot;</span><span class="p">,</span> <span class="s">&quot;label&quot;</span><span class="p">,</span> <span class="s">&#39;%r (%d)&#39;</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>
@@ -214,8 +214,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">8. Scattering paths</a><ul class="current">
@@ -230,6 +230,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
@@ -237,14 +241,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 

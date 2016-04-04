@@ -1,0 +1,39 @@
+/***********************************************************************/
+/* some css swiped from sphinxtr to get subfigures to display sensibly */
+/***********************************************************************/
+
+/* change figure captions to get highlighted when targeted with a link */
+div.figure:target > p.caption,
+div.subfigure:target > p.caption,
+div.figure:target > center > p.caption,
+div.math:target span.eqno {
+    background-color: #FFA;
+}
+div.figure:target,
+div.subfigure:target {
+	border: 1px dashed #333;
+}
+div.figure.compound {
+	padding: 0;
+	padding-top: 10px;
+}
+div.figure.compound > p.caption {
+	margin-left: 7px;
+	margin-right: 7px;
+}
+div.subfigure {
+	display: inline-block;
+	vertical-align: top;
+	padding-left: 7px;
+	padding-right: 7px;
+}
+
+
+/*****************************************/
+/* some color for the caution admonition */
+/*****************************************/
+
+div.caution {
+    background-color: #ffeaea;
+    border: 1px solid #c00;
+}

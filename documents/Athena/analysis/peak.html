@@ -25,11 +25,11 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
     <link rel="top" title="Athena 0.9.24 documentation" href="../index.html" />
-    <link rel="up" title="10. Data analysis in ATHENA" href="index.html" />
+    <link rel="up" title="10. Data analysis" href="index.html" />
     <link rel="next" title="10.4. Log-ratio/phase-difference analysis" href="lr.html" />
     <link rel="prev" title="10.2. Principle components analysis" href="pca.html" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
     <link rel="stylesheet" type="text/css" href="../_static/program.css" />
 
@@ -39,16 +39,13 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
           <a href="lr.html" title="10.4. Log-ratio/phase-difference analysis"
-             accesskey="N">next</a> |</li>
+             accesskey="N">next</a></li>
         <li class="right" >
           <a href="pca.html" title="10.2. Principle components analysis"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">10. Data analysis in ATHENA</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">10. Data analysis</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -66,10 +63,10 @@ XANES data. The typical approach is to simulate the XANES data using
 one or two step-like functions and several peak functions for the
 peaks in the data. The centroids, amplitudes, and widths of the
 various line shapes are either fixed or varied to best fit the
-data. In <font size=-1 color="#033B0A">ATHENA</font>'s implementation of peak fitting, a
+data. In <font size=-1 color="#8C4112">ATHENA</font>'s implementation of peak fitting, a
 Levenberg-Marquardt non-linear least-squares minimization is used. (To
-be specific, <font size=-1 color="#033B0A">IFEFFIT</font>'s <code class="docutils literal"><span class="pre">minimize</span></code> command is used after
-constructing an array with a sum of line shapes or <font size=-1 color="#033B0A">LARCH</font>'s
+be specific, <font size=-1 color="#8C4112">IFEFFIT</font>'s <code class="docutils literal"><span class="pre">minimize</span></code> command is used after
+constructing an array with a sum of line shapes or <font size=-1 color="#8C4112">LARCH</font>'s
 <code class="docutils literal"><span class="pre">minimize</span></code> function is using an objective function which contructs
 an array with a sum of the line shapes.)</p>
 <p>Peak fitting is an inherently empirical analysis technique. By
@@ -85,11 +82,11 @@ from the near-by postition of centrosymmetry. Peak fitting is a useful
 tool in this temperature-dependent study as it can quantify the
 relationship between a spectral feature and an extrinsic parameter.</p>
 <div class="figure align-center" id="id1">
-<span id="fig-peak"></span><a class="reference external image-reference" href="../_images/peak.png"><img alt="../_images/peak.png" src="../_images/peak.png" style="width: 65%;" /></a>
+<span id="fig-peak"></span><a class="reference external image-reference" href="../_images/peak.png"><img alt="../_images/peak.png" src="../_images/peak.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 10.11 </span><span class="caption-text">The peak fitting tool.</span></p>
 </div>
 <p>The screenshot above shows the peak fitting tool. The available line
-shapes when useing <font size=-1 color="#033B0A">IFEFFIT</font> include</p>
+shapes when useing <font size=-1 color="#8C4112">IFEFFIT</font> include</p>
 <ul class="simple">
 <li>arc tangent (step-like)</li>
 <li>error function (step-like)</li>
@@ -97,7 +94,7 @@ shapes when useing <font size=-1 color="#033B0A">IFEFFIT</font> include</p>
 <li>Lorentzian (peak)</li>
 <li>pseudo-Voigt (peak)</li>
 </ul>
-<p><font size=-1 color="#033B0A">LARCH</font> adds one step-like function and several peak functions:</p>
+<p><font size=-1 color="#8C4112">LARCH</font> adds one step-like function and several peak functions:</p>
 <ul class="simple">
 <li>logistic (step-like)</li>
 <li>Voigt (step-like)</li>
@@ -105,7 +102,7 @@ shapes when useing <font size=-1 color="#033B0A">IFEFFIT</font> include</p>
 <li>Student's T (peak)</li>
 </ul>
 <p>An obviously useful function are not available in the current version of
-<font size=-1 color="#033B0A">ATHENA</font> is a broadened Cromer-Lieberman calculation of the bare atomic
+<font size=-1 color="#8C4112">ATHENA</font> is a broadened Cromer-Lieberman calculation of the bare atomic
 edge step (which might better approximate the shape of the XANES data).</p>
 <p>Each line shape has an independent centroid, amplitude, and width. A few
 line shapes have a fourth parameter. For instance, the pseudo-Voigt
@@ -118,7 +115,7 @@ the fit.</p>
 tweaking the centroids of the three lineshapes from the values shown
 above.</p>
 <div class="figure align-center" id="id2">
-<span id="fig-peakfit"></span><a class="reference external image-reference" href="../_images/peak_fit.png"><img alt="../_images/peak_fit.png" src="../_images/peak_fit.png" style="width: 45%;" /></a>
+<span id="fig-peakfit"></span><a class="reference external image-reference" href="../_images/peak_fit.png"><img alt="../_images/peak_fit.png" src="../_images/peak_fit.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 10.12 </span><span class="caption-text">Fit to PbTiO<sub>3</sub> data measured at room temperature using an
 arc-tangent, a Lorentzian, and a Gaussian.</span></p>
 </div>
@@ -126,7 +123,7 @@ arc-tangent, a Lorentzian, and a Gaussian.</span></p>
 <div class="section" id="fitting-a-single-data-group">
 <h2>10.3.2. Fitting a single data group<a class="headerlink" href="#fitting-a-single-data-group" title="Permalink to this headline">¶</a></h2>
 <div class="figure align-center" id="id3">
-<span id="fig-peakselect"></span><a class="reference external image-reference" href="../_images/peak_select.png"><img alt="../_images/peak_select.png" src="../_images/peak_select.png" style="width: 30%;" /></a>
+<span id="fig-peakselect"></span><a class="reference external image-reference" href="../_images/peak_select.png"><img alt="../_images/peak_select.png" src="../_images/peak_select.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 10.13 </span><span class="caption-text">Choosing the lineshape to add to the model.</span></p>
 </div>
 <p>Line shapes are added to the fitting model by clicking the buttons
@@ -138,12 +135,12 @@ lineshape in the area below the buttons. In the screenshot above,
 three lineshapes have been added: one arc-tangent to model the main
 edge step, a pseudo-Voigt function to model the first pre-edge peak,
 and a Gaussian to model the second pre-edge peak.</p>
-<p><font size=-1 color="#033B0A">ATHENA</font> cannot know what feature in the data each line shape
+<p><font size=-1 color="#8C4112">ATHENA</font> cannot know what feature in the data each line shape
 is intended to model. You <strong>must</strong> select the centroid of each line
 shape. This can be done by typing an energy value into the box labeled
 either <span class="guilabel">Center</span> or E<sub>0</sub>. Alternately, you can use the
 pluck button to take the energy value from the plot using the mouse.</p>
-<p>When the pluck button is used, <font size=-1 color="#033B0A">ATHENA</font> will make a guess for the initial
+<p>When the pluck button is used, <font size=-1 color="#8C4112">ATHENA</font> will make a guess for the initial
 value of the height of the lineshape. This is the value of the data at
 the position plucked for the centroid. The initial guess for the width
 of the line shape is 0.5 eV for peak shapes and the core-hole lifetime
@@ -164,10 +161,10 @@ happen, for example, if centroids are floated.</p>
 you can click on the <span class="guilabel">change function</span> hot text to post a menu
 of other choices for line shape.</p>
 <div class="figure align-center" id="id4">
-<span id="fig-peakchange"></span><a class="reference external image-reference" href="../_images/peak_change.png"><img alt="../_images/peak_change.png" src="../_images/peak_change.png" style="width: 50%;" /></a>
+<span id="fig-peakchange"></span><a class="reference external image-reference" href="../_images/peak_change.png"><img alt="../_images/peak_change.png" src="../_images/peak_change.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 10.14 </span><span class="caption-text">The peak fitting results tab.</span></p>
 </div>
-<p>With <font size=-1 color="#033B0A">IFEFFIT</font>, there are only two step-like shapes. So for
+<p>With <font size=-1 color="#8C4112">IFEFFIT</font>, there are only two step-like shapes. So for
 changing the shape of a step-like function, the hot text simply
 toggles between the two.</p>
 <p>Once you have set all the parameters of the fitting model, the fit is
@@ -182,7 +179,7 @@ clicking the <kbd class="light">Plot sum</kbd> button.</p>
 section are enabled and the text box on the results tab is filled in
 with the outcome of the fit.</p>
 <div class="figure align-center" id="id5">
-<span id="fig-peakresults"></span><a class="reference external image-reference" href="../_images/peak_results.png"><img alt="../_images/peak_results.png" src="../_images/peak_results.png" style="width: 65%;" /></a>
+<span id="fig-peakresults"></span><a class="reference external image-reference" href="../_images/peak_results.png"><img alt="../_images/peak_results.png" src="../_images/peak_results.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 10.15 </span><span class="caption-text">The peak fitting results tab.</span></p>
 </div>
 <p>The <kbd class="light">Plot data and fit</kbd> button at the bottom of the results
@@ -205,7 +202,7 @@ file contains the fit results in the header and has columns of</p>
 <div class="section" id="fitting-multiple-groups-and-the-sequence-tab">
 <h2>10.3.4. Fitting multiple groups and the sequence tab<a class="headerlink" href="#fitting-multiple-groups-and-the-sequence-tab" title="Permalink to this headline">¶</a></h2>
 <p>Once you have found a fitting model that works for a representative
-data set, <font size=-1 color="#033B0A">ATHENA</font> offers soem automation for examining an
+data set, <font size=-1 color="#8C4112">ATHENA</font> offers soem automation for examining an
 ensemble of data.  The button on the main tab labeled <kbd class="light">Fit
 marked</kbd> will apply the current fitting model to every marked
 group in the data list in sequence. For example, in the case of the
@@ -218,14 +215,14 @@ in the <span class="guilabel">Sequence</span> tab. You can have each fit plotted
 the sequence by setting the <font color="#636A24">♦Peakfit→plot _during</font>
 parameter.</p>
 <div class="figure align-center" id="id6">
-<span id="fig-peaksequence"></span><a class="reference external image-reference" href="../_images/peak_sequence.png"><img alt="../_images/peak_sequence.png" src="../_images/peak_sequence.png" style="width: 65%;" /></a>
+<span id="fig-peaksequence"></span><a class="reference external image-reference" href="../_images/peak_sequence.png"><img alt="../_images/peak_sequence.png" src="../_images/peak_sequence.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 10.16 </span><span class="caption-text">The peak fitting sequence tab.</span></p>
 </div>
 <p>The table at the top shows the R-factor and reduced χ<sup>2</sup>
 for each fit in the sequence. Selecting a row of this table by
-clicking on it will display the detailed results from that fit in the
-text box and will plot the result of that fit.</p>
-<p><font size=-1 color="#033B0A">ATHENA</font> provides a couple of ways of examining the results of the fit
+<img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> clicking on it will display the detailed results
+from that fit in the text box and will plot the result of that fit.</p>
+<p><font size=-1 color="#8C4112">ATHENA</font> provides a couple of ways of examining the results of the fit
 sequence. The list of parameters that were varied in the fit are loaded
 into the menu just below the text box. Selecting a parameter then
 clicking on the adjacent plot button will show the evolution of that
@@ -233,7 +230,7 @@ parameter over the ensemble of data.</p>
 <p>Here we see the example of the height of the pseudo-Voigt line shape as
 a function of temperature. As expected, the value trends downward.</p>
 <div class="figure align-center" id="id7">
-<span id="fig-peakheight"></span><a class="reference external image-reference" href="../_images/peak_height.png"><img alt="../_images/peak_height.png" src="../_images/peak_height.png" style="width: 45%;" /></a>
+<span id="fig-peakheight"></span><a class="reference external image-reference" href="../_images/peak_height.png"><img alt="../_images/peak_height.png" src="../_images/peak_height.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 10.17 </span><span class="caption-text">The results for peak height for the feature 4967 eV as measured over
 the entire data ensemble.</span></p>
 </div>
@@ -243,7 +240,7 @@ program, such as Excel, LibreOffice Calc, or Google Docs. This
 spreadsheet contains the statistics for each fit along with all the
 parameter values and their uncertainties.</p>
 <div class="figure align-center" id="id8">
-<span id="fig-peakexcel"></span><a class="reference external image-reference" href="../_images/peak_excel.png"><img alt="../_images/peak_excel.png" src="../_images/peak_excel.png" style="width: 75%;" /></a>
+<span id="fig-peakexcel"></span><a class="reference external image-reference" href="../_images/peak_excel.png"><img alt="../_images/peak_excel.png" src="../_images/peak_excel.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 10.18 </span><span class="caption-text">The results for of a fit sequence exported as a spreadsheet.</span></p>
 </div>
 
@@ -251,10 +248,10 @@ parameter values and their uncertainties.</p>
 
 <br>
 <hr class="docutils" />
-<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
-copyright © 2015 Bruce Ravel</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
 <p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
-<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
 consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
 </div>
 </div>
@@ -273,13 +270,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and background removal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">10. Data analysis in ATHENA</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">10. Data analysis</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="lcf.html">10.1. Linear combination fitting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pca.html">10.2. Principle components analysis</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="">10.3. Peak fitting</a></li>
@@ -291,16 +288,22 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
-<h3>Links</h3>
+<h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -332,20 +335,17 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
           <a href="lr.html" title="10.4. Log-ratio/phase-difference analysis"
-             >next</a> |</li>
+             >next</a></li>
         <li class="right" >
           <a href="pca.html" title="10.2. Principle components analysis"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >10. Data analysis in ATHENA</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="index.html" >10. Data analysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

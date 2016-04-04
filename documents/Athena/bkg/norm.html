@@ -25,11 +25,11 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
     <link rel="top" title="Athena 0.9.24 documentation" href="../index.html" />
-    <link rel="up" title="4. Normalization and the AUTOBK Algorithm" href="index.html" />
+    <link rel="up" title="4. Normalization and background removal" href="index.html" />
     <link rel="next" title="4.2. The AUTOBK Algorithm and the Rbkg Parameter" href="rbkg.html" />
-    <link rel="prev" title="4. Normalization and the AUTOBK Algorithm" href="index.html" />
+    <link rel="prev" title="4. Normalization and background removal" href="index.html" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
     <link rel="stylesheet" type="text/css" href="../_static/program.css" />
 
@@ -39,16 +39,13 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
           <a href="rbkg.html" title="4.2. The AUTOBK Algorithm and the Rbkg Parameter"
-             accesskey="N">next</a> |</li>
+             accesskey="N">next</a></li>
         <li class="right" >
-          <a href="index.html" title="4. Normalization and the AUTOBK Algorithm"
+          <a href="index.html" title="4. Normalization and background removal"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">4. Normalization and the AUTOBK Algorithm</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">4. Normalization and background removal</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -61,11 +58,12 @@
 <span id="normalization-sec"></span><h1>4.1. Normalization<a class="headerlink" href="#normalization" title="Permalink to this headline">¶</a></h1>
 <p>Normalization is the process of regularizing your data with respect to
 variations in sample preparation, sample thickness, absorber
-concentration, detector and amplifier settings, and any other aspects of
-the measurement. Normalized data can be directly compared, regardless of
-the details of the experiment. Normalization of your data is essential
-for comparison to theory. The scale of the μ(E) and χ(k) spectra
-computed by FEFF is chosen for comparison to normalized data.</p>
+concentration, detector and amplifier settings, and any other aspects
+of the measurement. Normalized data can be directly compared,
+regardless of the details of the experiment. Normalization of your
+data is essential for comparison to theory. The scale of the μ(E)
+and χ(k) spectra computed by <font size=-1 color="#8C4112">FEFF</font> is chosen for
+comparison to normalized data.</p>
 <p>The relationship between μ(E) and χ(k) is:</p>
 <blockquote>
 <div>μ(E) = μ<sub>0</sub>(E) * (1 + χ(E))</div></blockquote>
@@ -80,7 +78,7 @@ problematic is the factor of μ<sub>0</sub>(E) in the denominator. In practice, 
 cannot trust the μ<sub>0</sub>(E) to be sufficiently well behaved that it can be
 used as a multiplicative factor. An example is shown below.</p>
 <div class="figure align-center" id="id1">
-<span id="fig-zerocross"></span><a class="reference external image-reference" href="../_images/bkg_normzerocross.png"><img alt="../_images/bkg_normzerocross.png" src="../_images/bkg_normzerocross.png" style="width: 45%;" /></a>
+<span id="fig-zerocross"></span><a class="reference external image-reference" href="../_images/bkg_normzerocross.png"><img alt="../_images/bkg_normzerocross.png" src="../_images/bkg_normzerocross.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 4.1 </span><span class="caption-text">μ(E) data for gold hydroxide, which crosses the zero axis in the EXAFS
 region.</span></p>
 </div>
@@ -108,11 +106,11 @@ normalization.</p>
 <tt><font color="#387A38">«pre-edge range»</font></tt>, and <tt><font color="#387A38">«normalization range»</font></tt> parameters. These parameters
 are highlighted in this screenshot.</p>
 <div class="figure align-center" id="id2">
-<span id="fig-normparams"></span><a class="reference external image-reference" href="../_images/bkg_normparams.png"><img alt="../_images/bkg_normparams.png" src="../_images/bkg_normparams.png" style="width: 65%;" /></a>
-<p class="caption"><span class="caption-number">Fig. 4.2 </span><span class="caption-text">Selecting the normalization parameters in <font size=-1 color="#033B0A">ATHENA</font>.</span></p>
+<span id="fig-normparams"></span><a class="reference external image-reference" href="../_images/bkg_normparams.png"><img alt="../_images/bkg_normparams.png" src="../_images/bkg_normparams.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 4.2 </span><span class="caption-text">Selecting the normalization parameters in <font size=-1 color="#8C4112">ATHENA</font>.</span></p>
 </div>
 <p>The <tt><font color="#387A38">«pre-edge range»</font></tt> and <tt><font color="#387A38">«normalization range»</font></tt>
-parameters define two regions of the data -- one before the edge and
+parameters define two regions of the data – one before the edge and
 one after the edge. A line is regressed to the data in the
 <tt><font color="#387A38">«pre-edge range»</font></tt> and a polynomial is regressed to the data
 in the <tt><font color="#387A38">«normalization range»</font></tt>. By default, a three-term
@@ -164,12 +162,12 @@ error bar on the edge step.</p>
 <div class="section" id="the-flattening-algorithm">
 <h2>4.1.2. The flattening algorithm<a class="headerlink" href="#the-flattening-algorithm" title="Permalink to this headline">¶</a></h2>
 <p>For display of XANES data and certain kinds of analysis of μ(E) spectra,
-<font size=-1 color="#033B0A">ATHENA</font> provides an additional bit of sugar. By default, the <em>flattened</em>
+<font size=-1 color="#8C4112">ATHENA</font> provides an additional bit of sugar. By default, the <em>flattened</em>
 spectrum is plotted in energy rather than the normalized spectrum. In
 the following plot, flattened data are shown along with a copy of the
 data that has the flattening turned off.</p>
 <div class="figure align-center" id="id5">
-<span id="fig-flattened"></span><a class="reference external image-reference" href="../_images/bkg_normvflat.png"><img alt="../_images/bkg_normvflat.png" src="../_images/bkg_normvflat.png" style="width: 45%;" /></a>
+<span id="fig-flattened"></span><a class="reference external image-reference" href="../_images/bkg_normvflat.png"><img alt="../_images/bkg_normvflat.png" src="../_images/bkg_normvflat.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 4.5 </span><span class="caption-text">Comparing normalized (red) and flattened (blue) data using a Cu foil.</span></p>
 </div>
 <p>To display the flattened data, the difference in slope and quadrature
@@ -250,7 +248,7 @@ shown in the figure below. In this case the <tt><font color="#387A38">«pre-edge
 range»</font></tt> should be chosen to be entirely above the yttrium K-edge
 energy.</p>
 <div class="figure align-center" id="id11">
-<span id="fig-uy"></span><a class="reference external image-reference" href="../_images/bkg_uy.png"><img alt="../_images/bkg_uy.png" src="../_images/bkg_uy.png" style="width: 45%;" /></a>
+<span id="fig-uy"></span><a class="reference external image-reference" href="../_images/bkg_uy.png"><img alt="../_images/bkg_uy.png" src="../_images/bkg_uy.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 4.11 </span><span class="caption-text">A sediment sample with both uranium and yttrium.</span></p>
 </div>
 </div>
@@ -274,10 +272,10 @@ without adding excessive time to scan.</p>
 
 <br>
 <hr class="docutils" />
-<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
-copyright © 2015 Bruce Ravel</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
 <p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
-<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
 consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
 </div>
 </div>
@@ -296,7 +294,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">4. Normalization and the AUTOBK Algorithm</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">4. Normalization and background removal</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="">4.1. Normalization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rbkg.html">4.2. The AUTOBK Algorithm and the Rbkg Parameter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kweight.html">4.3. Spline clamps and k-weight in background removal</a></li>
@@ -304,26 +302,32 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l2"><a class="reference internal" href="ednorm.html">4.5. Energy-dependent normalization</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
-<h3>Links</h3>
+<h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -355,20 +359,17 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
           <a href="rbkg.html" title="4.2. The AUTOBK Algorithm and the Rbkg Parameter"
-             >next</a> |</li>
+             >next</a></li>
         <li class="right" >
-          <a href="index.html" title="4. Normalization and the AUTOBK Algorithm"
+          <a href="index.html" title="4. Normalization and background removal"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >4. Normalization and the AUTOBK Algorithm</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="index.html" >4. Normalization and background removal</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

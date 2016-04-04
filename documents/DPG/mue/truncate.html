@@ -63,10 +63,10 @@ data is to be removed from the front or back end of the data. The
 second argument is the energy value before/after which all data points
 are removed.</p>
 <p>Truncating changes the representation of the data within both
-<font size=-1 color="#8C4112">DEMETER</font> and <font size=-1 color="#8C4112">IFEFFIT</font>.  (But not on disk --
+<font size=-1 color="#8C4112">DEMETER</font> and <font size=-1 color="#8C4112">IFEFFIT</font>.  (But not on disk –
 <font size=-1 color="#8C4112">DEMETER</font> never alters the original data.)  This method <em>does
 not</em> return a new object.</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/perl</span>
 <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 <span class="k">my</span> <span class="nv">$d0</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span>        <span class="o">=&gt;</span> <span class="s">&quot;$where/data/fe.060&quot;</span><span class="p">,</span>
                               <span class="n">name</span>        <span class="o">=&gt;</span> <span class="s">&#39;60K&#39;</span><span class="p">,</span>
@@ -83,7 +83,7 @@ not</em> return a new object.</p>
 <p>In the example above, all points after 7500 eV are removed from the
 data. Here is an example of removing points from the front end of the
 data.</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$d0</span> <span class="o">-&gt;</span> <span class="n">Truncate</span><span class="p">(</span><span class="s">&#39;before&#39;</span><span class="p">,</span> <span class="mi">7050</span><span class="p">);</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$d0</span> <span class="o">-&gt;</span> <span class="n">Truncate</span><span class="p">(</span><span class="s">&#39;before&#39;</span><span class="p">,</span> <span class="mi">7050</span><span class="p">);</span>
 </pre></div>
 </div>
 <div class="figure align-left" id="id1">
@@ -130,8 +130,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l2"><a class="reference internal" href="dispersive.html">3.10. Processing dispersive XAS data</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
@@ -139,6 +139,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
@@ -146,14 +150,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 

@@ -1,3 +1,8 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
+
 .. _normalization_sec:
 
 
@@ -6,11 +11,12 @@ Normalization
 
 Normalization is the process of regularizing your data with respect to
 variations in sample preparation, sample thickness, absorber
-concentration, detector and amplifier settings, and any other aspects of
-the measurement. Normalized data can be directly compared, regardless of
-the details of the experiment. Normalization of your data is essential
-for comparison to theory. The scale of the |mu| (E) and |chi| (k) spectra
-computed by FEFF is chosen for comparison to normalized data.
+concentration, detector and amplifier settings, and any other aspects
+of the measurement. Normalized data can be directly compared,
+regardless of the details of the experiment. Normalization of your
+data is essential for comparison to theory. The scale of the |mu| (E)
+and |chi| (k) spectra computed by :demeter:`feff` is chosen for
+comparison to normalized data.
 
 The relationship between |mu| (E) and |chi| (k) is:
 
@@ -30,10 +36,8 @@ cannot trust the |mu|\ :sub:`0`\ (E) to be sufficiently well behaved that it can
 used as a multiplicative factor. An example is shown below.
 
 .. _fig-zerocross:
-
 .. figure:: ../../_images/bkg_normzerocross.png
    :target: ../_images/bkg_normzerocross.png
-   :width: 45%
    :align: center
 
    |mu| (E) data for gold hydroxide, which crosses the zero axis in the EXAFS
@@ -76,16 +80,14 @@ The normalization of a spectrum is controlled by the value of the :procparam:`e0
 are highlighted in this screenshot.
 
 .. _fig-normparams:
-
 .. figure:: ../../_images/bkg_normparams.png
    :target: ../_images/bkg_normparams.png
-   :width: 65%
    :align: center
 
    Selecting the normalization parameters in :demeter:`athena`.
 
 The :procparam:`pre-edge range` and :procparam:`normalization range`
-parameters define two regions of the data -- one before the edge and
+parameters define two regions of the data |nd| one before the edge and
 one after the edge. A line is regressed to the data in the
 :procparam:`pre-edge range` and a polynomial is regressed to the data
 in the :procparam:`normalization range`. By default, a three-term
@@ -104,7 +106,6 @@ through the middle of the data in their respective ranges.
 .. subfigstart::
 
 .. _fig-prepost:
-
 .. figure::  ../../_images/bkg_prepost.png
    :target: ../_images/bkg_prepost.png
    :width: 100%
@@ -112,7 +113,6 @@ through the middle of the data in their respective ranges.
    Cu foil |mu| (E) with pre and post lines.
 
 .. _fig-norm:
-
 .. figure::  ../../_images/bkg_norm.png
    :target: ../_images/bkg_norm.png
    :width: 100%
@@ -162,10 +162,8 @@ the following plot, flattened data are shown along with a copy of the
 data that has the flattening turned off.
 
 .. _fig-flattened:
-
 .. figure:: ../../_images/bkg_normvflat.png
    :target: ../_images/bkg_normvflat.png
-   :width: 45%
    :align: center
 
    Comparing normalized (red) and flattened (blue) data using a Cu foil.
@@ -205,7 +203,6 @@ the flattened data are highly distorted.
 .. subfigstart::
 
 .. _fig-postbad:
-
 .. figure::  ../../_images/bkg_postbad.png
    :target: ../_images/bkg_postbad.png
    :width: 100%
@@ -215,7 +212,6 @@ the flattened data are highly distorted.
    of the Ba L\ :sub:`III` edge.
 
 .. _fig-normbad:
-
 .. figure::  ../../_images/bkg_normbad.png
    :target: ../_images/bkg_normbad.png
    :width: 100%
@@ -237,7 +233,6 @@ in how the |chi| (k) data are normalized.
 .. subfigstart::
 
 .. _fig-subtlepost1:
-
 .. figure::  ../../_images/bkg_subtlepost.png
    :target: ../_images/bkg_subtlepost.png
    :width: 100%
@@ -245,7 +240,6 @@ in how the |chi| (k) data are normalized.
    One choice of :procparam:`norm1`.
 
 .. _fig-subtlepost2:
-
 .. figure::  ../../_images/bkg_subtlepost2.png
    :target: ../_images/bkg_subtlepost2.png
    :width: 100%
@@ -253,7 +247,6 @@ in how the |chi| (k) data are normalized.
    Another choice of :procparam:`norm1`.
 
 .. _fig-subtlepost3:
-
 .. figure::  ../../_images/bkg_subtlepost_compare.png
    :target: ../_images/bkg_subtlepost_compare.png
    :width: 100%
@@ -290,10 +283,8 @@ range` should be chosen to be entirely above the yttrium K-edge
 energy.
 
 .. _fig-uy:
-
 .. figure:: ../../_images/bkg_uy.png
    :target: ../_images/bkg_uy.png
-   :width: 45%
    :align: center
 
    A sediment sample with both uranium and yttrium.

@@ -97,7 +97,7 @@ motion. The function for computing σ<sup>2</sup> from the
 Einstein is a function of the measurement temperature, an Einstein
 temperature, and the reduced mass of the absorber/scatterer
 pair. In <font size=-1 color="#8C4112">ARTEMIS</font> one writes:</p>
-<div class="highlight-python"><div class="highlight"><pre>path:
+<div class="highlight-python"><div class="highlight"><pre><span></span>path:
     sigma2 = eins(temperature, thetae)
 </pre></div>
 </div>
@@ -123,7 +123,7 @@ spectrum. That is, a single charcteristic energy – the same
 Debye temperature, , that is determined from the heat capacity of
 the material – can be used to compute σ<sup>2</sup> for any
 path in the material. In <font size=-1 color="#8C4112">ARTEMIS</font> one writes:</p>
-<div class="highlight-python"><div class="highlight"><pre>path:
+<div class="highlight-python"><div class="highlight"><pre><span></span>path:
     sigma2 = debye(temperature, thetae)
 </pre></div>
 </div>
@@ -140,7 +140,7 @@ form with either backend and the correct thing will happen.</p>
 </dl>
 <p>Both models are described in</p>
 <ul class="simple" id="bibtex-bibliography-extended/ss-0">
-<li>E.&nbsp;Sevillano, H.&nbsp;Meuth, and J.&nbsp;J. Rehr. Extended x-ray absorption fine structure Debye-Waller factors. I. Monatomic crystals. <em>Phys. Rev. B</em>, 20:4908–4911, Dec 1979. <a class="reference external" href="http://dx.doi.org/10.1103/PhysRevB.20.4908">doi:10.1103/PhysRevB.20.4908</a>.</li>
+<li>E.&nbsp;Sevillano, H.&nbsp;Meuth, and J.&nbsp;J. Rehr. Extended x-ray absorption fine structure Debye-Waller factors. I. Monatomic crystals. <em>Phys. Rev. B</em>, 20:4908–4911, Dec 1979. <a class="reference external" href="https://doi.org/10.1103/PhysRevB.20.4908">doi:10.1103/PhysRevB.20.4908</a>.</li>
 </ul>
 </div>
 <div class="section" id="colinear-multiple-scattering-paths">
@@ -148,7 +148,7 @@ form with either backend and the correct thing will happen.</p>
 <p>This valuable paper explains the relationships between σ<sup>2</sup> parameters for single scattering paths and certain multiple
 scattering paths:</p>
 <ul class="simple" id="bibtex-bibliography-extended/ss-1">
-<li>E.&nbsp;A. Hudson, P.&nbsp;G. Allen, L.&nbsp;J. Terminello, M.&nbsp;A. Denecke, and T.&nbsp;Reich. Polarized x-ray-absorption spectroscopy of the uranyl ion: Comparison of experiment and theory. <em>Phys. Rev. B</em>, 54:156–165, Jul 1996. <a class="reference external" href="http://dx.doi.org/10.1103/PhysRevB.54.156">doi:10.1103/PhysRevB.54.156</a>.</li>
+<li>E.&nbsp;A. Hudson, P.&nbsp;G. Allen, L.&nbsp;J. Terminello, M.&nbsp;A. Denecke, and T.&nbsp;Reich. Polarized x-ray-absorption spectroscopy of the uranyl ion: Comparison of experiment and theory. <em>Phys. Rev. B</em>, 54:156–165, Jul 1996. <a class="reference external" href="https://doi.org/10.1103/PhysRevB.54.156">doi:10.1103/PhysRevB.54.156</a>.</li>
 </ul>
 <div class="figure align-center" id="id1">
 <span id="fig-colinear"></span><a class="reference external image-reference" href="../_images/collinear.png"><img alt="../_images/collinear.png" src="../_images/collinear.png" /></a>
@@ -157,7 +157,7 @@ and how they relate to the corresponding SS path.</span></p>
 </div>
 <p>To begin, we define guess parameters for the σ<sup>2</sup> of the
 SS paths to atoms 1 and 2.</p>
-<div class="highlight-python"><div class="highlight"><pre>guess  ss1 = 0.003
+<div class="highlight-python"><div class="highlight"><pre><span></span>guess  ss1 = 0.003
 guess  ss2 = 0.003
 </pre></div>
 </div>
@@ -193,7 +193,7 @@ vairation in path length along those two legs of the path <strong>is</strong> th
 half the fourth shell path.</p>
 <p>The math epression for the σ<sup>2</sup> of this triangle path was
 set as</p>
-<div class="highlight-python"><div class="highlight"><pre>path Fe-S triangle:
+<div class="highlight-python"><div class="highlight"><pre><span></span>path Fe-S triangle:
     sigma2 = ss1 + ss_fe/2
 </pre></div>
 </div>
@@ -300,14 +300,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -349,7 +351,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

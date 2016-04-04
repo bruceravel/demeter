@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.3. Principle Components Analysis &mdash; Demeter Programming Guide 0.9.24 documentation</title>
+    <title>5.3. Principle Components Analysis &mdash; Demeter Programming Guide 0.9.24 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -25,9 +25,9 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
     <link rel="top" title="Demeter Programming Guide 0.9.24 documentation" href="../index.html" />
-    <link rel="up" title="4. Analysis of XANES data" href="index.html" />
-    <link rel="next" title="4.4. Difference spectra" href="diff.html" />
-    <link rel="prev" title="4.2. Peak Fitting" href="peak.html" />
+    <link rel="up" title="5. Analysis of XANES data" href="index.html" />
+    <link rel="next" title="5.4. Difference spectra" href="diff.html" />
+    <link rel="prev" title="5.2. Peak Fitting" href="peak.html" />
 
     <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
@@ -39,13 +39,13 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="diff.html" title="4.4. Difference spectra"
+          <a href="diff.html" title="5.4. Difference spectra"
              accesskey="N">next</a></li>
         <li class="right" >
-          <a href="peak.html" title="4.2. Peak Fitting"
+          <a href="peak.html" title="5.2. Peak Fitting"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">4. Analysis of XANES data</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">5. Analysis of XANES data</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -55,7 +55,7 @@
           <div class="body" role="main">
             
   <div class="section" id="principle-components-analysis">
-<h1>4.3. Principle Components Analysis<a class="headerlink" href="#principle-components-analysis" title="Permalink to this headline">¶</a></h1>
+<h1>5.3. Principle Components Analysis<a class="headerlink" href="#principle-components-analysis" title="Permalink to this headline">¶</a></h1>
 <div class="admonition-todo admonition" id="index-0">
 <p class="first admonition-title">Todo</p>
 <p class="last">Content!</p>
@@ -86,14 +86,14 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">4. Analysis of XANES data</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="lcf.html">4.1. Linear Combination Fitting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="peak.html">4.2. Peak Fitting</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">4.3. Principle Components Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="diff.html">4.4. Difference spectra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">5. Analysis of XANES data</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="lcf.html">5.1. Linear Combination Fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="peak.html">5.2. Peak Fitting</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">5.3. Principle Components Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diff.html">5.4. Difference spectra</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
@@ -101,6 +101,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
@@ -108,14 +112,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -147,13 +153,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="diff.html" title="4.4. Difference spectra"
+          <a href="diff.html" title="5.4. Difference spectra"
              >next</a></li>
         <li class="right" >
-          <a href="peak.html" title="4.2. Peak Fitting"
+          <a href="peak.html" title="5.2. Peak Fitting"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >4. Analysis of XANES data</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="index.html" >5. Analysis of XANES data</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

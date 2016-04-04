@@ -63,8 +63,9 @@ to the list of unique potentials in the input data for
 
 The method for associating this :guilabel:`SSPath` with data will be
 explained in the `next chapter <../path/index.html>`__. For now, we
-simply jump ahead and compare the normal Co scatterer at 3.83 |AA|
-(blue) with the SSPath computed at 3 |AA| (red).
+simply look at :numref:`Fig. %s <fig-feffplotss>` to compare the
+normal Co scatterer at 3.83 |AA| (blue) with the SSPath computed at 3
+|AA| (red).
 
 Use of :guilabel:`SSPath` for modeling scatterers at such a long
 distance is much superior to using a `quick first shell theory

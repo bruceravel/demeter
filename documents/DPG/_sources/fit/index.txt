@@ -6,31 +6,31 @@
 Fitting EXAFS data
 ==================
 
-Here is a complete fitting example. In this example, data on a copper
+Here is a complete fitting example.  In this example, data on a copper
 foil are fit using a model considering isotropic expansion and a
 correlated Debye model.
 
 Everything up to line 44 should be familiar to you if you have read
-all the previous parts of this programming guide. An :demeter:`athena`
-project file is imported at line 5. A record from that project file is
+all the previous parts of this programming guide.  An :demeter:`athena`
+project file is imported at line 5.  A record from that project file is
 imported into a Data obejct at line 8 and various parameters of the
 Data object are set at lines 9-15.
 
-A :demeter:`feff` calculation is made at lines 17-19. Note the use of
+A :demeter:`feff` calculation is made at lines 17-19.  Note the use of
 chained method calls at line 19. This is possible because the
 ``potph`` method returns the calling object. (So does ``pathfinder``,
 for that matter, although its return value is thrown away here.) The
 path list is dereferenced for convenience at line 20.
 
 Various guess and set parameters are defined at lines 23-28 and stored
-in an array. The parameters will be used to set up a simple fitting
+in an array.  The parameters will be used to set up a simple fitting
 model consisting of an amplitude term, an E\ :sub:`0` shift, an isotropic
 expnasion model for |Delta| R for each path, and a correlated Debye
 model for the |sigma|\ :sup:`2` for each path.
 
 At lines 33-42, various Path objects are defined using the
-ScatteringPath objects from the :demeter:`feff` calculation. The path
-parameters are assigned mathexpressions using the appropriate GDS
+ScatteringPath objects from the :demeter:`feff` calculation.  The path
+parameters are assigned math expressions using the appropriate GDS
 parameters.
 
 .. code-block:: perl
@@ -99,19 +99,19 @@ parameters.
     $data->pause;
 
 As I said, everything up to this point has been covered already. The
-fitting magic happens at lines 46-49. A Fit object is defined as a
-collection of GDS, Data, and Path objects. Those three attributes of the
-Fit object each takes an anonymous array (as at line 47) or references
-to named arrays (as at lines 46 and 48). That's it! That's how you make
-a fit.
+fitting magic happens at lines 45-48.  A Fit object is defined as a
+collection of GDS, Data, and Path objects.  Those three attributes of
+the Fit object each takes an anonymous array (as at line 46) or
+references to named arrays (as at lines 45 and 47).  That's it!
+That's how you make a fit.
 
 Although the first 42 lines of code do not constitute a substantial
 savings of effort compared to a writing :demeter:`feffit` input file
 or an :demeter:`ifeffit` script in terms of the amount of typing that
-you have to do. That changes substantially once the fit is
-defined. When the fit is requested at line 52, :demeter:`demeter` does
+you have to do.  That changes substantially once the fit is
+defined.  When the fit is requested at line 52, :demeter:`demeter` does
 a lot of work disentangle the contents of the arrays containing the
-GDS, Data, and Path objects. As discussed `in an upcoming section
+GDS, Data, and Path objects.  As discussed `in an upcoming section
 <sanity.html>`__ extensive checks are run to confirm that all aspects
 of the fitting model make sense and that there are no obvious errors
 in the fitting model (e.g. guess parameters that are defined but not
@@ -122,8 +122,8 @@ used).
    :target: ../_images/cufit.png
    :align: center
 
-   Lines 54-58 in the script above defined how the plot at line 61
-   will appear. Various flags of the Plot object are set such that the
+   Lines 54-58 in the script above defined how the plot at line 60
+   will appear.  Various flags of the Plot object are set such that the
    data and fit are plotted alonmg with a window showing the fitting
    range and the running R-factor, which is a way of visualizing how
    the misfit is distributed over the fitting range.  A k-weight of 2

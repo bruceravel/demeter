@@ -1,3 +1,8 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
+
 
 Using the group list
 ====================
@@ -38,7 +43,7 @@ You can copy a group by hitting :button:`Alt`-:button:`y` or by selecting
 :menuselection:`Group --> Copy group`. This makes an identical copy
 of the current group and places it at the end of the groups list. All
 parameters are identical and the data arrays in :demeter:`ifeffit` are
-all copied -- only the :demeter:`ifeffit` group name in different.
+all copied |nd| only the :demeter:`ifeffit` group name in different.
 
 Copying is very useful for examining how changes in parameter values
 propagate through the data processing. You can make one or more copies,
@@ -54,16 +59,14 @@ Reorganizing the group list
 
 When a file is imported into :demeter:`athena`, the name of the file
 is used as the label in the group list. That's fine, but you can
-change the label by selecting :menuselection:`Group --> Rename current group`,
-typing :button:`Alt`-:button:`l`, or double clicking on an item in
-the group list. This posts a dialog for entering the new label for the
-group, shown here.
+change the label by selecting :menuselection:`Group --> Rename current
+group`, typing :button:`Alt`-:button:`l`, or double
+:mark:`leftclick,..` clicking on an item in the group list. This posts
+a dialog for entering the new label for the group, shown here.
 
 .. _fig-renaming:
-
 .. figure:: ../../_images/ui_renaming.png
    :target: ../_images/ui_renaming.png
-   :width: 65%
    :align: center
 
    Renaming a group list entry.
@@ -72,10 +75,8 @@ Hitting :button:`Return` or clicking the :button:`OK,light` button
 renames the group, shown here.
 
 .. _fig-renamed:
-
 .. figure:: ../../_images/ui_renamed.png
    :target: ../_images/ui_renamed.png
-   :width: 65%
    :align: center
 
    After renaming a group list entry.
@@ -112,10 +113,8 @@ Selecting :menuselection:`Group --> Show yaml for current group`
 displays the dialog shown here.
 
 .. _fig-about:
-
 .. figure:: ../../_images/ui_about.png
    :target: ../_images/ui_about.png
-   :width: 35%
    :align: center
 
    The dialog containing information about the data group.
@@ -132,10 +131,8 @@ energy, though. If you import a |chi| (k) file as |mu| (E) by
 accident, you will have to remove the group and re-import it.
 
 .. _fig-changetype:
-
 .. figure:: ../../_images/import_changetype.png
    :target: ../_images/import_changetype.png
-   :width: 30%
    :align: center
 
    Change type dialog
@@ -143,7 +140,8 @@ accident, you will have to remove the group and re-import it.
 
 .. versionadded:: 0.9.20 there is a label on the main window
    displaying the data type. You can toggle between |mu| (E) and XANES
-   data by :button:`Control`-:button:`Alt`-left clicking on that label.
+   data by :button:`Control`-:button:`Alt`-:mark:`leftclick,..`
+   clicking on that label.
 
 
 
@@ -152,7 +150,7 @@ Using the mouse in the group list
 
 You can turn on automated replotting when you select a new group by
 clicking on it in the group list. This is done by setting
-:configparam:`athena,select\_replot` with the `preferences
+:configparam:`Athena,select\_replot` with the `preferences
 tool <../other/prefs.html>`__.
 
 If you right click on any item in the group list, a context menu is
@@ -160,17 +158,15 @@ posted, as shown below, displaying the :guilabel:`Group` menu.
 
 
 .. _fig-groupcontext:
-
 .. figure:: ../../_images/ui_groupcontext.png
    :target: ../_images/ui_groupcontext.png
-   :width: 45%
    :align: center
 
    Clicking the right mouse button on a group list entry pops up this
    context menu.
 
-As mentioned above, double clicking on a group list item will post the
-dialog for renaming that group.
+As mentioned above, double :mark:`leftclick,..` clicking on a group
+list item will post the dialog for renaming that group.
 
 
 Shrinking and expanding the group list
@@ -185,10 +181,8 @@ return the k-weight buttons and the group list to their original
 places and the group list to its original original size.
 
 .. _fig-shrink:
-
 .. figure:: ../../_images/ui_shrink.png
    :target: ../_images/ui_shrink.png
-   :width: 45%
    :align: center
 
    Restore the shrunken k-weight buttons and plot options tabs.

@@ -1,3 +1,7 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
 
 Project journal
 ===============
@@ -11,10 +15,8 @@ imported into :demeter:`athena`, any journal text will be restored to
 this text box.
 
 .. _fig-journal:
-
 .. figure:: ../../_images/journal.png
    :target: /../_images/journal.png
-   :width: 65%
    :align: center
 
    The journal tool.

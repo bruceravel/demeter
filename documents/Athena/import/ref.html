@@ -29,7 +29,7 @@
     <link rel="next" title="3.5. Preprocessing data" href="preproc.html" />
     <link rel="prev" title="3.3. Multiple data set import" href="multiple.html" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
     <link rel="stylesheet" type="text/css" href="../_static/program.css" />
 
@@ -39,11 +39,8 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
           <a href="preproc.html" title="3.5. Preprocessing data"
-             accesskey="N">next</a> |</li>
+             accesskey="N">next</a></li>
         <li class="right" >
           <a href="multiple.html" title="3.3. Multiple data set import"
              accesskey="P">previous</a> |</li>
@@ -59,32 +56,34 @@
             
   <div class="section" id="reference-channel">
 <span id="reference-sec"></span><h1>3.4. Reference channel<a class="headerlink" href="#reference-channel" title="Permalink to this headline">¶</a></h1>
-<p>A reference spectrum is used by <font size=-1 color="#033B0A">ATHENA</font> as a data alignment
+<p>A reference spectrum is used by <font size=-1 color="#8C4112">ATHENA</font> as a data alignment
 standard.  It is common to place a third ionization chamber in line
-after the transmission chamber and to place good transmission standard
-between the two. The point of measuring the standard is that it is
-measured in parallel with your real sample. This standard can then be
-used to align the actual data using the <a class="reference external" href="../process/align.html">data alignment tool</a>.</p>
+after the transmission chamber and to place a good transmission
+standard between the two. The point of measuring the standard is that
+it is measured in parallel with your real sample. This standard can
+then be used to align the actual data using the <a class="reference external" href="../process/align.html">data alignment tool</a>.</p>
 <p>The standard often is a zero-valent foil, but the most important thing
 is that it is an excellent standard which will yield consistently
-high-quality data. The other most important thing is that you always use
-the same sample as your reference standard for ever experiment you make
-at a particular edge. To this end, it is wise to make a library of
-standards and carry them with you to the synchrotron. By using the same
-standard for every experiment at an edge, you can align any data, even
-data measured years apart at different synchrotrons.</p>
+high-quality data. The other most important thing is that you always
+use the same sample as your reference standard for every experiment
+you make at a particular edge. To this end, it is wise to make a
+library of reference standards and carry them with you to the
+synchrotron. By using the same standard for every experiment at an
+edge, you can align any data, even data measured years apart or at
+different synchrotrons.</p>
 <div class="figure align-center" id="id1">
-<span id="fig-importref"></span><a class="reference external image-reference" href="../_images/import_ref.png"><img alt="../_images/import_ref.png" src="../_images/import_ref.png" style="width: 65%;" /></a>
-<p class="caption"><span class="caption-number">Fig. 3.11 </span><span class="caption-text">Importing a reference channel with the column selection dialog.</span></p>
+<span id="fig-importref"></span><a class="reference external image-reference" href="../_images/import_ref.png"><img alt="../_images/import_ref.png" src="../_images/import_ref.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 3.12 </span><span class="caption-text">Importing a reference channel with the column selection dialog.</span></p>
 </div>
 <p>The reference channel selection works almost the same as column
-selection for the data except that you don't need to specify the energy
-column again -- the same column is used. When a reference channel after
-the transmission channel is used, you should use the transmission
-channel as the numerator and the reference channel as the denominator.
-Another common solution to measuring a reference channel is measure
-elastically scattered radiation through the standard with a PIN diode.
-In that case, I0 is the numerator and the diode is the denominator.</p>
+selection for the data except that you don't need to specify the
+energy column again – the same column is used. When a reference
+channel after the transmission channel is used, you should use the
+transmission channel as the numerator and the reference channel as the
+denominator.  Another common solution to measuring a reference channel
+is measure elastically scattered radiation through the standard with a
+PIN diode.  In that case, I<sub>0</sub> is the numerator and the diode
+is the denominator.</p>
 <p>You can plot the reference channel to make sure that you have selected
 the correct channels with the <span class="guilabel">Plot reference</span> check
 button. If your reference standard is of an element with a nearby edge
@@ -100,8 +99,8 @@ are <em>tied</em> together in the sense that the values for their
 <p>This relationship is shown visually by the change in color of the text
 in the box for <tt><font color="#387A38">«energy shift»</font></tt>, as seen in this screenshot.</p>
 <div class="figure align-center" id="id2">
-<span id="fig-refimported"></span><a class="reference external image-reference" href="../_images/import_refimported.png"><img alt="../_images/import_refimported.png" src="../_images/import_refimported.png" style="width: 65%;" /></a>
-<p class="caption"><span class="caption-number">Fig. 3.12 </span><span class="caption-text">Data imported with a reference channel.</span></p>
+<span id="fig-refimported"></span><a class="reference external image-reference" href="../_images/import_refimported.png"><img alt="../_images/import_refimported.png" src="../_images/import_refimported.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 3.13 </span><span class="caption-text">Data imported with a reference channel.</span></p>
 </div>
 <p>When you change the value of <tt><font color="#387A38">«energy shift»</font></tt> for the
 reference, the value of <tt><font color="#387A38">«energy shift»</font></tt> for the data changes
@@ -113,8 +112,8 @@ together as data and reference, then selecting <span class="menuselection">Group
 ‣ Tie reference channel</span>.</p>
 <div class="admonition-todo admonition" id="index-0">
 <p class="first admonition-title">Todo</p>
-<p class="last"><font size=-1 color="#033B0A">ATHENA</font> is missing the ability to tie together
-three or more data groups in a reference relationship -- that would
+<p class="last"><font size=-1 color="#8C4112">ATHENA</font> is missing the ability to tie together
+three or more data groups in a reference relationship – that would
 be useful for multi-element detector data and some other
 situations.</p>
 </div>
@@ -123,10 +122,10 @@ situations.</p>
 
 <br>
 <hr class="docutils" />
-<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
-copyright © 2015 Bruce Ravel</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
 <p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
-<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
 consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
 </div>
 
@@ -151,27 +150,33 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l2"><a class="reference internal" href="preproc.html">3.5. Preprocessing data</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and background removal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
-<h3>Links</h3>
+<h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -203,11 +208,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
           <a href="preproc.html" title="3.5. Preprocessing data"
-             >next</a> |</li>
+             >next</a></li>
         <li class="right" >
           <a href="multiple.html" title="3.3. Multiple data set import"
              >previous</a> |</li>
@@ -216,7 +218,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

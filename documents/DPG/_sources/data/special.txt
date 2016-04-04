@@ -17,14 +17,15 @@ quick and easy to write.
 Filetype plugins
 ----------------
 
-NSLS beamline X15B uses an antiquated data acquisition system which
-saves data in a quirky binary format. One of the plugins for file type
-conversion that ships with :demeter:`demeter` knows how to interpret
-this quirky format. Here is how data from that beamline are imported
-into a :demeter:`demeter` program:
+Beamline X15B from the old NSLS used an antiquated data acquisition
+system which saves data in a quirky binary format.  One of the plugins
+for file type conversion that ships with :demeter:`demeter` knows how
+to interpret this quirky format by unpacking the byte sequences stored
+in the file.  Here is how data from that beamline are imported into a
+:demeter:`demeter` program:
 
 .. code-block:: perl
-
+   :linenos:
 
     #!/usr/bin/perl
     use Demeter;
@@ -93,12 +94,14 @@ This is an incomplete list.
 
 **PFBL12C**
     Convert files from Photon Factory XAS beamlines. These files have
-    headers which will confuse :demeter:`ifeffit`'s file import and store data as a
-    function of monochromator angle. This plugin comments the header and
-    converts mono angle to energy using information about the crystal
-    type contained in the header. The plugin name makes specific
-    reference to beamline 12C for historical reasons. It will actually
-    work on XAS data from any Photon Factory beamline.
+    headers which will confuse :demeter:`ifeffit`'s file import and
+    store data as a function of monochromator angle. This plugin
+    comments the header and converts mono angle to energy using
+    information about the crystal type contained in the header. The
+    plugin name makes specific reference to beamline 12C for
+    historical reasons. It will actually work on XAS data from any
+    Photon Factory beamline. This plugin was written with help from 上
+    村洋平 (Yohéi Uemura).
 
 **SSRLB**
     Convert SSRL binary data file. Yes, SSRL does provide a program for
@@ -157,6 +160,7 @@ This is an incomplete list.
     monochromator angle into from millidegrees to energy and (as needed)
     disentangles the confusing layout of data from the multi-element
     detector, writing out a file that can easily be imported by Athena.
+    This plugin was written with help from Qingping Wu and Eric Breynaert.
 
 **Lytle**
     Import files from the Lytle database. This plugin imports those data

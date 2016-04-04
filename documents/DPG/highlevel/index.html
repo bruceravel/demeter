@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5. High level actions of the object model &mdash; Demeter Programming Guide 0.9.24 documentation</title>
+    <title>4. High level actions of the object model &mdash; Demeter Programming Guide 0.9.24 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -25,8 +25,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
     <link rel="top" title="Demeter Programming Guide 0.9.24 documentation" href="../index.html" />
-    <link rel="next" title="5.1. Command disposal and command templates" href="dispose.html" />
-    <link rel="prev" title="4.4. Difference spectra" href="../xanes/diff.html" />
+    <link rel="next" title="4.1. Command disposal and command templates" href="dispose.html" />
+    <link rel="prev" title="3.10. Processing dispersive XAS data" href="../mue/dispersive.html" />
 
     <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
@@ -38,10 +38,10 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="dispose.html" title="5.1. Command disposal and command templates"
+          <a href="dispose.html" title="4.1. Command disposal and command templates"
              accesskey="N">next</a></li>
         <li class="right" >
-          <a href="../xanes/diff.html" title="4.4. Difference spectra"
+          <a href="../mue/dispersive.html" title="3.10. Processing dispersive XAS data"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li> 
       </ul>
@@ -53,29 +53,29 @@
           <div class="body" role="main">
             
   <div class="section" id="high-level-actions-of-the-object-model">
-<h1>5. High level actions of the object model<a class="headerlink" href="#high-level-actions-of-the-object-model" title="Permalink to this headline">¶</a></h1>
+<h1>4. High level actions of the object model<a class="headerlink" href="#high-level-actions-of-the-object-model" title="Permalink to this headline">¶</a></h1>
 <p>All <font size=-1 color="#8C4112">DEMETER</font> objects inherit from the base Demeter
 class. This class defines a variety of methods that are then inherited
-by all other objects. At the end of this chapter, you will understand
+by all other objects.  At the end of this chapter, you will understand
 how <font size=-1 color="#8C4112">DEMETER</font> command and template system works to generate
-command for <font size=-1 color="#8C4112">IFEFFIT</font> and for plotting. This chapter also
+command for <font size=-1 color="#8C4112">IFEFFIT</font> and for plotting.  This chapter also
 covers the three special object types, Demeter::Mode, Demeter::Plot,
 and Demeter::Config, which together provide fine grained control over
 virtually all aspects of what <font size=-1 color="#8C4112">DEMETER</font> programs can
 accomplish.</p>
 <p>Both the Mode and Config objects are singletons, which means that any
 instance of a <font size=-1 color="#8C4112">DEMETER</font> program can have one and only
-instance of Mode or Config object. The Plot object is not a singleton,
+instance of Mode or Config object.  The Plot object is not a singleton,
 but it is unusual to need or want a second instance of a Plot object.</p>
 <p>Each of these special objects has an associated method of the base class
-used for accessing the object. They are demonstrated here:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="k">my</span> <span class="nv">$mode_object</span>   <span class="o">=</span> <span class="nv">$object</span> <span class="o">-&gt;</span> <span class="n">mo</span><span class="p">;</span>
+used for accessing the object.  They are demonstrated here:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="k">my</span> <span class="nv">$mode_object</span>   <span class="o">=</span> <span class="nv">$object</span> <span class="o">-&gt;</span> <span class="n">mo</span><span class="p">;</span>
 <span class="k">my</span> <span class="nv">$plot_object</span>   <span class="o">=</span> <span class="nv">$object</span> <span class="o">-&gt;</span> <span class="n">po</span><span class="p">;</span>
 <span class="k">my</span> <span class="nv">$config_object</span> <span class="o">=</span> <span class="nv">$object</span> <span class="o">-&gt;</span> <span class="n">co</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>In this example, <code class="docutils literal"><span class="pre">$object</span></code> can be any <font size=-1 color="#8C4112">DEMETER</font>
-object. Every object type inherits these three methods, each of which
+object.  Every object type inherits these three methods, each of which
 returns its object.  That is, <code class="docutils literal"><span class="pre">mo</span></code> returns the Mode object, <code class="docutils literal"><span class="pre">co</span></code>
 returns the Config object, and <code class="docutils literal"><span class="pre">po</span></code> returns the currently active
 Plot object.</p>
@@ -86,29 +86,29 @@ at that point in your program.</p>
 <p><strong>Contents</strong></p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="dispose.html">5.1. Command disposal and command templates</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dispose.html#command-disposal">5.1.1. Command disposal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dispose.html#reprocessed-commands">5.1.2. Reprocessed commands</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dispose.html#command-templates">5.1.3. Command templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dispose.html">4.1. Command disposal and command templates</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dispose.html#command-disposal">4.1.1. Command disposal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispose.html#reprocessed-commands">4.1.2. Reprocessed commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispose.html#command-templates">4.1.3. Command templates</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="mode.html">5.2. Mode object</a></li>
-<li class="toctree-l1"><a class="reference internal" href="plot.html">5.3. Plot object</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="plot.html#plotting-in-energy">5.3.1. Plotting in energy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html#plotting-in-k">5.3.2. Plotting in k</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html#plotting-in-r">5.3.3. Plotting in R</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html#plotting-in-q">5.3.4. Plotting in q</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mode.html">4.2. Mode object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">4.3. Plot object</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#plotting-in-energy">4.3.1. Plotting in energy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#plotting-in-k">4.3.2. Plotting in k</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#plotting-in-r">4.3.3. Plotting in R</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#plotting-in-q">4.3.4. Plotting in q</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="config.html">5.4. Config object</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="config.html#the-configuration-file-format">5.4.1. The configuration file format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="config.html#user-defined-configuration-files">5.4.2. User-defined configuration files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="config.html#using-and-resetting-configuration-parameters">5.4.3. Using and resetting configuration parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="config.html#the-config-object-and-the-templating-system">5.4.4. The Config object and the templating system</a></li>
-<li class="toctree-l2"><a class="reference internal" href="config.html#wxwidgets-and-the-configuration-system">5.4.5. WxWidgets and the configuration system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">4.4. Config object</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="config.html#the-configuration-file-format">4.4.1. The configuration file format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#user-defined-configuration-files">4.4.2. User-defined configuration files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#using-and-resetting-configuration-parameters">4.4.3. Using and resetting configuration parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#the-config-object-and-the-templating-system">4.4.4. The Config object and the templating system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#wxwidgets-and-the-configuration-system">4.4.5. WxWidgets and the configuration system</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="methods.html">5.5. Other high level object methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methods.html">4.5. Other high level object methods</a></li>
 </ul>
 </div>
 
@@ -137,15 +137,15 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">5. High level actions of the object model</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dispose.html">5.1. Command disposal and command templates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mode.html">5.2. Mode object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html">5.3. Plot object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="config.html">5.4. Config object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="methods.html">5.5. Other high level object methods</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">4. High level actions of the object model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dispose.html">4.1. Command disposal and command templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mode.html">4.2. Mode object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html">4.3. Plot object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html">4.4. Config object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="methods.html">4.5. Other high level object methods</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
@@ -153,6 +153,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
@@ -160,14 +164,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -199,10 +205,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="dispose.html" title="5.1. Command disposal and command templates"
+          <a href="dispose.html" title="4.1. Command disposal and command templates"
              >next</a></li>
         <li class="right" >
-          <a href="../xanes/diff.html" title="4.4. Difference spectra"
+          <a href="../mue/dispersive.html" title="3.10. Processing dispersive XAS data"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li> 
       </ul>

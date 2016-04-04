@@ -29,7 +29,7 @@
     <link rel="next" title="9.6. Smoothing data" href="smooth.html" />
     <link rel="prev" title="9.4. Rebinning data groups" href="rebin.html" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
     <link rel="stylesheet" type="text/css" href="../_static/program.css" />
 
@@ -39,11 +39,8 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
           <a href="smooth.html" title="9.6. Smoothing data"
-             accesskey="N">next</a> |</li>
+             accesskey="N">next</a></li>
         <li class="right" >
           <a href="rebin.html" title="9.4. Rebinning data groups"
              accesskey="P">previous</a> |</li>
@@ -76,10 +73,10 @@ the presentation of your data.</p>
 <p>The process by which glitchy points are removed from the data is called
 deglitching. Yes, I also think that's a funny sounding word.</p>
 <div class="figure align-center" id="id1">
-<span id="fig-deglitch"></span><a class="reference external image-reference" href="../../_images/deglitch.png"><img alt="../_images/deglitch.png" src="../_images/deglitch.png" style="width: 65%;" /></a>
+<span id="fig-deglitch"></span><a class="reference external image-reference" href="../../_images/deglitch.png"><img alt="../_images/deglitch.png" src="../_images/deglitch.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 9.10 </span><span class="caption-text">The deglitching tool.</span></p>
 </div>
-<p><font size=-1 color="#033B0A">ATHENA</font>'s approach to deglitching involves simply removing
+<p><font size=-1 color="#8C4112">ATHENA</font>'s approach to deglitching involves simply removing
 the points from the data. No effort is made to interpolate from the
 surrounding points in an effort to replace that point with a
 presumably more appropriate value. The reason that no interpolation is
@@ -89,16 +86,17 @@ part of the background removal, the data are rebinned onto the
 standard k-grid. Since a rebinning is performed later in the data
 processing, there is no reason to interpolate at the time of
 deglitching.</p>
-<p>Deglitching only removes points from the data in <font size=-1 color="#033B0A">ATHENA</font>'s
+<p>Deglitching only removes points from the data in <font size=-1 color="#8C4112">ATHENA</font>'s
 memory. The data on disk are never altered.</p>
-<p>There are two methods of deglitching offered by <font size=-1 color="#033B0A">ATHENA</font>'s
+<p>There are two methods of deglitching offered by <font size=-1 color="#8C4112">ATHENA</font>'s
 deglitching tool, shown above. The first involves selecting and
 removing the glitches one by one. The points are selected by clicking
-the <kbd class="light">Choose a point</kbd> button then clicking on the glitch in
-the plot. After clicking on the plot window, the selected point is
-indicated with an orange circle, as on the left of the next
-figure. Clicking the <kbd class="light">Remove point</kbd> button removes that
-point from the data, shown in the bottom panel.</p>
+the <kbd class="light">Choose a point</kbd> button then <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a>
+double-clicking on the glitch in the plot. After <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a>
+double-clicking on the plot
+window, the selected point is indicated with an orange circle, as on
+the left of the next figure. Clicking the <kbd class="light">Remove point</kbd>
+button removes that point from the data, shown in the bottom panel.</p>
 <div class="figure compound align-center" id="_fig-deglicthpoints">
 <div style="width: 45%" class="subfigure" id="id2">
 <span id="fig-degplot"></span><a class="reference external image-reference" href="../_images/deglitch_plot.png"><img alt="../_images/deglitch_plot.png" src="../_images/deglitch_plot.png" style="width: 100%;" /></a>
@@ -161,19 +159,20 @@ identical to how it used with μ(E) data. The advantage is that
 small glitches might be easier to see and to pluck from the data when
 the data is plotted as χ(E). The point-by-point deglitching
 algorithm works on the χ(E) data in the same manner as for
-μ(E) data. Points are selected by clicking on the plot, then
-removed by clicking the <kbd class="light">Remove point</kbd> button.</p>
+μ(E) data. Points are selected by <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a>
+double-clicking on the plot, then removed by clicking the
+<kbd class="light">Remove point</kbd> button.</p>
 </div>
 <div class="section" id="truncation">
 <h2>9.5.2. Truncation<a class="headerlink" href="#truncation" title="Permalink to this headline">¶</a></h2>
 <p>If your data does something odd at one end of the scan, the easiest
 solution might be to simply trim it away. The truncation tool allows you
 to chop data before or after a selected value.</p>
-<p>The radiobox is used to tell <font size=-1 color="#033B0A">ATHENA</font> whether points should
+<p>The radiobox is used to tell <font size=-1 color="#8C4112">ATHENA</font> whether points should
 be trimmed from before or after the selected point. The point can be
 chosen by typing in the box or by using <a class="reference external" href="../ui/pluck.html">the pluck button</a>.</p>
 <div class="figure align-center" id="id8">
-<span id="fig-trunplot"></span><a class="reference external image-reference" href="../_images/truncate_plot.png"><img alt="../_images/truncate_plot.png" src="../_images/truncate_plot.png" style="width: 45%;" /></a>
+<span id="fig-trunplot"></span><a class="reference external image-reference" href="../_images/truncate_plot.png"><img alt="../_images/truncate_plot.png" src="../_images/truncate_plot.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 9.17 </span><span class="caption-text">Tin oxide data with some spurious points near the end of the scan.</span></p>
 </div>
 <p>When you select a point, it is indicated with a vertical line, as shown
@@ -186,7 +185,7 @@ example is shown in the next plot, the Ti K edge is at 4966 eV and the
 Ba L<sub>III</sub> edge is at 5247 eV. A careless choice of spline and
 normalization range will lead to a data processing disaster.</p>
 <div class="figure align-center" id="id9">
-<span id="fig-trunbto"></span><a class="reference external image-reference" href="../_images/truncate_batio3.png"><img alt="../_images/truncate_batio3.png" src="../_images/truncate_batio3.png" style="width: 45%;" /></a>
+<span id="fig-trunbto"></span><a class="reference external image-reference" href="../_images/truncate_batio3.png"><img alt="../_images/truncate_batio3.png" src="../_images/truncate_batio3.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 9.18 </span><span class="caption-text">The Ti K and Ba L<sub>III</sub> edges of BaTiO<sub>3</sub>.</span></p>
 </div>
 <p>Of course, truncation is not the only way of dealing with this issue. A
@@ -201,10 +200,10 @@ approach.</p>
 
 <br>
 <hr class="docutils" />
-<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
-copyright © 2015 Bruce Ravel</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
 <p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
-<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
 consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
 </div>
 </div>
@@ -223,10 +222,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and background removal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">9. Data processing</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="cal.html">9.1. Calibrating data groups</a></li>
@@ -244,21 +243,27 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l2"><a class="reference internal" href="sum.html">9.13. Data summation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
-<h3>Links</h3>
+<h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -290,11 +295,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
           <a href="smooth.html" title="9.6. Smoothing data"
-             >next</a> |</li>
+             >next</a></li>
         <li class="right" >
           <a href="rebin.html" title="9.4. Rebinning data groups"
              >previous</a> |</li>
@@ -303,7 +305,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

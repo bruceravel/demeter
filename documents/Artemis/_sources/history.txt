@@ -24,17 +24,19 @@ Interactions with the fit history are via the History window, which is
 shown and hidden using the :button:`History,light` button on the left
 side of the Main window.
 
-The History window shows two major controls. On the left is a list all
-fits performed as part of the fitting prject. Like many other lists in
-:demeter:`artemis`, this contains elements that can be selected and
-marked. This list uses multiple selection, so control-clicking can be
-used to add to the selection and shift-clicking can be used to select
-groups of fits.  Much of the analysis discussed below uses the
-selection. Some functionality uses the set of marked fits.
+The History window shows two major controls.  On the left is a list
+all fits performed as part of the fitting project.  Like many other
+lists in :demeter:`artemis`, this contains elements that can be
+selected and marked. This list uses multiple selection, so
+:button:`Control`-:mark:`leftclick,.` clicking can be used to add to
+the selection and :button:`Shift`-:mark:`leftclick,.` clicking can be
+used to select groups of fits.  Much of the analysis discussed below
+uses the selection. Some functionality uses the set of marked fits.
 
 On the right is a notebook. The first tab is for displaying the log
-files from old fits. The log file displayed when the most recent fit is
-clicked upon is identical to the log file displayed in the Log window.
+files from old fits. The log file displayed when the most recent fit
+is :mark:`leftclick,.` clicked upon is identical to the log file
+displayed in the Log window.
 
 You may find that there is a short pause between clicking on a fit and
 seeing its log file displayed. When importing a project file,
@@ -49,10 +51,10 @@ small cost of a pause when examining log files.
 
    The history context menu
 
-Each fit in the list will display a context menu when right
-clicked. Again, there may be a short pause before the menu gets
-posted. In that menu are a variety of functions related to the fit
-history.
+Each fit in the list will display a context menu when
+:mark:`rightclick,.` right clicked.  Again, there may be a short pause
+before the menu gets posted.  In that menu are a variety of functions
+related to the fit history.
 
 :guilabel:`Restore fitting model`
     An prior fitting model can be restored. This will clear all of
@@ -76,10 +78,10 @@ Reports on fits
 ---------------
 
 The second tab is used to analyze groups of fits. In the example shown
-above, the progression of |chi|\ :sup:`2`\ :sub:`v` values throughout
-the development of the fitting model is shown both as a textual report
-and as a plot.  Similar plots can be made for individual parameter
-values.
+in :numref:`Fig. %s <fig-historyreportplot>`, the progression of
+|chi|\ :sup:`2`\ :sub:`v` values throughout the development of the
+fitting model is shown both as a textual report and as a plot.
+Similar plots can be made for individual parameter values.
 
 .. subfigstart::
 
@@ -119,10 +121,10 @@ menu or clicking the :button:`Write report,light` button will generate
 a new report and its plot.
 
 For statistics, all of |chi|\ :sup:`2`, |chi|\ :sup:`2`\ :sub:`v`,
-R-factor, and the happiness are reported. You can choose which of
+R-factor, and the happiness are reported.  You can choose which of
 |chi|\ :sup:`2`\ :sub:`v`, R-factor, and happiness to have displayed
-in the resulting plot. Clicking the :guilabel:`Show y=0` button forces
-the plot to be scaled of the y-axis such that y=0 is shown.
+in the resulting plot.  Clicking the :guilabel:`Show y=0` button
+forces the plot to be scaled of the y-axis such that y=0 is shown.
 
 Buttons at the bottom of this tab allow you to save the report as a text
 file or to send it to the printer.

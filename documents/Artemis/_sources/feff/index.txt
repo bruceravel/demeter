@@ -53,11 +53,12 @@ The toolbar across the top of the :demeter:`atoms` tab offers several
 functions.
 
 Clicking the open button will post the standard file selection dialog
-for importing a new atoms.inp or CIF file. This is more useful in the
+for importing a new atoms.inp or CIF file.  This is more useful in the
 stand-along version of :demeter:`atoms` than in :demeter:`artemis`
-where the crystal data file imported in other ways. *Right clicking*
-this button will post the recent files dialog populated with recently
-imported :file:`atoms.inp`, :file:`feff.inp`, and CIF files.
+where the crystal data file imported in other ways.
+:mark:`rightclick,..` *Right clicking* this button will post the
+recent files dialog populated with recently imported
+:file:`atoms.inp`, :file:`feff.inp`, and CIF files.
 
 .. _fig-feffexport:
 .. figure:: ../../_images/feff-export.png

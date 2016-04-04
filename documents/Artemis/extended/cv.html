@@ -78,15 +78,15 @@ allows you to parameterize the σ<sup>2</sup> at each temperature
 as a function of a single variable parameter, the Einstein
 temperature. To do this, you must define a <span class="guess">guess</span> parameter to
 represent the Einstein temperature like so:</p>
-<div class="highlight-python"><div class="highlight"><pre>guess thetae = 500
+<div class="highlight-python"><div class="highlight"><pre><span></span>guess thetae = 500
 </pre></div>
 </div>
 <p>The functional form of the Einstein model takes the variable Einstein
 temperature and the sample's measurement temperature as its arguments.</p>
 <ul class="simple" id="bibtex-bibliography-extended/cv-0">
-<li>E.&nbsp;Sevillano, H.&nbsp;Meuth, and J.&nbsp;J. Rehr. Extended x-ray absorption fine structure Debye-Waller factors. I. Monatomic crystals. <em>Phys. Rev. B</em>, 20:4908–4911, Dec 1979. <a class="reference external" href="http://dx.doi.org/10.1103/PhysRevB.20.4908">doi:10.1103/PhysRevB.20.4908</a>.</li>
+<li>E.&nbsp;Sevillano, H.&nbsp;Meuth, and J.&nbsp;J. Rehr. Extended x-ray absorption fine structure Debye-Waller factors. I. Monatomic crystals. <em>Phys. Rev. B</em>, 20:4908–4911, Dec 1979. <a class="reference external" href="https://doi.org/10.1103/PhysRevB.20.4908">doi:10.1103/PhysRevB.20.4908</a>.</li>
 </ul>
-<div class="highlight-python"><div class="highlight"><pre>path {
+<div class="highlight-python"><div class="highlight"><pre><span></span>path {
        sigma2 = eins(temp, thetae)
 }
 </pre></div>
@@ -97,7 +97,7 @@ on a <a class="reference external" href="../path/index.html">the Path page</a>.<
 <p>In a multiple data set fit, you would have to take care that <code class="docutils literal"><span class="pre">temp</span></code> is
 replaced each time it is used. That could be done in two ways. You could
 use various <span class="set">set</span> parameters:</p>
-<div class="highlight-python"><div class="highlight"><pre>set temp1 = 10
+<div class="highlight-python"><div class="highlight"><pre><span></span>set temp1 = 10
 set temp2 = 300
 set temp3 = 500
 
@@ -114,7 +114,7 @@ path for data set 3 {
 </div>
 <p>Or you could simply state the temperature explicitly in the path
 parameter math expressions:</p>
-<div class="highlight-python"><div class="highlight"><pre>path for data set 1 {
+<div class="highlight-python"><div class="highlight"><pre><span></span>path for data set 1 {
        sigma2 = eins(10,  thetae)
 }
 path for data set 2 {
@@ -143,7 +143,7 @@ values of 10, 300, and 500.</p>
 </li>
 <li><p class="first">Next, edit the σ<sup>2</sup> path parameter for one of the data
 sets to read</p>
-<div class="highlight-python"><div class="highlight"><pre>path for data set 1 {
+<div class="highlight-python"><div class="highlight"><pre><span></span>path for data set 1 {
        sigma2 = eins([CV],  thetae)
 }
 </pre></div>
@@ -177,7 +177,7 @@ path parameter math expressions between data sets.</p>
 temparatures. This time, however, we choose to float an independent σ²
 parameter at each temperature.</p>
 <p>The straightforward way of doing this would be something like</p>
-<div class="highlight-python"><div class="highlight"><pre>guess ss1 = 0.002
+<div class="highlight-python"><div class="highlight"><pre><span></span>guess ss1 = 0.002
 guess ss2 = 0.004
 guess ss3 = 0.006
 
@@ -195,7 +195,7 @@ path for data set 3 {
 <p>Here is how this can be done using the CV and an <span class="lguess">lguess</span>
 parameter.  First, set the CV values to the temperature values, as
 before. Next, do the following:</p>
-<div class="highlight-python"><div class="highlight"><pre>lguess ss = 0.002
+<div class="highlight-python"><div class="highlight"><pre><span></span>lguess ss = 0.002
 
 path for data set 1 {
        sigma2 = ss
@@ -284,14 +284,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -333,7 +335,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

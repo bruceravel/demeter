@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7. Setting parameters in ATHENA &mdash; Athena 0.9.24 documentation</title>
+    <title>7. Setting parameters &mdash; Athena 0.9.24 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -26,9 +26,9 @@
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
     <link rel="top" title="Athena 0.9.24 documentation" href="../index.html" />
     <link rel="next" title="7.1. Constraining parameters between data groups" href="constrain.html" />
-    <link rel="prev" title="6.6. Frozen groups" href="../ui/frozen.html" />
+    <link rel="prev" title="6.7. The Monitor menu" href="../ui/monitor.html" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
     <link rel="stylesheet" type="text/css" href="../_static/program.css" />
 
@@ -38,13 +38,10 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
           <a href="constrain.html" title="7.1. Constraining parameters between data groups"
-             accesskey="N">next</a> |</li>
+             accesskey="N">next</a></li>
         <li class="right" >
-          <a href="../ui/frozen.html" title="6.6. Frozen groups"
+          <a href="../ui/monitor.html" title="6.7. The Monitor menu"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li> 
       </ul>
@@ -55,21 +52,22 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="setting-parameters-in-athena">
-<h1>7. Setting parameters in ATHENA<a class="headerlink" href="#setting-parameters-in-athena" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="setting-parameters">
+<h1>7. Setting parameters<a class="headerlink" href="#setting-parameters" title="Permalink to this headline">¶</a></h1>
 <p>The interface for setting parameter values in the main window is quite
 straight forward. For most parameters, you simply type values into the
 appropriate text entry box. For others, you select a value from a
 menu.  That's all fine and dandy, but imagine the situation where you
-have several dozen data groups imported into <font size=-1 color="#033B0A">ATHENA</font> and you
+have several dozen data groups imported into <font size=-1 color="#8C4112">ATHENA</font> and you
 decide that you need to change the value of the <tt><font color="#387A38">«rbkg»</font></tt> parameter for
 every group. It would be extremely tedious to manually change the
 parameter value for each data group one by one. Fortunately there is a
 better way.</p>
-<p>In this chapter, we will see the various tools <font size=-1 color="#033B0A">ATHENA</font>
+<p>In this chapter, we will see the various tools <font size=-1 color="#8C4112">ATHENA</font>
 provides for constraining parameter values across data groups. We will
 also look in detail at how the <tt><font color="#387A38">«e0»</font></tt> parameter is determined
 and how parameter defaults are set.</p>
+<hr class="docutils" />
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="constrain.html">7.1. Constraining parameters between data groups</a><ul>
@@ -78,10 +76,7 @@ and how parameter defaults are set.</p>
 <li class="toctree-l2"><a class="reference internal" href="constrain.html#constraining-all-parameters">7.1.3. Constraining all parameters</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="e0.html">7.2. Setting E0</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="e0.html#other-ways-of-setting-e0">7.2.1. Other ways of setting e0</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="e0.html">7.2. Setting E0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="defaults.html">7.3. Default parameter values</a></li>
 </ul>
 </div>
@@ -90,10 +85,10 @@ and how parameter defaults are set.</p>
 
 <br>
 <hr class="docutils" />
-<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
-copyright © 2015 Bruce Ravel</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
 <p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
-<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
 consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
 </div>
 
@@ -111,10 +106,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">7. Setting parameters in ATHENA</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and background removal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. User Interface</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">7. Setting parameters</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="constrain.html">7.1. Constraining parameters between data groups</a></li>
 <li class="toctree-l2"><a class="reference internal" href="e0.html">7.2. Setting E0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="defaults.html">7.3. Default parameter values</a></li>
@@ -122,21 +117,27 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">12. Worked examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
-<h3>Links</h3>
+<h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -168,19 +169,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
           <a href="constrain.html" title="7.1. Constraining parameters between data groups"
-             >next</a> |</li>
+             >next</a></li>
         <li class="right" >
-          <a href="../ui/frozen.html" title="6.6. Frozen groups"
+          <a href="../ui/monitor.html" title="6.7. The Monitor menu"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

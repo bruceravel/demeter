@@ -64,23 +64,33 @@ that <font size=-1 color="#8C4112">IFEFFIT</font> can handle. Plugins are small 
 quick and easy to write.</p>
 <div class="section" id="filetype-plugins">
 <h2>2.6.1. Filetype plugins<a class="headerlink" href="#filetype-plugins" title="Permalink to this headline">¶</a></h2>
-<p>NSLS beamline X15B uses an antiquated data acquisition system which
-saves data in a quirky binary format. One of the plugins for file type
-conversion that ships with <font size=-1 color="#8C4112">DEMETER</font> knows how to interpret
-this quirky format. Here is how data from that beamline are imported
-into a <font size=-1 color="#8C4112">DEMETER</font> program:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span class="c1">#!/usr/bin/perl</span>
-<span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+<p>Beamline X15B from the old NSLS used an antiquated data acquisition
+system which saves data in a quirky binary format.  One of the plugins
+for file type conversion that ships with <font size=-1 color="#8C4112">DEMETER</font> knows how
+to interpret this quirky format by unpacking the byte sequences stored
+in the file.  Here is how data from that beamline are imported into a
+<font size=-1 color="#8C4112">DEMETER</font> program:</p>
+<div class="highlight-perl"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
+ <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
 
-<span class="k">my</span> <span class="nv">$filetype</span> <span class="o">=</span> <span class="nn">Demeter::Plugins::</span><span class="n">X15B</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span><span class="o">=&gt;</span><span class="s">&#39;file_from_x15b.001&#39;</span><span class="p">);</span>
-<span class="k">if</span> <span class="p">(</span><span class="nv">$filetype</span><span class="o">-&gt;</span><span class="n">is</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">my</span> <span class="nv">$converted</span> <span class="o">=</span> <span class="nv">$filetype</span><span class="o">-&gt;</span><span class="n">fix</span><span class="p">;</span>
-    <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="nv">$converted</span><span class="p">,</span>
-                                  <span class="nv">$filetype</span> <span class="o">-&gt;</span> <span class="n">suggest</span><span class="p">(</span><span class="s">&quot;fluorescence&quot;</span><span class="p">)</span>
-                                 <span class="p">);</span>
-<span class="p">};</span>
+ <span class="k">my</span> <span class="nv">$filetype</span> <span class="o">=</span> <span class="nn">Demeter::Plugins::</span><span class="n">X15B</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span><span class="o">=&gt;</span><span class="s">&#39;file_from_x15b.001&#39;</span><span class="p">);</span>
+ <span class="k">if</span> <span class="p">(</span><span class="nv">$filetype</span><span class="o">-&gt;</span><span class="n">is</span><span class="p">)</span> <span class="p">{</span>
+     <span class="k">my</span> <span class="nv">$converted</span> <span class="o">=</span> <span class="nv">$filetype</span><span class="o">-&gt;</span><span class="n">fix</span><span class="p">;</span>
+     <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="nv">$converted</span><span class="p">,</span>
+                                   <span class="nv">$filetype</span> <span class="o">-&gt;</span> <span class="n">suggest</span><span class="p">(</span><span class="s">&quot;fluorescence&quot;</span><span class="p">)</span>
+                                  <span class="p">);</span>
+ <span class="p">};</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 <p>At line 4, a new Plugin object is made and pointed at the problematic
 file.  At line 4, a check is made to verify that the file actually is
 of the X15B type. When recognized as such, the problematic file is
@@ -132,12 +142,14 @@ file, saving only the scalars containing the XAS-relevant
 measurement channels.</dd>
 <dt><strong>PFBL12C</strong></dt>
 <dd>Convert files from Photon Factory XAS beamlines. These files have
-headers which will confuse <font size=-1 color="#8C4112">IFEFFIT</font>'s file import and store data as a
-function of monochromator angle. This plugin comments the header and
-converts mono angle to energy using information about the crystal
-type contained in the header. The plugin name makes specific
-reference to beamline 12C for historical reasons. It will actually
-work on XAS data from any Photon Factory beamline.</dd>
+headers which will confuse <font size=-1 color="#8C4112">IFEFFIT</font>'s file import and
+store data as a function of monochromator angle. This plugin
+comments the header and converts mono angle to energy using
+information about the crystal type contained in the header. The
+plugin name makes specific reference to beamline 12C for
+historical reasons. It will actually work on XAS data from any
+Photon Factory beamline. This plugin was written with help from 上
+村洋平 (Yohéi Uemura).</dd>
 <dt><strong>SSRLB</strong></dt>
 <dd>Convert SSRL binary data file. Yes, SSRL does provide a program for
 converting these binary files to column ASCII data. This plugin does
@@ -180,14 +192,15 @@ for each corrected detector channel as well as columns for the
 various ion chambers. This is an example of a file type plugin which
 uses <font size=-1 color="#8C4112">IFEFFIT</font> dirrectly.</p>
 <ul class="last simple" id="bibtex-bibliography-data/special-0">
-<li>J.&nbsp;C. Woicik, B.&nbsp;Ravel, D.&nbsp;A. Fischer, and W.&nbsp;J. Newburgh. Performance of a four-element Si drift detector for X-ray absorption fine-structure spectroscopy: resolution, maximum count rate, and dead-time correction with incorporation into the \textsc athena data analysis software. <em>Journal Of Synchrotron Radiation</em>, 17:409–413, 2010. <a class="reference external" href="http://dx.doi.org/10.1107/S0909049510009064">doi:10.1107/S0909049510009064</a>.</li>
+<li>J.&nbsp;C. Woicik, B.&nbsp;Ravel, D.&nbsp;A. Fischer, and W.&nbsp;J. Newburgh. Performance of a four-element Si drift detector for X-ray absorption fine-structure spectroscopy: resolution, maximum count rate, and dead-time correction with incorporation into the Athena data analysis software. <em>Journal Of Synchrotron Radiation</em>, 17:409–413, 2010. <a class="reference external" href="https://doi.org/10.1107/S0909049510009064">doi:10.1107/S0909049510009064</a>.</li>
 </ul>
 </dd>
 <dt><strong>DUBBLE</strong></dt>
 <dd>Files from the DUBBLE beamline (BM26) at ESRF. This plugin converts
 monochromator angle into from millidegrees to energy and (as needed)
 disentangles the confusing layout of data from the multi-element
-detector, writing out a file that can easily be imported by Athena.</dd>
+detector, writing out a file that can easily be imported by Athena.
+This plugin was written with help from Qingping Wu and Eric Breynaert.</dd>
 <dt><strong>Lytle</strong></dt>
 <dd>Import files from the Lytle database. This plugin imports those data
 that are recorded by encoder value and which have headers that start
@@ -234,8 +247,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
@@ -243,6 +256,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
@@ -250,14 +267,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 

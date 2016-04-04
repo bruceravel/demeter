@@ -1,3 +1,8 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
+
 
 Copy series
 ===========
@@ -14,25 +19,22 @@ current data group with the examined parameter set incrementally. The
 set of copied groups are marked and plotted in the space most
 appropriate for the examined parameter.
 
-For parameters, line the pre- and post-edge line parameter, which affect
-the edge step, the average edge step value and its standard devaition
-are calculated and displayed in the text control that is nortmally
-disabled.
+For parameters, line the pre- and post-edge line parameter, which
+affect the edge step, the average edge step value and its standard
+deviation are calculated and displayed in the text control that is
+nortmally disabled.
 
 .. _fig-series:
-
 .. figure:: ../../_images/series.png
    :target: ../_images/series.png
-   :width: 65%
    :align: center
 
    The copy series tool.
 
 .. _fig-seriesplot:
-
 .. figure:: ../../_images/series_plot.png
    :target: ../_images/series_plot.png
-   :width: 45%
    :align: center
 
-   The plot made from the series of :procparam:`Rbkg` values with the Fe foil data.
+   The plot made from the series of :procparam:`Rbkg` values with the
+   Fe foil data.

@@ -1,0 +1,619 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>16.3. Uranyl ion in solution &mdash; Demeter Programming Guide 0.9.24 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.24',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Demeter Programming Guide 0.9.24 documentation" href="../index.html" />
+    <link rel="up" title="16. Full examples" href="index.html" />
+    <link rel="next" title="16.4. Histogram" href="histo.html" />
+    <link rel="prev" title="16.2. Silver/gold alloy" href="agau.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="histo.html" title="16.4. Histogram"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="agau.html" title="16.2. Silver/gold alloy"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">16. Full examples</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="uranyl-ion-in-solution">
+<h1>16.3. Uranyl ion in solution<a class="headerlink" href="#uranyl-ion-in-solution" title="Permalink to this headline">¶</a></h1>
+<p>Topics demonstrated:</p>
+<ul class="simple">
+<li>fuzzy degeneracy</li>
+<li>virtual paths</li>
+<li>arbitrary single scattering paths</li>
+</ul>
+<p>In this experiment, the control sample was a buffered solution with a
+dissolved uranyl acetate. Following the example of S. Kelly, et al., I
+will use a crystalline analogue of the solvated moiety as my starting
+point for the Feff calculation.</p>
+<ul class="simple" id="bibtex-bibliography-examples/uranyl-0">
+<li>S.&nbsp;D. Kelly, K.&nbsp;M. Kemner, J.&nbsp;B. Fein, D.&nbsp;A. Fowle, M.&nbsp;I. Boyanov, B.&nbsp;A. Bunker, and N.&nbsp;Yee. X-ray absorption fine structure determination of pH-dependent U-bacterial cell wall interactions. <em>Geochimica et Cosmochimica Acta</em>, 66(22):3855 – 3871, 2002. <a class="reference external" href="https://doi.org/10.1016/S0016-7037(02)00947-X">doi:10.1016/S0016-7037(02)00947-X</a>.</li>
+<li>B.&nbsp;Ravel, C.&nbsp;Scorzato, D.&nbsp;P. Siddons, S.&nbsp;D. Kelly, and S.&nbsp;R. Bare. Simultaneous XAFS measurements of multiple samples. <em>Journal of Synchrotron Radiation</em>, 17(3):380–385, May 2010. <a class="reference external" href="https://doi.org/10.1107/S0909049510006230">doi:10.1107/S0909049510006230</a>.</li>
+<li>D.&nbsp;H. Templeton, A.&nbsp;Zalkin, H.&nbsp;Ruben, and L.&nbsp;K. Templeton. Redetermination and absolute configuration of sodium uranyl(VI) triacetate. <em>Acta Crystallographica Section C</em>, 41(10):1439–1441, Oct 1985. <a class="reference external" href="https://doi.org/10.1107/S0108270185008095">doi:10.1107/S0108270185008095</a>.</li>
+</ul>
+<p>Here is the input data for Atoms for crystalline sodium uranyl
+triacetate:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>title = Templeton et al.
+title = Redetermination and Absolute configuration of Sodium Uranyl(VI) triacetate.
+title = Acta Cryst 1985 C41 1439-1441
+space = P 21 3
+a     = 10.6890   b    = 10.6890    c    =  10.6890
+core  =  U        edge =  L3        rmax =  7.0
+atoms
+! elem   x          y          z     tag
+  U     0.42940    0.42940    0.42940  U
+  Na    0.82860    0.82860    0.82860  Na
+  O     0.33430    0.33430    0.33430  Oax
+  O     0.52420    0.52420    0.52420  Oax
+  O     0.38340    0.29450    0.61100  Oeq
+  O     0.54640    0.24430    0.50070  Oeq
+  C     0.47860    0.22600    0.59500  C
+  C     0.50880    0.12400    0.68620  C
+</pre></div>
+</div>
+<div class="figure align-center" id="id1">
+<span id="fig-uranyl"></span><a class="reference external image-reference" href="../_images/uranyl.png"><img alt="../_images/uranyl.png" src="../_images/uranyl.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 16.4 </span><span class="caption-text">This produces a complex crystal structure that includes the uranyl
+complex onthe right.</span></p>
+</div>
+<p>Following Shelly's example, I will take bits and pieces from this
+crystalline analog and use them to understand the EXAFS from my solution
+sample. The rest of the crystal is simply unused. I expect that the
+solvated complex looks basically like this snippet of the full crystal.</p>
+<p>Note that there are two crystallographically distinct axial oxygen sites
+and and two equatorial sites. When you run this through Feff's
+pathfinder, you find that each site leads to a single scattering path of
+a slightly different length than its partner. It is highly unlikely that
+I can use an EXAFS measurement of medium quality to distinguish two
+slightly different oxygen distances. In Shelly's paper, you can see that
+she removes these slight degeneracies by using a subset of the paths
+Feff generates and resetting their degeneracies appropriately. For
+instance, she uses just one of the axial oxygen paths and multiplies it
+by 2 to account for the two axial oxygen atoms.</p>
+<p>This example shows off several aspects of the new technology that
+<font size=-1 color="#8C4112">DEMETER</font> brings to bear on the EXAFS analysis problem,
+including fuzzy degeneracy, virtual paths, and arbitrary single
+scattering paths. Read on!</p>
+<p>In this first code example, <font size=-1 color="#8C4112">FEFF</font> is run using a
+<code class="file docutils literal"><span class="pre">feff.inp</span></code> that is already on disk.  The potential and path
+finder calculations are made, at lines 67.  Then the first few paths
+are plotted at lines 8-13.</p>
+<p>Line 14 is a feature of the screen UI which is used to pause the script
+until the user hits return, otherwise the plot made using Gnuplot would
+blink off the screen. The <code class="docutils literal"><span class="pre">pause</span></code> method is imported when the UI is
+set to screen, as at line 3. Without explicitly setting the screen UI,
+attempting to call the <code class="docutils literal"><span class="pre">pause</span></code> method will do nothing.</p>
+<div class="highlight-perl"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
+
+ <span class="k">use</span> <span class="n">Demeter</span> <span class="sx">qw(:plotwith=gnuplot :ui=screen)</span><span class="p">;</span>
+ <span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Feff</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span><span class="o">=&gt;</span><span class="s">&#39;UAce/feff.inp&#39;</span><span class="p">);</span>
+ <span class="nv">$feff</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">workspace</span><span class="o">=&gt;</span><span class="s">&#39;UAce&#39;</span><span class="p">,</span> <span class="n">screen</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">);</span>
+ <span class="nv">$feff</span> <span class="o">-&gt;</span> <span class="n">potph</span><span class="p">;</span>
+ <span class="nv">$feff</span> <span class="o">-&gt;</span> <span class="n">pathfinder</span><span class="p">;</span>
+ <span class="k">my</span> <span class="nv">@list</span> <span class="o">=</span> <span class="nv">@</span><span class="p">{</span> <span class="nv">$feff</span><span class="o">-&gt;</span> <span class="n">pathlist</span> <span class="p">};</span>
+ <span class="k">foreach</span> <span class="p">(</span><span class="nv">@list</span><span class="p">[</span><span class="mi">0</span><span class="o">..</span><span class="mi">4</span><span class="p">])</span> <span class="p">{</span>
+   <span class="k">my</span> <span class="nv">$this</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Path</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">parent</span><span class="o">=&gt;</span><span class="nv">$feff</span><span class="p">,</span>
+     <span class="n">sp</span><span class="o">=&gt;</span><span class="nv">$_</span><span class="p">);</span>
+   <span class="nv">$this</span><span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;r&#39;</span><span class="p">);</span>
+ <span class="p">};</span>
+ <span class="nv">$feff</span> <span class="o">-&gt;</span> <span class="n">pause</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+ <span class="nv">$feff</span> <span class="o">-&gt;</span> <span class="n">freeze</span><span class="p">(</span><span class="s">&#39;UAce/uace.yaml&#39;</span><span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>The state of the <font size=-1 color="#8C4112">FEFF</font> calculation is frozen to disk at line
+15 and will be used in the following example to import the paths. This
+is a handy trick that was not used in the previous examples. By
+freezing the <font size=-1 color="#8C4112">FEFF</font> calculation, you do not have to run
+<font size=-1 color="#8C4112">FEFF</font> on the fly before your fit.  This will save a bit of
+time and, perhaps, make development of a fitting model a bit less
+tedious.</p>
+<p>Looking at the interpretation of the <font size=-1 color="#8C4112">FEFF</font> calculation is
+useful before launching into the fit. This can be done with the
+<code class="docutils literal"><span class="pre">intrp</span></code> command line tool (which has some nice output options,
+including html, TeX, and ASCII-colored screen text) or by using the
+<a class="reference external" href="../feff/intrp.html">intrp method</a> in your script.</p>
+<p>Note that, in sodium uranyl triacetate, the two dioxo scattering paths
+differ in path length by about 0.006 Å and the equatorial oxygens are
+split into two groups of three that differ in distance also by about
+0.006 Å.  In this case, the <a class="reference external" href="../feff/pathfinder.html">fuzzy degeneracy</a> is quite helpful.  The fit is probably
+not so sensitive to such a small difference in scattering length,
+which may not even exist in the solution sample.  Because the
+degeneracy fuzz is set by default to 0.01 Å, the two dioxo
+scatterers are made into a single scattering path of degeneracy 2 and
+the 6 equatorial oxygen atoms are made into a single scattering path
+of degeneracy 6. This simplifies the bookkeeping aspects of creating
+the fitting model.</p>
+<p>Here is the script that sets up the fitting model.</p>
+<div class="highlight-perl"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
+
+ <span class="c1">## strict and warnings imported automatically with Demeter</span>
+ <span class="k">use</span> <span class="n">Demeter</span> <span class="sx">qw(:plotwith=gnuplot :ui=screen)</span><span class="p">;</span>
+
+ <span class="nb">unlink</span><span class="p">(</span><span class="s">&quot;controlfit.iff&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="o">-</span><span class="n">e</span> <span class="s">&quot;controlfit.iff&quot;</span><span class="p">);</span>
+
+ <span class="k">my</span> <span class="nv">$prj</span> <span class="o">=</span> <span class="nn">Demeter::Data::</span><span class="n">Prj</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span><span class="o">=&gt;</span><span class="s">&#39;U_DNA.prj&#39;</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nv">$prj</span> <span class="o">-&gt;</span> <span class="n">record</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+ <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set_mode</span><span class="p">(</span><span class="n">screen</span>  <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">backend</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;&gt;controlfit.iff&quot;</span><span class="p">);</span>
+
+ <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">name</span>       <span class="o">=&gt;</span> <span class="s">&#39;U control&#39;</span><span class="p">,</span>
+              <span class="n">fft_kmin</span>   <span class="o">=&gt;</span> <span class="mf">3.0</span><span class="p">,</span>    <span class="n">fft_kmax</span>  <span class="o">=&gt;</span> <span class="mf">10.5</span><span class="p">,</span>
+              <span class="n">bft_rmin</span>   <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>      <span class="n">bft_rmax</span>  <span class="o">=&gt;</span> <span class="mf">3.3</span><span class="p">,</span> <span class="c1">#4.22,</span>
+              <span class="n">fit_space</span>  <span class="o">=&gt;</span> <span class="s">&#39;r&#39;</span><span class="p">,</span>
+              <span class="n">fit_k1</span>     <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>      <span class="n">fit_k2</span>    <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>    <span class="n">fit_k3</span>    <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
+              <span class="n">fit_do_bkg</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="p">);</span>
+
+ <span class="k">my</span> <span class="nv">@gds</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">simpleGDS</span><span class="p">(</span><span class="s">&quot;guess amp   = 1&quot;</span><span class="p">),</span>
+            <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">simpleGDS</span><span class="p">(</span><span class="s">&quot;guess enot  = 0&quot;</span><span class="p">),</span>
+            <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">simpleGDS</span><span class="p">(</span><span class="s">&quot;guess drax  = 0&quot;</span><span class="p">),</span>
+            <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">simpleGDS</span><span class="p">(</span><span class="s">&quot;guess dreq  = 0&quot;</span><span class="p">),</span>
+            <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">simpleGDS</span><span class="p">(</span><span class="s">&quot;guess drc   = 0&quot;</span><span class="p">),</span>
+            <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">simpleGDS</span><span class="p">(</span><span class="s">&quot;guess ssax  = 0.003&quot;</span><span class="p">),</span>
+            <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">simpleGDS</span><span class="p">(</span><span class="s">&quot;guess sseq  = 0.003&quot;</span><span class="p">),</span>
+            <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">simpleGDS</span><span class="p">(</span><span class="s">&quot;guess ssc   = 0.003&quot;</span><span class="p">),</span>
+            <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">simpleGDS</span><span class="p">(</span><span class="s">&quot;guess drhyd = 0&quot;</span><span class="p">),</span>
+            <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">simpleGDS</span><span class="p">(</span><span class="s">&quot;guess sshyd = 0.003&quot;</span><span class="p">),</span>
+           <span class="p">);</span>
+
+ <span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Feff</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">yaml</span><span class="o">=&gt;</span><span class="s">&quot;UAce/uace.yaml&quot;</span><span class="p">);</span>
+ <span class="nv">$feff</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">workspace</span><span class="o">=&gt;</span><span class="s">&quot;UAce&quot;</span><span class="p">,</span> <span class="n">screen</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">,);</span>
+ <span class="k">my</span> <span class="nv">@list_of_paths</span> <span class="o">=</span> <span class="nv">@</span><span class="p">{</span> <span class="nv">$feff</span><span class="o">-&gt;</span><span class="n">pathlist</span> <span class="p">};</span>
+ <span class="k">my</span> <span class="nv">@paths</span> <span class="o">=</span> <span class="p">();</span>
+ <span class="k">my</span> <span class="nv">$carbon</span>  <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">VPath</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">name</span><span class="o">=&gt;</span><span class="s">&quot;carbon SS + MS&quot;</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$axialms</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">VPath</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">name</span><span class="o">=&gt;</span><span class="s">&quot;axial MS&quot;</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$counter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+ <span class="k">my</span> <span class="nv">@common</span> <span class="o">=</span> <span class="p">(</span><span class="n">parent</span> <span class="o">=&gt;</span> <span class="nv">$feff</span><span class="p">,</span> <span class="n">data</span> <span class="o">=&gt;</span> <span class="nv">$data</span><span class="p">,</span> <span class="n">s02</span> <span class="o">=&gt;</span> <span class="s">&quot;amp&quot;</span><span class="p">,</span> <span class="n">e0</span> <span class="o">=&gt;</span> <span class="s">&quot;enot&quot;</span><span class="p">);</span>
+
+ <span class="c1">## axial oxygen</span>
+ <span class="k">my</span> <span class="nv">$this_path</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Path</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">()</span>
+   <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="nv">@common</span><span class="p">,</span> <span class="n">sp</span> <span class="o">=&gt;</span> <span class="nv">$list_of_paths</span><span class="p">[</span><span class="nv">$counter</span><span class="o">++</span><span class="p">],</span>
+          <span class="n">name</span>   <span class="o">=&gt;</span> <span class="s">&quot;axial oxygens&quot;</span><span class="p">,</span>
+          <span class="n">delr</span>   <span class="o">=&gt;</span> <span class="s">&quot;drax&quot;</span><span class="p">,</span>      <span class="n">sigma2</span> <span class="o">=&gt;</span> <span class="s">&quot;ssax&quot;</span><span class="p">,</span>
+         <span class="p">);</span>
+ <span class="nb">push</span> <span class="nv">@paths</span><span class="p">,</span> <span class="nv">$this_path</span><span class="p">;</span>
+
+ <span class="c1">## equatorial oxygen</span>
+ <span class="nv">$this_path</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Path</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">()</span>
+   <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="nv">@common</span><span class="p">,</span> <span class="n">sp</span> <span class="o">=&gt;</span> <span class="nv">$list_of_paths</span><span class="p">[</span><span class="nv">$counter</span><span class="o">++</span><span class="p">],</span>
+          <span class="n">name</span>   <span class="o">=&gt;</span> <span class="s">&quot;equatorial oxygens&quot;</span><span class="p">,</span>
+          <span class="n">delr</span>   <span class="o">=&gt;</span> <span class="s">&quot;dreq&quot;</span><span class="p">,</span>      <span class="n">sigma2</span> <span class="o">=&gt;</span> <span class="s">&quot;sseq&quot;</span><span class="p">,</span>
+         <span class="p">);</span>
+ <span class="nb">push</span> <span class="nv">@paths</span><span class="p">,</span> <span class="nv">$this_path</span><span class="p">;</span>
+
+ <span class="c1">## carbon</span>
+ <span class="nv">$this_path</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Path</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">()</span>
+   <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="nv">@common</span><span class="p">,</span> <span class="n">sp</span> <span class="o">=&gt;</span> <span class="nv">$list_of_paths</span><span class="p">[</span><span class="nv">$counter</span><span class="o">++</span><span class="p">],</span>
+          <span class="n">name</span>   <span class="o">=&gt;</span> <span class="s">&quot;C&quot;</span><span class="p">,</span>
+          <span class="n">delr</span>   <span class="o">=&gt;</span> <span class="s">&quot;drc&quot;</span><span class="p">,</span>       <span class="n">sigma2</span> <span class="o">=&gt;</span> <span class="s">&quot;ssc&quot;</span><span class="p">,</span>
+         <span class="p">);</span>
+ <span class="nb">push</span> <span class="nv">@paths</span><span class="p">,</span> <span class="nv">$this_path</span><span class="p">;</span>
+ <span class="nv">$carbon</span><span class="o">-&gt;</span><span class="n">include</span><span class="p">(</span><span class="nv">$this_path</span><span class="p">);</span>
+
+ <span class="c1">## C-O triangle</span>
+ <span class="nv">$this_path</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Path</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">()</span>
+   <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="nv">@common</span><span class="p">,</span> <span class="n">sp</span> <span class="o">=&gt;</span> <span class="nv">$list_of_paths</span><span class="p">[</span><span class="nv">$counter</span><span class="o">++</span><span class="p">],</span>
+          <span class="n">name</span>   <span class="o">=&gt;</span> <span class="s">&quot;C-O triangle&quot;</span><span class="p">,</span>
+          <span class="n">delr</span>   <span class="o">=&gt;</span> <span class="s">&quot;(dreq+drc)/2&quot;</span><span class="p">,</span>   <span class="n">sigma2</span> <span class="o">=&gt;</span> <span class="s">&quot;2*(sseq+ssc)/3&quot;</span><span class="p">,</span>
+         <span class="p">);</span>
+ <span class="nb">push</span> <span class="nv">@paths</span><span class="p">,</span> <span class="nv">$this_path</span><span class="p">;</span>
+ <span class="nv">$carbon</span><span class="o">-&gt;</span><span class="n">include</span><span class="p">(</span><span class="nv">$this_path</span><span class="p">);</span>
+
+ <span class="c1">## axial oxygen rattle MS path</span>
+ <span class="nv">$this_path</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Path</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">()</span>
+   <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="nv">@common</span><span class="p">,</span> <span class="n">sp</span> <span class="o">=&gt;</span> <span class="nv">$list_of_paths</span><span class="p">[</span><span class="nv">$counter</span><span class="o">++</span><span class="p">],</span>
+          <span class="n">name</span>   <span class="o">=&gt;</span> <span class="s">&quot;axial MS rattle&quot;</span><span class="p">,</span>
+          <span class="n">delr</span>   <span class="o">=&gt;</span> <span class="s">&quot;drax*2&quot;</span><span class="p">,</span>   <span class="n">sigma2</span> <span class="o">=&gt;</span> <span class="s">&quot;ssax*4&quot;</span><span class="p">,</span>
+         <span class="p">);</span>
+ <span class="nb">push</span> <span class="nv">@paths</span><span class="p">,</span> <span class="nv">$this_path</span><span class="p">;</span>
+ <span class="nv">$axialms</span><span class="o">-&gt;</span><span class="n">include</span><span class="p">(</span><span class="nv">$this_path</span><span class="p">);</span>
+
+ <span class="c1">## axial oxygen non-forward scattering MS path</span>
+ <span class="nv">$this_path</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Path</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">()</span>
+   <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="nv">@common</span><span class="p">,</span> <span class="n">sp</span> <span class="o">=&gt;</span> <span class="nv">$list_of_paths</span><span class="p">[</span><span class="nv">$counter</span><span class="o">++</span><span class="p">],</span>
+          <span class="n">name</span>   <span class="o">=&gt;</span> <span class="s">&quot;axial MS non-forward linear&quot;</span><span class="p">,</span>
+          <span class="n">delr</span>   <span class="o">=&gt;</span> <span class="s">&quot;drax*2&quot;</span><span class="p">,</span>   <span class="n">sigma2</span> <span class="o">=&gt;</span> <span class="s">&quot;ssax*2&quot;</span><span class="p">,</span>
+         <span class="p">);</span>
+ <span class="nb">push</span> <span class="nv">@paths</span><span class="p">,</span> <span class="nv">$this_path</span><span class="p">;</span>
+ <span class="nv">$axialms</span><span class="o">-&gt;</span><span class="n">include</span><span class="p">(</span><span class="nv">$this_path</span><span class="p">);</span>
+
+ <span class="c1">## axial oxygen forward scattering through absorber MS path</span>
+ <span class="nv">$this_path</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Path</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">()</span>
+   <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="nv">@common</span><span class="p">,</span> <span class="n">sp</span> <span class="o">=&gt;</span> <span class="nv">$list_of_paths</span><span class="p">[</span><span class="nv">$counter</span><span class="o">++</span><span class="p">],</span>
+          <span class="n">name</span>   <span class="o">=&gt;</span> <span class="s">&quot;axial MS forward linear&quot;</span><span class="p">,</span>
+          <span class="n">delr</span>   <span class="o">=&gt;</span> <span class="s">&quot;drax*2&quot;</span><span class="p">,</span>   <span class="n">sigma2</span> <span class="o">=&gt;</span> <span class="s">&quot;ssax*2&quot;</span><span class="p">,</span>
+         <span class="p">);</span>
+ <span class="nb">push</span> <span class="nv">@paths</span><span class="p">,</span> <span class="nv">$this_path</span><span class="p">;</span>
+ <span class="nv">$axialms</span><span class="o">-&gt;</span><span class="n">include</span><span class="p">(</span><span class="nv">$this_path</span><span class="p">);</span>
+
+
+ <span class="c1">## make up a scatterer to act as the hydration sphere</span>
+ <span class="k">my</span> <span class="nv">$ss</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">SSPath</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="nv">@common</span><span class="p">,</span>
+                                 <span class="n">name</span>   <span class="o">=&gt;</span> <span class="s">&quot;hydration sphere&quot;</span><span class="p">,</span>
+                                 <span class="n">ipot</span>   <span class="o">=&gt;</span> <span class="mi">3</span><span class="p">,</span>
+                                 <span class="n">reff</span>   <span class="o">=&gt;</span> <span class="mf">3.35</span><span class="p">,</span>
+
+                                 <span class="n">delr</span>   <span class="o">=&gt;</span> <span class="s">&#39;drhyd&#39;</span><span class="p">,</span>
+                                 <span class="n">sigma2</span> <span class="o">=&gt;</span> <span class="s">&#39;sshyd&#39;</span><span class="p">,</span>
+                                <span class="p">);</span>
+ <span class="nb">push</span> <span class="nv">@paths</span><span class="p">,</span> <span class="nv">$ss</span><span class="p">;</span>
+
+
+ <span class="k">my</span> <span class="nv">$fit</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Fit</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">gds</span>   <span class="o">=&gt;</span> <span class="o">\</span><span class="nv">@gds</span><span class="p">,</span>
+                             <span class="n">data</span>  <span class="o">=&gt;</span> <span class="p">[</span><span class="nv">$data</span><span class="p">],</span>
+                             <span class="n">paths</span> <span class="o">=&gt;</span> <span class="o">\</span><span class="nv">@paths</span><span class="p">,</span> <span class="p">);</span>
+ <span class="nv">$fit</span> <span class="o">-&gt;</span> <span class="n">fit</span><span class="p">;</span>
+ <span class="nv">$fit</span> <span class="o">-&gt;</span> <span class="n">logfile</span><span class="p">(</span><span class="s">&quot;controlfit.log&quot;</span><span class="p">,</span> <span class="s">&quot;U control&quot;</span><span class="p">,</span> <span class="sx">q{}</span><span class="p">);</span>
+
+ <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">kweight</span><span class="o">=&gt;</span><span class="mi">2</span><span class="p">,</span> <span class="n">rmax</span><span class="o">=&gt;</span><span class="mi">6</span><span class="p">,</span> <span class="n">r_pl</span><span class="o">=&gt;</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="n">plot_fit</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">);</span>
+ <span class="k">my</span> <span class="p">(</span><span class="nv">$step</span><span class="p">,</span> <span class="nv">$jump</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mf">0.3</span><span class="p">);</span>
+ <span class="nb">map</span> <span class="p">{</span><span class="nv">$_</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">y_offset</span><span class="p">(</span><span class="nv">$step</span><span class="p">);</span>
+      <span class="nv">$_</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;r&#39;</span><span class="p">);</span>
+      <span class="nv">$step</span><span class="o">+=</span><span class="nv">$jump</span><span class="p">;</span>
+    <span class="p">}</span> <span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="nv">$paths</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nv">$paths</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nv">$carbon</span><span class="p">,</span> <span class="nv">$axialms</span><span class="p">,</span> <span class="nv">$ss</span><span class="p">);</span>
+
+ <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">pause</span><span class="p">;</span>
+</pre></div>
+</td></tr></table></div>
+<p>There are a lot of interesting things going on in this fit:</p>
+<ol class="arabic simple">
+<li>At line 4, I turn on the gnuplot plotting backend and enable the
+screen UI features that make Demeter more pleasant to use at the
+<a class="reference external" href="../ui.html">command line</a>.</li>
+<li>At lines 8-18, I import the uranyl data from an <font size=-1 color="#8C4112">ATHENA</font>
+project file and set various data and plotting parameters.</li>
+<li>In lines 20-31, I define the guess parameters using a bit of
+syntactic sugar. I could just as well have written have use the
+<a class="reference external" href="../gds/index.html">normal interface</a>.</li>
+<li>At lines 33-35, I import the results of a Feff calculation that I
+had previously made using the first <font size=-1 color="#8C4112">DEMETER</font> script on
+this page.</li>
+<li>At line 37 and 38, I create two <a class="reference external" href="../pathlike/vpath.html">VPaths</a>, or virtual paths.  These get filled up
+at lines 65, 74, 83, 92, and 101.</li>
+<li>At line 40, I define some Path attributes that will be used in common
+for all Path objects defined.</li>
+<li>At lines 105-113, I create an arbitrary single scatering path from
+the oxygen using the <a class="reference external" href="../pathlike/sspath.html">SSPath object</a> at a
+distance where I consider it reasonable to see scattering from the
+hydration sphere. This SSPath then gets included in the fit like a
+normal Path.</li>
+<li>At lines 122-127, I do a bit of trickery to make the spiffy stacked
+plot shown below. Note that the VPath and SSPath objects get plotted
+in the same way as the Data and Paths. Indeed, the plot is
+accomplished by looping over all the objects that I want to display
+in the plot. Note the use of the <code class="docutils literal"><span class="pre">data</span></code> attribute at line 124. The
+<code class="docutils literal"><span class="pre">y_offset</span></code> is an attribute of the Data object. A path-like object
+gets its value of <code class="docutils literal"><span class="pre">y_offset</span></code> from its associated Data object. A
+Data object is its own <code class="docutils literal"><span class="pre">data</span></code> attribute. This little idiom is the
+way of always setting something like <code class="docutils literal"><span class="pre">y_offset</span></code> to what it needs to
+be to plot the current object in a loop.</li>
+<li>The last line pauses the script before terminating so that you have
+time to examine the plot. The Gnuplot process ends when the script
+ends, making the plot window go away.</li>
+</ol>
+<div class="figure align-center" id="id2">
+<span id="fig-uranylk"></span><a class="reference external image-reference" href="../_images/uranyl_k.png"><img alt="../_images/uranyl_k.png" src="../_images/uranyl_k.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 16.5 </span><span class="caption-text">The fit as χ(k).</span></p>
+</div>
+<p>This was made by substituting lines 122-127 with:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">kweight</span><span class="o">=&gt;</span><span class="mi">2</span><span class="p">,</span> <span class="n">plot_fit</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">);</span>
+<span class="k">my</span> <span class="p">(</span><span class="nv">$step</span><span class="p">,</span> <span class="nv">$jump</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mf">0.5</span><span class="p">);</span>
+<span class="nb">map</span> <span class="p">{</span><span class="nv">$_</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">y_offset</span><span class="p">(</span><span class="nv">$step</span><span class="p">);</span>
+     <span class="nv">$_</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;k&#39;</span><span class="p">);</span>
+     <span class="nv">$step</span><span class="o">+=</span><span class="nv">$jump</span><span class="p">;}</span>
+  <span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="nv">$paths</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nv">$paths</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+   <span class="nv">$carbon</span><span class="p">,</span> <span class="nv">$axialms</span><span class="p">,</span> <span class="nv">$ss</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot_window</span><span class="p">(</span><span class="s">&#39;k&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="figure align-center" id="id3">
+<span id="fig-uranylrmag"></span><a class="reference external image-reference" href="../_images/uranyl_rmag.png"><img alt="../_images/uranyl_rmag.png" src="../_images/uranyl_rmag.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 16.6 </span><span class="caption-text">The fit as the magnitude of χ(R).</span></p>
+</div>
+<p>This was made by substituting lines 122-127 with:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">kweight</span><span class="o">=&gt;</span><span class="mi">2</span><span class="p">,</span> <span class="n">plot_fit</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">r_pl</span> <span class="o">=&gt;</span> <span class="s">&#39;m&#39;</span><span class="p">);</span>
+<span class="k">my</span> <span class="p">(</span><span class="nv">$step</span><span class="p">,</span> <span class="nv">$jump</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mf">0.25</span><span class="p">);</span>
+<span class="nb">map</span> <span class="p">{</span><span class="nv">$_</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">y_offset</span><span class="p">(</span><span class="nv">$step</span><span class="p">);</span>
+     <span class="nv">$_</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;r&#39;</span><span class="p">);</span>
+     <span class="nv">$step</span><span class="o">+=</span><span class="nv">$jump</span><span class="p">;}</span>
+  <span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="nv">$paths</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nv">$paths</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+   <span class="nv">$carbon</span><span class="p">,</span> <span class="nv">$axialms</span><span class="p">,</span> <span class="nv">$ss</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot_window</span><span class="p">(</span><span class="s">&#39;r&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="figure align-center" id="id4">
+<span id="fig-uranylrre"></span><a class="reference external image-reference" href="../_images/uranyl_rre.png"><img alt="../_images/uranyl_rre.png" src="../_images/uranyl_rre.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 16.7 </span><span class="caption-text">The fit as the magnitude of χ(R).  This is the plot that is
+made by lines 122-127.</span></p>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Isis-Sothis-Demeter_sm.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">9. Guess/Def/Set Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">16. Full examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="methyltin.html">16.1. Methyltin chloride</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agau.html">16.2. Silver/gold alloy</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">16.3. Uranyl ion in solution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="histo.html">16.4. Histogram</a></li>
+</ul>
+</li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.24</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/examples/uranyl.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="histo.html" title="16.4. Histogram"
+             >next</a></li>
+        <li class="right" >
+          <a href="agau.html" title="16.2. Silver/gold alloy"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >16. Full examples</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

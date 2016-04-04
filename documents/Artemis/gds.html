@@ -113,7 +113,7 @@ to represent a constant (i.e. a number) used elsewhere in the fitting model.</dd
 <dd>An <span class="lguess">lguess</span> parameter is a tool used to simplify model
 creation for a multiple data set fit.  It can be used in math
 expressions for two or more data sets.  When the fit is started,
-an actual guess parameter will be created for each data set in
+an actual <span class="guess">guess</span> parameter will be created for each data set in
 which the <span class="lguess">lguess</span> is used.  As an example, suppose your
 multiple data set fit includes data on a series of binary alloys.
 If <code class="docutils literal"><span class="pre">x</span></code> is a mixing parameter between the two alloys and is
@@ -220,14 +220,15 @@ shortcuts to change the parameter type of that set of parameters.</p>
 </div>
 <div class="section" id="context-menu">
 <h3>6.2.3. Context menu<a class="headerlink" href="#context-menu" title="Permalink to this headline">¶</a></h3>
-<p>Clicking on a line in the grid selects the entire line.
-<kbd class="dark">Control</kbd> clicking of a line adds that line to the
-selection. <kbd class="dark">Shift</kbd> clicking adds all lines between the
-selected and clicked upon lines.</p>
+<p><img alt="leftclick" title="Left mouse button" src="./_static/leftclick.png" hspace="3"></a> Clicking on a line in the grid selects the entire
+line.  <kbd class="dark">Control</kbd>-<img alt="leftclick" title="Left mouse button" src="./_static/leftclick.png" hspace="3"></a> clicking of a line adds
+that line to the selection.  <kbd class="dark">Shift</kbd>-<img alt="leftclick" title="Left mouse button" src="./_static/leftclick.png" hspace="3"></a>
+clicking adds all lines between the selected and clicked upon lines.</p>
 <div class="figure align-center" id="id2">
 <span id="fig-gdsmenu"></span><a class="reference external image-reference" href="_images/gds-menu.png"><img alt="_images/gds-menu.png" src="_images/gds-menu.png" /></a>
-<p class="caption"><span class="caption-number">Fig. 6.2 </span><span class="caption-text">Right clicking on any line in the grid, including the label containing
-the line number, will post this menu.</span></p>
+<p class="caption"><span class="caption-number">Fig. 6.2 </span><span class="caption-text"><img alt="rightclick" title="Right mouse button" src="./_static/rightclick.png" hspace="3"></a> Right clicking on any line in the grid,
+including the label containing the line number, will post this
+menu.</span></p>
 </div>
 <dl class="docutils">
 <dt><span class="guilabel">Copy, cut, paste</span></dt>
@@ -243,18 +244,19 @@ type of the selected lines of the grid. If you have more than one
 line selected, they will all get changed to the option you choose
 from the submenu.</dd>
 <dt><span class="guilabel">Grab best fit</span></dt>
-<dd>This changes theinitial guess of the selected lines to the most
+<dd>This changes the initial guess of the selected lines to the most
 recent best fit value(s).</dd>
 <dt><span class="guilabel">Build restraint</span></dt>
 <dd><div class="first figure align-center" id="id3">
 <span id="fig-gdsrestraint"></span><a class="reference external image-reference" href="_images/gds-restraint.png"><img alt="_images/gds-restraint.png" src="_images/gds-restraint.png" /></a>
-<p class="caption"><span class="caption-number">Fig. 6.3 </span><span class="caption-text">This posts a dialog that helps you name and define a restraint based
-upon the value of the parameter in the line clicked upon.</span></p>
+<p class="caption"><span class="caption-number">Fig. 6.3 </span><span class="caption-text">This posts a dialog that helps you name and define a restraint
+based upon the value of the parameter in the line
+<img alt="rightclick" title="Right mouse button" src="./_static/rightclick.png" hspace="3"></a> clicked upon.</span></p>
 </div>
 <p>This will use <font size=-1 color="#8C4112">IFEFFIT</font>'s <code class="docutils literal"><span class="pre">penalty</span></code> function with the
 lower and upper bounds as its arguments and multiplied by the
 scaling factor. The example shown will make this restraint:</p>
-<div class="highlight-python"><div class="highlight"><pre>restrain res_enot = 1000 * penalty(enot, -5, 5)
+<div class="highlight-python"><div class="highlight"><pre><span></span>restrain res_enot = 1000 * penalty(enot, -5, 5)
 </pre></div>
 </div>
 <p class="last">and add it to the end of the grid. The penalty function will
@@ -268,7 +270,7 @@ restraints</a>.</p>
 </dd>
 <dt><span class="guilabel">Annotate</span></dt>
 <dd>This prompts you for a text string to describe the parameter in the
-line clicked upon. The intent is to allow you document the role of
+line <img alt="rightclick" title="Right mouse button" src="./_static/rightclick.png" hspace="3"></a> clicked upon. The intent is to allow you document the role of
 the parameter in your fitting model. This annotation is displayed in
 the GDS window's status bar when that line is selected.</dd>
 <dt><span class="guilabel">Find parameter</span></dt>
@@ -288,25 +290,25 @@ bar explaining the various parameter types.</dd>
 </div>
 <div class="section" id="creating-parameters-from-math-expressions-on-the-path-page">
 <h3>6.2.4. Creating parameters from math expressions on the path page<a class="headerlink" href="#creating-parameters-from-math-expressions-on-the-path-page" title="Permalink to this headline">¶</a></h3>
-<p>Parameters can be created from the <a class="reference external" href="path/index.html">path page</a>. When
-you right click on a word in a math expression for the one of the <a class="reference external" href="path/mathexp.html">path
-parameters</a>, a menu pops up which allows you to
-set the word you clicked upon as GDS parameter.</p>
+<p>Parameters can be created from the <a class="reference external" href="path/index.html">path page</a>. When you <img alt="rightclick" title="Right mouse button" src="./_static/rightclick.png" hspace="3"></a> right click on a
+word in a math expression for the one of the <a class="reference external" href="path/mathexp.html">path parameters</a>, a menu pops up which allows you to set the
+word you <img alt="rightclick" title="Right mouse button" src="./_static/rightclick.png" hspace="3"></a> clicked upon as GDS parameter.</p>
 <div class="figure align-center" id="id4">
 <span id="fig-gdspath"></span><a class="reference external image-reference" href="_images/gds_path.png"><img alt="_images/gds_path.png" src="_images/gds_path.png" /></a>
-<p class="caption"><span class="caption-number">Fig. 6.4 </span><span class="caption-text">Creating GDS parameters by right clicking on a math expression on the
-Path page.</span></p>
+<p class="caption"><span class="caption-number">Fig. 6.4 </span><span class="caption-text">Creating GDS parameters by <img alt="rightclick" title="Right mouse button" src="./_static/rightclick.png" hspace="3"></a> right clicking on
+a math expression on the Path page.</span></p>
 </div>
-<p>If you have not yet defined the word you click on, then the GDS window
-will appear on screen, and the parameter will be inserted into the GDS
-table as the type of parameter selected from the menu.</p>
+<p>If you have not yet defined the word you <img alt="rightclick" title="Right mouse button" src="./_static/rightclick.png" hspace="3"></a> right
+click on, then the GDS window will appear on screen, and the parameter
+will be inserted into the GDS table as the type of parameter selected
+from the menu.</p>
 <p>If the word has already been defined, then its type will be changed to
 the type you select from the menu.</p>
 <p>If the word is something that is not allowed in <font size=-1 color="#8C4112">IFEFFIT</font> as
 a parameter name (things like <code class="docutils literal"><span class="pre">dr1</span></code> and <code class="docutils literal"><span class="pre">cos</span></code> are reserved words
 and cannot be used as parameter names) then the menu will not be
-posted. Likewise, the menu will not be posted if you right click on a
-number.</p>
+posted. Likewise, the menu will not be posted if you
+<img alt="rightclick" title="Right mouse button" src="./_static/rightclick.png" hspace="3"></a> right click on a number.</p>
 
 <br>
 
@@ -358,14 +360,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -406,7 +410,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

@@ -129,7 +129,7 @@ for vacancies.</p>
 <p>A structure for the mineral zirconolite, CaZrTi<sub>2</sub>O<sub>7</sub>,
 was published as</p>
 <ul class="simple" id="bibtex-bibliography-extended/dopants-0">
-<li>H.&nbsp;J. Rossell. Zirconolite — a fluorite-related superstructure. <em>Nature</em>, 283(5744):282–283, Jan 1980. <a class="reference external" href="http://dx.doi.org/10.1038/283282a0">doi:10.1038/283282a0</a>.</li>
+<li>H.&nbsp;J. Rossell. Zirconolite — a fluorite-related superstructure. <em>Nature</em>, 283(5744):282–283, Jan 1980. <a class="reference external" href="https://doi.org/10.1038/283282a0">doi:10.1038/283282a0</a>.</li>
 </ul>
 <p>In that paper, significant site swapping was found between the site
 occupied by Zr and one of the Ti sites. Consequently, the CIF file is
@@ -145,7 +145,7 @@ occupancy.</span></p>
 <p>To use this crystal data in <font size=-1 color="#8C4112">ARTEMIS</font>, you need to edit the
 CIF file before importing it to remove the examples of partial
 occupancy. Change the last loop from this:</p>
-<div class="highlight-python"><div class="highlight"><pre>loop_
+<div class="highlight-python"><div class="highlight"><pre><span></span>loop_
 _atom_site_label
 _atom_site_fract_x
 _atom_site_fract_y
@@ -168,7 +168,7 @@ O7 0.11900 0.05500 0.78800 1.00000
 </pre></div>
 </div>
 <p>to this:</p>
-<div class="highlight-python"><div class="highlight"><pre>loop_
+<div class="highlight-python"><div class="highlight"><pre><span></span>loop_
 _atom_site_label
 _atom_site_fract_x
 _atom_site_fract_y
@@ -207,7 +207,7 @@ as an example in the <font size=-1 color="#8C4112">DEMETER</font> distrribution.
 <p>Run atoms for FeS<sub>2</sub>.</p>
 <p>Now look at the <code class="file docutils literal"><span class="pre">feff.inp</span></code> file that is generated. Under
 <code class="docutils literal"><span class="pre">POTENTIALS</span></code>, it says the following:</p>
-<div class="highlight-python"><div class="highlight"><pre>POTENTIALS
+<div class="highlight-python"><div class="highlight"><pre><span></span>POTENTIALS
 *    ipot   Z  element
        0   26   Fe
        1   26   Fe
@@ -216,7 +216,7 @@ as an example in the <font size=-1 color="#8C4112">DEMETER</font> distrribution.
 </div>
 <p>Add another line for the Mo, which is atomic number 42 (the atomic
 number is <strong>required</strong>):</p>
-<div class="highlight-python"><div class="highlight"><pre>POTENTIALS
+<div class="highlight-python"><div class="highlight"><pre><span></span>POTENTIALS
 *    ipot   Z  element
        0   26   Fe
        1   26   Fe
@@ -230,7 +230,7 @@ number is <strong>required</strong>):</p>
 <code class="file docutils literal"><span class="pre">feff.inp</span></code> file, and arbitrarily change roughly the right number
 of iron atoms to molybdenum atoms.  Make sure to change the <code class="docutils literal"><span class="pre">ipot</span></code>
 column to match...it's the part <font size=-1 color="#8C4112">FEFF</font> will actually use:</p>
-<div class="highlight-python"><div class="highlight"><pre>ATOMS                          * this list contains 71 atoms
+<div class="highlight-python"><div class="highlight"><pre><span></span>ATOMS                          * this list contains 71 atoms
 *   x          y          z      ipot  tag              distance
    0.00000    0.00000    0.00000  0    Fe1              0.00000
    2.07514    0.62686    0.62686  2    S1_1             2.25657
@@ -265,9 +265,9 @@ column to match...it's the part <font size=-1 color="#8C4112">FEFF</font> will a
 <p>In this case, I changed 3 of the 12 nearest iron neighbors into
 molybdenum ... reasonable if I have about 25 percent doping.</p>
 <p>If you are doing a <font size=-1 color="#8C4112">FEFF</font> calculation for the molybdenum
-<em>edge</em>, then also change the very first iron to molybdenum, and change
-potential <code class="docutils literal"><span class="pre">0</span></code> in the ipot list to molybdenum with ipot <code class="docutils literal"><span class="pre">0</span></code>.</p>
-<div class="highlight-python"><div class="highlight"><pre>POTENTIALS
+absorber, then also change the very first iron to molybdenum, and
+change potential <code class="docutils literal"><span class="pre">0</span></code> in the ipot list to molybdenum with ipot <code class="docutils literal"><span class="pre">0</span></code>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>POTENTIALS
 *    ipot   Z  element
        0   42   Mo
        1   26   Fe
@@ -295,19 +295,19 @@ change 2, which is 17 percent, or 3, which is 25 percent.</p>
 <p>The fix for this is to change the S<sup>2</sup><sub>0</sub> in the
 molybdenum and sulfur scattering paths to account for this. You could,
 for example, use the following GDS parameters:</p>
-<div class="highlight-python"><div class="highlight"><pre>set: MolyPercent = 0.20
+<div class="highlight-python"><div class="highlight"><pre><span></span>set: MolyPercent = 0.20
 def: IronPercent = 1-MolyPercent
 </pre></div>
 </div>
-<p>Then go to the individual path representing the scattering off of
-nearest neighbor molypercent, and assign it an S<sup>2</sup><sub>0</sub> of</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">amp</span><span class="o">*</span><span class="n">MolyPercent</span><span class="o">/</span><span class="p">(</span><span class="mi">3</span><span class="o">/</span><span class="mi">12</span><span class="p">)</span>
+<p>Then go to the individual path representing the scattering from the
+nearest neighbor molybdenum atom, and assign it an S<sup>2</sup><sub>0</sub> of</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">amp</span><span class="o">*</span><span class="n">MolyPercent</span><span class="o">/</span><span class="p">(</span><span class="mi">3</span><span class="o">/</span><span class="mi">12</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>That way, if the <code class="docutils literal"><span class="pre">MolyPercent</span></code> is 20 percent, it will reduce the amplitude
 of those paths by 20/25 percent, as is proper.</p>
 <p>Of course, the iron scatterer would get an S<sup>2</sup><sub>0</sub> of</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">amp</span><span class="o">*</span><span class="n">IronPercent</span><span class="o">/</span><span class="p">(</span><span class="mi">9</span><span class="o">/</span><span class="mi">12</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">amp</span><span class="o">*</span><span class="n">IronPercent</span><span class="o">/</span><span class="p">(</span><span class="mi">9</span><span class="o">/</span><span class="mi">12</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>That's more or less it!</p>
@@ -330,17 +330,17 @@ as molybdenum in the second.)</p>
 <p>You now have <strong>two</strong> sets of <font size=-1 color="#8C4112">FEFF</font> files associated with one
 data set.</p>
 <p>Make GDS parameters:</p>
-<div class="highlight-python"><div class="highlight"><pre>set: MolyPercent = 0.20
+<div class="highlight-python"><div class="highlight"><pre><span></span>set: MolyPercent = 0.20
 def: IronPercent = 1-MolyPercent
 </pre></div>
 </div>
 <p>Now make the S<sup>2</sup><sub>0</sub> for all paths calculated with the
 original <font size=-1 color="#8C4112">ATOMS</font> file:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">amp</span><span class="o">*</span><span class="n">IronPercent</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">amp</span><span class="o">*</span><span class="n">IronPercent</span>
 </pre></div>
 </div>
 <p>and for all paths calculatged with the new <font size=-1 color="#8C4112">ATOMS</font> file:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">amp</span><span class="o">*</span><span class="n">MolyPercent</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">amp</span><span class="o">*</span><span class="n">MolyPercent</span>
 </pre></div>
 </div>
 <p>Again, you can guess the <code class="docutils literal"><span class="pre">MolyPercent</span></code> if it's unknown.</p>
@@ -422,14 +422,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -471,7 +473,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

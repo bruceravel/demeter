@@ -54,15 +54,15 @@
             
   <div class="section" id="introduction">
 <h1>1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<p><font size=-1 color="#8C4112">FEFF</font> and <font size=-1 color="#8C4112">IFEFFIT</font> are amazing tools. Together and
-over the years, they have enabled the analysis and interpretation of
-many thousands of EXAFS experiments spanning an impressive broad range
-of scientific disciplines.</p>
+<p><font size=-1 color="#8C4112">FEFF</font> and <font size=-1 color="#8C4112">IFEFFIT</font> are amazing tools.  Together
+and over the years, they have enabled the analysis and interpretation
+of many thousands of EXAFS experiments spanning an impressively broad
+range of scientific disciplines.</p>
 <p>Unfortunately, each of these tools is quite difficult to use to its
-full capabilities. The lack of readily accessible, flexible,
-highly-capable high-level tools has, for the most part, limited the
-use of <font size=-1 color="#8C4112">FEFF</font> and <font size=-1 color="#8C4112">IFEFFIT</font> to relatively simple
-problem. Most examples of their use in the literature are restricted
+full capabilities.  The lack of readily accessible, flexible,
+highly-capable high-level tools<a class="footnote-reference" href="#f1" id="id1"><sup>1</sup></a> has, to some extent, limited
+the use of <font size=-1 color="#8C4112">FEFF</font> and <font size=-1 color="#8C4112">IFEFFIT</font> to relatively simple
+problem.  Most examples of their use in the literature are restricted
 to fairly simple parameterization of a model structure that is
 calculated using <font size=-1 color="#8C4112">FEFF</font> in the most straight-forward manner.</p>
 <p>Certainly examples exist of highly sophisticated used of
@@ -76,8 +76,9 @@ talented experts in the application of <font size=-1 color="#8C4112">FEFF</font>
 <font size=-1 color="#8C4112">IFEFFIT</font> and both represent many months of painstaking
 effort to develop idiosyncratic analytical methodology.</p>
 <ul class="simple" id="bibtex-bibliography-intro-0">
-<li>S.&nbsp;Calvin, E.&nbsp;E. Carpenter, B.&nbsp;Ravel, V.&nbsp;G. Harris, and S.&nbsp;A. Morrison. Multiedge refinement of extended x-ray-absorption fine structure of manganese zinc ferrite nanoparticles. <em>Phys. Rev. B</em>, 66:224405, Dec 2002. <a class="reference external" href="http://dx.doi.org/10.1103/PhysRevB.66.224405">doi:10.1103/PhysRevB.66.224405</a>.</li>
-<li>S.&nbsp;D. Kelly, K.&nbsp;M. Kemner, J.&nbsp;B. Fein, D.&nbsp;A. Fowle, M.&nbsp;I. Boyanov, B.&nbsp;A. Bunker, and N.&nbsp;Yee. X-ray absorption fine structure determination of pH-dependent U-bacterial cell wall interactions. <em>Geochimica et Cosmochimica Acta</em>, 66(22):3855 – 3871, 2002. <a class="reference external" href="http://dx.doi.org/10.1016/S0016-7037(02)00947-X">doi:10.1016/S0016-7037(02)00947-X</a>.</li>
+<li>S.&nbsp;Calvin, E.&nbsp;E. Carpenter, B.&nbsp;Ravel, V.&nbsp;G. Harris, and S.&nbsp;A. Morrison. Multiedge refinement of extended x-ray-absorption fine structure of manganese zinc ferrite nanoparticles. <em>Phys. Rev. B</em>, 66:224405, Dec 2002. <a class="reference external" href="https://doi.org/10.1103/PhysRevB.66.224405">doi:10.1103/PhysRevB.66.224405</a>.</li>
+<li>S.&nbsp;D. Kelly, K.&nbsp;M. Kemner, J.&nbsp;B. Fein, D.&nbsp;A. Fowle, M.&nbsp;I. Boyanov, B.&nbsp;A. Bunker, and N.&nbsp;Yee. X-ray absorption fine structure determination of pH-dependent U-bacterial cell wall interactions. <em>Geochimica et Cosmochimica Acta</em>, 66(22):3855 – 3871, 2002. <a class="reference external" href="https://doi.org/10.1016/S0016-7037(02)00947-X">doi:10.1016/S0016-7037(02)00947-X</a>.</li>
+<li>B.&nbsp;Ravel, C.&nbsp;Scorzato, D.&nbsp;P. Siddons, S.&nbsp;D. Kelly, and S.&nbsp;R. Bare. Simultaneous XAFS measurements of multiple samples. <em>Journal of Synchrotron Radiation</em>, 17(3):380–385, May 2010. <a class="reference external" href="https://doi.org/10.1107/S0909049510006230">doi:10.1107/S0909049510006230</a>.</li>
 </ul>
 <p>There <strong>has</strong> to be a better way.</p>
 <p><font size=-1 color="#8C4112">DEMETER</font> is my attempt to provide a set of tools to enable
@@ -86,53 +87,56 @@ been the province of the dedicated few. It is also the result of more
 than a decade of writing software specifically intended to enable the
 use of <font size=-1 color="#8C4112">FEFF</font> and <font size=-1 color="#8C4112">IFEFFIT</font>.</p>
 <p>Many people reading this wil be familiar with my programs
-<font size=-1 color="#8C4112">ATHENA</font> and <font size=-1 color="#8C4112">ARTEMIS</font>. They are in wide use
-throughout the XAS community and around the world.  As graphical
-interfaces to XAS data management and the use of <font size=-1 color="#8C4112">FEFF</font> and
-<font size=-1 color="#8C4112">IFEFFIT</font>, each has proven successful to a certain
-degree. Each one, however, suffers from one major flaw (and any number
-of minor flaws).  <em>There is no easy way to write a small, personal
-program that replicates the exact behavior of the GUI programs.</em></p>
+<font size=-1 color="#8C4112">ATHENA</font> and <font size=-1 color="#8C4112">ARTEMIS</font>.  They have been in wide use
+for many years throughout the XAS community and around the world.  As
+graphical interfaces to XAS data management and the use of
+<font size=-1 color="#8C4112">FEFF</font> and <font size=-1 color="#8C4112">IFEFFIT</font>, each has proven successful to
+a certain degree.  The original versions of the programs suffered from
+a major flaw (and any number of minor ones!).  <em>There was no easy way
+to write a small, personal program that replicated the exact behavior
+of the GUI programs.</em></p>
 <p>As convenient as <font size=-1 color="#8C4112">ATHENA</font> is for processing modest amounts of
 data at the beamline or upon returning home from a beam run, it is not
-really the right tool for managing huge volumes of data. In several
-days at a beamline with quick-XAS capabilities, it is quite common to
-generate many hundreds, even many thousands, of XAS scans. The
+really the right tool for managing huge volumes of data.  These days,
+at a beamline with quick-XAS capabilities, it is quite common to
+generate many hundreds, even many thousands, of XAS scans.  The
 interactivity that makes <font size=-1 color="#8C4112">ATHENA</font> so appealing when handling
 small amounts of data becomes a tedious, repetitive nightmare when
-processing large amounts of data.  Unfortunately, there is no way of
-separating the data processing capabilities of <font size=-1 color="#8C4112">ATHENA</font> from
-the graphical interface. (This is not an inherent flaw of any of the
-tools used to create <font size=-1 color="#8C4112">ATHENA</font> -- it is entirely due to my own
-inexperience when I began writing <font size=-1 color="#8C4112">ATHENA</font>.)</p>
-<p>This problem is where <font size=-1 color="#8C4112">DEMETER</font> starts. <font size=-1 color="#8C4112">DEMETER</font> is
-“middleware” -- it is a system of software tools that sit
-between <font size=-1 color="#8C4112">FEFF</font> and <font size=-1 color="#8C4112">IFEFFIT</font> and the program that
-the user actually interacts with.  <font size=-1 color="#8C4112">DEMETER</font> is not, by
-itself, a computer program. Rather it is the tool from which computer
-programs for XAS data processing and analysis are built.</p>
+processing large amounts of data.  Unfortunately, there used to be no
+way of separating the data processing capabilities of
+<font size=-1 color="#8C4112">ATHENA</font> from the graphical interface.  This is not an
+inherent flaw of any of the tools used to create <font size=-1 color="#8C4112">ATHENA</font> –
+it is entirely due to my own inexperience when I began writing
+<font size=-1 color="#8C4112">ATHENA</font>.</p>
+<p>This problem is where <font size=-1 color="#8C4112">DEMETER</font> started.  <font size=-1 color="#8C4112">DEMETER</font>
+is “middleware” – it is a system of software tools that
+sits above <font size=-1 color="#8C4112">FEFF</font> and <font size=-1 color="#8C4112">IFEFFIT</font> and below the
+program that the user actually interacts with.  <font size=-1 color="#8C4112">DEMETER</font> is
+not, by itself, a computer program.  Rather it is the tool from which
+computer programs for XAS data processing and analysis are built.</p>
 <p>The package containing the <font size=-1 color="#8C4112">DEMETER</font> libraries actually does
-include various kinds of interface tools. For example, there is a
-version of <font size=-1 color="#8C4112">ARTEMIS</font> written using
-<font size=-1 color="#8C4112">DEMETER</font>. However, this version of <font size=-1 color="#8C4112">ARTEMIS</font> does
-not add any functionality related to XAS data management not already
-present in the <font size=-1 color="#8C4112">DEMETER</font> libraries. It is merely a graphical
-shell layered on top of <font size=-1 color="#8C4112">DEMETER</font>'s capabilities. As a
-result, it is possible -- indeed, often quite easy -- to write a small
-program which performs a fit to EXAFS data in exactly the same manner
-as <font size=-1 color="#8C4112">ARTEMIS</font>.</p>
+include various kinds of interface tools.  For example,
+<font size=-1 color="#8C4112">ARTEMIS</font> is written using <font size=-1 color="#8C4112">DEMETER</font>.  However, this
+version of <font size=-1 color="#8C4112">ARTEMIS</font> does not add any functionality related
+to XAS data management not already present in the <font size=-1 color="#8C4112">DEMETER</font>
+libraries.  It is merely a graphical shell layered on top of
+<font size=-1 color="#8C4112">DEMETER</font>'s capabilities.  As a result, it is possible –
+indeed, often quite easy – to write a small program which performs a
+fit to EXAFS data in exactly the same manner as <font size=-1 color="#8C4112">ARTEMIS</font>.</p>
 <p>Armed with this middleware layer, it is much easier to consider
 implementing tools for automating large quantities of data or writing
-tools for special, one-off data processing chores. And <font size=-1 color="#8C4112">DEMETER</font> offers
-tools for easily passing data between <font size=-1 color="#8C4112">ATHENA</font> and <font size=-1 color="#8C4112">ARTEMIS</font> and your own
+tools for special, one-off data processing chores.  And
+<font size=-1 color="#8C4112">DEMETER</font> offers tools for easily passing data between
+<font size=-1 color="#8C4112">ATHENA</font> and <font size=-1 color="#8C4112">ARTEMIS</font> and your own
 <font size=-1 color="#8C4112">DEMETER</font>-using programs.</p>
 <p>Tools for automation and for easy access to the capabilities available
 in the GUI programs would be benefit enough to merit the creation of a
-software library. <font size=-1 color="#8C4112">DEMETER</font>, however, offers quite a bit more than that.
-It has capabilities already written or under development for very
-sophisticated uses of <font size=-1 color="#8C4112">FEFF</font>. Inspired by the articles cited above and by
-other interesting uses of XAS theory, <font size=-1 color="#8C4112">DEMETER</font> offers easy access to a
-variety of ways of manipulating the output of <font size=-1 color="#8C4112">FEFF</font> that had previously
+software library. <font size=-1 color="#8C4112">DEMETER</font>, however, offers quite a bit more
+than that.  It has capabilities already written or under development
+for very sophisticated uses of <font size=-1 color="#8C4112">FEFF</font>. Inspired by the
+articles cited above and by other interesting uses of XAS theory,
+<font size=-1 color="#8C4112">DEMETER</font> offers easy access to a variety of ways of
+manipulating the output of <font size=-1 color="#8C4112">FEFF</font> that had previously
 required a deep understanding of <font size=-1 color="#8C4112">FEFF</font>'s inner workings.</p>
 <p>So there you have it. <font size=-1 color="#8C4112">DEMETER</font> is a software tool for making
 easy XAS chores very easy and for making difficult XAS chores
@@ -140,16 +144,17 @@ tractable. This document is full of code samples which demonstrate the
 <font size=-1 color="#8C4112">DEMETER</font> way of solving XAS data management and analysis
 problems. In many cases, you should be able to cut-and-paste examples
 into your own programs, modifying them slightly to suite your
-particular problem. Hopefully, <font size=-1 color="#8C4112">DEMETER</font> has enough flexibility that you
-can begin working on problems that have not even crossed my mind.</p>
+particular problem. Hopefully, <font size=-1 color="#8C4112">DEMETER</font> has enough
+flexibility that you can begin working on problems that have not even
+crossed my mind.</p>
 <div class="section" id="the-technology-behind-demeter">
 <h2>1.1. The technology behind Demeter<a class="headerlink" href="#the-technology-behind-demeter" title="Permalink to this headline">¶</a></h2>
 <p><font size=-1 color="#8C4112">DEMETER</font> uses <a class="reference external" href="http://perl.org">perl</a>. This is, I
-suppose, an unsexy choice these days.  All the cool kids are, after
-all, using python or ruby.  I like perl.  I can think in perl. And I can
-code quickly and fluently in perl.  What's more, perl has <a class="reference external" href="http://www.cpan.org/">CPAN</a>, the worlds largest repository of language
+suppose, an unsexy choice these days.  All the cool kids, after all,
+use python.  I like perl.  I can think in perl. And I can code quickly
+and fluently in perl.  What's more, perl has <a class="reference external" href="http://www.cpan.org/">CPAN</a>, the worlds largest repository of language
 extensions.  CPAN means that I have far fewer wheels to recreate (and
-probably get wrong). Virtually any language extension I need in
+probably get wrong).  Virtually any language extension I need in
 pursuit of making <font size=-1 color="#8C4112">DEMETER</font> awesome probably already exists.</p>
 <p><font size=-1 color="#8C4112">DEMETER</font> uses <a class="reference external" href="https://metacpan.org/pod/Moose">Moose</a>.
 This is, on the balance, a very good thing, indeed. Moose brings many
@@ -261,6 +266,15 @@ of the high-level functionality in <font size=-1 color="#8C4112">DEMETER</font>.
 </dl>
 <p>I will, on occassion in this document, point the reader to web sites
 where more of the programming details can be found.</p>
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="f1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>This isn't really true now that <font size=-1 color="#8C4112">LARCH</font> exists.
+When I started writing <font size=-1 color="#8C4112">DEMETER</font> – and first write this
+document, it was most certainly true.</td></tr>
+</tbody>
+</table>
 
 <br>
 
@@ -292,8 +306,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 </li>
 <li class="toctree-l1"><a class="reference internal" href="data/index.html">2. The basics of data processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mue/index.html">3. Processing μ(E) data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="xanes/index.html">4. Analysis of XANES data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="highlevel/index.html">5. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="highlevel/index.html">4. High level actions of the object model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xanes/index.html">5. Analysis of XANES data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="feff/index.html">7. Feff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="paths/index.html">8. Scattering paths</a></li>
@@ -301,6 +315,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="fit/index.html">10. Fitting EXAFS data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="perl.html">11. Using perl to structure a fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output.html">15. Output formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
@@ -308,14 +326,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 

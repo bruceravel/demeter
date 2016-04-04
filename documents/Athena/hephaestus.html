@@ -27,7 +27,7 @@
     <link rel="top" title="Athena 0.9.24 documentation" href="index.html" />
     <link rel="prev" title="12.2. Linear combination analysis" href="examples/aucl.html" />
 
-    <link rel="stylesheet" type="text/css" href="_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="_static/keys.css" />
     <link rel="stylesheet" type="text/css" href="_static/program.css" />
 
@@ -37,11 +37,8 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
           <a href="examples/aucl.html" title="12.2. Linear combination analysis"
-             accesskey="P">previous</a> |</li>
+             accesskey="P">previous</a></li>
         <li class="nav-item nav-item-0"><a href="index.html">Athena 0.9.24 documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -53,7 +50,7 @@
             
   <div class="section" id="hephaestus">
 <h1>13. Hephaestus<a class="headerlink" href="#hephaestus" title="Permalink to this headline">¶</a></h1>
-<div class="highlight-python"><div class="highlight"><pre>In his workshop he has handmaidens he has forged out of gold
+<div class="highlight-python"><div class="highlight"><pre><span></span>In his workshop he has handmaidens he has forged out of gold
 who can move and who help him in his work. ...  With Athena,
 [Hephaestus is] important in the life of the city.  The two
 [are] the patrons of handicrafts, the arts which along with
@@ -61,21 +58,22 @@ agriculture are the support of civilization.
                              Mythology, Edith Hamilton
 </pre></div>
 </div>
-<p><font size=-1 color="#033B0A">HEPHAESTUS</font> is a program for making calculations useful to the XAS
+<p><font size=-1 color="#8C4112">HEPHAESTUS</font> is a program for making calculations useful to the XAS
 experimentalist using a periodic table, tables of X-ray absorption
 coefficients, and other elemental data.</p>
-<p>On the left of the <font size=-1 color="#033B0A">HEPHAESTUS</font> window is a stack of icons which are used
-to select the different tools. Clicking on one of the icons enables that
-tool.</p>
-<p>At the bottom of the <font size=-1 color="#033B0A">HEPHAESTUS</font> window is a status bar
-which <font size=-1 color="#033B0A">HEPHAESTUS</font> uses to convey information during the
-course of operation. Along with information about the most recently
+<p>On the left of the <font size=-1 color="#8C4112">HEPHAESTUS</font> window is a stack of icon
+buttons which are used to select the different tools.  Clicking on one
+of the icon buttons enables that tool.</p>
+<p>At the bottom of the <font size=-1 color="#8C4112">HEPHAESTUS</font> window is a status bar
+which <font size=-1 color="#8C4112">HEPHAESTUS</font> uses to convey information during the
+course of operation.  Along with information about the most recently
 completed calculation, the status bar shows topical information. As
 the mouse passes over an element in the periodic table, the element
-name, symbol, and Z number are displayed. In the Absorption tool,
-clicking on an edge or line energy will display that energy in
-wavelength units in the status bar. In the Standards tool, some
-information about the plotted data is displayed in the status bar.</p>
+name, symbol, and Z number are displayed.  In the Absorption tool,
+<img alt="leftclick" title="Left mouse button" src="./_static/leftclick.png" hspace="3"></a> clicking on an edge or line energy will display
+that energy in wavelength units in the status bar.  In the Standards
+tool, some information about the plotted data is displayed in the
+status bar.</p>
 <p>The <span class="guilabel">Hephaestus</span> menu in the menu bar provides another way
 of navigating between the tools. The mouse can be used, as can the
 keyboard. <kbd class="dark">Alt</kbd>-<kbd class="dark">e</kbd>, <kbd class="dark">Alt</kbd>-<kbd class="dark">p</kbd> and
@@ -87,7 +85,7 @@ while <kbd class="dark">Control</kbd>-<kbd class="dark">c</kbd> changes the disp
 tool.</p>
 <div class="section" id="absorption">
 <h2>13.1. Absorption<a class="headerlink" href="#absorption" title="Permalink to this headline">¶</a></h2>
-<p>This is the start page for <font size=-1 color="#033B0A">HEPHAESTUS</font> and is used to
+<p>This is the start page for <font size=-1 color="#8C4112">HEPHAESTUS</font> and is used to
 display information about edge and line energies for the elements.</p>
 <p>A periodic table is displayed atop three lists that will be filled in
 with data associated with an element. Clicking on an element in the
@@ -104,21 +102,23 @@ relative locations of the edge energy, the dominant fluorescence
 lines, and the filter edge energy.</p>
 <p>The <span class="guilabel">Absorption edges</span> table shows the value in eV of each
 edge associated with the element selected from the periodic table and
-the core-hole lifetime in eV of each edge. Clicking on a line in this
-table will display a message in the status bar giving the edge energy
-expressed in wavelength units and the core-hole lifetime expressed in
-approximate time units. Double clicking on a line will highlight all
+the core-hole lifetime in eV of each edge.  <img alt="leftclick" title="Left mouse button" src="./_static/leftclick.png" hspace="3"></a>
+Clicking on a line in this table will display a message in the status
+bar giving the edge energy expressed in wavelength units and the
+core-hole lifetime expressed in approximate time units.
+<img alt="leftclick" title="Left mouse button" src="./_static/leftclick.png" hspace="3"></a> Double-clicking on a line will highlight all
 fluorescence lines associated with that edge in the
 <span class="guilabel">Fluorescence lines</span> table.</p>
 <p>The <span class="guilabel">Fluorescence lines</span> table shows the transitions and
 emission energies in eV of every line associated with the element
 selected from the periodic table.  Also shown is the approximate
-strength, or branching ratio, of each line. The strengths for all
-lines associated with a particular edge will sum to 1. Clicking on a
-line in this table will display a message in the status bar giving the
-emission energy expressed in wavelength units.</p>
+strength, or branching ratio, of each line.  The strengths for all
+lines associated with a particular edge will sum to 1.
+<img alt="leftclick" title="Left mouse button" src="./_static/leftclick.png" hspace="3"></a> Clicking on a line in this table will display a
+message in the status bar giving the emission energy expressed in
+wavelength units.</p>
 <div class="figure align-center" id="id2">
-<span id="fig-hephabsorption"></span><a class="reference external image-reference" href="_images/Hephaestus_absorption.png"><img alt="_images/Hephaestus_absorption.png" src="_images/Hephaestus_absorption.png" style="width: 65%;" /></a>
+<span id="fig-hephabsorption"></span><a class="reference external image-reference" href="_images/Hephaestus_absorption.png"><img alt="_images/Hephaestus_absorption.png" src="_images/Hephaestus_absorption.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.1 </span><span class="caption-text">The absorption tool.</span></p>
 </div>
 <div class="section" id="filters">
@@ -132,9 +132,9 @@ measured and use the Z-2 element.</li>
 <li>Use Br for a Rb absorber because Kr is a silly filter material.</li>
 <li>Use Rh for a Ru absorber because nobody wants a Tc filter!</li>
 <li>Use I for a Ba absorber because Xe is also a silly filter material.</li>
-<li>For elements above Z=57, assume the L3 edge is being measured. Use
-the first element whose K edge is more than 90 eV above the Lalpha1
-line of the absorber.</li>
+<li>For elements above Z=57, assume the L<sub>III</sub> edge is being
+measured. Use the first element whose K edge is more than 90 eV
+above the L α <sub>1</sub> line of the absorber.</li>
 <li>Use Rb for a U or Np absorber because Kr is still a silly filter
 material.</li>
 <li>For elements below Z=24 (chromium), no filter choice is given.
@@ -143,7 +143,7 @@ with a K-edge between the line and absorption energies of the
 absorber.</li>
 </ol>
 <div class="figure align-center" id="id3">
-<span id="fig-hephfilterplot"></span><a class="reference external image-reference" href="_images/Hephaestus_filterplot.png"><img alt="_images/Hephaestus_filterplot.png" src="_images/Hephaestus_filterplot.png" style="width: 45%;" /></a>
+<span id="fig-hephfilterplot"></span><a class="reference external image-reference" href="_images/Hephaestus_filterplot.png"><img alt="_images/Hephaestus_filterplot.png" src="_images/Hephaestus_filterplot.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.2 </span><span class="caption-text">A filter plot showing why manganese is a good choice for an iron
 absorber – it passes the fluorescence, which is below the Mn K edge, but
 preferentially absorbes the elastically scattered radiation.</span></p>
@@ -157,7 +157,7 @@ visible. These are both toggle buttons. When pressed, they will
 disable all elements that cannot be measured by that edge at the
 beamline.</p>
 <div class="figure align-center" id="id4">
-<span id="fig-hephbeamline"></span><a class="reference external image-reference" href="_images/Hephaestus_beamline.png"><img alt="_images/Hephaestus_beamline.png" src="_images/Hephaestus_beamline.png" style="width: 65%;" /></a>
+<span id="fig-hephbeamline"></span><a class="reference external image-reference" href="_images/Hephaestus_beamline.png"><img alt="_images/Hephaestus_beamline.png" src="_images/Hephaestus_beamline.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.3 </span><span class="caption-text">The absorption tool with beamline customization for the NSLS-II BMM
 (6BM) beamline showing the elements whose K edges can be measured at the
 beamline.</span></p>
@@ -175,24 +175,25 @@ upper energy bounds of your beamline.</p>
 <div class="section" id="formulas">
 <h2>13.2. Formulas<a class="headerlink" href="#formulas" title="Permalink to this headline">¶</a></h2>
 <p>This tool is used to compute approximate absorption lengths for common
-or user-specified materials. To the left is a list of materials
-commonly found at synchrotron beamlines. Clicking one of those items
-inserts its stoichiometric formula into the <span class="guilabel">Formula</span> box
-and the density into the <span class="guilabel">Density</span> box.</p>
+or user-specified materials.  To the left is a list of materials
+commonly found at synchrotron beamlines.  <img alt="leftclick" title="Left mouse button" src="./_static/leftclick.png" hspace="3"></a>
+Clicking one of those items inserts its stoichiometric formula into
+the <span class="guilabel">Formula</span> box and the density into the
+<span class="guilabel">Density</span> box.</p>
 <p>At the top of the right hand part of this tool are controls for entering
 the parameters of the absorption length calculation. The formula must be
 a stoichiometric formula using a few simple rules.</p>
 <ol class="arabic simple">
 <li>Element symbols must be first letter capitalized.</li>
-<li>White space is unimportant -- it will be removed from the string. So
+<li>White space is unimportant – it will be removed from the string. So
 will dollar signs, underscores, and curly braces (in an attempt to
 handle TeX). Also a sequence like this: “/sub 3/” will be converted
 to “3” (in an attempt to handle INSPEC).</li>
-<li>Numbers can be integers or floating point numbers. Things like 5,
-0.5, 12.87, and .5 are all acceptable, as is exponential notation
-like 1e-2. Note that exponential notation must use a leading number
-to avoid confusion with element symbols. That is, 1e-2 is OK, but e-2
-is not.</li>
+<li>Numbers can be integers or floating point numbers. Things like
+<code class="docutils literal"><span class="pre">5</span></code>, <code class="docutils literal"><span class="pre">0.5</span></code>, <code class="docutils literal"><span class="pre">12.87</span></code>, and <code class="docutils literal"><span class="pre">.5</span></code> are all acceptable, as is
+exponential notation like 1e-2. Note that exponential notation must
+use a leading number to avoid confusion with element symbols. That
+is, <code class="docutils literal"><span class="pre">1e-2</span></code> is OK, but <code class="docutils literal"><span class="pre">e-2</span></code> is not.</li>
 <li>Uncapitalized symbols or unrecognized symbols will flag an error.</li>
 <li>An error will be flagged if the number of open parentheses is
 different from the number of close parentheses.</li>
@@ -204,12 +205,12 @@ centimeter. Alternately, units of molarity can be used by selecting that
 from the choice menu.</p>
 <p>Finally, an energy in eV is required at which to make the calculation.</p>
 <div class="figure align-center" id="id5">
-<span id="fig-hephformulas"></span><a class="reference external image-reference" href="_images/Hephaestus_formulas.png"><img alt="_images/Hephaestus_formulas.png" src="_images/Hephaestus_formulas.png" style="width: 65%;" /></a>
+<span id="fig-hephformulas"></span><a class="reference external image-reference" href="_images/Hephaestus_formulas.png"><img alt="_images/Hephaestus_formulas.png" src="_images/Hephaestus_formulas.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.4 </span><span class="caption-text">The formulas tool.</span></p>
 </div>
 <p>Here is an example of the results printed for BN, with a specific
 gravity of 2.29 and at energy of 7800 eV:</p>
-<div class="highlight-python"><div class="highlight"><pre>  element   number   barns/atom     cm^2/gm
+<div class="highlight-python"><div class="highlight"><pre><span></span>  element   number   barns/atom     cm^2/gm
  --------- ----------------------------------
     B        1.000  30.084        1.676
     N        1.000     123.417        5.306
@@ -238,13 +239,13 @@ must weigh out about 175 milligrams of BN. In practice, this is quite a
 lot of BN and will make a rather thick pellet. One might weigh out a
 fraction of the 175 milligrams for a real sample, giving the matrix that
 much less than 1 absorption length.</p>
-<p>As another example, here is the calculation on cobalt ferrite, CoFe2O4,
-which has a specific gravity of about 5. Computing the cross section at
-7800 eV will trigger a calculation of the sample depth corresponding to
-a unit edge step at the Co K edge. This additional calculation is
-triggered because the calculation energy, 7800 eV, is within 100 eV of
-the Co K edge energy of 7709 eV.</p>
-<div class="highlight-python"><div class="highlight"><pre>  element   number   barns/atom     cm^2/gm
+<p>As another example, here is the calculation on cobalt ferrite, CoFe<sub>2</sub>O<sub>4</sub>, which has a specific gravity of
+about 5. Computing the cross section at 7800 eV will trigger a
+calculation of the sample depth corresponding to a unit edge step at
+the Co K edge. This additional calculation is triggered because the
+calculation energy, 7800 eV, is within 100 eV of the Co K edge energy
+of 7709 eV.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>  element   number   barns/atom     cm^2/gm
  --------- ----------------------------------
     Co       1.000   33808.991      345.519
     Fe       2.000   30183.487      325.464
@@ -303,14 +304,14 @@ when the total absorption is 2.6. In this case, the sample of ferrite
 in BN can be made such that both total absorption and edge step are
 close to optimal. For instance, making the sample with 2 absorption
 lengths (i.e. 8 milligrams or 16.4 microns) of ferrite will result in
-an edge step of 0.68 -- an excellent sample! Not all materials --
+an edge step of 0.68 – an excellent sample! Not all materials –
 particularly those for which a minority dopant is the target of the
-XAS experiment -- work out so well. In practice, sample preparation is
+XAS experiment – work out so well. In practice, sample preparation is
 an exercise in compromise between total absorption and size of edge
 step.</p>
 <blockquote>
 <div><ul class="simple" id="bibtex-bibliography-hephaestus-0">
-<li>E.&nbsp;A. Stern and K.&nbsp;Kim. Thickness effect on the extended-x-ray-absorption-fine-structure amplitude. <em>Phys. Rev. B</em>, 23:3781–3787, Apr 1981. <a class="reference external" href="http://dx.doi.org/10.1103/PhysRevB.23.3781">doi:10.1103/PhysRevB.23.3781</a>.</li>
+<li>E.&nbsp;A. Stern and K.&nbsp;Kim. Thickness effect on the extended-x-ray-absorption-fine-structure amplitude. <em>Phys. Rev. B</em>, 23:3781–3787, Apr 1981. <a class="reference external" href="https://doi.org/10.1103/PhysRevB.23.3781">doi:10.1103/PhysRevB.23.3781</a>.</li>
 </ul>
 </div></blockquote>
 <p>Two final notes:</p>
@@ -322,8 +323,8 @@ homogeneous sample, it is necessary that the ferrite powder be
 composed of grains that are small compared to the absorption length.
 In this, you would want micron-sized or smaller grains. Note that a
 stack of laboratory metal meshes are not adequate for separating out
-powders for this sample. A 400 mesh -- usually the finest one in a
-common stack of sieves -- has openings of 37 microns. That is vastly
+powders for this sample. A 400 mesh – usually the finest one in a
+common stack of sieves – has openings of 37 microns. That is vastly
 too large for your ferrite XAS samples!</li>
 <li>Transmission XAS samples are often made with 10s of milligrams of
 material. That is true for the example given above and, indeed, for
@@ -348,8 +349,9 @@ given energy. The calculation requires several parameters, including</p>
 <li>The length in centimeters of the ion chamber. This can be selected
 from a list of common lengths or supplied by the user.</li>
 <li>The relative fractions of two gasses mixed together in the ion
-chambers. Each can be selected from a list which includes H2, N2, Ar,
-Ne, Kr, and Xe.</li>
+chambers. Each can be selected from a list which includes
+<span class="guilabel">H2</span>, <span class="guilabel">N2</span>, <span class="guilabel">Ar</span>, <span class="guilabel">Ne</span>,
+<span class="guilabel">Kr</span>, and <span class="guilabel">Xe</span>.</li>
 <li>The pressure of the gas inside the ion chamber, in Torr. Atmospheric
 pressure is 760 Torr.</li>
 </ol>
@@ -357,26 +359,25 @@ pressure is 760 Torr.</li>
 you change the parameters. Clicking the <kbd class="light">Compute</kbd> button
 forces an update. Clicking the <kbd class="light">Reset</kbd> button returns all
 the parameters to their initial values.</p>
-<p>As a rule of thumb, 10% is a good amount of absorption for the I0
-chamber. This will allow for a good measurement of incidence flux while
-leaving most photons for the rest of the measurement. 66 percent is a
-good amount for the It, Ir, and If chambers. This distributes the
-absorption over the entire length of the ion chamber. In the case of It,
-this leaves enough photons passing through to the reference chamber to
-allow for a reasonable measurement on Ir.</p>
+<p>As a rule of thumb, 10% is a good amount of absorption for the I<sub>0</sub> chamber. This will allow for a good measurement of incidence
+flux while leaving most photons for the rest of the measurement. 66
+percent is a good amount for the I<sub>t</sub>, I<sub>r</sub>, and I<sub>f</sub> chambers. This distributes the absorption over the entire
+length of the ion chamber. In the case of I<sub>t</sub>, this leaves
+enough photons passing through to the reference chamber to allow for a
+reasonable measurement on I<sub>r</sub>.</p>
 <p>If you know the amplifier gain and voltage signal coming from your
-current-to-voltage amplifier (such as a Keithley 427 or 428), specifying
-these will compute a crude calculation of photon flux incident upon the
-chamber.</p>
-<div class="highlight-python"><div class="highlight"><pre>     e * energy * flux * gain
+current-to-voltage amplifier (such as a Keithley 427 or 428),
+specifying these will compute a crude calculation of photon flux
+incident upon the chamber.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>     e * energy * flux * gain
 V = --------------------------
         IonizationEnergy
 </pre></div>
 </div>
 <p>The ionization energy is about 32 volts for most gasses and the electron
-charge <code class="docutils literal"><span class="pre">e</span></code> is about 1.6E-19 Coulombs.</p>
+charge <code class="docutils literal"><span class="pre">e</span></code> is about 1.6 × 10<sup>-19</sup> Coulombs.</p>
 <div class="figure align-center" id="id6">
-<span id="fig-hephion"></span><a class="reference external image-reference" href="_images/Hephaestus_ionchambers.png"><img alt="_images/Hephaestus_ionchambers.png" src="_images/Hephaestus_ionchambers.png" style="width: 65%;" /></a>
+<span id="fig-hephion"></span><a class="reference external image-reference" href="_images/Hephaestus_ionchambers.png"><img alt="_images/Hephaestus_ionchambers.png" src="_images/Hephaestus_ionchambers.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.5 </span><span class="caption-text">The ion chambers tool.</span></p>
 </div>
 </div>
@@ -389,39 +390,33 @@ will fill in a table with the data for that element.</p>
 different data table. The <span class="guilabel">Elemental data</span> tab contains a
 variety of general information. The <span class="guilabel">Ionic radii</span> tab
 contains the Shannon ionic radii. The <span class="guilabel">Neutron data</span> tab
-conatins data on thermal neutron scattering lengths and cross sections
+contains data on thermal neutron scattering lengths and cross sections
 for the major isotopes.</p>
 <div class="figure align-center" id="id7">
-<span id="fig-hephdata"></span><a class="reference external image-reference" href="_images/Hephaestus_data.png"><img alt="_images/Hephaestus_data.png" src="_images/Hephaestus_data.png" style="width: 65%;" /></a>
+<span id="fig-hephdata"></span><a class="reference external image-reference" href="_images/Hephaestus_data.png"><img alt="_images/Hephaestus_data.png" src="_images/Hephaestus_data.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.6 </span><span class="caption-text">The data tool.</span></p>
 </div>
-<p>Data sources:</p>
 <dl class="docutils">
 <dt><strong>General data</strong></dt>
 <dd>Swiped from <a class="reference external" href="http://edu.kde.org/kalzium/">http://edu.kde.org/kalzium/</a></dd>
 <dt><strong>Mossbauer data</strong></dt>
 <dd>List of Mossbauer active isotopes is from <a class="reference external" href="http://mossbauer.org">http://mossbauer.org</a>,
-which does not seem to be about Mossbauer spectroscopy anymore.</dd>
+which used to be a site about Mossbauer spectroscopy but now seems
+to be a unmaintained science news site.  <a class="reference external" href="https://en.wikipedia.org/wiki/M%C3%B6ssbauer_spectroscopy">Wikipedia</a> has
+a nice periodic table of &lt;ossbauer active elements and Darby Dyer
+keeps <a class="reference external" href="http://serc.carleton.edu/research_education/geochemsheets/techniques/mossbauer.html">a lovely page about Mossbauer</a>.</dd>
 <dt><strong>Ionic radii</strong></dt>
-<dd><p class="first" id="bibtex-bibliography-hephaestus-1"><table class="docutils citation" frame="void" id="shannon" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label">[Sha76]</td><td>R.&nbsp;D. Shannon. Revised effective ionic radii and systematic studies of interatomic distances in halides and chalcogenides. <em>Acta Crystallographica Section A</em>, 32(5):751–767, Sep 1976. <a class="reference external" href="http://dx.doi.org/10.1107/S0567739476001551">doi:10.1107/S0567739476001551</a>.</td></tr>
-</tbody>
-</table>
-</p>
+<dd><ul class="first simple" id="bibtex-bibliography-hephaestus-1">
+<li>R.&nbsp;D. Shannon. Revised effective ionic radii and systematic studies of interatomic distances in halides and chalcogenides. <em>Acta Crystallographica Section A</em>, 32(5):751–767, Sep 1976. <a class="reference external" href="https://doi.org/10.1107/S0567739476001551">doi:10.1107/S0567739476001551</a>.</li>
+</ul>
 <p class="last">Conversion of data to JSON at <a class="reference external" href="http://v.web.umkc.edu/vanhornj/shannonradii.htm">Electronic Table of Shannon Ionic
 Radii, J. David Van Horn, 2001, downloaded
 10/13/2015.</a></p>
 </dd>
 <dt><strong>Neutron data</strong></dt>
-<dd><p class="first" id="bibtex-bibliography-hephaestus-2"><table class="docutils citation" frame="void" id="sears" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label">[Sea92]</td><td>Varley&nbsp;F. Sears. Neutron scattering lengths and cross sections. <em>Neutron News</em>, 3(3):26–37, 1992. <a class="reference external" href="http://dx.doi.org/10.1080/10448639208218770">doi:10.1080/10448639208218770</a>.</td></tr>
-</tbody>
-</table>
-</p>
+<dd><ul class="first simple" id="bibtex-bibliography-hephaestus-2">
+<li>Varley&nbsp;F. Sears. Neutron scattering lengths and cross sections. <em>Neutron News</em>, 3(3):26–37, 1992. <a class="reference external" href="https://doi.org/10.1080/10448639208218770">doi:10.1080/10448639208218770</a>.</li>
+</ul>
 <p class="last">See also <a class="reference external" href="https://www.ncnr.nist.gov/resources/n-lengths/list.html">https://www.ncnr.nist.gov/resources/n-lengths/list.html</a>
 Scattering lengths are in femtometers, cross sections are in barns
 (10E-24 cm), scattering lengths and cross sections in parenthesis
@@ -437,7 +432,7 @@ for each of the emission lines. The initial and final states for each
 named K and L transition is shown. The chart follows Figure 1.1 in the
 <a class="reference external" href="http://cxro.lbl.gov/x-ray-data-booklet">Center for X-Ray Optics X-Ray Data Booklet</a> .</p>
 <div class="figure align-center" id="id8">
-<span id="fig-hephtransitions"></span><a class="reference external image-reference" href="_images/Hephaestus_transitions.png"><img alt="_images/Hephaestus_transitions.png" src="_images/Hephaestus_transitions.png" style="width: 65%;" /></a>
+<span id="fig-hephtransitions"></span><a class="reference external image-reference" href="_images/Hephaestus_transitions.png"><img alt="_images/Hephaestus_transitions.png" src="_images/Hephaestus_transitions.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.7 </span><span class="caption-text">The transitions tool.</span></p>
 </div>
 </div>
@@ -456,7 +451,7 @@ in your measured data!</p>
 energy. This can be useful in the case of poor harmonic rejection in the
 incident beam and the excitation of a much higher energy edge.</p>
 <div class="figure align-center" id="id9">
-<span id="fig-hephedgefinder"></span><a class="reference external image-reference" href="_images/Hephaestus_edgefinder.png"><img alt="_images/Hephaestus_edgefinder.png" src="_images/Hephaestus_edgefinder.png" style="width: 65%;" /></a>
+<span id="fig-hephedgefinder"></span><a class="reference external image-reference" href="_images/Hephaestus_edgefinder.png"><img alt="_images/Hephaestus_edgefinder.png" src="_images/Hephaestus_edgefinder.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.8 </span><span class="caption-text">The edge finder tool.</span></p>
 </div>
 </div>
@@ -474,7 +469,7 @@ the text box on the right and click <kbd class="light">Search</kbd> (or hit
 energy. Hopefully this will help you identify the mysterious line in
 your fluorescence data!</p>
 <div class="figure align-center" id="id10">
-<span id="fig-hephlinefinder"></span><a class="reference external image-reference" href="_images/Hephaestus_linefinder.png"><img alt="_images/Hephaestus_linefinder.png" src="_images/Hephaestus_linefinder.png" style="width: 65%;" /></a>
+<span id="fig-hephlinefinder"></span><a class="reference external image-reference" href="_images/Hephaestus_linefinder.png"><img alt="_images/Hephaestus_linefinder.png" src="_images/Hephaestus_linefinder.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.9 </span><span class="caption-text">The line finder tool.</span></p>
 </div>
 </div>
@@ -484,7 +479,7 @@ your fluorescence data!</p>
 materials. These XANES spectra can be access via this tool. You will
 find that this library is quite tiny at this time. The hope is that a
 future effort in an XAS standards library will take off. When that
-happens, this will be <font size=-1 color="#033B0A">HEPHAESTUS</font>'s interface to that effort.</p>
+happens, this will be <font size=-1 color="#8C4112">HEPHAESTUS</font>'s interface to that effort.</p>
 <p>Clicking on an element in the periodic table displays a list of all the
 standards in the library measured for that element. The disabled
 elements in the periodic table are ones for which the library has no
@@ -498,11 +493,11 @@ points are marked on the plots.</p>
 printout from EXAFS Materials that is found at many beamlines.
 <a class="reference external" href="http://exafsmaterials.com/Ref_Spectra_0.4MB.pdf">http://exafsmaterials.com/Ref_Spectra_0.4MB.pdf</a></p>
 <div class="figure align-center" id="id11">
-<span id="fig-hephstandards"></span><a class="reference external image-reference" href="_images/Hephaestus_standards.png"><img alt="_images/Hephaestus_standards.png" src="_images/Hephaestus_standards.png" style="width: 65%;" /></a>
+<span id="fig-hephstandards"></span><a class="reference external image-reference" href="_images/Hephaestus_standards.png"><img alt="_images/Hephaestus_standards.png" src="_images/Hephaestus_standards.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.10 </span><span class="caption-text">The standards tool.</span></p>
 </div>
 <div class="figure align-center" id="id12">
-<span id="fig-hephstandardsplot"></span><a class="reference external image-reference" href="_images/Hephaestus_standards_plot.png"><img alt="_images/Hephaestus_standards_plot.png" src="_images/Hephaestus_standards_plot.png" style="width: 45%;" /></a>
+<span id="fig-hephstandardsplot"></span><a class="reference external image-reference" href="_images/Hephaestus_standards_plot.png"><img alt="_images/Hephaestus_standards_plot.png" src="_images/Hephaestus_standards_plot.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.11 </span><span class="caption-text">An anotated standards plot for manganese oxalate.</span></p>
 </div>
 </div>
@@ -517,39 +512,40 @@ values are plotted.</p>
 with other elements. You can also select to plot either f', f&quot;, or both.</p>
 <p>The f' and f&quot; data can be saved to a file.</p>
 <div class="figure align-center" id="id13">
-<span id="fig-hephf1f2"></span><a class="reference external image-reference" href="_images/Hephaestus_f1f2.png"><img alt="_images/Hephaestus_f1f2.png" src="_images/Hephaestus_f1f2.png" style="width: 65%;" /></a>
+<span id="fig-hephf1f2"></span><a class="reference external image-reference" href="_images/Hephaestus_f1f2.png"><img alt="_images/Hephaestus_f1f2.png" src="_images/Hephaestus_f1f2.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.12 </span><span class="caption-text">The f' and f&quot; tool.</span></p>
 </div>
 <div class="figure align-center" id="id14">
-<span id="fig-hephf1f2plot"></span><a class="reference external image-reference" href="_images/Hephaestus_f1f2_plot.png"><img alt="_images/Hephaestus_f1f2_plot.png" src="_images/Hephaestus_f1f2_plot.png" style="width: 45%;" /></a>
+<span id="fig-hephf1f2plot"></span><a class="reference external image-reference" href="_images/Hephaestus_f1f2_plot.png"><img alt="_images/Hephaestus_f1f2_plot.png" src="_images/Hephaestus_f1f2_plot.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.13 </span><span class="caption-text">An f' and f&quot; plot for vanadium.</span></p>
 </div>
 </div>
 <div class="section" id="preferences">
 <h2>13.10. Preferences<a class="headerlink" href="#preferences" title="Permalink to this headline">¶</a></h2>
-<p>The behavior of <font size=-1 color="#033B0A">HEPHAESTUS</font> can be configured via the
+<p>The behavior of <font size=-1 color="#8C4112">HEPHAESTUS</font> can be configured via the
 preferences tool.  This uses the same preferences tool as
-<font size=-1 color="#033B0A">ATHENA</font> and <font size=-1 color="#033B0A">ARTEMIS</font>, although only those
-preference groups relevant to <font size=-1 color="#033B0A">HEPHAESTUS</font> and to plotting
+<font size=-1 color="#8C4112">ATHENA</font> and <font size=-1 color="#8C4112">ARTEMIS</font>, although only those
+preference groups relevant to <font size=-1 color="#8C4112">HEPHAESTUS</font> and to plotting
 are presented.</p>
-<p>Click on a group in the <span class="guilabel">Parameters</span> list to open a
-group. Click on a parameter to display it in the controls on the
-right. You will be given controls appropriate to each parameter's data
-type for setting the parameter value. The <kbd class="light">Your value</kbd> and
-<kbd class="light">Demeter's value</kbd> buttons can be used to restore a
-parameter's value. A description of the displayed parameter will be
-written in the large text box.</p>
+<p><img alt="leftclick" title="Left mouse button" src="./_static/leftclick.png" hspace="3"></a> Click on a group in the <span class="guilabel">Parameters</span>
+list to open a group.  <img alt="leftclick" title="Left mouse button" src="./_static/leftclick.png" hspace="3"></a> Click on a parameter to
+display it in the controls on the right.  You will be given controls
+appropriate to each parameter's data type for setting the parameter
+value.  The <kbd class="light">Your value</kbd> and <kbd class="light">Demeter's
+value</kbd> buttons can be used to restore a parameter's value.  A
+description of the displayed parameter will be written in the large
+text box.</p>
 <p>Parameters can be applied for the current session or applied and saved
 to your configuration file.</p>
 </div>
 <div class="section" id="credits">
 <h2>13.11. Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>The layout of <font size=-1 color="#033B0A">HEPHAESTUS</font> -- with its button bar on the
-left side which changes the mode of the main part of the program --
-was inspired by the personal information management program I use
-on my KDE systems, Kontact. I found it effective so I swiped it for
-this program.</li>
+<li>The layout of <font size=-1 color="#8C4112">HEPHAESTUS</font> – with its button bar on the
+left side which changes the mode of the main part of the program
+– was inspired by the personal information management program I
+use on my KDE systems, Kontact. I found it effective so I swiped it
+for this program.</li>
 <li>The pictures used on the buttons were cropped from images I found
 using Google. The picture of the ion chamber is from the Advanced
 Designed Consulting web site. Their ion chambers are quite
@@ -561,10 +557,6 @@ Commons license at <a class="reference external" href="http://battellemedia.com/
 <li>The formulas utility owes much to Gerry Roe, who pointed out a bug,
 and Erik Gullikson, whose similar utility on the web set me
 straight.</li>
-<li>The information used in the chemical data utility is from the
-kalziumrc file, which was swiped from the Kalzium package. See
-<a class="reference external" href="http://edu.kde.org/kalzium/">http://edu.kde.org/kalzium/</a> for more details. The data for
-Mossbauer active isotopes was taken from <a class="reference external" href="http://www.mossbauer.org">http://www.mossbauer.org</a></li>
 <li>The ion chamber and edge finder utilities were inspired by the
 similar utilities in the data acquisition program by Lars Fuerenlid
 and Johnny Kirkland that was widely used at NSLS. Lars and Johnny
@@ -572,7 +564,7 @@ seem to have a deeper love of pastel than do I.</li>
 <li>The electronic transitions chart was created from scratch but
 slavishly following Figure 1.1 in the
 <a class="reference external" href="http://cxro.lbl.gov/x-ray-data-booklet">Center for X-Ray Optics X-Ray Data Booklet</a> .</li>
-<li><font size=-1 color="#033B0A">HEPHAESTUS</font> makes use of several things from
+<li><font size=-1 color="#8C4112">HEPHAESTUS</font> makes use of several things from
 <a class="reference external" href="http://www.cpan.org">http://www.cpan.org</a></li>
 <li>And, of course, the users of my various software efforts deserve all
 the credit for kind praise and useful feedback over these many
@@ -582,47 +574,47 @@ years.</li>
 <dl class="docutils">
 <dt><strong>The Elam tables</strong></dt>
 <dd><ul class="first simple" id="bibtex-bibliography-hephaestus-3">
-<li>W.&nbsp;T. Elam, B.&nbsp;D. Ravel, and J.&nbsp;R. Sieber. A new atomic database for X-ray spectroscopic calculations. <em>Radiation Physics and Chemistry</em>, 63:121–128, February 2002. <a class="reference external" href="http://dx.doi.org/10.1016/S0969-806X(01)00227-4">doi:10.1016/S0969-806X(01)00227-4</a>.</li>
+<li>W.&nbsp;T. Elam, B.&nbsp;D. Ravel, and J.&nbsp;R. Sieber. A new atomic database for X-ray spectroscopic calculations. <em>Radiation Physics and Chemistry</em>, 63:121–128, February 2002. <a class="reference external" href="https://doi.org/10.1016/S0969-806X(01)00227-4">doi:10.1016/S0969-806X(01)00227-4</a>.</li>
 </ul>
-<p class="last">This is the source of data for the
-edge and line finders and for the filter plot.</p>
+<p class="last">This is the source of data for the edge and line finders and for
+the filter plot.</p>
 </dd>
 <dt><strong>The McMaster tables</strong></dt>
 <dd><ul class="first simple" id="bibtex-bibliography-hephaestus-4">
-<li>W.&nbsp;H. McMaster, N.&nbsp;Kerr Del&nbsp;Grande, J.&nbsp;H. Mallett, and J.&nbsp;H. Hubbell. Compilation of x-ray cross sections UCRL-50174, sections I, II revision 1, III, IV. <em>Atomic Data and Nuclear Data Tables</em>, 8:443–444, 1970. <a class="reference external" href="http://dx.doi.org/10.1016/S0092-640X(70)80026-2">doi:10.1016/S0092-640X(70)80026-2</a>.</li>
+<li>W.&nbsp;H. McMaster, N.&nbsp;Kerr Del&nbsp;Grande, J.&nbsp;H. Mallett, and J.&nbsp;H. Hubbell. Compilation of x-ray cross sections UCRL-50174, sections I, II revision 1, III, IV. <em>Atomic Data and Nuclear Data Tables</em>, 8:443–444, 1970. <a class="reference external" href="https://doi.org/10.1016/S0092-640X(70)80026-2">doi:10.1016/S0092-640X(70)80026-2</a>.</li>
 </ul>
-<p class="last">These data were originally
-compiled in machine readable form by Pathikrit Bandyopadhyay.</p>
+<p class="last">These data were originally compiled in machine readable form by
+Pathikrit Bandyopadhyay.</p>
 </dd>
 <dt><strong>The Henke tables</strong></dt>
 <dd><ul class="first simple" id="bibtex-bibliography-hephaestus-5">
-<li>B.L. Henke, E.M. Gullikson, and J.C. Davis. X-ray interactions: Photoabsorption, scattering, transmission, and reflection at e = 50-30,000 ev, z = 1-92. <em>Atomic Data and Nuclear Data Tables</em>, 54(2):181 – 342, 1993. <a class="reference external" href="http://dx.doi.org/10.1006/adnd.1993.1013">doi:10.1006/adnd.1993.1013</a>.</li>
+<li>B.L. Henke, E.M. Gullikson, and J.C. Davis. X-Ray Interactions: Photoabsorption, Scattering, Transmission, and Reflection at E = 50-30,000 eV, Z = 1-92. <em>Atomic Data and Nuclear Data Tables</em>, 54(2):181 – 342, 1993. <a class="reference external" href="https://doi.org/10.1006/adnd.1993.1013">doi:10.1006/adnd.1993.1013</a>.</li>
 </ul>
 <p class="last">The data is available at
 <a class="reference external" href="http://www-cxro.lbl.gov/optical_constants">http://www-cxro.lbl.gov/optical_constants</a>.</p>
 </dd>
 <dt><strong>The Chantler tables</strong></dt>
 <dd><ul class="first simple" id="bibtex-bibliography-hephaestus-6">
-<li>C.&nbsp;T. Chantler. Theoretical form factor, attenuation, and scattering tabulation for z=1–92 from e=1–10 ev to e=0.4–1.0 mev. <em>Journal of Physical and Chemical Reference Data</em>, 24(1):71–643, 1995. <a class="reference external" href="http://dx.doi.org/10.1063/1.555974">doi:10.1063/1.555974</a>.</li>
+<li>C.&nbsp;T. Chantler. Theoretical Form Factor, Attenuation, and Scattering Tabulation for Z=1-92 from E=1–10 eV to E=0.4–1.0 MeV. <em>Journal of Physical and Chemical Reference Data</em>, 24(1):71–643, 1995. <a class="reference external" href="https://doi.org/10.1063/1.555974">doi:10.1063/1.555974</a>.</li>
 </ul>
-<p class="last">The data files can be found
-at <a class="reference external" href="http://physics.nist.gov/PhysRefData/FFast/html/form.html">http://physics.nist.gov/PhysRefData/FFast/html/form.html</a></p>
+<p class="last">The data files can be found at
+<a class="reference external" href="http://physics.nist.gov/PhysRefData/FFast/html/form.html">http://physics.nist.gov/PhysRefData/FFast/html/form.html</a></p>
 </dd>
 <dt><strong>The Cromer-Liberman tables</strong></dt>
 <dd><ul class="first last simple" id="bibtex-bibliography-hephaestus-7">
-<li>S.&nbsp;Brennan and P.&nbsp;L. Cowan. A suite of programs for calculating x‐ray absorption, reflection, and diffraction performance for a variety of materials at arbitrary wavelengths. <em>Review of Scientific Instruments</em>, 63(1):850–853, 1992. <a class="reference external" href="http://dx.doi.org/10.1063/1.1142625">doi:10.1063/1.1142625</a>.</li>
+<li>S.&nbsp;Brennan and P.&nbsp;L. Cowan. A suite of programs for calculating x‐ray absorption, reflection, and diffraction performance for a variety of materials at arbitrary wavelengths. <em>Review of Scientific Instruments</em>, 63(1):850–853, 1992. <a class="reference external" href="https://doi.org/10.1063/1.1142625">doi:10.1063/1.1142625</a>.</li>
 </ul>
 </dd>
 <dt><strong>The Shaltout tables</strong></dt>
 <dd><ul class="first last simple" id="bibtex-bibliography-hephaestus-8">
-<li>Abdallah Shaltout, Horst Ebel, and Robert Svagera. Update of photoelectric absorption coefficients in the tables of mcmaster. <em>X-Ray Spectrometry</em>, 35(1):52–56, 2006. <a class="reference external" href="http://dx.doi.org/10.1002/xrs.815">doi:10.1002/xrs.815</a>.</li>
+<li>Abdallah Shaltout, Horst Ebel, and Robert Svagera. Update of photoelectric absorption coefficients in the tables of McMaster. <em>X-Ray Spectrometry</em>, 35(1):52–56, 2006. <a class="reference external" href="https://doi.org/10.1002/xrs.815">doi:10.1002/xrs.815</a>.</li>
 </ul>
 </dd>
 </dl>
 </div>
 <div class="section" id="bugs-and-limitations">
 <h2>13.12. Bugs and limitations<a class="headerlink" href="#bugs-and-limitations" title="Permalink to this headline">¶</a></h2>
-<p>Every calculation at high energy is inaccurate in <font size=-1 color="#033B0A">HEPHAESTUS</font>.
+<p>Every calculation at high energy is inaccurate in <font size=-1 color="#8C4112">HEPHAESTUS</font>.
 Xray::Absorption does not correctly handle the mass-energy absorption
 coefficients at high energy, although the ion chamber utility does
 attempt a (very) crude correction.</p>
@@ -631,24 +623,33 @@ there is something you would like to see, you should send the data in an
 easily readable format (i.e. plain text is lovely). Merely suggesting
 new data types is unlikely to have any effect. Supplying the data is
 highly likely to have an effect.</p>
-<p>My wish list includes auger/fluorescence branching ratios in one of
-the periodic table utilities and providing the Berger/Hubble XCOM
-tables and <font size=-1 color="#033B0A">FEFF</font>'s optical calculations as
-data resources.</p>
+<p>My wish list includes:</p>
+<ul>
+<li><p class="first">auger/fluorescence branching ratios in the Data utility</p>
+</li>
+<li><p class="first">a tool for approximating the energy response of a flat mirror, like
+<a class="reference external" href="http://henke.lbl.gov/optical_constants/layer2.html">this</a> or
+<a class="reference external" href="http://henke.lbl.gov/optical_constants/bilayer.html">that</a></p>
+</li>
+<li><p class="first">providing the Berger/Hubble XCOM tables and <font size=-1 color="#8C4112">FEFF</font>'s optical
+calculations as data resources.</p>
 <blockquote>
 <div><ul class="simple" id="bibtex-bibliography-hephaestus-9">
-<li>MJ&nbsp;Berger, JH&nbsp;Hubbell, SM&nbsp;Seltzer, J&nbsp;Chang, JS&nbsp;Coursey, R&nbsp;Sukumar, DS&nbsp;Zucker, and K&nbsp;Olsen. Xcom: Photon cross sections database. <em>NIST Standard reference database</em>, 2013. <a class="reference external" href="http://www.nist.gov/pml/data/xcom/">URL: http://www.nist.gov/pml/data/xcom/</a>.</li>
+<li>MJ&nbsp;Berger, JH&nbsp;Hubbell, SM&nbsp;Seltzer, J&nbsp;Chang, JS&nbsp;Coursey, R&nbsp;Sukumar, DS&nbsp;Zucker, and K&nbsp;Olsen. XCOM: Photon cross sections database. <em>NIST Standard reference database</em>, 2013. <a class="reference external" href="http://www.nist.gov/pml/data/xcom/">URL: http://www.nist.gov/pml/data/xcom/</a>.</li>
+<li>M.&nbsp;P. Prange, J.&nbsp;J. Rehr, G.&nbsp;Rivas, J.&nbsp;J. Kas, and John&nbsp;W. Lawson. Real space calculation of optical constants from optical to x-ray frequencies. <em>Phys. Rev. B</em>, 80:155110, Oct 2009. <a class="reference external" href="https://doi.org/10.1103/PhysRevB.80.155110">doi:10.1103/PhysRevB.80.155110</a>.</li>
 </ul>
 </div></blockquote>
+</li>
+</ul>
 
 <br>
 
 <br>
 <hr class="docutils" />
-<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
-copyright © 2015 Bruce Ravel</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
 <p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
-<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
 consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
 </div>
 </div>
@@ -667,13 +668,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="forward.html">1. Forward</a></li>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">2. Introduction to ATHENA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="import/index.html">3. Data import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="plot/index.html">5. Plotting Your Data in ATHENA</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ui/index.html">6. ATHENA's User Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bkg/index.html">4. Normalization and background removal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot/index.html">5. Plotting Your Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ui/index.html">6. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="params/index.html">7. Setting parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="output/index.html">8. Data export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="process/index.html">9. Data processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/index.html">10. Data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="other/index.html">11. Other main window chores</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples/index.html">12. Worked examples</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">13. Hephaestus</a><ul>
@@ -692,16 +693,22 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 </ul>
 </li>
 </ul>
-<h3>Links</h3>
+<h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -733,16 +740,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
           <a href="examples/aucl.html" title="12.2. Linear combination analysis"
-             >previous</a> |</li>
+             >previous</a></li>
         <li class="nav-item nav-item-0"><a href="index.html">Athena 0.9.24 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>

@@ -6,16 +6,16 @@
 Introduction
 ============
 
-:demeter:`feff` and :demeter:`ifeffit` are amazing tools. Together and
-over the years, they have enabled the analysis and interpretation of
-many thousands of EXAFS experiments spanning an impressive broad range
-of scientific disciplines.
+:demeter:`feff` and :demeter:`ifeffit` are amazing tools.  Together
+and over the years, they have enabled the analysis and interpretation
+of many thousands of EXAFS experiments spanning an impressively broad
+range of scientific disciplines.
 
 Unfortunately, each of these tools is quite difficult to use to its
-full capabilities. The lack of readily accessible, flexible,
-highly-capable high-level tools has, for the most part, limited the
-use of :demeter:`feff` and :demeter:`ifeffit` to relatively simple
-problem. Most examples of their use in the literature are restricted
+full capabilities.  The lack of readily accessible, flexible,
+highly-capable high-level tools\ [#f1]_ has, to some extent, limited
+the use of :demeter:`feff` and :demeter:`ifeffit` to relatively simple
+problem.  Most examples of their use in the literature are restricted
 to fairly simple parameterization of a model structure that is
 calculated using :demeter:`feff` in the most straight-forward manner.
 
@@ -44,58 +44,61 @@ than a decade of writing software specifically intended to enable the
 use of :demeter:`feff` and :demeter:`ifeffit`.
 
 Many people reading this wil be familiar with my programs
-:demeter:`athena` and :demeter:`artemis`. They are in wide use
-throughout the XAS community and around the world.  As graphical
-interfaces to XAS data management and the use of :demeter:`feff` and
-:demeter:`ifeffit`, each has proven successful to a certain
-degree. Each one, however, suffers from one major flaw (and any number
-of minor flaws).  *There is no easy way to write a small, personal
-program that replicates the exact behavior of the GUI programs.*
+:demeter:`athena` and :demeter:`artemis`.  They have been in wide use
+for many years throughout the XAS community and around the world.  As
+graphical interfaces to XAS data management and the use of
+:demeter:`feff` and :demeter:`ifeffit`, each has proven successful to
+a certain degree.  The original versions of the programs suffered from
+a major flaw (and any number of minor ones!).  *There was no easy way
+to write a small, personal program that replicated the exact behavior
+of the GUI programs.*
 
 As convenient as :demeter:`athena` is for processing modest amounts of
 data at the beamline or upon returning home from a beam run, it is not
-really the right tool for managing huge volumes of data. In several
-days at a beamline with quick-XAS capabilities, it is quite common to
-generate many hundreds, even many thousands, of XAS scans. The
+really the right tool for managing huge volumes of data.  These days,
+at a beamline with quick-XAS capabilities, it is quite common to
+generate many hundreds, even many thousands, of XAS scans.  The
 interactivity that makes :demeter:`athena` so appealing when handling
 small amounts of data becomes a tedious, repetitive nightmare when
-processing large amounts of data.  Unfortunately, there is no way of
-separating the data processing capabilities of :demeter:`athena` from
-the graphical interface. (This is not an inherent flaw of any of the
-tools used to create :demeter:`athena` -- it is entirely due to my own
-inexperience when I began writing :demeter:`athena`.)
+processing large amounts of data.  Unfortunately, there used to be no
+way of separating the data processing capabilities of
+:demeter:`athena` from the graphical interface.  This is not an
+inherent flaw of any of the tools used to create :demeter:`athena` |nd|
+it is entirely due to my own inexperience when I began writing
+:demeter:`athena`.
 
-This problem is where :demeter:`demeter` starts. :demeter:`demeter` is
-:quoted:`middleware` -- it is a system of software tools that sit
-between :demeter:`feff` and :demeter:`ifeffit` and the program that
-the user actually interacts with.  :demeter:`demeter` is not, by
-itself, a computer program. Rather it is the tool from which computer
-programs for XAS data processing and analysis are built.
+This problem is where :demeter:`demeter` started.  :demeter:`demeter`
+is :quoted:`middleware` |nd| it is a system of software tools that
+sits above :demeter:`feff` and :demeter:`ifeffit` and below the
+program that the user actually interacts with.  :demeter:`demeter` is
+not, by itself, a computer program.  Rather it is the tool from which
+computer programs for XAS data processing and analysis are built.
 
 The package containing the :demeter:`demeter` libraries actually does
-include various kinds of interface tools. For example, there is a
-version of :demeter:`artemis` written using
-:demeter:`demeter`. However, this version of :demeter:`artemis` does
-not add any functionality related to XAS data management not already
-present in the :demeter:`demeter` libraries. It is merely a graphical
-shell layered on top of :demeter:`demeter`'s capabilities. As a
-result, it is possible -- indeed, often quite easy -- to write a small
-program which performs a fit to EXAFS data in exactly the same manner
-as :demeter:`artemis`.
+include various kinds of interface tools.  For example,
+:demeter:`artemis` is written using :demeter:`demeter`.  However, this
+version of :demeter:`artemis` does not add any functionality related
+to XAS data management not already present in the :demeter:`demeter`
+libraries.  It is merely a graphical shell layered on top of
+:demeter:`demeter`'s capabilities.  As a result, it is possible |nd|
+indeed, often quite easy |nd| to write a small program which performs a
+fit to EXAFS data in exactly the same manner as :demeter:`artemis`.
 
 Armed with this middleware layer, it is much easier to consider
 implementing tools for automating large quantities of data or writing
-tools for special, one-off data processing chores. And :demeter:`demeter` offers
-tools for easily passing data between :demeter:`athena` and :demeter:`artemis` and your own
+tools for special, one-off data processing chores.  And
+:demeter:`demeter` offers tools for easily passing data between
+:demeter:`athena` and :demeter:`artemis` and your own
 :demeter:`demeter`-using programs.
 
 Tools for automation and for easy access to the capabilities available
 in the GUI programs would be benefit enough to merit the creation of a
-software library. :demeter:`demeter`, however, offers quite a bit more than that.
-It has capabilities already written or under development for very
-sophisticated uses of :demeter:`feff`. Inspired by the articles cited above and by
-other interesting uses of XAS theory, :demeter:`demeter` offers easy access to a
-variety of ways of manipulating the output of :demeter:`feff` that had previously
+software library. :demeter:`demeter`, however, offers quite a bit more
+than that.  It has capabilities already written or under development
+for very sophisticated uses of :demeter:`feff`. Inspired by the
+articles cited above and by other interesting uses of XAS theory,
+:demeter:`demeter` offers easy access to a variety of ways of
+manipulating the output of :demeter:`feff` that had previously
 required a deep understanding of :demeter:`feff`'s inner workings.
 
 So there you have it. :demeter:`demeter` is a software tool for making
@@ -104,20 +107,21 @@ tractable. This document is full of code samples which demonstrate the
 :demeter:`demeter` way of solving XAS data management and analysis
 problems. In many cases, you should be able to cut-and-paste examples
 into your own programs, modifying them slightly to suite your
-particular problem. Hopefully, :demeter:`demeter` has enough flexibility that you
-can begin working on problems that have not even crossed my mind.
+particular problem. Hopefully, :demeter:`demeter` has enough
+flexibility that you can begin working on problems that have not even
+crossed my mind.
 
 
 The technology behind Demeter
 -----------------------------
 
 :demeter:`demeter` uses `perl <http://perl.org>`__. This is, I
-suppose, an unsexy choice these days.  All the cool kids are, after
-all, using python or ruby.  I like perl.  I can think in perl. And I can
-code quickly and fluently in perl.  What's more, perl has `CPAN
+suppose, an unsexy choice these days.  All the cool kids, after all,
+use python.  I like perl.  I can think in perl. And I can code quickly
+and fluently in perl.  What's more, perl has `CPAN
 <http://www.cpan.org/>`__, the worlds largest repository of language
 extensions.  CPAN means that I have far fewer wheels to recreate (and
-probably get wrong). Virtually any language extension I need in
+probably get wrong).  Virtually any language extension I need in
 pursuit of making :demeter:`demeter` awesome probably already exists.
 
 :demeter:`demeter` uses `Moose <https://metacpan.org/pod/Moose>`__.
@@ -236,3 +240,10 @@ manual
 
 I will, on occassion in this document, point the reader to web sites
 where more of the programming details can be found.
+
+
+.. rubric:: Footnotes
+
+.. [#f1] This isn't really true now that :demeter:`larch` exists.
+   When I started writing :demeter:`demeter` |nd| and first write this
+   document, it was most certainly true.

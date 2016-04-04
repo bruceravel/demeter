@@ -29,7 +29,7 @@
     <link rel="next" title="12.2. Linear combination analysis" href="aucl.html" />
     <link rel="prev" title="12. Worked examples" href="index.html" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/subfig.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
     <link rel="stylesheet" type="text/css" href="../_static/program.css" />
 
@@ -39,11 +39,8 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
           <a href="aucl.html" title="12.2. Linear combination analysis"
-             accesskey="N">next</a> |</li>
+             accesskey="N">next</a></li>
         <li class="right" >
           <a href="index.html" title="12. Worked examples"
              accesskey="P">previous</a> |</li>
@@ -68,17 +65,18 @@ site</a>.
 They include three scans on an iron foil measured at 60K, and two each
 at 150K and 300K.</p>
 <p>To begin, <a class="reference external" href="../import/columns.html">import</a> the first scan at 60K,
-<code class="file docutils literal"><span class="pre">fe.060</span></code>. This is a relatively simple data file containing columns for
-energy and the signals on the I0 and It detectors. Select columns to
-form μ(E) data as shown in the image below.</p>
+<code class="file docutils literal"><span class="pre">fe.060</span></code>. This is a relatively simple data file containing
+columns for energy and the signals on the I<sub>0</sub> and I<sub>t</sub>
+detectors. Select columns to form μ(E) data as shown in the image
+below.</p>
 <div class="figure align-center" id="id1">
-<span id="fig-fecol"></span><a class="reference external image-reference" href="../_images/ex_data_col.png"><img alt="../_images/ex_data_col.png" src="../_images/ex_data_col.png" style="width: 65%;" /></a>
+<span id="fig-fecol"></span><a class="reference external image-reference" href="../_images/ex_data_col.png"><img alt="../_images/ex_data_col.png" src="../_images/ex_data_col.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 12.1 </span><span class="caption-text">The column selection dialog with columns chosen correctly for the iron
 foil data.</span></p>
 </div>
 <p>When I collected these data, I purposefully miscalibrated the
 monochromator so that I would have a data set for explaining the use of
-<font size=-1 color="#033B0A">ATHENA</font>'s calibration tool. The first thing to do, then, is to correctly
+<font size=-1 color="#8C4112">ATHENA</font>'s calibration tool. The first thing to do, then, is to correctly
 calibrate these data.</p>
 <p>Open the <a class="reference external" href="../process/cal.html">calibration tool</a> by selecting
 <span class="guilabel">Calibrate energies</span> from the main menu. The derivative of
@@ -99,13 +97,13 @@ Derivative of μ(E).</span></p>
 <p class="caption"><span class="caption-number">Fig. 12.3 </span><span class="caption-text">Second derivative of μ(E).</span></p>
 </div>
 </div><p id="_fig-febegin">We want to select the peak of the first derivative and set that point
-to 7112 eV. We can simply use the currently selected point -- it is
+to 7112 eV. We can simply use the currently selected point – it is
 quite close to the peak. Alternately, we can click the <kbd class="light">Select
-a point</kbd> button and try to click on the plot, selecting point even
-closer to the peak.  To do that, it would be helpful to change the
-value of emin and emax in the <a class="reference external" href="../plot/tabs.html">energy plot tab</a>
-the replot the data such that a tighter region around the peak is
-displayed.</p>
+a point</kbd> button and try to <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> double-click on
+the plot, selecting point even closer to the peak.  To do that, it
+would be helpful to change the value of emin and emax in the <a class="reference external" href="../plot/tabs.html">energy
+plot tab</a> the replot the data such that a
+tighter region around the peak is displayed.</p>
 <p>A third, highly accurate way of finding the exact peak of the first
 derivative is to plot the second derivative of the data by selecting
 <span class="guilabel">second deriv</span> from the <span class="guilabel">display</span> menu. The second
@@ -113,18 +111,17 @@ derivative of the data along with the currently selected value of edge
 position are shown on the right of the figure above.</p>
 <p>With the second derivative selected for display, the <kbd class="light">Find
 zero-crossing</kbd> button becomes activated. clicking that button will
-cause <font size=-1 color="#033B0A">ATHENA</font> to search in both directions for the nearest
+cause <font size=-1 color="#8C4112">ATHENA</font> to search in both directions for the nearest
 energy value that hits the y=0 axis and select that as the new edge
 position. The value should be about 7105.3 eV. Click the
 <kbd class="light">Calibrate</kbd> button and return to the main window.</p>
 <p>You will notice two things once the main window is displayed again:
 the value of <tt><font color="#387A38">«E0»</font></tt> is now 7112 and the value of the
-<tt><font color="#387A38">«eshift»</font></tt> parameter is now about 6.7. In <font size=-1 color="#033B0A">ATHENA</font>,
+<tt><font color="#387A38">«eshift»</font></tt> parameter is now about 6.7. In <font size=-1 color="#8C4112">ATHENA</font>,
 calibration works by simultaneously setting those two parameters such
 that the selected point has the chosen energy value.</p>
-<p>Now, import the second scan at 60K, <code class="file docutils literal"><span class="pre">fe.061</span></code>. <a class="reference external" href="../ui/mark.html">Mark</a>
-both groups by clicking on their little purple buttons and plot them in
-energy by clicking on the <kbd class="purple">E</kbd> button.</p>
+<p>Now, import the second scan at 60K, <code class="file docutils literal"><span class="pre">fe.061</span></code>. <a class="reference external" href="../ui/mark.html">Mark</a> both groups by clicking on their mark buttons and
+plot them in energy by clicking on the <kbd class="purple">E</kbd> button.</p>
 <div class="figure compound align-center" id="_fig-fealign">
 <div style="width: 45%" class="subfigure" id="id4">
 <span id="fig-fedatamisaligned"></span><a class="reference external image-reference" href="../_images/ex_data_misaligned.png"><img alt="../_images/ex_data_misaligned.png" src="../_images/ex_data_misaligned.png" style="width: 100%;" /></a>
@@ -170,10 +167,11 @@ for the <code class="file docutils literal"><span class="pre">fe.060</span></cod
 k=0 is different for the two spectra and the χ(k) data from the
 background removal are different.</p>
 <p>To correct this, you can either enter the value for <tt><font color="#387A38">«E0»</font></tt>
-from <code class="file docutils literal"><span class="pre">fe.060</span></code> -- 7112 eV -- into the <tt><font color="#387A38">«E0»</font></tt> text entry box
-after clicking on <code class="file docutils literal"><span class="pre">fe.061</span></code> in the group list. Alternately, you can
-select <code class="file docutils literal"><span class="pre">fe.060</span></code> in the group list, then right click on the
-<tt><font color="#387A38">«E0»</font></tt> parameter to raise its <a class="reference external" href="../params/constrain.html#constraining-individual-parameters">context menu</a> and
+from <code class="file docutils literal"><span class="pre">fe.060</span></code> – 7112 eV – into the <tt><font color="#387A38">«E0»</font></tt> text
+entry box after <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> clicking on <code class="file docutils literal"><span class="pre">fe.061</span></code> in the
+group list. Alternately, you can select <code class="file docutils literal"><span class="pre">fe.060</span></code> in the group
+list, then <img alt="rightclick" title="Right mouse button" src="../_static/rightclick.png" hspace="3"></a> right click on the <tt><font color="#387A38">«E0»</font></tt>
+parameter to raise its <a class="reference external" href="../params/constrain.html#constraining-individual-parameters">context menu</a> and
 select <span class="guilabel">Set all groups to this value of E0</span>. Once the
 <tt><font color="#387A38">«E0»</font></tt> parameters are set the same for these data sets, we
 see above in the lower right that the data are quite consistent
@@ -183,17 +181,17 @@ Using the file selection dialog, select the remaining data files as
 described in <a class="reference external" href="../import/multiple.html">the section on multiple file
 import</a> and shown below.</p>
 <div class="figure align-center" id="id8">
-<span id="fig-datamany"></span><a class="reference external image-reference" href="../_images/ex_data_many.png"><img alt="../_images/ex_data_many.png" src="../_images/ex_data_many.png" style="width: 65%;" /></a>
+<span id="fig-datamany"></span><a class="reference external image-reference" href="../_images/ex_data_many.png"><img alt="../_images/ex_data_many.png" src="../_images/ex_data_many.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 12.8 </span><span class="caption-text">Importing the remaining iron foil data.</span></p>
 </div>
-<p>Clicking the <kbd class="light">Open button</kbd> will import all those data files
-and list them in the group list. Once they are imported, <a class="reference external" href="../ui/mark.html">mark</a> all of the groups either by typing
-<kbd class="dark">Alt</kbd>-<kbd class="dark">a</kbd> or by clicking the <kbd class="light">A</kbd> mark button
-above the group list. Finally select the <code class="file docutils literal"><span class="pre">fe.060</span></code> group by clicking
-on it in the group list. Once you have done all of that,
-<font size=-1 color="#033B0A">ATHENA</font> will look like this.</p>
+<p>Clicking the <kbd class="light">Open button</kbd> will import all those data
+files and list them in the group list. Once they are imported, <a class="reference external" href="../ui/mark.html">mark</a> all of the groups either by typing
+<kbd class="dark">Alt</kbd>-<kbd class="dark">a</kbd> or by clicking the <kbd class="light">A</kbd> mark
+button above the group list. Finally select the <code class="file docutils literal"><span class="pre">fe.060</span></code> group
+by <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> clicking on it in the group list. Once you
+have done all of that, <font size=-1 color="#8C4112">ATHENA</font> will look like this.</p>
 <div class="figure align-center" id="id9">
-<span id="fig-datamarked"></span><a class="reference external image-reference" href="../_images/ex_data_marked.png"><img alt="../_images/ex_data_marked.png" src="../_images/ex_data_marked.png" style="width: 65%;" /></a>
+<span id="fig-datamarked"></span><a class="reference external image-reference" href="../_images/ex_data_marked.png"><img alt="../_images/ex_data_marked.png" src="../_images/ex_data_marked.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 12.9 </span><span class="caption-text">All of the iron foil data have been imported and marked.</span></p>
 </div>
 <p>At this point, only <code class="file docutils literal"><span class="pre">fe.061</span></code> has been aligned to <code class="file docutils literal"><span class="pre">fe.060</span></code> and had
@@ -201,47 +199,49 @@ its value of <tt><font color="#387A38">«E0»</font></tt> properly constrained. 
 for the remaining data groups.</p>
 <p>Processing all 5 of the remaining data groups would be quite tedious
 if we had to handle each one individually. Fortunately
-<font size=-1 color="#033B0A">ATHENA</font> has lots of tools to help process large quantities
+<font size=-1 color="#8C4112">ATHENA</font> has lots of tools to help process large quantities
 of data. To <a class="reference external" href="../process/align.html#align">align</a> the remaining data
 to <code class="file docutils literal"><span class="pre">fe.060</span></code>, choose <span class="guilabel">Align data</span> from the main
-menu. <font size=-1 color="#033B0A">ATHENA</font> chooses the first item in the group list as
+menu. <font size=-1 color="#8C4112">ATHENA</font> chooses the first item in the group list as
 the data alignment standard and selects the second group as the one to
 align. These selections are shown at the top of this.</p>
-<p>Of course, <code class="file docutils literal"><span class="pre">fe.061</span></code> has already be aligned. If you select any other
-group by clicking on it in the group list, you will see that it it is
-not yet aligned. You can align the remaining groups by selecting each
-on in turn and clicking the <kbd class="light">Auto align</kbd> button --- but that
-seems tedious. Much better to click the <kbd class="light">Align marked groups</kbd>
-button. Since all the groups are aligned, the automated alignment
-algorithm will be applied to each one in turn.</p>
+<p>Of course, <code class="file docutils literal"><span class="pre">fe.061</span></code> has already be aligned. If you select any
+other group by <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> clicking on it in the group list,
+you will see that it it is not yet aligned. You can align the
+remaining groups by selecting each on in turn and clicking the
+<kbd class="light">Auto align</kbd> button – but that seems tedious. Much
+better to click the <kbd class="light">Align marked groups</kbd> button. Since
+all the groups are aligned, the automated alignment algorithm will be
+applied to each one in turn.</p>
 <div class="figure align-center" id="id10">
-<span id="fit-dataalignmarked"></span><a class="reference external image-reference" href="../_images/ex_data_alignmarked.png"><img alt="../_images/ex_data_alignmarked.png" src="../_images/ex_data_alignmarked.png" style="width: 65%;" /></a>
+<span id="fit-dataalignmarked"></span><a class="reference external image-reference" href="../_images/ex_data_alignmarked.png"><img alt="../_images/ex_data_alignmarked.png" src="../_images/ex_data_alignmarked.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 12.10 </span><span class="caption-text">All of the iron foil data are marked and waiting to be aligned.</span></p>
 </div>
-<p>Once finished, you can click on groups to check on the quality of the
-alignment. Since these are very good data, the automated alignment
-should have worked well. Click on the <kbd class="light">Return to the main
-window</kbd> button to continue with the data processing.</p>
+<p>Once finished, you can <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> click on groups to check
+on the quality of the alignment. Since these are very good data, the
+automated alignment should have worked well.  Click on the
+<kbd class="light">Return to the main window</kbd> button to continue with the
+data processing.</p>
 <p>Each of the data groups has now been aligned, but only <code class="file docutils literal"><span class="pre">fe.061</span></code>
 has the same value of <tt><font color="#387A38">«E0»</font></tt> as <code class="file docutils literal"><span class="pre">fe.060</span></code>. Again,
-clicking through the groups list and editing the <tt><font color="#387A38">«E0»</font></tt>
-values seems horribly tedious. Here we see the true value of the
-<span class="guilabel">Set all groups to this value of E0</span> in the <tt><font color="#387A38">«E0»</font></tt>
-<a class="reference external" href="../params/constrain.html#constraining-individual-parameters">context menu</a>.</p>
+<img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> clicking through the groups list and editing the
+<tt><font color="#387A38">«E0»</font></tt> values seems horribly tedious. Here we see the true
+value of the <span class="guilabel">Set all groups to this value of E0</span> in the
+<tt><font color="#387A38">«E0»</font></tt> <a class="reference external" href="../params/constrain.html#constraining-individual-parameters">context menu</a>.</p>
 <p>The χ(k) data for the aligned and constrained data are shown below.</p>
 <div class="figure align-center" id="id11">
-<span id="fig-dataallchik"></span><a class="reference external image-reference" href="../_images/ex_data_allchik.png"><img alt="../_images/ex_data_allchik.png" src="../_images/ex_data_allchik.png" style="width: 45%;" /></a>
+<span id="fig-dataallchik"></span><a class="reference external image-reference" href="../_images/ex_data_allchik.png"><img alt="../_images/ex_data_allchik.png" src="../_images/ex_data_allchik.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 12.11 </span><span class="caption-text">The χ(k) spectra for all the iron foil data.</span></p>
 </div>
 <p>There is another, perhaps quicker, way of doing everything that is
 described above. To start, import the <code class="file docutils literal"><span class="pre">fe.060</span></code> data and calibrate it
-as explained at the start of this section. Then use the file selection
-dialog to select all of the remaining data. Click to the
+as explained at the start of this section.  Then use the file selection
+dialog to select all of the remaining data.  Click to the
 <span class="guilabel">Preprocess</span> tab, select the <code class="file docutils literal"><span class="pre">fe.060</span></code> data as the
 standard, then click the <span class="guilabel">Mark</span>, <span class="guilabel">Align</span>, and
 <span class="guilabel">Set parameters</span> checkbuttons.</p>
 <div class="figure align-center" id="id12">
-<span id="fig-datapreproc"></span><a class="reference external image-reference" href="../_images/ex_data_preproc.png"><img alt="../_images/ex_data_preproc.png" src="../_images/ex_data_preproc.png" style="width: 65%;" /></a>
+<span id="fig-datapreproc"></span><a class="reference external image-reference" href="../_images/ex_data_preproc.png"><img alt="../_images/ex_data_preproc.png" src="../_images/ex_data_preproc.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 12.12 </span><span class="caption-text">Using the preprocessing features of the column selection dialog to align
 and constrain data on the fly as it is imported.</span></p>
 </div>
@@ -249,7 +249,7 @@ and constrain data on the fly as it is imported.</span></p>
 imported, the alignment and <tt><font color="#387A38">«E0»</font></tt> constraint will happen on
 the fly and the new group will be marked. Once the file selection
 dialog using these preprocessing features is finished,
-<font size=-1 color="#033B0A">ATHENA</font> should look just like it did in the screenshot
+<font size=-1 color="#8C4112">ATHENA</font> should look just like it did in the screenshot
 above.</p>
 <p>As a final chore in this section, we will <a class="reference external" href="../process/merge.html">merge</a> the data measured at each temperature.
 Since the data are properly aligned and calibrated, this is a fine
@@ -258,11 +258,12 @@ merged together. As we see in the screenshot below, the two groups
 measured at 300K are marked. Select <span class="menuselection">Merge ‣ Merge
 mu(E)</span>. This will perform the merge then insert a new group in the
 group list. Then select <span class="menuselection">Group ‣ Rename current
-group</span> or type <kbd class="dark">Alt</kbd>-<kbd class="dark">l</kbd> to give the merged group a more
+group</span>, type <kbd class="dark">Alt</kbd>-<kbd class="dark">l</kbd>, or <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a>
+double-click on the group list entry to give the merged group a more
 suggestive name. Repeat this process for the data at each temperature.</p>
 <p>Now you are ready to begin analysis on the iron foil data!</p>
 <div class="figure align-center" id="id13">
-<span id="fig-datamerge"></span><a class="reference external image-reference" href="../_images/ex_data_merge.png"><img alt="../_images/ex_data_merge.png" src="../_images/ex_data_merge.png" style="width: 45%;" /></a>
+<span id="fig-datamerge"></span><a class="reference external image-reference" href="../_images/ex_data_merge.png"><img alt="../_images/ex_data_merge.png" src="../_images/ex_data_merge.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 12.13 </span><span class="caption-text">Merging the data at each temperature and renaming the merged groups.</span></p>
 </div>
 
@@ -270,10 +271,10 @@ suggestive name. Repeat this process for the data at each temperature.</p>
 
 <br>
 <hr class="docutils" />
-<p><font size=-1 color="#033B0A">DEMETER</font> is copyright © 2009-2015 Bruce Ravel – This document is
-copyright © 2015 Bruce Ravel</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
 <p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
-<p>If <font size=-1 color="#033B0A">DEMETER</font> and this document are useful to you, please
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
 consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
 </div>
 
@@ -291,13 +292,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and the AUTOBK Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data in ATHENA</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. ATHENA's User Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bkg/index.html">4. Normalization and background removal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis in ATHENA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">10. Data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../other/index.html">11. Other main window chores</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">12. Worked examples</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="">12.1. Basic data processing</a></li>
@@ -306,16 +307,22 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
-<h3>Links</h3>
+<h3>Helpful Links</h3>
 <p>Current version: <b>0.9.24</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
 </ul>
 <p>
 
@@ -347,11 +354,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
           <a href="aucl.html" title="12.2. Linear combination analysis"
-             >next</a> |</li>
+             >next</a></li>
         <li class="right" >
           <a href="index.html" title="12. Worked examples"
              >previous</a> |</li>
@@ -360,7 +364,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Bruce Ravel.
+        &copy; Copyright 2016, Bruce Ravel.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
     </div>
   </body>
