@@ -165,6 +165,30 @@ Find the <code class="docutils literal"><span class="pre">[artemis]</span></code
 </ol>
 </div>
 </li>
+<li><div class="faq first admonition">
+<p class="first admonition-title">Why can't I import my data from SSRL?  DUBBLE?  Photon Factory?  etc...</p>
+<p>Some beamlines send their users home with strange data files.
+<font size=-1 color="#8C4112">ATHENA</font> has a plugin mechanism for managing some of
+those strange data files.  Be sure to enable the plugin for your
+beamline.  <a class="reference external" href="http://bruceravel.github.io/demeter/documents/Athena/other/plugin.html#athena-s-plugin-registry">Here is an explanation for how that is
+done.</a></p>
+<p class="last">If your data is not from a beamline that <font size=-1 color="#8C4112">ATHENA</font>
+already knows about, then you <strong>must</strong> include an example of the
+data file when you post your question on the mailing list.</p>
+</div>
+</li>
+<li><div class="faq first admonition">
+<p class="first admonition-title">Why can't <font size=-1 color="#8C4112">ATHENA</font> import data from my 36-element detector?</p>
+<p>It can, but it might need help.  In fairness, it's not
+necessarily a reasonable thing to ask of a general purpose
+program like <font size=-1 color="#8C4112">ATHENA</font>.  <a class="reference external" href="https://github.com/bruceravel/demeter/issues/28">Here's an interesting
+discussion of this
+topic.</a></p>
+<p class="last">The bottom line is that you might consider processing your data
+prior to importing it into <font size=-1 color="#8C4112">ATHENA</font> by summing the
+individual columns and removing any bad channels.</p>
+</div>
+</li>
 </ol>
 </div>
 <div class="section" id="questions-about-artemis">

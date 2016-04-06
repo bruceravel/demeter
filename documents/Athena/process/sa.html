@@ -64,6 +64,24 @@ incident beam can penetrate changes as fine structure of μ(E)
 changes. As the oscillatory part wiggles up, the penetration depth
 diminishes. As it wiggles down, the depth increases. This serves to
 attenuate the oscillatory structure.</p>
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<p class="last">The term “self-absortion” is sort of a misnomer
+and is confusing when compared to what the term means in other
+areas.  For example, in X-ray fluorescence,
+“self-absorption” actually means the attenuation of
+fluorescence generated within a sample as it travels out of the
+sample, which is different from the effect discussed here.  The
+term “self-absorption” was first used in the Troger
+reference to describe an effect first described in the much earlier
+paper by Goulon, et al.  Many in the XAS community prefer the term
+“over-absorption” or Goulon's phrase “attenuation
+factor”.</p>
+</div>
+<ul class="simple" id="bibtex-bibliography-process/sa-0">
+<li>L.&nbsp;Tröger, D.&nbsp;Arvanitis, K.&nbsp;Baberschke, H.&nbsp;Michaelis, U.&nbsp;Grimm, and E.&nbsp;Zschech. Full correction of the self-absorption in soft-fluorescence extended x-ray-absorption fine structure. <em>Phys. Rev. B</em>, 46:3283–3289, Aug 1992. <a class="reference external" href="https://doi.org/10.1103/PhysRevB.46.3283">doi:10.1103/PhysRevB.46.3283</a>.</li>
+<li>Goulon, J., Goulon-Ginet, C., Cortes, R., and Dubois, J.M.. On experimental attenuation factors of the amplitude of the EXAFS oscillations in absorption, reflectivity and luminescence measurements. <em>J. Phys. France</em>, 43(3):539–548, 1982. <a class="reference external" href="https://doi.org/10.1051/jphys:01982004303053900">doi:10.1051/jphys:01982004303053900</a>.</li>
+</ul>
 <p>Ideally, all your samples that must be measured in fluorescence should
 be either sufficiently thin or sufficiently dilute that your data is
 unaffected by this self-absorption effect. Sometimes, the constraints of
@@ -215,20 +233,20 @@ provides a useful metric for whether a film sample can be considered
 and includes the mathematical derivation:
 <a class="reference external" href="http://www.aps.anl.gov/xfd/people/haskel/fluo.html">http://www.aps.anl.gov/xfd/people/haskel/fluo.html</a></dd>
 <dt><strong>Booth Algorithm</strong></dt>
-<dd><ul class="first simple" id="bibtex-bibliography-process/sa-0">
+<dd><ul class="first simple" id="bibtex-bibliography-process/sa-1">
 <li>C&nbsp;H Booth and F&nbsp;Bridges. Improved self-absorption correction for fluorescence measurements of extended x-ray absorption fine-structure. <em>Physica Scripta</em>, 2005(T115):202, 2005. <a class="reference external" href="https://doi.org/10.1238/Physica.Topical.115a00202">doi:10.1238/Physica.Topical.115a00202</a>.</li>
 </ul>
 <p class="last">See also Corwin's web site: <a class="reference external" href="http://lise.lbl.gov/RSXAP/">http://lise.lbl.gov/RSXAP/</a></p>
 </dd>
 <dt><strong>Troger Algorithm</strong></dt>
-<dd><ul class="first last simple" id="bibtex-bibliography-process/sa-1">
+<dd><ul class="first last simple" id="bibtex-bibliography-process/sa-2">
 <li>L.&nbsp;Tröger, D.&nbsp;Arvanitis, K.&nbsp;Baberschke, H.&nbsp;Michaelis, U.&nbsp;Grimm, and E.&nbsp;Zschech. Full correction of the self-absorption in soft-fluorescence extended x-ray-absorption fine structure. <em>Phys. Rev. B</em>, 46:3283–3289, Aug 1992. <a class="reference external" href="https://doi.org/10.1103/PhysRevB.46.3283">doi:10.1103/PhysRevB.46.3283</a>.</li>
 </ul>
 </dd>
 <dt><strong>Pfalzer Algorithm</strong></dt>
 <dd><p class="first">Another interesting approach to correcting self-absorption is
 presented in</p>
-<ul class="simple" id="bibtex-bibliography-process/sa-2">
+<ul class="simple" id="bibtex-bibliography-process/sa-3">
 <li>P.&nbsp;Pfalzer, J.-P. Urbach, M.&nbsp;Klemm, S.&nbsp;Horn, Marten&nbsp;L. denBoer, Anatoly&nbsp;I. Frenkel, and J.&nbsp;P. Kirkland. Elimination of self-absorption in fluorescence hard-x-ray absorption spectra. <em>Phys. Rev. B</em>, 60:9335–9339, Oct 1999. <a class="reference external" href="https://doi.org/10.1103/PhysRevB.60.9335">doi:10.1103/PhysRevB.60.9335</a>.</li>
 </ul>
 <p class="last">This is not implemented in <font size=-1 color="#8C4112">ATHENA</font> because the main result requires
@@ -237,14 +255,14 @@ could be implemented, but the amount of solid angle subtended it is
 not something one typically writes in the lab notebook.</p>
 </dd>
 <dt><strong>Atoms Algorithm</strong></dt>
-<dd><ul class="first simple" id="bibtex-bibliography-process/sa-3">
+<dd><ul class="first simple" id="bibtex-bibliography-process/sa-4">
 <li>Bruce Ravel. ATOMS: crystallography for the X-ray absorption spectroscopist. <em>Journal of Synchrotron Radiation</em>, 8(2):314–316, Mar 2001. <a class="reference external" href="https://doi.org/10.1107/S090904950001493X">doi:10.1107/S090904950001493X</a>.</li>
 </ul>
 <p class="last">See also the documentation for Atoms at Bruce's website for more
 details about it's fluorescence correction calculations.</p>
 </dd>
 <dt><strong>Elam tables of absorption coefficients</strong></dt>
-<dd><ul class="first last simple" id="bibtex-bibliography-process/sa-4">
+<dd><ul class="first last simple" id="bibtex-bibliography-process/sa-5">
 <li>W.&nbsp;T. Elam, B.&nbsp;D. Ravel, and J.&nbsp;R. Sieber. A new atomic database for X-ray spectroscopic calculations. <em>Radiation Physics and Chemistry</em>, 63:121–128, February 2002. <a class="reference external" href="https://doi.org/10.1016/S0969-806X(01)00227-4">doi:10.1016/S0969-806X(01)00227-4</a>.</li>
 </ul>
 </dd>

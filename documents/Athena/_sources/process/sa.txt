@@ -16,6 +16,23 @@ changes. As the oscillatory part wiggles up, the penetration depth
 diminishes. As it wiggles down, the depth increases. This serves to
 attenuate the oscillatory structure.
 
+.. attention:: The term :quoted:`self-absortion` is sort of a misnomer
+   and is confusing when compared to what the term means in other
+   areas.  For example, in X-ray fluorescence,
+   :quoted:`self-absorption` actually means the attenuation of
+   fluorescence generated within a sample as it travels out of the
+   sample, which is different from the effect discussed here.  The
+   term :quoted:`self-absorption` was first used in the Troger
+   reference to describe an effect first described in the much earlier
+   paper by Goulon, et al.  Many in the XAS community prefer the term
+   :quoted:`over-absorption` or Goulon's phrase :quoted:`attenuation
+   factor`.
+
+.. bibliography:: ../athena.bib
+   :filter: author % "Arvanitis" or author % "Goulon"
+   :list: bullet
+
+
 Ideally, all your samples that must be measured in fluorescence should
 be either sufficiently thin or sufficiently dilute that your data is
 unaffected by this self-absorption effect. Sometimes, the constraints of
