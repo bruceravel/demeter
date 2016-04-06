@@ -40,7 +40,7 @@ guess thetae = 500
 
 [% FILTER html_para -%]
 The functional form of 
-[% INCLUDE html/link link="http://dx.doi.org/10.1103/PhysRevB.20.4908"
+[% INCLUDE html/link link="https://doi.org/10.1103/PhysRevB.20.4908"
 text="the Einstein model"%] takes the variable Einstein temperature
 and the sample's[%#'%] measurement temperature as its arguments.
 [% END %]

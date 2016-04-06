@@ -333,19 +333,19 @@ exp(-3.1), or about 4.5%.
 
 In an early XAS paper -- E. A. Stern and K. Kim, [% INCLUDE font/em
 a="Physical Review"%] [% INCLUDE font/b a="23"%]:8 (1981) ([% INCLUDE
-html/link link="http://dx.doi.org/10.1103/PhysRevB.23.3781" text="DOI link"%]) -- it
-was shown that the edge step of a sample should not exceed 1.5.  Using
-a simple statistical argument that presumes that measurement
-uncertainty is dominated by shot noise, the authors show that a sample
-is optimized when the total absorption is 2.6.  In this case, the
-sample of ferrite in BN can be made such that both total absorption
-and edge step are close to optimal.  For instance, making the sample
-with 2 absorption lengths (i.e. 8 milligrams or 16.4 microns) of
-ferrite will result in an edge step of 0.68 -- an excellent sample!
-Not all materials -- particularly those for which a minority dopant is
-the target of the XAS experiment -- work out so well.  In practice,
-sample preparation is an exercise in compromise between total
-absorption and size of edge step.
+html/link link="https://doi.org/10.1103/PhysRevB.23.3781" text="DOI
+link"%]) -- it was shown that the edge step of a sample should not
+exceed 1.5.  Using a simple statistical argument that presumes that
+measurement uncertainty is dominated by shot noise, the authors show
+that a sample is optimized when the total absorption is 2.6.  In this
+case, the sample of ferrite in BN can be made such that both total
+absorption and edge step are close to optimal.  For instance, making
+the sample with 2 absorption lengths (i.e. 8 milligrams or 16.4
+microns) of ferrite will result in an edge step of 0.68 -- an
+excellent sample!  Not all materials -- particularly those for which a
+minority dopant is the target of the XAS experiment -- work out so
+well.  In practice, sample preparation is an exercise in compromise
+between total absorption and size of edge step.
 
 Two final notes:
 [% END %]

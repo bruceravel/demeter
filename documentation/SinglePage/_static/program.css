@@ -6,3 +6,28 @@ div.related {
 
 div.body h1 { background-color: #D3C5BA; }
 div.body h2 { background-color: #E3D4C8; }
+
+div.faq {
+    border: 0px solid #000000;
+    color: #000000;
+    background-color: #ffffff;
+}
+
+p.admonition-title:after {
+    content: "";
+}
+
+p.admonition-title {
+    display: block;
+}
+
+p.first {
+    font-size: 1.2em;
+    font-weight: bold;
+};
+
+p.last {
+    font-size: 1.0em;
+    font-weight: normal;
+    margin-left: 50px;
+}

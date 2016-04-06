@@ -181,7 +181,7 @@ determine the extent to which that guess is consistent with your data.
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="Crystalline analogs" %]
 [% INCLUDE html/link
-link="http://dx.doi.org/10.1016/S0016-7037(02)00947-X" text="In this
+link="https://doi.org/10.1016/S0016-7037(02)00947-X" text="In this
 paper" %], Shelly Kelly demonstrates how to use [%feff%] calculations on
 crystalline materials as the basis for interpreting the EXAFS of
 uranyl ions adsorbed onto biomass. In that paper, she shows the pH

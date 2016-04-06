@@ -361,7 +361,7 @@ sub select_edge {
   $parent->{echo}->SetStatusText(q{}), return if not $en;
   my $wl = e2l($en);
   my $ga = Xray::Absorption->get_gamma($el, $edge);
-  my $ti = 1.5192E15*$HBAR / $ga; # see Keski-Rahkonen and Klause, http://dx.doi.org/10.1016/S0092-640X(74)80020-3
+  my $ti = 1.5192E15*$HBAR / $ga; # see Keski-Rahkonen and Klause, https://doi.org/10.1016/S0092-640X(74)80020-3
   my $message = sprintf("%s %s edge: %.1f eV = %.5f Angstrom ..... core-hole lifetime: %.2f eV ~ %.2f fs",
 			$el, $edge, $en, $wl, $ga, $ti);
   $parent->{echo}->SetStatusText($message);

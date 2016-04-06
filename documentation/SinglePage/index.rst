@@ -14,7 +14,7 @@ Demeter: Miscellaneous documents
    bugs.rst
    help.rst
    contribute.rst
-
+   faq.rst
 
 **Installing Demeter software**
 

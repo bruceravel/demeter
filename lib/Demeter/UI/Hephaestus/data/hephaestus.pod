@@ -277,7 +277,7 @@ attenuate the beam passing through the sample to the level of
 exp(-3.1), or about 4.5%.
 
 In an early XAS paper -- E. A. Stern and K. Kim, I<Physical Review>
-B<23>:8 (1981) (L<http://dx.doi.org/10.1103/PhysRevB.23.3781>) -- it
+B<23>:8 (1981) (L<https://doi.org/10.1103/PhysRevB.23.3781>) -- it
 was shown that the edge step of a sample should not exceed 1.5.  Using
 a simple statistical argument that presumes that measurement
 uncertainty is dominated by shot noise, the authors show that a sample

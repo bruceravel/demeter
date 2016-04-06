@@ -117,6 +117,7 @@ rst_epilog = open(os.path.join(CURDIR, '..', 'rst', 'epilog.rst'),'r').read().de
 
 rst_prolog = open(os.path.join(CURDIR, '..', 'rst', 'prolog.rst'),'r').read().decode('utf8')
 
+
 demeter_color = '#aa0000'
 
 # The reST default role (used for this markup: `text`) to use for all
