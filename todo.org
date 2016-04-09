@@ -388,7 +388,7 @@ https://github.com/xraypy/feff85exafs
  1. [[file:examples/h12213.cif][This CIF file]] is an example of a structure that has five and six
     legged nearly collinear scattering paths at around 4 Angstroms.  It
     has metal atoms bridged by cyanide (CN), like Prussian Blue (see for
-    instance [[http://dx.doi.org/10.1021/ic50177a008]])
+    instance [[https://doi.org/10.1021/ic50177a008]])
 
  2. Another example: 1-4 dibromo benzene has Br scatterers across a
     benzene ring which can be seen at about 6 Angstroms, along with
