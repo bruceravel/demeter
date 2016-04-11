@@ -41,27 +41,33 @@ Big Questions
       One answer is that the mailing list is a very useful resource.
       Questions asked on the mailing list might garner answers from
       multiple experts with different perspectives.  Also questions
-      asked on the mailing list might get an answer even when I am
-      on travel or otherwise unavailable to answer questions.
+      asked on the mailing list might get an answer even when I am on
+      travel or otherwise unavailable to answer questions.  Folks on
+      the list tend to be friendly and very helpful.
+
+      Also the mailing list is archived.  A useful answer might be
+      discovered by a confused person in the future.  That's a very
+      good thing.
 
       Another answer is that there are a **lot** of people using
       :demeter:`demeter` these days.  I simply do not have the time to
-      provide individual support to the hundreds of people using his
-      software.  The mailing list helps me manage my time.
+      provide individual support to the hundreds of people using my
+      software.  The mailing list helps me manage my time while still
+      helping people get over their hurdles.
 
-      The most blunt answer is that supporting software is not
+      The most blunt answer is that supporting this software is not
       actually my job.  I mean that in the sense that it is not
       specifically mentioned in my job description |nd| y'know, the
       thing I actually get paid for.  Supporting my software is
-      something I does because it is of value and because it is often
-      enjoyable.  But, look ... I give you functional software for
-      free.  I wrote documentation and give that away for free.  I
-      give away `lecture notes <https://speakerdeck.com/bruceravel>`_
-      and `training materials
+      something I do because it is of value and because it is often
+      rewarding.  But, look ... I give you functional software for
+      free.  I wrote documentation that is often adequate and give
+      that away for free.  I give away `lecture notes
+      <https://speakerdeck.com/bruceravel>`_ and `training materials
       <http://bruceravel.github.io/XAS-Education/>`_ for free.  I
       answer questions on the mailing list.  That's a lot of stuff.
       The only thing I ask for in return is that questions be directed
-      to the mailing list rather than to me personally. [#f1]_ That's
+      to the mailing list rather than to me personally.\ [#f1]_ That's
       not a big ask.
 
 #. .. admonition:: How do I cite this software?
@@ -88,7 +94,37 @@ Big Questions
 	 Volume 430, 012007
 	 `(link) <http://stacks.iop.org/1742-6596/430/i=1/a=012007>`_
 
+#. .. admonition:: How do I suggest a topic for this FAQ?
+      :class: faq
 
+      The easiest way to make a FAQ suggestion is to go to `Demeter's
+      issues page at GitHub
+      <https://github.com/bruceravel/demeter/issues>`_ and open a new
+      issue with your suggestion.  If you'd like to suggest the answer
+      as well |nd| superb!
+
+      You can also edit the source for this FAQ page by editing the
+      file ``documentation/SinglePage/faq.rst`` in the source code
+      repository.  `Sphinx <http://www.sphinx-doc.org>`_ is used to
+      make the web pages and the source uses `reStructured Text
+      <http://www.sphinx-doc.org/en/stable/rest.html>`_.  Go ahead and
+      edit the file, then make a pull request at the `Demeter's GitHub
+      page <https://github.com/bruceravel/demeter>`_.
+
+      Each entry looks like this:
+
+      .. code-block:: rst
+
+	 #. .. admonition:: What about my question?
+               :class: faq
+
+	       Here is a great answer!
+
+      The hash (``#``) should be flush against the left margin to get
+      the numbering correct.  The ``.. admonition:`` and ``:class:
+      faq`` markup is used to typeset the question and answer in an
+      attractive manner.  The indentation is important |nd| everything
+      should be lined up underneath the :quoted:`a` in :quoted:`admonition`.
 
 
 Questions about Athena
@@ -122,10 +158,40 @@ Questions about Athena
       The bottom line is that there is a bug in some versions.  Two work-arounds are 
 
       #. Figure out where the autosave file is on disk and delete it.
-	 It's called ``artemis.autosave``.
-      #. Find the ``demeter.ini`` file (should be in ``$HOME/.horae``
-	 or ``%APPDATA%\demeter\``) and edit it with a text editor.
-	 Find the ``[artemis]`` section, change :quoted:`autosave` to :quoted:`false`. 
+	 It's called ``athena.autosave``.
+      #. Find the ``demeter.ini`` file (it should be in
+	 ``$HOME/.horae`` or ``%APPDATA%\demeter\``) and edit it with
+	 a text editor.  Find the ``[athena]`` section, change
+	 :quoted:`autosave` to :quoted:`false`.
+
+#. .. admonition:: How do I import my data from SSRL?  DUBBLE?  Photon Factory?  etc...
+      :class: faq
+
+      Some beamlines send their users home with strange data files.
+      :demeter:`athena` has a plugin mechanism for managing some of
+      those strange data files.  Be sure to enable the plugin for your
+      beamline.  `Here is an explanation for how that is
+      done. <http://bruceravel.github.io/demeter/documents/Athena/other/plugin.html#athena-s-plugin-registry>`_
+
+      If your problematic data is not from a beamline that
+      :demeter:`athena` already knows about, then you **must** include
+      an example of the data file when you post your question on the
+      mailing list.
+
+
+#. .. admonition:: Why can't :demeter:`athena` import data from my 36-element detector?
+      :class: faq
+
+      It can, but it might need help.  In fairness, it's not
+      necessarily a reasonable thing to ask of a general purpose
+      program like :demeter:`athena`.  `Here's an interesting
+      discussion of this
+      topic. <https://github.com/bruceravel/demeter/issues/28>`_
+
+      The bottom line is that you might consider processing your data
+      prior to importing it into :demeter:`athena` by summing the
+      individual columns and removing any bad channels.
+
 
 Questions about Artemis
 -----------------------
@@ -135,7 +201,7 @@ Questions about Artemis
 
       :demeter:`artemis` offers a feature called fuzzy degeneracy
       where paths of similar length are grouped together.  It is explained
-      in detail `in the document <http://bruceravel.github.io/demeter/artug/extended/fuzzy.html>`_.
+      in detail `in the document <http://bruceravel.github.io/demeter/documents/Artemis/extended/fuzzy.html>`_.
 
 #. .. admonition:: How do I use :demeter:`feff9` in :demeter:`artemis`?
       :class: faq
@@ -177,10 +243,10 @@ Questions about Linux
       :class: faq
 
       The first time you install :demeter:`demeter` on your computer,
-      you have to install of the dependencies.  There are a lot.  It
-      simply takes time.  When you upgrade on the same computer, the
-      dependencies will already be in place, so the upgrade will be
-      speedy.
+      you have to install *all* of the dependencies.  There are quite
+      a lot.  It simply takes time.  When you upgrade on the same
+      computer, the dependencies will already be in place, so the
+      upgrade will be speedy.
 
 
 .. rubric:: Footnotes

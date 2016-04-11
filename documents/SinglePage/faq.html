@@ -84,24 +84,28 @@ Just fill in the form and click “Subscribe”!</p>
 <p>One answer is that the mailing list is a very useful resource.
 Questions asked on the mailing list might garner answers from
 multiple experts with different perspectives.  Also questions
-asked on the mailing list might get an answer even when I am
-on travel or otherwise unavailable to answer questions.</p>
+asked on the mailing list might get an answer even when I am on
+travel or otherwise unavailable to answer questions.  Folks on
+the list tend to be friendly and very helpful.</p>
+<p>Also the mailing list is archived.  A useful answer might be
+discovered by a confused person in the future.  That's a very
+good thing.</p>
 <p>Another answer is that there are a <strong>lot</strong> of people using
 <font size=-1 color="#8C4112">DEMETER</font> these days.  I simply do not have the time to
-provide individual support to the hundreds of people using his
-software.  The mailing list helps me manage my time.</p>
-<p class="last">The most blunt answer is that supporting software is not
+provide individual support to the hundreds of people using my
+software.  The mailing list helps me manage my time while still
+helping people get over their hurdles.</p>
+<p class="last">The most blunt answer is that supporting this software is not
 actually my job.  I mean that in the sense that it is not
 specifically mentioned in my job description – y'know, the
 thing I actually get paid for.  Supporting my software is
-something I does because it is of value and because it is often
-enjoyable.  But, look ... I give you functional software for
-free.  I wrote documentation and give that away for free.  I
-give away <a class="reference external" href="https://speakerdeck.com/bruceravel">lecture notes</a>
-and <a class="reference external" href="http://bruceravel.github.io/XAS-Education/">training materials</a> for free.  I
+something I do because it is of value and because it is often
+rewarding.  But, look ... I give you functional software for
+free.  I wrote documentation that is often adequate and give
+that away for free.  I give away <a class="reference external" href="https://speakerdeck.com/bruceravel">lecture notes</a> and <a class="reference external" href="http://bruceravel.github.io/XAS-Education/">training materials</a> for free.  I
 answer questions on the mailing list.  That's a lot of stuff.
 The only thing I ask for in return is that questions be directed
-to the mailing list rather than to me personally. <a class="footnote-reference" href="#f1" id="id1"><sup>1</sup></a> That's
+to the mailing list rather than to me personally.<a class="footnote-reference" href="#f1" id="id1"><sup>1</sup></a> That's
 not a big ask.</p>
 </div>
 </li>
@@ -128,6 +132,32 @@ Spectroscopies</em>, Journal of Physics: Conference Series,
 Volume 430, 012007
 <a class="reference external" href="http://stacks.iop.org/1742-6596/430/i=1/a=012007">(link)</a></p>
 </div></blockquote>
+</div>
+</li>
+<li><div class="faq first admonition">
+<p class="first admonition-title">How do I suggest a topic for this FAQ?</p>
+<p>The easiest way to make a FAQ suggestion is to go to <a class="reference external" href="https://github.com/bruceravel/demeter/issues">Demeter's
+issues page at GitHub</a> and open a new
+issue with your suggestion.  If you'd like to suggest the answer
+as well – superb!</p>
+<p>You can also edit the source for this FAQ page by editing the
+file <code class="docutils literal"><span class="pre">documentation/SinglePage/faq.rst</span></code> in the source code
+repository.  <a class="reference external" href="http://www.sphinx-doc.org">Sphinx</a> is used to
+make the web pages and the source uses <a class="reference external" href="http://www.sphinx-doc.org/en/stable/rest.html">reStructured Text</a>.  Go ahead and
+edit the file, then make a pull request at the <a class="reference external" href="https://github.com/bruceravel/demeter">Demeter's GitHub
+page</a>.</p>
+<p>Each entry looks like this:</p>
+<div class="highlight-rst"><div class="highlight"><pre><span></span><span class="m">#.</span> .. admonition:: What about my question?
+      <span class="nc">:class:</span> <span class="nf">faq</span>
+
+      Here is a great answer!
+</pre></div>
+</div>
+<p class="last">The hash (<code class="docutils literal"><span class="pre">#</span></code>) should be flush against the left margin to get
+the numbering correct.  The <code class="docutils literal"><span class="pre">..</span> <span class="pre">admonition:</span></code> and <code class="docutils literal"><span class="pre">:class:</span>
+<span class="pre">faq</span></code> markup is used to typeset the question and answer in an
+attractive manner.  The indentation is important – everything
+should be lined up underneath the “a” in “admonition”.</p>
 </div>
 </li>
 </ol>
@@ -158,23 +188,25 @@ here.</a></p>
 <p>The bottom line is that there is a bug in some versions.  Two work-arounds are</p>
 <ol class="last arabic simple">
 <li>Figure out where the autosave file is on disk and delete it.
-It's called <code class="docutils literal"><span class="pre">artemis.autosave</span></code>.</li>
-<li>Find the <code class="docutils literal"><span class="pre">demeter.ini</span></code> file (should be in <code class="docutils literal"><span class="pre">$HOME/.horae</span></code>
-or <code class="docutils literal"><span class="pre">%APPDATA%\demeter\</span></code>) and edit it with a text editor.
-Find the <code class="docutils literal"><span class="pre">[artemis]</span></code> section, change “autosave” to “false”.</li>
+It's called <code class="docutils literal"><span class="pre">athena.autosave</span></code>.</li>
+<li>Find the <code class="docutils literal"><span class="pre">demeter.ini</span></code> file (it should be in
+<code class="docutils literal"><span class="pre">$HOME/.horae</span></code> or <code class="docutils literal"><span class="pre">%APPDATA%\demeter\</span></code>) and edit it with
+a text editor.  Find the <code class="docutils literal"><span class="pre">[athena]</span></code> section, change
+“autosave” to “false”.</li>
 </ol>
 </div>
 </li>
 <li><div class="faq first admonition">
-<p class="first admonition-title">Why can't I import my data from SSRL?  DUBBLE?  Photon Factory?  etc...</p>
+<p class="first admonition-title">How do I import my data from SSRL?  DUBBLE?  Photon Factory?  etc...</p>
 <p>Some beamlines send their users home with strange data files.
 <font size=-1 color="#8C4112">ATHENA</font> has a plugin mechanism for managing some of
 those strange data files.  Be sure to enable the plugin for your
 beamline.  <a class="reference external" href="http://bruceravel.github.io/demeter/documents/Athena/other/plugin.html#athena-s-plugin-registry">Here is an explanation for how that is
 done.</a></p>
-<p class="last">If your data is not from a beamline that <font size=-1 color="#8C4112">ATHENA</font>
-already knows about, then you <strong>must</strong> include an example of the
-data file when you post your question on the mailing list.</p>
+<p class="last">If your problematic data is not from a beamline that
+<font size=-1 color="#8C4112">ATHENA</font> already knows about, then you <strong>must</strong> include
+an example of the data file when you post your question on the
+mailing list.</p>
 </div>
 </li>
 <li><div class="faq first admonition">
@@ -198,7 +230,7 @@ individual columns and removing any bad channels.</p>
 <p class="first admonition-title">I ran <font size=-1 color="#8C4112">FEFF</font>.  Why are paths missing and coordination numbers surprising?</p>
 <p class="last"><font size=-1 color="#8C4112">ARTEMIS</font> offers a feature called fuzzy degeneracy
 where paths of similar length are grouped together.  It is explained
-in detail <a class="reference external" href="http://bruceravel.github.io/demeter/artug/extended/fuzzy.html">in the document</a>.</p>
+in detail <a class="reference external" href="http://bruceravel.github.io/demeter/documents/Artemis/extended/fuzzy.html">in the document</a>.</p>
 </div>
 </li>
 <li><div class="faq first admonition">
@@ -239,10 +271,10 @@ analysis.</p>
 <li><div class="faq first admonition">
 <p class="first admonition-title">Why does it take so long for <font size=-1 color="#8C4112">DEMETER</font> to install from source?</p>
 <p class="last">The first time you install <font size=-1 color="#8C4112">DEMETER</font> on your computer,
-you have to install of the dependencies.  There are a lot.  It
-simply takes time.  When you upgrade on the same computer, the
-dependencies will already be in place, so the upgrade will be
-speedy.</p>
+you have to install <em>all</em> of the dependencies.  There are quite
+a lot.  It simply takes time.  When you upgrade on the same
+computer, the dependencies will already be in place, so the
+upgrade will be speedy.</p>
 </div>
 </li>
 </ol>
