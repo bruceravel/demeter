@@ -82,11 +82,7 @@ absorber and use it to fit some iron oxide data contained in an
 12
 13
 14
-<<<<<<< HEAD
 15</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
-=======
-15</pre></div></td><td class="code"><div class="highlight"><pre> <span class="c1">#!/usr/bin/perl</span>
->>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
  <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
  <span class="k">my</span> <span class="nv">$prj</span> <span class="o">=</span> <span class="nn">Demeter::Data::</span><span class="n">Prj</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&#39;FeO.prj&#39;</span><span class="p">);</span>
  <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nv">$prj</span> <span class="o">-&gt;</span> <span class="n">record</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
@@ -108,11 +104,7 @@ absorber and use it to fit some iron oxide data contained in an
 and scatterer. The lattice constant of this notional crystal is such
 that the first neighbor distance is as specified. The edge can be
 asserted explicitly, but it can usually be guessed from the atomic
-<<<<<<< HEAD
 species of the absorber – the K edge is assumed for elements lighter
-=======
-species of the absorber -- the K edge is assumed for elements lighter
->>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 than La, otherwise the L<sub>III</sub> edge is assumed.</p>
 <p>Like a normal Path, the FSPath must be associated with a Data object
 via its <code class="docutils literal"><span class="pre">data</span></code> attribute.  Because, a <font size=-1 color="#8C4112">FEFF</font> calculation is
@@ -138,11 +130,7 @@ the FSPath is derived from the Path object, it behaves in every other
 way like a normal Path object.  Thus, if you want to overwrite the path
 parameter math expressions, simply set them the way you would for any
 Path object.</p>
-<<<<<<< HEAD
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$fspath</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">s02</span> <span class="o">=&gt;</span> <span class="s">&#39;(1-x)*amp&#39;</span><span class="p">,</span> <span class="n">enot</span><span class="o">=&gt;</span><span class="s">&#39;enot_o&#39;</span><span class="p">);</span>
-=======
-<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$fspath</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">s02</span> <span class="o">=&gt;</span> <span class="s">&#39;(1-x)*amp&#39;</span><span class="p">,</span> <span class="n">enot</span><span class="o">=&gt;</span><span class="s">&#39;enot_o&#39;</span><span class="p">);</span>
->>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 </pre></div>
 </div>
 <p>The values of the <code class="docutils literal"><span class="pre">scat</span></code> and <code class="docutils literal"><span class="pre">abs</span></code> attributes can be the one- or
@@ -155,11 +143,7 @@ GDS objects that were automatically created.  It takes a single
 argument for identifying the parameter being queried.  Here is every
 possible example of its use. In each case, the reference to the GDS
 object is returned.</p>
-<<<<<<< HEAD
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="k">my</span> <span class="nv">$amp_gds</span>    <span class="o">=</span> <span class="nv">$fspath</span><span class="o">-&gt;</span><span class="n">parameter</span><span class="p">(</span><span class="s">&#39;s02&#39;</span><span class="p">);</span>
-=======
-<div class="highlight-perl"><div class="highlight"><pre><span class="k">my</span> <span class="nv">$amp_gds</span>    <span class="o">=</span> <span class="nv">$fspath</span><span class="o">-&gt;</span><span class="n">parameter</span><span class="p">(</span><span class="s">&#39;s02&#39;</span><span class="p">);</span>
->>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 <span class="k">my</span> <span class="nv">$e0_gds</span>     <span class="o">=</span> <span class="nv">$fspath</span><span class="o">-&gt;</span><span class="n">parameter</span><span class="p">(</span><span class="s">&#39;e0&#39;</span><span class="p">);</span>
 <span class="k">my</span> <span class="nv">$delr_gds</span>   <span class="o">=</span> <span class="nv">$fspath</span><span class="o">-&gt;</span><span class="n">parameter</span><span class="p">(</span><span class="s">&#39;delr&#39;</span><span class="p">);</span>
 <span class="k">my</span> <span class="nv">$sigma2_gds</span> <span class="o">=</span> <span class="nv">$fspath</span><span class="o">-&gt;</span><span class="n">parameter</span><span class="p">(</span><span class="s">&#39;sigma2&#39;</span><span class="p">);</span>
@@ -168,11 +152,7 @@ object is returned.</p>
 </pre></div>
 </div>
 <p>Finally, the <code class="docutils literal"><span class="pre">unset_parameters</span></code> method is used to clear the
-<<<<<<< HEAD
 autogenerated path parameters, setting them all literally to 0 –
-=======
-autogenerated path parameters, setting them all literally to 0 --
->>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 except for s02, which is set literally to 1.  This is useful in a
 situation where you wish to use the quick first shell scattering path
 in some other context than the quick first shell fit.</p>
@@ -202,13 +182,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
-<<<<<<< HEAD
 <li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
-=======
-<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
->>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 <li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
@@ -237,7 +212,6 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-<<<<<<< HEAD
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
@@ -248,16 +222,6 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
-=======
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
-  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
-</ul>
-<ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
->>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 </ul>
 <p>
 

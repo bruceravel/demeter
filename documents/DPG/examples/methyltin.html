@@ -71,11 +71,7 @@ tin atom surrounded tetrahedrally by chlorine atoms and methyl
 <p>Obviously, this is not a crystal. To start, I found structural
 information for the dimethyltin molecule in the form of a Protein
 Databank File. This is shown here:</p>
-<<<<<<< HEAD
 <div class="highlight-python"><div class="highlight"><pre><span></span>COMPND    5261536
-=======
-<div class="highlight-python"><div class="highlight"><pre>COMPND    5261536
->>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 HETATM    1  C1  LIG     1      -0.027   2.146   0.014  1.00  0.00
 HETATM    2 SN2  LIG     1       0.002  -0.004   0.002  1.00  0.00
 HETATM    3  C3  LIG     1       1.042  -0.716   1.744  1.00  0.00
@@ -106,11 +102,7 @@ insert a shell of waters around the molecule.  Without some theoretical
 (molecular dynamics, for instance) help, doing so would be pretty ad
 hoc.  Not doing so is certainly the simplest way to proceed, so let's
 do that.  The <code class="file docutils literal"><span class="pre">feff.inp</span></code> is shown here:</p>
-<<<<<<< HEAD
 <div class="highlight-python"><div class="highlight"><pre><span></span>TITLE dimethyltin dichloride
-=======
-<div class="highlight-python"><div class="highlight"><pre>TITLE dimethyltin dichloride
->>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 
 HOLE 1   1.0
 
@@ -202,11 +194,7 @@ fit.</p>
 55
 56
 57
-<<<<<<< HEAD
 58</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
-=======
-58</pre></div></td><td class="code"><div class="highlight"><pre> <span class="c1">#!/usr/bin/perl</span>
->>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
  <span class="k">use</span> <span class="n">Demeter</span> <span class="sx">qw(:ui=screen :plotwith=gnuplot)</span><span class="p">;</span>
 
  <span class="c1">## -------- Import data from a project file</span>
@@ -278,11 +266,7 @@ this list.</p>
 <p>At lines 31-49, these two paths are parameterized and assigned to the
 dimethyl tin data.  At lines 50 and 51, these two paths are cloned and
 assigned to the monomethyl tin data.  The <code class="docutils literal"><span class="pre">n</span></code> attributes of the two
-<<<<<<< HEAD
 cloned paths are set to 1 and 4 – appropriate for the monomethyl tin
-=======
-cloned paths are set to 1 and 4 -- appropriate for the monomethyl tin
->>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 trichloride.</p>
 <p>This is a fairly simple fitting model that assumes that the tin-carbon
 and tin-chlorine bonds behave identically for each molecule.  This simple
@@ -303,11 +287,7 @@ conveniently wrapped up in a <code class="docutils literal"><span class="pre">fo
 transparent for these two object types and the Path objects use the
 <code class="docutils literal"><span class="pre">y_offset</span></code> attribute of the associated Data object.  This is one of
 the reasons why every Path must have an associated Data object.</p>
-<<<<<<< HEAD
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$fit</span><span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">plot_fit</span> <span class="o">=&gt;</span>  <span class="mi">1</span><span class="p">,</span>
-=======
-<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$fit</span><span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">plot_fit</span> <span class="o">=&gt;</span>  <span class="mi">1</span><span class="p">,</span>
->>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
                  <span class="n">r_pl</span>     <span class="o">=&gt;</span> <span class="s">&#39;m&#39;</span><span class="p">,</span>
                  <span class="n">kweight</span>  <span class="o">=&gt;</span>  <span class="mi">2</span><span class="p">);</span>
 <span class="nv">$mmt</span><span class="o">-&gt;</span> <span class="n">y_offset</span><span class="p">(</span><span class="mf">1.0</span><span class="p">);</span>
@@ -358,13 +338,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
-<<<<<<< HEAD
 <li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
-=======
-<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
->>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 <li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
@@ -389,7 +364,6 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-<<<<<<< HEAD
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
@@ -400,16 +374,6 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
-=======
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
-  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
-</ul>
-<ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
->>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 </ul>
 <p>
 

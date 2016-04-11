@@ -23,8 +23,8 @@ sub fix {
   my ($self) = @_;
   my $new = File::Spec->catfile($self->stash_folder, $self->filename);
   ($new = File::Spec->catfile($self->stash_folder, "toss")) if (length($new) > 127);
-  open D, $self->file or die "could not open " , $self->file . " as data (fix in X10C)\n";
-  open N, ">".$new or die "could not write to $new (fix in X10C)\n";
+  open D, $self->file or die "could not open " , $self->file . " as data (fix in BM23)\n";
+  open N, ">".$new or die "could not write to $new (fix in BM23)\n";
   my $header = 1;
   while (<D>) {
     chomp;

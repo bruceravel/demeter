@@ -91,7 +91,9 @@ sub pull_values {
 sub push_values {
   my ($this, $data) = @_;
   foreach my $i (1 .. $this->{n}) {
+    my $save = $this->{'standard'.$i}->GetStringSelection;
     $this->{'standard'.$i}->fill($::app, 0, 0);
+    $this->{'standard'.$i}->SetStringSelection($save);
   };
 };
 
@@ -314,7 +316,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

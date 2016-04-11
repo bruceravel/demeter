@@ -67,7 +67,6 @@ dissolved uranyl acetate. Following the example of S. Kelly, et al., I
 will use a crystalline analogue of the solvated moiety as my starting
 point for the Feff calculation.</p>
 <ul class="simple" id="bibtex-bibliography-examples/uranyl-0">
-<<<<<<< HEAD
 <li>S.&nbsp;D. Kelly, K.&nbsp;M. Kemner, J.&nbsp;B. Fein, D.&nbsp;A. Fowle, M.&nbsp;I. Boyanov, B.&nbsp;A. Bunker, and N.&nbsp;Yee. X-ray absorption fine structure determination of pH-dependent U-bacterial cell wall interactions. <em>Geochimica et Cosmochimica Acta</em>, 66(22):3855 – 3871, 2002. <a class="reference external" href="https://doi.org/10.1016/S0016-7037(02)00947-X">doi:10.1016/S0016-7037(02)00947-X</a>.</li>
 <li>B.&nbsp;Ravel, C.&nbsp;Scorzato, D.&nbsp;P. Siddons, S.&nbsp;D. Kelly, and S.&nbsp;R. Bare. Simultaneous XAFS measurements of multiple samples. <em>Journal of Synchrotron Radiation</em>, 17(3):380–385, May 2010. <a class="reference external" href="https://doi.org/10.1107/S0909049510006230">doi:10.1107/S0909049510006230</a>.</li>
 <li>D.&nbsp;H. Templeton, A.&nbsp;Zalkin, H.&nbsp;Ruben, and L.&nbsp;K. Templeton. Redetermination and absolute configuration of sodium uranyl(VI) triacetate. <em>Acta Crystallographica Section C</em>, 41(10):1439–1441, Oct 1985. <a class="reference external" href="https://doi.org/10.1107/S0108270185008095">doi:10.1107/S0108270185008095</a>.</li>
@@ -75,14 +74,6 @@ point for the Feff calculation.</p>
 <p>Here is the input data for Atoms for crystalline sodium uranyl
 triacetate:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span>title = Templeton et al.
-=======
-<li>S.&nbsp;D. Kelly, K.&nbsp;M. Kemner, J.&nbsp;B. Fein, D.&nbsp;A. Fowle, M.&nbsp;I. Boyanov, B.&nbsp;A. Bunker, and N.&nbsp;Yee. X-ray absorption fine structure determination of pH-dependent U-bacterial cell wall interactions. <em>Geochimica et Cosmochimica Acta</em>, 66(22):3855 – 3871, 2002. <a class="reference external" href="http://dx.doi.org/10.1016/S0016-7037(02)00947-X">doi:10.1016/S0016-7037(02)00947-X</a>.</li>
-<li>D.&nbsp;H. Templeton, A.&nbsp;Zalkin, H.&nbsp;Ruben, and L.&nbsp;K. Templeton. Redetermination and absolute configuration of sodium uranyl(VI) triacetate. <em>Acta Crystallographica Section C</em>, 41(10):1439–1441, Oct 1985. <a class="reference external" href="http://dx.doi.org/10.1107/S0108270185008095">doi:10.1107/S0108270185008095</a>.</li>
-</ul>
-<p>Here is the input data for Atoms for crystalline sodium uranyl
-triacetate:</p>
-<div class="highlight-python"><div class="highlight"><pre>title = Templeton et al.
->>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 title = Redetermination and Absolute configuration of Sodium Uranyl(VI) triacetate.
 title = Acta Cryst 1985 C41 1439-1441
 space = P 21 3
@@ -146,11 +137,7 @@ attempting to call the <code class="docutils literal"><span class="pre">pause</s
 12
 13
 14
-<<<<<<< HEAD
 15</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
-=======
-15</pre></div></td><td class="code"><div class="highlight"><pre> <span class="c1">#!/usr/bin/perl</span>
->>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 
  <span class="k">use</span> <span class="n">Demeter</span> <span class="sx">qw(:plotwith=gnuplot :ui=screen)</span><span class="p">;</span>
  <span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Feff</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span><span class="o">=&gt;</span><span class="s">&#39;UAce/feff.inp&#39;</span><span class="p">);</span>
@@ -319,11 +306,7 @@ the fitting model.</p>
 126
 127
 128
-<<<<<<< HEAD
 129</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
-=======
-129</pre></div></td><td class="code"><div class="highlight"><pre> <span class="c1">#!/usr/bin/perl</span>
->>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 
  <span class="c1">## strict and warnings imported automatically with Demeter</span>
  <span class="k">use</span> <span class="n">Demeter</span> <span class="sx">qw(:plotwith=gnuplot :ui=screen)</span><span class="p">;</span>
@@ -495,11 +478,7 @@ ends, making the plot window go away.</li>
 <p class="caption"><span class="caption-number">Fig. 16.5 </span><span class="caption-text">The fit as χ(k).</span></p>
 </div>
 <p>This was made by substituting lines 122-127 with:</p>
-<<<<<<< HEAD
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">kweight</span><span class="o">=&gt;</span><span class="mi">2</span><span class="p">,</span> <span class="n">plot_fit</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">);</span>
-=======
-<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">kweight</span><span class="o">=&gt;</span><span class="mi">2</span><span class="p">,</span> <span class="n">plot_fit</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">);</span>
->>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 <span class="k">my</span> <span class="p">(</span><span class="nv">$step</span><span class="p">,</span> <span class="nv">$jump</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mf">0.5</span><span class="p">);</span>
 <span class="nb">map</span> <span class="p">{</span><span class="nv">$_</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">y_offset</span><span class="p">(</span><span class="nv">$step</span><span class="p">);</span>
      <span class="nv">$_</span><span class="o">-&gt;</span><span class="n">plot</span><span class="p">(</span><span class="s">&#39;k&#39;</span><span class="p">);</span>
@@ -514,11 +493,7 @@ ends, making the plot window go away.</li>
 <p class="caption"><span class="caption-number">Fig. 16.6 </span><span class="caption-text">The fit as the magnitude of χ(R).</span></p>
 </div>
 <p>This was made by substituting lines 122-127 with:</p>
-<<<<<<< HEAD
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">kweight</span><span class="o">=&gt;</span><span class="mi">2</span><span class="p">,</span> <span class="n">plot_fit</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">);</span>
-=======
-<div class="highlight-perl"><div class="highlight"><pre><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">kweight</span><span class="o">=&gt;</span><span class="mi">2</span><span class="p">,</span> <span class="n">plot_fit</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">);</span>
->>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">r_pl</span> <span class="o">=&gt;</span> <span class="s">&#39;m&#39;</span><span class="p">);</span>
 <span class="k">my</span> <span class="p">(</span><span class="nv">$step</span><span class="p">,</span> <span class="nv">$jump</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mf">0.25</span><span class="p">);</span>
 <span class="nb">map</span> <span class="p">{</span><span class="nv">$_</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">y_offset</span><span class="p">(</span><span class="nv">$step</span><span class="p">);</span>
@@ -560,13 +535,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
-<<<<<<< HEAD
 <li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
-=======
-<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">4. Analysis of XANES data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">5. High level actions of the object model</a></li>
->>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 <li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
@@ -591,7 +561,6 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
-<<<<<<< HEAD
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
@@ -602,16 +571,6 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
-=======
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit</a>
-  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch</a>
-  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
-</ul>
-<ul>
-  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/bugs.pod.html">Bug reporting hints</a>
-  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.com/demeter/pods/help.pod.html">How to ask a good question</a>
->>>>>>> 753331e6a97ab20b2d74045d9da536a4dde339ea
 </ul>
 <p>
 

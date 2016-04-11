@@ -897,6 +897,7 @@ sub save_column {
   my $data = $app->{main}->{list}->GetIndexedData(scalar $app->{main}->{list}->GetSelection);
 
   (my $base = $data->name) =~ s{[^-a-zA-Z0-9.+]+}{_}g;
+  $base =~ s{\.\z}{};
 
   my ($desc, $suff, $out) = ($how eq 'mue')  ? ("$MU(E)",  '.xmu',  'xmu')
                           : ($how eq 'norm') ? ("norm(E)", '.nor',  'norm')
@@ -999,6 +1000,7 @@ sub save_each {
   my $dir  = $dd->GetPath;
   foreach my $d (@data) {
     (my $base = $d->name) =~ s{[^-a-zA-Z0-9.+]+}{_}g;
+    $base =~ s{\.\z}{};
     my $fname = File::Spec->catfile($dir, $base.$suff);
     $d->save($out, $fname);
   };
@@ -1100,7 +1102,7 @@ Bruce Ravel, L<http://bruceravel.github.io/home>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

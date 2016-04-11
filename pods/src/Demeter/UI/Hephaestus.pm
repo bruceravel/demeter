@@ -2,7 +2,7 @@ package Demeter::UI::HephaestusApp;
 
 =for Copyright
  .
- Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2016 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -389,10 +389,10 @@ sub on_about {
   $info->SetWebSite( 'http://bruceravel.github.io/demeter', 'The Demeter web site' );
   $info->SetDevelopers( ["Bruce Ravel (http://bruceravel.github.io/home)\n",
 			 "See the document for literature references\nfor the data resources.\n\n",
-			 "Core-hole lifetimes are from Keski-Rahkonen & Krause\nhttp://dx.doi.org/10.1016/S0092-640X(74)80020-3\nand are the same as in Feff\n\n",
+			 "Core-hole lifetimes are from Keski-Rahkonen & Krause\nhttps://doi.org/10.1016/S0092-640X(74)80020-3\nand are the same as in Feff\n\n",
 			 "Much of the data displayed in the Data\nutility was swiped from Kalzium\n(http://edu.kde.org/kalzium/)\n\n",
 			 "Mossbauer data comes from http://mossbauer.org/\n(which does not seem to be about Mossbauer spectroscopy anymore)",
-			 "Ionic radii data from Shannon (http://dx.doi.org/10.1107/S0567739476001551)\nand David van Horn (http://v.web.umkc.edu/vanhornj/shannonradii.htm)",
+			 "Ionic radii data from Shannon (https://doi.org/10.1107/S0567739476001551)\nand David van Horn (http://v.web.umkc.edu/vanhornj/shannonradii.htm)",
 			 "Neutron scattering lengths and cross sections from\nNeutron News, Vol. 3, No. 3, 1992, pp. 29-37 and\nhttps://www.ncnr.nist.gov/resources/n-lengths/list.html"
 			] );
   $info->SetLicense( Demeter->slurp(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base, 'Hephaestus', 'data', "GPL.dem")) );
@@ -511,7 +511,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

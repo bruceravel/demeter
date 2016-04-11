@@ -12,7 +12,8 @@ use YAML::Tiny;
 ######################################################################
 ## ----- configure and start the Larch server
 ######################################################################
-my $ini = File::Spec->catfile(Demeter::Here::here, 'share', 'ini', 'larch_server.ini');
+#my $ini = File::Spec->catfile(Demeter->dot_folder, "larch_server.yaml");
+my $ini = File::Spec->catfile(Demeter::Here::here, 'share', 'ini', 'larch_server.ini'); # if (not -e $ini);
 my $rhash;
 eval {local $SIG{__DIE__} = sub {}; $rhash = YAML::Tiny::LoadFile($ini)};
 #print join("|", %$rhash), $/;
@@ -227,7 +228,7 @@ Bruce Ravel (L<http://bruceravel.github.io/home>)
 
 L<http://bruceravel.github.io/demeter/>
 
-Larch is copyright (c) 2015, Matthew Newville and Tom Trainor
+Larch is copyright (c) 2016, Matthew Newville and Tom Trainor
 
 =head1 SEE ALSO
 

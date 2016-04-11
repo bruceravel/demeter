@@ -122,7 +122,8 @@ which uses L<sudo|http://en.wikipedia.org/wiki/Sudo>.  If your
 machine does not use C<sudo>, then replace C<sudo> with C<su -s> in
 the instructions that follow.
 
-In a section below (see L<"Installing Demeter without root privileges">)
+In a section below
+(see L<Installing Demeter without root privileges>)
 instructions are given for installation without root privileges.  All
 the instructions are the same, once you do an additional preparatory
 step.
@@ -319,19 +320,19 @@ built, and installed when do the C<./Build installdeps> step.
 
 Sometimes, a few of these fail.  This is not a disaster.  In most
 cases, the problem can be dispatched easily.  See L<this
-post|http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-July/012608.html>
+post|http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-July/012608.html>
 to the Ifeffit Mailing List about some strategies for dealing with
 failed builds of dependencies.
 
 L<PDL::Stats> presents a special challange.  There is a L<known
-bug|http://sourceforge.net/p/pdl/mailman/pdl-devel/?viewmonth=201505&viewday=12>
+bug|http://sourceforge.net/p/pdl/mailman/pdl-devel/?viewmonth=201605&viewday=12>
 in L<PDL::Stats> that is not yet fixed (at the time of this writing,
-Aug. 2015) in the upstream source.  If possible, use your system's
+Aug. 2016) in the upstream source.  If possible, use your system's
 pre-built package (the Debian package is called libpdl-stats-perl).
 
 If you cannot use a package and you are unable to build L<PDL::Stats>,
 as L<discussed in this mailing list
-thread|http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-August/012679.html>,
+thread|http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-August/012679.html>,
 do the following:
 
 =over 4
@@ -565,7 +566,7 @@ L<http://bruceravel.github.io/demeter>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2008-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2008-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

@@ -2,7 +2,7 @@ package Demeter::Fit::Sanity;
 
 =for Copyright
  .
- Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2016 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -78,6 +78,8 @@ sub S_sp_exist {
   foreach my $p (@paths) {
     next if not $p->include;
     next if not $p->data->fit_include;
+    ## could be reading a feffNNNN.dat file directly
+    next if (($p->path !~ m{\A\s+\z}) and (not -e $p->file));
     if (ref($p->sp) !~ m{Path}) {
       ++$found;
       $p->add_trouble('spnotexist');
@@ -331,6 +333,7 @@ sub S_gds_unique_names {
   my @gds = @{ $self->gds };
   my %seen = ();
   foreach my $g (@gds) {
+    next if ($g->gds eq 'skip');
     ++$seen{lc($g->name)};
     $g->add_trouble('notunique') if ($seen{lc($g->name)} > 1);
   };
@@ -882,7 +885,8 @@ The path file cannot be read.
 =item C<spnotexist>
 
 The C<sp> attribute is not defined or not set to a ScatteringPath or
-other Path object.
+other Path object, and the path is not using a feffNNNN.dat file
+directly.
 
 =item C<useundef> + C<$pp> + C<$token>
 
@@ -1076,7 +1080,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

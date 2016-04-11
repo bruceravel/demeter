@@ -2,7 +2,7 @@ package  Demeter::UI::Artemis::Data;
 
 =for Copyright
  .
- Copyright (c) 2006-2015 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2016 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -558,10 +558,10 @@ sub initial_page_panel {
 
   my $dndtext = Wx::StaticText    -> new($panel, -1, "Drag paths from a Feff interpretation list and drop them in this space to add paths to this data set", wxDefaultPosition, [300,-1]);
   $dndtext   -> Wrap(200);
-  my $atoms   = Wx::HyperlinkCtrl -> new($panel, -1, 'Import crystal data or a Feff calculation', q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
-  my $qfs     = Wx::HyperlinkCtrl -> new($panel, -1, 'Start a quick first shell fit',             q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
-  my $su      = Wx::StaticText    -> new($panel, -1, 'Import a structural unit',                       wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
-  my $emp     = Wx::HyperlinkCtrl -> new($panel, -1, 'Import an empirical standard',              q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
+  my $atoms   = Wx::HyperlinkCtrl -> new($panel, -1, 'Import crystal data or a feff.inp file', q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
+  my $qfs     = Wx::HyperlinkCtrl -> new($panel, -1, 'Start a quick first shell fit',          q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
+  my $su      = Wx::StaticText    -> new($panel, -1, 'Import a structural unit',                    wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
+  my $emp     = Wx::HyperlinkCtrl -> new($panel, -1, 'Import an empirical standard',           q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
   ##my $feff    = Wx::HyperlinkCtrl -> new($panel, -1, 'Import a Feff calculation',     q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
 
   EVT_HYPERLINK($self, $atoms, sub{Import('feff', q{});});
@@ -2925,7 +2925,7 @@ Bruce Ravel, L<http://bruceravel.github.io/home>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2015 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

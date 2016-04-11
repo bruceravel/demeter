@@ -382,7 +382,7 @@ ICR/OCR) will be applied to that channel.
 For high count rates, the proper deadtime correction is considerably
 more accurate than the standard correction.  For details see Woicik,
 Ravel, Fischer, and Newburgh, J. Synchrotron Rad. (2010). 17, 409-413
-http://dx.doi:org/10.1107/S0909049510009064
+https://doi:org/10.1107/S0909049510009064
 
 =head1 MULTIEDGE FILES
 
