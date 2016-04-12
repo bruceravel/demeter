@@ -93,6 +93,7 @@ my $build = DemeterBuilder
 				'Math::Round'		    => '0',
 				'Math::Spline'		    => '0',
 				'Pod::POM'                  => '0',
+				'Proc::ProcessTable'        => '0',
 				'Const::Fast'		    => '0.01',
 				'Regexp::Common'	    => '0',
 				'Regexp::Assemble'	    => '0',

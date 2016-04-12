@@ -7,10 +7,11 @@ use Demeter::Here;
 use File::Spec;
 use Time::HiRes qw(usleep);
 use YAML::Tiny;
-
+use Proc::ProcessTable;
+use English;
 
 ######################################################################
-## ----- configure and start the Larch server
+## ----- load the configuration file 
 ######################################################################
 my $ini = File::Spec->catfile(Demeter->dot_folder, "larch_server.yaml");
 $ini = File::Spec->catfile(Demeter::Here::here, 'share', 'ini', 'larch_server.ini') if (not -e ini);
@@ -18,6 +19,45 @@ my $rhash;
 eval {local $SIG{__DIE__} = sub {}; $rhash = YAML::Tiny::LoadFile($ini)};
 #print join("|", %$rhash), $/;
 
+
+######################################################################
+## ----- check if there is already a  Larch server running
+#        for this user
+######################################################################
+my $table = new Proc::ProcessTable;
+
+# MSWIN doesn't have effective uids
+my $uid = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? $UID : $EUID;
+
+my $larch_running = 0;
+my $larch_port = undef;
+
+foreach my $process (@{$table->table}) {
+  # On Windows is it python or python.exe??
+  if ((((($^O eq 'MSWin32') or ($^O eq 'cygwin')) and $process->{uid} eq $uid) or $process->{euid} eq $uid) and $process->fname eq "python") {
+    # if we got to this point there is a process running that is owned by myself, whose name is "python"
+    # since larch can also be run in interactive mode, we need to make sure that this process is a daemon
+    # This will not work on Windows though as I cannot access the command-line arguments that were passed to the function
+    if (index($process->{cmndline}, "larch ") != -1 && index($process->{cmndline}, " -r ") != -1 && index($process->{cmndline}, " -p ") != -1) {
+      $process->{cmndline} =~ / -p (\d+) /;
+      $larch_port = $1;
+      $larch_running = 1;
+      last;
+    }
+  }
+}
+
+$rhash->{port} = $larch_port; 
+
+printf "larch_running: %d\n", $larch_running;
+if ($larch_port) {
+  printf "larch_port: %d\n", $larch_port;
+}
+
+
+######################################################################
+## ----- configure and start the Larch server
+######################################################################
 $rhash->{server}  ||= 'localhost';
 $rhash->{port}    ||= 4966;
 $rhash->{proxy}     = sprintf("http://%s:%d", $rhash->{server}, $rhash->{port});
@@ -25,9 +65,17 @@ $rhash->{timeout} ||= 3;
 $rhash->{quiet}   ||= 0;
 $rhash->{exe}       = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? $rhash->{windows} : 'larch_server';
 
-my $command = $rhash->{quiet} ? $rhash->{exe}." -q start" : $rhash->{exe}." start";
-my $ok = system $command;
+#my $command = $rhash->{quiet} ? $rhash->{exe}." -q start" : $rhash->{exe}." start";
 
+unless ($larch_running) {
+  my $command = $rhash->{exe};
+  $command .= $rhash->{quiet} ? " -q " : " ";
+  $command .= "-p ".$rhash->{port}. " ";
+  $command .= "start";
+
+  printf "command: %s\n", $command;
+  my $ok = system $command;
+}
 
 ######################################################################
 ## ----- contact the Larch server, trying repeatedly until contact is
