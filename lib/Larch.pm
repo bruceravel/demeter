@@ -29,29 +29,43 @@ my $table = new Proc::ProcessTable;
 # MSWIN doesn't have effective uids
 my $uid = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? $UID : $EUID;
 
-my $larch_running = 0;
 my $larch_port = undef;
+my @larch_used_ports;
 
 foreach my $process (@{$table->table}) {
-  # On Windows is it python or python.exe??
-  if ((((($^O eq 'MSWin32') or ($^O eq 'cygwin')) and $process->{uid} eq $uid) or $process->{euid} eq $uid) and $process->fname eq "python") {
-    # if we got to this point there is a process running that is owned by myself, whose name is "python"
-    # since larch can also be run in interactive mode, we need to make sure that this process is a daemon
-    # This will not work on Windows though as I cannot access the command-line arguments that were passed to the function
-    if (index($process->{cmndline}, "larch ") != -1 && index($process->{cmndline}, " -r ") != -1 && index($process->{cmndline}, " -p ") != -1) {
-      $process->{cmndline} =~ / -p (\d+) /;
-      $larch_port = $1;
-      $larch_running = 1;
+  # look out for python processes
+  next unless ($process->{fname} =~ /python/);
+
+  # is this a larch daemon process?
+  if (index($process->{cmndline}, "larch ") != -1 && index($process->{cmndline}, " -r ") != -1 && index($process->{cmndline}, " -p ") != -1) {
+    $process->{cmndline} =~ / -p (\d+)/;
+    my $port = $1;
+
+    # are we owning this process??
+    if (((($^O eq 'MSWin32') or ($^O eq 'cygwin')) and $process->{uid} eq $uid) or $process->{euid} eq $uid) {
+      $larch_port = $port;
       last;
+    } else {
+      push @larch_used_ports, $port;
     }
   }
 }
 
-$rhash->{port} = $larch_port; 
-
-printf "larch_running: %d\n", $larch_running;
-if ($larch_port) {
-  printf "larch_port: %d\n", $larch_port;
+if (defined($larch_port)) {
+  # we have already a larch server running
+  $rhash->{port} = $larch_port; 
+} else {
+  # no larch server running yet: look out for a new port number
+  my $port = 4966;
+  while (1) {
+    if (grep {$_ eq $port} @larch_used_ports) {
+      $port++;
+    }
+    else {
+      last;
+    }
+  }
+  $rhash->{port} = $port;
 }
 
 
@@ -67,13 +81,12 @@ $rhash->{exe}       = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? $rhash->{windo
 
 #my $command = $rhash->{quiet} ? $rhash->{exe}." -q start" : $rhash->{exe}." start";
 
-unless ($larch_running) {
+unless (defined($larch_port)) {
   my $command = $rhash->{exe};
   $command .= $rhash->{quiet} ? " -q " : " ";
   $command .= "-p ".$rhash->{port}. " ";
   $command .= "start";
 
-  printf "command: %s\n", $command;
   my $ok = system $command;
 }
 
