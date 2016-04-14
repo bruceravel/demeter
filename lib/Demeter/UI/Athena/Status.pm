@@ -49,6 +49,7 @@ sub new {
   $this->{wait}   = Wx::TextAttr->new(Wx::Colour->new('#008800'), $wxBGC, Wx::Font->new( @font ) );
   $this->{alert}  = Wx::TextAttr->new(Wx::Colour->new("#d9bf89"), $wxBGC, Wx::Font->new( @font ) );
   $this->{error}  = Wx::TextAttr->new(Wx::Colour->new('#ffffff'), Wx::Colour->new("#aa0000"), Wx::Font->new( @bold ) );
+  $this->{header} = Wx::TextAttr->new(Wx::Colour->new('#000088'), $wxBGC, Wx::Font->new( @font ) );
 
   $vbox -> Add($this->{text}, 1, wxGROW, 0);
 

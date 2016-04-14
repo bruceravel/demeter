@@ -12,8 +12,8 @@ use YAML::Tiny;
 ######################################################################
 ## ----- configure and start the Larch server
 ######################################################################
-my $ini = File::Spec->catfile(Demeter->dot_folder, "larch_server.yaml");
-$ini = File::Spec->catfile(Demeter::Here::here, 'share', 'ini', 'larch_server.ini') if (not -e ini);
+#my $ini = File::Spec->catfile(Demeter->dot_folder, "larch_server.yaml");
+my $ini = File::Spec->catfile(Demeter::Here::here, 'share', 'ini', 'larch_server.ini'); # if (not -e $ini);
 my $rhash;
 eval {local $SIG{__DIE__} = sub {}; $rhash = YAML::Tiny::LoadFile($ini)};
 #print join("|", %$rhash), $/;

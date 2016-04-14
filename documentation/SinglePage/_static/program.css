@@ -18,16 +18,17 @@ p.admonition-title:after {
 }
 
 p.admonition-title {
+    font-size: 1.3em;
     display: block;
 }
 
-p.first {
-    font-size: 1.2em;
-    font-weight: bold;
-};
+/* p.first admonition { */
+/*     font-size: 1.6em; */
+/*     font-weight: bold; */
+/* }; */
 
-p.last {
-    font-size: 1.0em;
-    font-weight: normal;
-    margin-left: 50px;
-}
+/* p.last { */
+/*     font-size: 1.0em; */
+/*     font-weight: normal; */
+/*     margin-left: 50px; */
+/* } */

@@ -196,6 +196,23 @@ Questions about Athena
 Questions about Artemis
 -----------------------
 
+#. .. admonition:: How do I measure coordination number?  Why can't N be a variable?
+      :class: faq
+
+      Whew!  This is a big topic.  `Try starting
+      here. <http://www.mail-archive.com/ifeffit%40millenia.cars.aps.anl.gov/msg03647.html>`_.
+
+      `Searching Google <http://lmgtfy.com/?q=exafs+coordination+number>`_ is a good idea.
+
+      In short, coordination number is inherently difficult to measure
+      because of its correlations with |sigma|\ :sup:`2`, with the
+      photoelectron scattering amplitude, and with other parameters of
+      the data processing and analysis.
+
+      N cannot be a variable because that's how :demeter:`artemis`
+      works.  S\ :sub:`0`\ :sup:`2` *can* be a math expression made of
+      variables.
+
 #. .. admonition:: I ran :demeter:`feff`.  Why are paths missing and coordination numbers surprising?
       :class: faq
 
@@ -226,6 +243,24 @@ Questions about Hephaestus
 
 Questions about Windows
 -----------------------
+
+#. .. admonition:: :demeter:`athena` and :demeter:`artemis` were working yesterday, but today they crash at start up (or whenever I import data, or something).  How do I fix this?
+      :class: faq
+
+      There are two common culprits.
+
+      #. A file in ``%AppData%\demeter`` has been corrupted.
+	 ``%APPDATA%`` is typically
+	 ``C:\Users\<username>\AppData\Roaming`` where ``<username>``
+	 is your login name.  Try deleting the files in that folder
+	 and restarting the program.  Make a copy of the files in the
+	 ``%AppData%\Demeter`` folder to help diagnose what
+	 caused the file corruption.
+      #. The antivirus definitions on your computer have updated since
+         you last used :demeter:`demeter`.  You may need to configure
+         your antivirus software to allow you to run
+         :demeter:`demeter` programs and load all of its libraries.
+
 
 Questions about Macintosh
 -------------------------
