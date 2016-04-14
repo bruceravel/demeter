@@ -95,6 +95,7 @@ gold foil data using these paths from the :demeter:`feff` calculation.
 .. toctree::
    :maxdepth: 2
 
+   pathparams.rst
    mathexp.rst
    plot.rst
    pathlike.rst

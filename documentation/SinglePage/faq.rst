@@ -200,7 +200,7 @@ Questions about Artemis
       :class: faq
 
       Whew!  This is a big topic.  `Try starting
-      here. <http://www.mail-archive.com/ifeffit%40millenia.cars.aps.anl.gov/msg03647.html>`_.
+      here. <http://www.mail-archive.com/ifeffit%40millenia.cars.aps.anl.gov/msg03647.html>`_
 
       `Searching Google <http://lmgtfy.com/?q=exafs+coordination+number>`_ is a good idea.
 
