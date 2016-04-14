@@ -224,7 +224,7 @@ td {
 header {
     background-color: #171717;
     color: #FDFDFB;
-    width:170px;
+    width:190px;
     float:left;
     position:fixed;
     border: 1px solid #000;
@@ -234,10 +234,11 @@ header {
     -moz-border-radius-bottomright: 4px;
     /* border-top-right-radius: 4px; */
     border-bottom-right-radius: 4px;
-    padding: 12px 25px 12px 50px;
+    padding: 12px 25px 12px 25px;
     margin: 0 25px 0 0;
     -webkit-font-smoothing: antialiased;
 }
+
 toc {
     background-color: #171717;
     color: #FDFDFB;
@@ -257,13 +258,15 @@ toc {
     z-index:2;
 }
 
+
+
 p.header p.toc {
     font-size: 15px;
     margin:0 0 7px;
 }
 p.headersm p.tocsm {
     font-size: 9px;
-   margin:0 0 7px;
+    margin:0 0 7px;
 }
 
 h1.header h1.toc {
@@ -412,11 +415,11 @@ section {
 /* Footer */
 
 footer {
-  width:170px;
-  float:left;
-  position:fixed;
-  bottom:10px;
-	padding-left: 50px;
+    width:190px;
+    float:left;
+    position:fixed;
+    bottom:10px;
+    padding-left: 10px;
 }
 
 @media print, screen and (max-width: 960px) {
