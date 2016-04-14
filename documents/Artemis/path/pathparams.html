@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5. The Path page &mdash; Artemis 0.9.24 documentation</title>
+    <title>5.1. Path parameters &mdash; Artemis 0.9.24 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -25,8 +25,9 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
     <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
-    <link rel="next" title="5.1. Path parameters" href="pathparams.html" />
-    <link rel="prev" title="4.6. Aggregate Feff calculation" href="../feff/aggregate.html" />
+    <link rel="up" title="5. The Path page" href="index.html" />
+    <link rel="next" title="5.2. Setting math expressions" href="mathexp.html" />
+    <link rel="prev" title="5. The Path page" href="index.html" />
 
     <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
@@ -38,12 +39,13 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="pathparams.html" title="5.1. Path parameters"
+          <a href="mathexp.html" title="5.2. Setting math expressions"
              accesskey="N">next</a></li>
         <li class="right" >
-          <a href="../feff/aggregate.html" title="4.6. Aggregate Feff calculation"
+          <a href="index.html" title="5. The Path page"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">5. The Path page</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -52,78 +54,72 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="the-path-page">
-<h1>5. The Path page<a class="headerlink" href="#the-path-page" title="Permalink to this headline">¶</a></h1>
-<p>In this chapter, the method for associating paths with data sets is
-explained. We will also see how to begin constructing a fitting model.</p>
-<p>Shown below is the Data window, <a class="reference external" href="../data.html">which we have already seen</a>, with some data from a gold foil already imported.
-I have passed the cursor over the active text which says
-<span class="guilabel">Import crystal data or a Feff calculation</span>.
-<img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> Clicking will open the standard file selection
-dialog, prompting you for an <code class="file docutils literal"><span class="pre">atoms.inp</span></code>, <code class="file docutils literal"><span class="pre">feff.inp</span></code> or
-CIF file.  The same thing can be done by clicking the
-<kbd class="light">Add</kbd> button above the <span class="guilabel">Feff</span> list in the Main
-window, by selecting <span class="menuselection">File ‣ Open project of data</span> in
-the Main window, or by using the <kbd class="dark">Control</kbd>-<kbd class="dark">o</kbd>
-keyboard shortcut.</p>
-<div class="figure align-center" id="id1">
-<span id="fig-pathempty"></span><a class="reference external image-reference" href="../_images/path-empty.png"><img alt="../_images/path-empty.png" src="../_images/path-empty.png" /></a>
-<p class="caption"><span class="caption-number">Fig. 5.1 </span><span class="caption-text">The Data window with no paths associated.</span></p>
-</div>
-<p>From the file dialog, I select an <code class="file docutils literal"><span class="pre">atoms.inp</span></code> file containing
-these crystal data:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>title  gold
-space  f m 3 m
-a = 4.08   rmax = 6.00    core = Au1
-atoms
-  Au     0.00000   0.00000   0.00000  Au1
-</pre></div>
-</div>
-<p>This crystal data is entered in a <font size=-1 color="#8C4112">FEFF</font> window and posted to the screen.</p>
-<div class="figure align-center" id="id2">
-<span id="fig-pathatoms"></span><a class="reference external image-reference" href="../_images/path-atoms.png"><img alt="../_images/path-atoms.png" src="../_images/path-atoms.png" /></a>
-<p class="caption"><span class="caption-number">Fig. 5.2 </span><span class="caption-text">The Atoms and Feff window containing gold metal crystal data.</span></p>
-</div>
-<p>Running <font size=-1 color="#8C4112">ATOMS</font> then <font size=-1 color="#8C4112">FEFF</font> results in this path list:</p>
-<div class="figure align-center" id="id3">
-<span id="fig-pathpathlist"></span><a class="reference external image-reference" href="../_images/path-pathlist.png"><img alt="../_images/path-pathlist.png" src="../_images/path-pathlist.png" /></a>
-<p class="caption"><span class="caption-number">Fig. 5.3 </span><span class="caption-text">The path list for the gold metal calculation.</span></p>
-</div>
-<p>By <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> clicking on path <span class="guilabel">0000</span> in the list
-then shift-<img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> clicking on path <span class="guilabel">0012</span>, the
-first 13 paths are selected</p>
-<div class="figure align-center" id="id4">
-<span id="fig-pathselected"></span><a class="reference external image-reference" href="../_images/path-selected.png"><img alt="../_images/path-selected.png" src="../_images/path-selected.png" /></a>
-<p class="caption"><span class="caption-number">Fig. 5.4 </span><span class="caption-text">The first 13 paths have been selected.</span></p>
-</div>
-<p>Now <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> click on any of the selected paths. While
-holding down the left mouse button, drag those paths over to the right
-side of the Data window and drop them by releasing the mouse
-button. This will place all 13 of those paths in the path list on the
-Data window containing the data on the gold foil.</p>
-<div class="figure align-center" id="id5">
-<span id="fig-pathpopulated"></span><a class="reference external image-reference" href="../_images/path-populated.png"><img alt="../_images/path-populated.png" src="../_images/path-populated.png" /></a>
-<p class="caption"><span class="caption-number">Fig. 5.5 </span><span class="caption-text">The Data window has been populated with the 13 paths from the Feff
-calculation.</span></p>
-</div>
-<p>At this point we can begin examining the paths by plotting them along
-with the data. The path plotting tools are explained in <a class="reference external" href="../plot/index.html">the chapter on
-the Plot window</a>.</p>
-<p>Also at this point, we can begin creating a fitting model to fit the
-gold foil data using these paths from the <font size=-1 color="#8C4112">FEFF</font> calculation.</p>
-<hr class="docutils" />
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="pathparams.html">5.1. Path parameters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="mathexp.html">5.2. Setting math expressions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="plot.html">5.3. Marking and Plotting</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="plot.html#moving-paths-to-the-plotting-list">5.3.1. Moving paths to the Plotting list</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html#phase-corrected-plots">5.3.2. Phase corrected plots</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="pathlike.html">5.4. Using path-like objects</a></li>
-</ul>
-</div>
+  <div class="section" id="path-parameters">
+<h1>5.1. Path parameters<a class="headerlink" href="#path-parameters" title="Permalink to this headline">¶</a></h1>
+<p>Each path page offers a set of text boxes for entering the math
+expressions associated with each of the path parameters.  A path
+parameter is a math expression that is used to evaluate one of the
+terms in the EXAFS equation for that path.</p>
+<p><strong>label</strong></p>
+<blockquote>
+<div>This is a text string that is used to identify the path.  It is used
+in the log file and in other places.  <font size=-1 color="#8C4112">ARTEMIS</font> generates a
+useful string from the contents of the path, including the nominal
+path length, the degeneracy, and the number of legs of the path.</div></blockquote>
+<p><strong>N</strong></p>
+<blockquote>
+<div><p>The coordination number.  This <strong>must</strong> be a pure number.  It <strong>may
+not</strong> be a math expression or a variable.  This is choice made in
+<font size=-1 color="#8C4112">ARTEMIS</font> to avoid confusion between N and S<sub>0</sub><sup>2</sup>.</p>
+<p>Typically, this is the path degeneracy.  Another common value for N
+is 1, in which case the coordination number is handled by the math
+expression for S<sub>0</sub><sup>2</sup>.</p>
+</div></blockquote>
+<p><strong>S02</strong></p>
+<blockquote>
+<div>Nominally, this path parameter represents the amplitude reduction
+factor S<sub>0</sub><sup>2</sup>.  In practice, it is used for all
+aspects of the fitting model that effect the amplitude of the path.
+If you have <span class="guess">guess</span> parameters or <span class="def">def</span> parameters that
+represent, for example, a dopant or vacancy concentration or an
+unknown coordination number, those parameters are used as parts of
+the math expression for this path parameter.</div></blockquote>
+<p>ΔE<sub>0</sub></p>
+<blockquote>
+<div>This is an adjustment to the E<sub>0</sub> used to evaluate the
+wavenumber of the theory.  As a fitting parameter, it is useful to
+think of ΔE as the parameter which aligns the energy (or
+wavenumber) grids of the data and the theory.</div></blockquote>
+<p>ΔR</p>
+<blockquote>
+<div>This is an adjustment of the half path length of the path.  For a
+single scattering path, it is an adjustment of the inter-atomic
+distance.</div></blockquote>
+<p>σ<sup>2</sup></p>
+<blockquote>
+<div>The mean square variation in path length.  In practice, this
+parameter often encapsulates both static and thermal disorder.</div></blockquote>
+<p><strong>Ei</strong></p>
+<blockquote>
+<div>An adjustment to the “imaginary energy”.  This is a way of
+encapsulating an adjustment to the mean free path length of the
+photo-electron.  A <span class="guess">guess</span> parameter for Ei is, in general,
+highly correlated with other amplitude terms.</div></blockquote>
+<p><strong>3rd</strong></p>
+<blockquote>
+<div>A third cumulant for the path.  This is a skew deviation from
+Gaussian disorder for the scattering path.  A <span class="guess">guess</span>
+parameter for the third cumulant will be highly correlated with
+ΔR and ΔE:sub:<cite>0</cite>.</div></blockquote>
+<p><strong>4th</strong></p>
+<blockquote>
+<div>A fourth cumulant for the path.  This is a curtosis deviation from
+Gaussian disorder for the scattering path.  A <span class="guess">guess</span>
+parameter for the fourth cumulant will be highly correlated with
+σ<sup>2</sup> and other amplitude parameters.</div></blockquote>
+<p>There is discussion of working with path parameters and math
+expressions in <a class="reference external" href="mathexp.html">the next section</a> and in <a class="reference external" href="../gds.html#creating-parameters-from-math-expressions-on-the-path-page">the section
+on GDS parameters</a>.</p>
 
 <br>
 
@@ -151,8 +147,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../startup/index.html">2. Starting Artemis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../feff/index.html">4. The Atoms and Feff Window</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">5. The Path page</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="pathparams.html">5.1. Path parameters</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">5. The Path page</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">5.1. Path parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mathexp.html">5.2. Setting math expressions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html">5.3. Marking and Plotting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pathlike.html">5.4. Using path-like objects</a></li>
@@ -204,7 +200,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/path/index.txt"
+      <li><a href="../_sources/path/pathparams.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -216,12 +212,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="pathparams.html" title="5.1. Path parameters"
+          <a href="mathexp.html" title="5.2. Setting math expressions"
              >next</a></li>
         <li class="right" >
-          <a href="../feff/aggregate.html" title="4.6. Aggregate Feff calculation"
+          <a href="index.html" title="5. The Path page"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >5. The Path page</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
