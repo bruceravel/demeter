@@ -28,6 +28,7 @@ use Wx qw( :everything );
 use Wx::Event qw(EVT_LISTBOX EVT_BUTTON EVT_KEY_DOWN EVT_CHOICE);
 use base 'Wx::Panel';
 use Demeter::UI::Wx::PeriodicTableDialog;
+use Demeter::UI::Wx::SpecialCharacters qw($MU);
 
 my $aleft = Wx::TextAttr->new();
 $aleft->SetAlignment(wxTEXT_ALIGNMENT_LEFT);
@@ -106,7 +107,7 @@ sub new {
 
 
   ## -------- Results text
-  $self->{resultsbox} = Wx::StaticBox->new($self, -1, 'Results', wxDefaultPosition, wxDefaultSize);
+  $self->{resultsbox} = Wx::StaticBox->new($self, -1, ' Results ', wxDefaultPosition, wxDefaultSize);
   $self->{resultsboxsizer} = Wx::StaticBoxSizer->new( $self->{resultsbox}, wxVERTICAL );
   $self->{results} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, wxDefaultSize,
 				       wxHSCROLL|wxTE_RICH2|wxTE_MULTILINE|wxTE_READONLY);
@@ -114,6 +115,29 @@ sub new {
   $vbox -> Add($self->{resultsboxsizer}, 1, wxEXPAND|wxALL, 5);
   $self->{results}->SetFont( Wx::Font->new( 10, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $self->{results}->SetDefaultStyle($aleft);
+
+
+  $self->{transbox} = Wx::StaticBox->new($self, -1, ' Transmitted fraction ', wxDefaultPosition, wxDefaultSize);
+  $self->{transboxsizer} = Wx::StaticBoxSizer->new( $self->{transbox}, wxHORIZONTAL );
+  $vbox -> Add($self->{transboxsizer}, 0, wxEXPAND|wxALL, 5);
+
+  $self->{thickness_button} = Wx::Button->new($self, -1, "Compute transmitted fraction");
+  $self->{thickness}       = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [60, -1]);
+  $self->{thickness_units} = Wx::Choice->new($self, -1, , [-1, -1], [-1, -1], [$MU.'m', 'mm', 'cm']);
+  $self->{transmitted}     = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [60, -1], wxTE_READONLY);
+  $self->{transmitted_label} = Wx::StaticText->new($self, -1, '%');
+  $self->{transboxsizer} -> Add($self->{thickness_button},  0, wxALL,   5);
+  $self->{transboxsizer} -> Add($self->{thickness},         0, wxLEFT|wxTOP|wxBOTTOM,  5);
+  $self->{transboxsizer} -> Add($self->{thickness_units},   0, wxRIGHT|wxTOP|wxBOTTOM, 5);
+  $self->{transboxsizer} -> Add($self->{transmitted},       0, wxALL,   5);
+  $self->{transboxsizer} -> Add($self->{transmitted_label}, 0, wxTOP,   8);
+
+  my $numval2 = Wx::Perl::TextValidator -> new('[\d.]', \($self->{data}));
+  $self->{thickness}->SetValidator($numval2);
+  $self->{thickness_units}->SetSelection(0);
+  EVT_BUTTON($self, $self->{thickness_button}, sub{thickness(@_)});
+
+  $self->{$_}->Enable(0) foreach (qw(transbox thickness_button thickness thickness_units transmitted transmitted_label));
 
   $self->SetSizerAndFit($hbox);
 
@@ -219,12 +243,14 @@ sub get_formula_data {
     };
     ## 1 amu = 1.6605389 x 10^-24 gm
     $xsec = $barns_per_formula_unit / $amu_per_formula_unit / 1.6605389;
+    $parent->{xsec} = $xsec;
     $answer .= sprintf("\nThis weighs %.3f amu.\n", $weight);
     if ($xsec == 0) {
       $answer .= "\n(Energy too low or not provided.  Absorption calculation skipped.)";
     } else {
       my $xx = $xsec;
       $xsec *= $dens;
+      $parent->{xsec} = $xsec;
       if ($xsec > 0) {
 	if (10000/$xsec > 1500) {
 	  $answer .=
@@ -322,6 +348,8 @@ sub get_formula_data {
     $parent->{results} -> AppendText(wrap(q{}, q{}, $answer));
   };
   $parent->{results} -> ShowPosition(1);
+  $self->{$_}->Enable(1) foreach (qw(transbox thickness_button thickness thickness_units transmitted transmitted_label));
+
 };
 
 sub use_element {
@@ -338,6 +366,15 @@ sub put_element {
   $self->{echo}->SetStatusText(sprintf("You selected %s from the pop-up periodic table.",get_name($el)));
 };
 
+sub thickness {
+  my ($self, $event) = @_;
+  my $thickness = $self->{thickness}->GetValue;
+  my $units = $self->{thickness_units}->GetSelection;
+  $thickness = $thickness/10000 if $units == 0;
+  $thickness = $thickness/10 if $units == 1;
+  my $fraction = 100*exp(-1*$self->{xsec}*$thickness);
+  $self->{transmitted}->SetValue(sprintf("%.2f", $fraction));
+};
 
 1;
 

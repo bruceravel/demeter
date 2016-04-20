@@ -215,6 +215,17 @@ Finally, an energy in eV is required at which to make the calculation.
 
    The formulas tool.
 
+At the bottom of the page is a tool for computing transmitted fraction
+from the material just computed.  You can enter a sample thickness and
+choose from |mu| m, m, and cm units.  Pressing the :button:`Compute
+transmitted fraction,light` button will use the cross section reported
+above to display the transmitted fraction of X-rays at the current
+energy through the sample.  This is presented as a percentage of the
+incident intensity transmitted through the sample.
+
+Detailed explanation
+~~~~~~~~~~~~~~~~~~~~
+
 Here is an example of the results printed for BN, with a specific
 gravity of 2.29 and at energy of 7800 eV:
 
@@ -443,7 +454,7 @@ for the major isotopes.
     which used to be a site about Mossbauer spectroscopy but now seems 
     to be a unmaintained science news site.  `Wikipedia
     <https://en.wikipedia.org/wiki/M%C3%B6ssbauer_spectroscopy>`_ has  
-    a nice periodic table of <ossbauer active elements and Darby Dyer
+    a nice periodic table of Mossbauer active elements and Darby Dyer
     keeps `a lovely page about Mossbauer <http://serc.carleton.edu/research_education/geochemsheets/techniques/mossbauer.html>`_.
 **Ionic radii**
     .. bibliography:: athena.bib
@@ -574,6 +585,9 @@ http://exafsmaterials.com/Ref_Spectra_0.4MB.pdf
 
    An anotated standards plot for manganese oxalate.
 
+The plotting range can be controlled using the
+:configparam:`Hephaestus,standards_emin` and
+:configparam:`Hephaestus,standards_emax` parameters.
 
 
 F' and F"
@@ -605,6 +619,10 @@ The f' and f" data can be saved to a file.
 
    An f' and f" plot for vanadium.
 
+The plotting range can be controlled using the
+:configparam:`Hephaestus,f1f2_emin` and
+:configparam:`Hephaestus,f1f2_emax` parameters.  The energy grid of
+the calculation is set using :configparam:`Hephaestus,f1f2_grid`.
 
 
 Preferences

@@ -22,6 +22,10 @@
    - Don't consider skip parameters when checking for unique parameter
      names
 
+*** Hephaestus
+   - Configurable plotting range in standards tool
+   - Compute transmitted fraction in formulas tool
+
 *** Demeter
    - When saving LCF results, sort the standards alphabetically.
      (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-November/012859.html][Florian Werner]])

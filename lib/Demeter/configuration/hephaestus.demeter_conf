@@ -277,7 +277,7 @@ restart=1
 description
   The intial value for the lower energy of a standards plot.
 
-variable=f1f2_emax
+variable=standards_emax
 type=absolute energy
 default=100
 units=energy
