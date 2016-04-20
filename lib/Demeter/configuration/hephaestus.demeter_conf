@@ -268,3 +268,20 @@ units=energy
 restart=1
 description
   The intial value for the energy grid size in the Anomalous Scattering utility
+
+variable=standards_emin
+type=absolute energy
+default=-30
+units=energy
+restart=1
+description
+  The intial value for the lower energy of a standards plot.
+
+variable=f1f2_emax
+type=absolute energy
+default=100
+units=energy
+restart=1
+description
+  The intial value for the upper energy of a standards plot.
+

@@ -260,8 +260,8 @@ sub plot {
 		    e_post => 0,
 		    e_markers => 0,
 		    e_smooth => $ddd->co->default("plot", "e_smooth"),
-		    emin   => $self->config('emin'),
-		    emax   => $self->config('emax'),
+		    emin   => Demeter->co->default('hephaestus', 'standards_emin') || $self->config('emin'),
+		    emax   => Demeter->co->default('hephaestus', 'standards_emax') || $self->config('emax'),
 		    );
   $ddd->po->start_plot;
   $ddd -> plot('E');

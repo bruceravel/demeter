@@ -108,7 +108,7 @@ sub new {
 
 
   $parent->{primary} = Wx::Slider->new($self, -1, 100, 0, 100, [-1,-1], [-1,-1],
-				     wxSL_VERTICAL|wxSL_AUTOTICKS|wxSL_LABELS|wxSL_RIGHT|wxSL_INVERSE);
+				       wxSL_VERTICAL|wxSL_AUTOTICKS|wxSL_LABELS|wxSL_RIGHT|wxSL_INVERSE);
   $primary_box->Add($parent->{primary}, 1, wxALL|wxEXPAND, 5);
 
   $self->SetSizerAndFit($primary_box);
