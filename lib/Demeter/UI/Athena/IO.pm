@@ -93,6 +93,7 @@ sub Import {
     @files = $fd->GetPaths;
   };
 
+
   if (Demeter->is_ifeffit and ($#files > 49)) {
     my $yesno = Demeter::UI::Wx::VerbDialog->new($app->{main}, -1,
 						 "That number of files may overextened Ifeffit's statically allocated memory.  It may be wise to make projects of fewer than 50 data groups.  If you continue importing, you run the risk of corrupting Ifeffit's memory and possibly crashing Athena.",
@@ -112,7 +113,7 @@ sub Import {
 
     ## I am very confused about how Wx::FileDialog handles paths+names
     ## with unicode characters, the situation is fairly
-    ## straightforward unix, but on Windows there is some confusion
+    ## straightforward on unix, but on Windows there is some confusion
     ## about encoding systems that I don't understand.  My solution is
     ## to copy (safely, using Win32::Unicode::File) the file to the
     ## stash folder and read it from there.
@@ -144,6 +145,12 @@ sub Import {
       ## this fall through to the plugin
     #};
 
+    my $ziptype = Demeter->is_zipproj($file,$verbose,'guess');
+    if ($ziptype < 0) {
+      my $which = ('', 'n Artemis project file', ' Demeter fit serialization file', 'n old-style Artemis project file', ' zip file')[-1*$ziptype];
+      $app->{main}->status("Athena cannot read a$which", 'alert');
+      return;
+    }
     if (Demeter->is_prj($file,$verbose) or Demeter->is_json($file,$verbose)) {
       $type = 'prj';
       $stashfile = $file;

@@ -16,6 +16,8 @@
      XANES data (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-December/012912.html][Jeff Catalano]])
    - Fixed a problem with selections in data summer being unset in
      certain situations (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-January/008429.html][Ian Godrey]])
+   - Offer a useful warning when trying to read an Artemis project
+     file into Athena (thanks to Galen O'Neil)
 
 *** Artemis
    - Control for enabling 5- and 6-legged paths in Feff tab

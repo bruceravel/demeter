@@ -16,9 +16,9 @@ Hephaestus
         agriculture are the support of civilization.
                                      Mythology, Edith Hamilton
 
-:demeter:`hephaestus` is a program for making calculations useful to the XAS
-experimentalist using a periodic table, tables of X-ray absorption
-coefficients, and other elemental data.
+:demeter:`hephaestus` is a program for making small calculations
+useful to the XAS experimentalist using a periodic table, tables of
+X-ray absorption coefficients, and other elemental data.
 
 On the left of the :demeter:`hephaestus` window is a stack of icon
 buttons which are used to select the different tools.  Clicking on one
@@ -116,7 +116,7 @@ The rules for the selection of the filter elements are:
 
 #. For elements above Z=57, assume the L\ :sub:`III` edge is being
    measured. Use the first element whose K edge is more than 90 eV
-   above the L |alpha| :sub:`1` line of the absorber.
+   above the L\ |alpha|\ :sub:`1` line of the absorber.
 
 #. Use Rb for a U or Np absorber because Kr is still a silly filter
    material.
