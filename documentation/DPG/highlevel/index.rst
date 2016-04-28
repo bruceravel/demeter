@@ -48,6 +48,7 @@ at that point in your program.
    :maxdepth: 2
 
    dispose.rst
+   templates.rst
    mode.rst
    plot.rst
    config.rst

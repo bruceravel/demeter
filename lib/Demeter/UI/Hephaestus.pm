@@ -363,7 +363,7 @@ sub on_close {
 
 sub document {
   my ($self) = @_;
-  my @path = ('Demeter', 'UI', 'Athena', 'share', 'aug', 'html');
+  my @path = ('Demeter', 'share', 'documentation', 'Athena');
   my $url = Demeter->co->default('athena', 'doc_url') . '/hephaestus.html';
   my $fname = File::Spec->catfile(dirname($INC{'Demeter.pm'}), @path, 'hephaestus.html');
   if (-e $fname) {

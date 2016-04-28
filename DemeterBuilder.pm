@@ -68,11 +68,8 @@ sub ACTION_build {
 
 sub ACTION_ghpages {
   my $self = shift;
-  #$self->dispatch("build_dpg");
-  #$self->dispatch("build_artug");
-  #$self->dispatch("copy_artug_images");
-  #$self->dispatch("build_aug");
-  #$self->dispatch("copy_aug_images");
+  $self->dispatch("build_documents");
+  ## an action to copy things over to the ../demeter-gh-pages directory
   $self->dispatch("doctree");
   $self->dispatch("org2html");
 };
@@ -280,7 +277,7 @@ sub ACTION_test_for_sphinx {
 
 sub ACTION_build_documents {
   if (not defined($sphinx)) {
-    print "sphinx not found, not building documentation\n";
+    print "sphinx not found, not building documentation (see http://www.sphinx-doc.org)\n";
     return;
   };
   my $here = cwd;
@@ -317,6 +314,11 @@ sub ACTION_build_documents {
 ### Manage org-mode pages
 
 sub ACTION_org2html {
+  my $org2html = which('org2html');
+  if (not defined($org2html)) {
+    print "org2html not found, not converting org pages (see https://github.com/fniessen/orgmk)\n";
+    return;
+  };
   print "copying stylesheets\n";
   copy(File::Spec->catfile('css','orgstyle.css'), File::Spec->catfile($ghpages, 'stylesheets', 'orgstyle.css'));
   copy(File::Spec->catfile('css','orgtocstyle.css'), File::Spec->catfile($ghpages, 'stylesheets', 'orgtocstyle.css'));

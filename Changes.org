@@ -110,8 +110,9 @@
    - Removed a bit of code related to choice of plot terminal with
      Gnuplot 5 that was not respecting the configured terminal value
      (thanks to Ian Godfrey)
-   - use [[https://metacpan.org/pod/File::Slurper][File::Slurper]] instead of [[https://metacpan.org/pod/File::Slurp::Tiny][File::Slurp::Tiny]] in DemeterBuilder,
-     see [[http://blogs.perl.org/users/leon_timmermans/2015/08/fileslurp-is-broken-and-wrong.html][this]]
+   - use [[https://metacpan.org/pod/File::Slurper]] instead of
+     [[https://metacpan.org/pod/File::Slurp::Tiny]] in DemeterBuilder, see
+     [[http://blogs.perl.org/users/leon_timmermans/2015/08/fileslurp-is-broken-and-wrong.html][this]]
    - implement a functional normalization for use in tender energy
      fluorescence EXAFS data where I0 changes a lot over the course of
      the scan.  this divides mu(E) by (post-pre) before removing
@@ -1159,7 +1160,7 @@ at record-keeping, not that I don't value your input.
    - Made Demeter::IniReader, a subclass of Config::INI
    - Fully deprecate use of MooseX::AttributeHelpers and remove it as
      a dependency
-   - Make File::Monitor::Lite a recommended module (for data watcher)
+   - Make [[https://metacpan.org/pod/File::Monitor::Lite]] a recommended module (for data watcher)
    - More care and more options for loading "pragmata" for improved
      startup times
    - Take better care when processing Data not to do normalization and
