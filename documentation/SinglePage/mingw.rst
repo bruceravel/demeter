@@ -14,13 +14,57 @@ This is my page of notes on how I built :demeter:`ifeffit` and
 be completely coherent -- if you want to replicate what I have done,
 let me know and I'll clean this page right up.
 
+First steps
+-----------
 
-.. note:: These notes are rather old and may be out of date.  This
-   needs to be updated the next time a build environment is set up on
-   a Windows machine.
+#. Install the latest version of ;program:`Strawberry Perl` from
+   http://strawberryperl.com/
 
-Compiling Ifeffit
------------------
+#. You may want to install the GutHub Desktop application from
+   https://desktop.github.com/
+
+#. Clone a copy of :demeter:`demeter` from
+   https://github.com/bruceravel/demeter
+
+#. cd into the installation folder for :demeter:`demeter` and do
+   ``perl Build.pl``.  If you just installed (or updated) Strawberry
+   perl on your computer, you will be missing the mountain of
+   dependencies that :demeter:`demeter` uses, so ...
+
+#. At the command line, do ``perl Build installdeps`` and wait.  This
+   will take quite a while.  Happily, once all the dependencies are
+   installed, they are installed.  When you upgrade Demeter, this step
+   will only be required to update any new dependencies.
+
+The first time through, it took about 3 hours to compile up all the
+dependencies on my fairly old Windows machine.  Three packages failed
+to install: ``Wx``, ``File::Monitor::Lite``,
+``Syntax::Highlight::Perl``.
+
+``Wx``
+
+  This failed because one of the test hung for some reason.  Clicking
+  the red X button allowed the tests to continue, but caused one to
+  fail.  It was safe to do ``cpanm -f Wx`` to force the installation
+  despite the test failure.  Unfortunately, this is a slow
+  compilation.  Sigh....
+
+``File::Monitor::Lite``
+
+  Here, the failures have to do with a test failing to deal correctly
+  with slashes and backslashes.  Again doing ``cpanm -f
+  File::Monitor::Lite`` is safe.
+
+``Syntax::Highlight::Perl``
+
+  I'm not sure what caused this to fail, but it seems benign.  Doing
+  ``cpanm -f Syntax::Highlight::Perl`` worked without any failures in
+  the testing phase.  The earlier failure seems to have something to
+  do with a problem unpacking the packaged downloaded by
+  :program:`cpanm`.
+
+Preparing to compile Ifeffit
+----------------------------
 
 `Here is a useful page
 <http://www.star.le.ac.uk/~cgp/pgplot_Fortran95_WinXP.html>`_ on using
@@ -28,13 +72,6 @@ Compiling Ifeffit
 
 First, need to establish a build environment from which
 Strawberry+Demeter can be bootstrapped.
-
-#. Removed readline from line 85 of :demeter:`ifeffit`'s main
-   :file:`Makefile`:
-
-   ::
-
-      SUBDIRS = readline src 
 
 #. Installed PDCurses and Readline from `GnuWin32
    <http://gnuwin32.sourceforge.net/packages.html>`_ into
@@ -50,23 +87,9 @@ Strawberry+Demeter can be bootstrapped.
    http://spdg1.sci.shizuoka.ac.jp/grwinlib/english/ into
    :file:`C:\\MinGW\\lib\\pgplot`
 
-#. Correct value of ``PGPLOT_LIBS``
-
-   ::
-
-      PGPLOT_LIBS = -L/c/MinGW/lib/pgplot -lcpgplot -lpgplot -lGrWin -lgdi32 -lg2c
-   
-   Need to hack at :demeter:`ifeffit`'s :file:`iconf_pgplot` to make
-   this happen.
-
-#. In :file:`src/cmdline/Makefile` I used this for ``readline_LIB``
-
-   ::
-
-      readline_LIB = -L/c/GnuWin32/lib -lcurses -lreadline
-
 #. Set the ``PGPLOT_DIR`` variable to ``/c/mingw/lib/pgplot``, which
-   is the location to which :program:`pgplot` was installed in step 4.
+   is the location to which :program:`pgplot` was installed in
+   step 4.
 
 #. In principle, ``PGPLOT_DEV`` should be set to ``/GW``, but that
    does not seem to get picked up by :demeter:`ifeffit`.  I have to
@@ -97,7 +120,7 @@ Compiling Ifeffit to be placed in C:/strawberry
 
    ::
 
-      ./configure --prefix='/c/source/Demeter.prereqs'
+      ./configure --prefix='/c/strawberry/c/lib'
 
    (Note: this should be done in the MinGW window and **not** in the
    Windows command prompt.)
@@ -117,11 +140,6 @@ Compiling Ifeffit to be placed in C:/strawberry
             $   ' Copyright (c) 2008 Matt Newville, Univ of Chicago'
       c}
 
-   Note that this somewhat changes how the :demeter:`ifeffit` build
-   procedure works.  By setting the prefix at configuration time to be
-   different from the ``sysdir``, :demeter:`ifeffit` will get
-   installed into a :quoted:`staging area`.  It will then be installed
-   into its proper home when the Strawberry package is built.
 
 #. Now :command:`make` and :command:`make install` 
 
@@ -159,6 +177,20 @@ Strawberry build or
 #. Build a :demeter:`demeter` par file
 #. Rebuild Strawberry
 
+
+curses and readline
+-------------------
+
+From the GnuWin32 :file:`bin` folder, copy :file:`curses2.dll`,
+:file:`history5.dll`, and :file:`readline5.dll` to
+:file:`C:/Strawberry/c/bin`.
+
+From the GnuWin32 :file:`lib` folder, copy all the files with
+:file:`curses`, :file:`readline`, and :file:`readline` in the name to
+:file:`C:/Strawberry/c/lib`.
+
+
+
 Compiling the SWIG wrapper
 --------------------------
 
@@ -178,7 +210,11 @@ for the :demeter:`ifeffit` SWIG wrapper.
 Using Gnuplot
 -------------
 
-Grab the latest version of gnuplot from http://gnuplot.info/.  There
+Grab the latest version of gnuplot from http://gnuplot.info/.  You
+will be directed to SourceForge.  Use the latest installer and have
+the installer put all the files in C:\Strawberry\c\bin\gnuplot
+
+There
 are zip files with Windows builds to be found there.  In recent
 versions, there is a :file:`gnuplot.exe` version that emulates pipes
 without opening a command window.  Point the

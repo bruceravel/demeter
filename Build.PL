@@ -111,7 +111,7 @@ my $build = DemeterBuilder
 				'XMLRPC::Lite'              => '0',
 
 				(($^O eq 'MSWin32') or ($^O eq 'cygwin')) ?
-				('Win32::Shortcut' => '0',) : (),
+				('Win32::Shortcut' => '0', 'Win32::Unicode::File' => '0') : (),
 				## deprecated....
 				#'Compress::Raw::Zlib'	   => '0',
 				#'Compress::Raw'	   => '0',
@@ -249,7 +249,7 @@ Build.PL - Demeter build script
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.24.
+This documentation refers to Demeter version 0.9.25.
 
 =head1 SYNOPSIS
 

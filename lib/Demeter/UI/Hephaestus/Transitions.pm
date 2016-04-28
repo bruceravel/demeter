@@ -48,7 +48,7 @@ Demeter::UI::Hephaestus::Transitions - Hephaestus' electronic transitions utilit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.24.
+This documentation refers to Demeter version 0.9.25.
 
 =head1 SYNOPSIS
 

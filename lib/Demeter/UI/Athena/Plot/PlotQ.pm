@@ -215,7 +215,7 @@ Demeter::UI::Athena::Plot::PlotQ - q-space plotting controls
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.24.
+This documentation refers to Demeter version 0.9.25.
 
 =head1 SYNOPSIS
 
