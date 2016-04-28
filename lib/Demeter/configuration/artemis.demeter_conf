@@ -136,7 +136,7 @@ description
 
 variable=doc_url
 type=string
-default=http://bruceravel.github.io/demeter/artug/
+default=http://bruceravel.github.io/demeter/documents/Artemis/
 description
   The URL of the Artemis document.
 

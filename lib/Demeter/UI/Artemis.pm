@@ -1545,7 +1545,7 @@ sub document {
   my ($app, $doc, $target) = @_;
   my $file;
   my $url = Demeter->co->default('artemis', 'doc_url');
-  my @path = ('Demeter', 'UI', 'Artemis', 'share', 'artug', 'html');
+  my @path = ('Demeter', 'share', 'documentation', 'Artemis');
   if (any {$doc eq $_} (qw(plot fit path feff))) {
     push @path, $doc;
     $file = 'index';

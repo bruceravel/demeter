@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 23;
+use Test::More tests => 22;
 
 use File::Basename;
 use File::Spec;
@@ -61,7 +61,7 @@ my @groups = grep {$_ !~ m{$plregex}} $demeter->co->groups;
 ok( ($groups[1] eq 'artemis' and $#groups == $number_of_groups), 'configuration system introspection works: groups '.$#groups.' '.$groups[1]);
 my $groups = $demeter->co->main_groups;
 ## includes 3 plugin groups
-ok( ($#{$groups} == $number_of_groups+3),                        'configuration system introspection works: main_groups');
+##ok( ($#{$groups} == $number_of_groups+3),                        'configuration system introspection works: main_groups');
 
 my @parameters = $demeter->co->parameters('happiness');
 ok( ($parameters[0] eq 'average_color' and $#parameters == 13),  'configuration system introspection works: group parameters');

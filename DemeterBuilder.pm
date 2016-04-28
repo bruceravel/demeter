@@ -18,15 +18,16 @@ use IPC::Cmd qw(can_run);
 use IPC::Open3;
 
 ## this eval is required so that the build scripts can be made even if
-## F::C::R is not yet installed.  A "Build installdeps" is required to
-## actually install F::C::R.  Once that is done, the build will
-## proceed correctly.
+## F::C::R or any of the others are not yet installed.  A "Build
+## installdeps" is required to actually install F::C::R.  Once that is
+## done, the build will proceed correctly.
 eval "
 use File::Copy::Recursive qw(dircopy);
 use Pod::ProjectDocs;
 use File::Slurper qw(read_text write_text);
+use File::Which qw(which);
 ";
-#use File::Which;
+#
 #use DocBuilder::Artemis;
 #use DocBuilder::Athena;
 
@@ -48,6 +49,7 @@ my %windows = (strawberry => 'C:\strawberry',                     # base of Stra
 	       artug      => 'C:\strawberry\c\perl\site\lib\Demeter\share',
 	      );
 our $ghpages = '../demeter-gh-pages';
+our $sphinx;
 
 ######################################################################
 ## Actions
@@ -58,9 +60,9 @@ sub ACTION_build {
   unlink File::Spec->catfile('lib', 'Demeter', 'configuration', 'gnuplot.demeter_conf');
   $self->dispatch("compile_ifeffit_wrapper");
   $self->dispatch("test_for_gnuplot");
+  $self->dispatch("test_for_sphinx");
   $self->SUPER::ACTION_build;
-  #$self->dispatch("copy_artug");
-  #$self->dispatch("copy_aug");
+  $self->dispatch("build_documents");
   $self->dispatch("post_build");
 }
 
@@ -271,6 +273,43 @@ sub ACTION_build_dpg {
 };
 
 
+
+sub ACTION_test_for_sphinx {
+  $sphinx = which('sphinx-build');
+};
+
+sub ACTION_build_documents {
+  if (not defined($sphinx)) {
+    print "sphinx not found, not building documentation\n";
+    return;
+  };
+  my $here = cwd;
+  mkdir 'blib/lib/Demeter/share/documentation';
+
+  print "-- Building Athena document\n";
+  chdir File::Spec->catfile('documentation', 'Athena');
+  system(q{make SPHINXOPTS=-q html});
+  chdir $here;
+  dircopy('documentation/Athena/_build/html', 'blib/lib/Demeter/share/documentation/Athena') or die "dircopy failed: $!";
+
+  print "-- Building Artemis document\n";
+  chdir File::Spec->catfile('documentation', 'Artemis');
+  system(q{make SPHINXOPTS=-q html});
+  chdir $here;
+  dircopy('documentation/Artemis/_build/html', 'blib/lib/Demeter/share/documentation/Artemis') or die "dircopy failed: $!";
+
+  print "-- Building Demeter Programming Guide\n";
+  chdir File::Spec->catfile('documentation', 'DPG');
+  system(q{make SPHINXOPTS=-q html});
+  chdir $here;
+  dircopy('documentation/DPG/_build/html', 'blib/lib/Demeter/share/documentation/DPG') or die "dircopy failed: $!";
+
+  print "-- Building Single Page documents\n";
+  chdir File::Spec->catfile('documentation', 'SinglePage');
+  system(q{make SPHINXOPTS=-q html});
+  chdir $here;
+  dircopy('documentation/SinglePage/_build/html', 'blib/lib/Demeter/share/documentation/SinglePage') or die "dircopy failed: $!";
+};
 
 
 

@@ -555,6 +555,14 @@ sub fix {
     $self->set_default('gnuplot', 'font', 'Humor Sans');
   };
 
+  ## deal with new sphinx documentation (as of 0.9.25)
+  if ($self->default('athena', 'doc_url') =~ m{aug}) {
+    $self->set_default('athena', 'doc_url', q{http://bruceravel.github.io/demeter/documents/Athena/index.html});
+  };
+  if ($self->default('artemis', 'doc_url') =~ m{artug}) {
+    $self->set_default('artemis', 'doc_url', q{http://bruceravel.github.io/demeter/documents/Artemis/index.html});
+  };
+
   return $self;
 };
 

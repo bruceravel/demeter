@@ -2890,7 +2890,7 @@ sub show_epsilon {
 sub document {
   my ($app, $doc, $target) = @_;
   my $file;
-  my @path = ('Demeter', 'UI', 'Athena', 'share', 'aug', 'html');
+  my @path = ('Demeter', 'share', 'documentation', 'Athena');
   my $url = Demeter->co->default('athena', 'doc_url');
   if (any {$doc eq $_} (qw(analysis bkg examples import other output params plot process ui))) {
     push @path, $doc;

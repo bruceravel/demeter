@@ -46,6 +46,7 @@
    - Remove t/t symlink.  See #26. (thanks to @dkriegner)
    - Add chi(E) column to xmu output file (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-March/008467.html][Matteo Busi]])
    - Fixed a perl 5.22 issue with Atoms potential list creation
+   - Begin using new, sphinx-based documentation
 
 *** Windows
    - Add Win32::Unicode::File to dependency list
