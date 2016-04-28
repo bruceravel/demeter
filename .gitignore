@@ -44,33 +44,7 @@ MYMETA.json
 
 *.pyc
 
-doc/dpg/bin/build
-doc/dpg/etc/ttree.cfg
-doc/dpg/html/
-doc/dpg/templates/lib/config/map
-doc/dpg/templates/lib/config/version
-
-doc/artug/bin/build
-doc/artug/bin/tex
-doc/artug/etc/ttree.cfg
-doc/artug/etc/ttree_tex.cfg
-doc/artug/html/
-doc/artug/tex/
-doc/artug/Template
-doc/artug/images/pto.svg
-
-doc/aug/bin/build
-doc/aug/bin/tex
-doc/aug/etc/ttree.cfg
-doc/aug/etc/ttree_tex.cfg
-doc/aug/html/
-doc/aug/tex/
-doc/aug/Template
-
-doc/lib/config/map.*
-doc/lib/config/version.*
-doc/latex/config/map.*
-doc/latex/config/version.*
+lib/Demeter/share/documentation/*
 
 nytprof/
 nytprof.out
