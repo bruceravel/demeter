@@ -9,16 +9,17 @@ Reporting bugs in Demeter
 All software has bugs.  *This* software certainly has bugs.  This
 document explains how to report problems with the software
 effectively.  In this context :quoted:`effectively` means in a manner
-such that Bruce (that's me!) is likely to understand the problem and,
-therefore, likely to fix it promptly.
+such that I am likely to understand the problem and, therefore, likely
+to fix it promptly.
 
 The 2 rules of good bug reporting
 ---------------------------------
 
 #. Use the `Ifeffit mailing list
    <http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>`_.  The
-   mailing list is always the appropriate place to report problems with
-   the software.
+   mailing list is always an appropriate place to report problems with
+   the software.  You can also use :demeter:`demeter`'s `issue tracker
+   at GitHub <https://github.com/bruceravel/demeter/issues>`_.
 
 #. Provide enough information that your problem can be reproduced by
    someone else.  That may mean providing the data or project file that
@@ -35,7 +36,7 @@ There are good reasons to use the mailing list:
 - I read and respond to questions on the mailing list.  So do many
   other people, any whom may be able to help you with your problem.
  
-- The problem and |nd| hopefully |nd| it's solution will be archived.
+- The problem and |nd| hopefully |nd| its solution will be archived.
   That means that someone else having the same problem might find that
   solution.
  
@@ -49,10 +50,10 @@ The corollaries to those two rules are
 #. Don't be vague.
  
 
-If you send mail directly to me, the likely response will be to ask
-you to use the mailing list.  If you are vague, the likely response
-will be to ask you for more information.  If you send vague mail
-directly to me, you may be ignored outright.
+If you send mail directly to me, the likely response will be a polite
+request to use the mailing list.  If you are vague, the likely
+response will be to ask you for more information.  If you send vague
+mail directly to me, you may be ignored outright.
 
 
 Capturing error messages
@@ -208,8 +209,9 @@ The DON'Ts of reporting bugs
   not been requested.  If a large file is needed to understand the
   problem, you will be asked for it in a follow-up email.
  
-- **DON'T** ever send anything by fax.  **DON'T** ever send anything by
-  normal post or overnight express.  It *is* the 21st century, after all!
+- **DON'T** ever send anything by fax.  **DON'T** ever send anything
+  by normal post or overnight express.  It *is* the 21\ :sup:`st`
+  century, after all!
  
 - **DON'T** send every file from a :demeter:`feff` run!  It is usually
   sufficient to send just the :file:`feff.inp` file.  If other files

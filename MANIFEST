@@ -1,7 +1,5 @@
 artisitic_license.txt
 bin/atoms-gui
-bin/bugs.pod
-bin/contribute.pod
 bin/dartemis
 bin/dathena
 bin/datoms
@@ -11,19 +9,15 @@ bin/dfeff
 bin/dfeffit
 bin/dhephaestus
 bin/dlsprj
-bin/help.pod
-bin/installation.pod
 bin/intrp
 bin/lartemis
 bin/lathena
 bin/lhephaestus
-bin/nonroot.pod
 bin/prj2json
 bin/rdfit
 bin/standards
 Build.PL
 Changes.org
-CONTRIBUTING.md
 COPYRIGHT.STAR-Parser
 css/orgstyle.css
 css/orgtocstyle.css

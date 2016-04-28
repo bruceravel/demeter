@@ -351,8 +351,8 @@ sub OnInit {
   EVT_MENU( $frame, $CONSOLE,  sub{ $frame->make_page('Console');   $frame->{notebook}->ChangeSelection(3); });
   EVT_MENU( $frame, $DOC,      sub{ $frame->make_page('Document');  $frame->{notebook}->ChangeSelection(4); });
   EVT_MENU( $frame, $CONFIG,   sub{ $frame->make_page('Configure'); $frame->{notebook}->ChangeSelection(5); });
-  EVT_MENU( $frame, $BUG,      sub{Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/bugs.pod.html#OVERVIEW')});
-  EVT_MENU( $frame, $QUESTION, sub{Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/help.pod.html#Asking_questions_soliciting_help')});
+  EVT_MENU( $frame, $BUG,      sub{Wx::LaunchDefaultBrowser(q{http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html})});
+  EVT_MENU( $frame, $QUESTION, sub{Wx::LaunchDefaultBrowser(q{http://bruceravel.github.io/demeter/documents/SinglePage/help.html})});
   EVT_MENU( $frame, wxID_ABOUT, \&on_about );
   EVT_MENU( $frame, wxID_EXIT, sub{Demeter->stop_larch_server; shift->Close} );
   EVT_CLOSE( $frame,  \&on_close);
