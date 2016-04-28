@@ -27,9 +27,6 @@ use Pod::ProjectDocs;
 use File::Slurper qw(read_text write_text);
 use File::Which qw(which);
 ";
-#
-#use DocBuilder::Artemis;
-#use DocBuilder::Athena;
 
 
 ######################################################################
@@ -49,7 +46,6 @@ my %windows = (strawberry => 'C:\strawberry',                     # base of Stra
 	       artug      => 'C:\strawberry\c\perl\site\lib\Demeter\share',
 	      );
 our $ghpages = '../demeter-gh-pages';
-our $sphinx;
 
 ######################################################################
 ## Actions
@@ -60,7 +56,6 @@ sub ACTION_build {
   unlink File::Spec->catfile('lib', 'Demeter', 'configuration', 'gnuplot.demeter_conf');
   $self->dispatch("compile_ifeffit_wrapper");
   $self->dispatch("test_for_gnuplot");
-  $self->dispatch("test_for_sphinx");
   $self->SUPER::ACTION_build;
   $self->dispatch("build_documents");
   $self->dispatch("post_build");
@@ -270,12 +265,8 @@ sub ACTION_build_dpg {
 };
 
 
-
-sub ACTION_test_for_sphinx {
-  $sphinx = which('sphinx-build');
-};
-
 sub ACTION_build_documents {
+  my $sphinx = which('sphinx-build');
   if (not defined($sphinx)) {
     print "sphinx not found, not building documentation (see http://www.sphinx-doc.org)\n";
     return;

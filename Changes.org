@@ -5,7 +5,7 @@
 #+OPTIONS: toc:2
 
 * 0.9 series
-** 0.9.25   XX December  2015
+** 0.9.25   10 May       2016
 *** Athena
    - Menus of groups names not updating correctly in data summation
      tool. (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-November/012833.html][Matteo Busi]])
@@ -46,12 +46,12 @@
    - Remove t/t symlink.  See #26. (thanks to @dkriegner)
    - Add chi(E) column to xmu output file (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-March/008467.html][Matteo Busi]])
    - Fixed a perl 5.22 issue with Atoms potential list creation
-   - Begin using new, sphinx-based documentation
 
 *** Windows
    - Add Win32::Unicode::File to dependency list
 
 *** Documentation
+   - Begin using new, sphinx-based documentation
    - Fixed a misstatement in the Athena document about the order of
      columns in the norm(E) output file  (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-December/012908.html][Jeff Catalano]])
 
