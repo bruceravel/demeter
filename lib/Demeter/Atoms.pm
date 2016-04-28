@@ -782,20 +782,23 @@ sub potentials_list {
   my ($self, $pattern) = @_;
   $self->set_ipots if (not $self->is_ipots_set);
   $pattern ||= "     %d     %-2d     %-10s\n";
+  my $is_feff8 = 0;
+  my @list = split(" ", $pattern);
+  $is_feff8 = 2 if ($#list > 3);
   my ($cell, $core) = $self->get("cell", "core");
   my @sites = @{ $cell->sites };
   my $string = q{};
   my %seen = ();
   my ($abs) = $cell->central($core);
   my $l = Xray::Absorption->get_l($abs->element);
-  $string .= sprintf($pattern, 0, get_Z($abs->element), $abs->element,
-		     $l, $l, 0.001);
+  @list = ($is_feff8) ? (0, get_Z($abs->element), $abs->element, $l, $l, 0.001) : (0, get_Z($abs->element), $abs->element);
+  $string .= sprintf($pattern, @list);
   foreach my $s (sort {$a->ipot <=> $b->ipot} @sites) {
     next if not $s->ipot;
     next if $seen{$s->ipot};
     $l = Xray::Absorption->get_l($s->element);
-    $string .= sprintf($pattern, $s->ipot, get_Z($s->element),
-		       $s->element, $l, $l, $s->stoi);
+    @list = ($is_feff8) ? ($s->ipot, get_Z($s->element), $s->element, $l, $l, $s->stoi) : ($s->ipot, get_Z($s->element), $s->element);
+    $string .= sprintf($pattern, @list);
     $seen{$s->ipot} = 1;
   };
   return $string;

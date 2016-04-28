@@ -44,7 +44,7 @@ my $result = GetOptions (
 			 "c|cif"      => \$cif,
 			 "rec=i"      => \$record,
 			 "r|rmax=s"   => \$rmax,
-			 "0|output=s" => \$output,
+			 "o|output=s" => \$output,
 			 "wx"         => \$wx,
 			);
 

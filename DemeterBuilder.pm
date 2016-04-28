@@ -23,12 +23,12 @@ use IPC::Open3;
 ## proceed correctly.
 eval "
 use File::Copy::Recursive qw(dircopy);
-use DocBuilder::Artemis;
-use DocBuilder::Athena;
 use Pod::ProjectDocs;
 use File::Slurper qw(read_text write_text);
 ";
 #use File::Which;
+#use DocBuilder::Artemis;
+#use DocBuilder::Athena;
 
 
 ######################################################################
@@ -59,18 +59,18 @@ sub ACTION_build {
   $self->dispatch("compile_ifeffit_wrapper");
   $self->dispatch("test_for_gnuplot");
   $self->SUPER::ACTION_build;
-  $self->dispatch("copy_artug");
-  $self->dispatch("copy_aug");
+  #$self->dispatch("copy_artug");
+  #$self->dispatch("copy_aug");
   $self->dispatch("post_build");
 }
 
 sub ACTION_ghpages {
   my $self = shift;
-  $self->dispatch("build_dpg");
-  $self->dispatch("build_artug");
-  $self->dispatch("copy_artug_images");
-  $self->dispatch("build_aug");
-  $self->dispatch("copy_aug_images");
+  #$self->dispatch("build_dpg");
+  #$self->dispatch("build_artug");
+  #$self->dispatch("copy_artug_images");
+  #$self->dispatch("build_aug");
+  #$self->dispatch("copy_aug_images");
   $self->dispatch("doctree");
   $self->dispatch("org2html");
 };
