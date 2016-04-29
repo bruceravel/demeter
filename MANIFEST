@@ -22,8 +22,6 @@ COPYRIGHT.STAR-Parser
 css/orgstyle.css
 css/orgtocstyle.css
 DemeterBuilder.pm
-DocBuilder/Artemis.pm
-DocBuilder/Athena.pm
 documentation/_images/88x31.png
 documentation/_images/addparam.png
 documentation/_images/agau_fit.png
@@ -779,15 +777,6 @@ examples/data/LZU1.002
 examples/data/LZU1.003
 examples/data/mn3o4.201
 examples/data/mn3o4.202
-examples/data/non-ascii/Calibração.060
-examples/data/non-ascii/groß.060
-examples/data/non-ascii/muñeco.060
-examples/data/non-ascii/README.org
-examples/data/non-ascii/χρονος.060
-examples/data/non-ascii/Здравствуйте.060
-examples/data/non-ascii/السلام.060
-examples/data/non-ascii/みせる.060
-examples/data/non-ascii/Ｈｅｌｌｏ.060
 examples/data/uhup.003
 examples/data/uhup.101
 examples/data/zip.pl
@@ -1278,7 +1267,6 @@ lib/Demeter/share/xdi/xdac.x3b.ini
 lib/Demeter/SSPath.pm
 lib/Demeter/StrTypes.pm
 lib/Demeter/StructuralUnit.pm
-lib/Demeter/templates.pod
 lib/Demeter/templates/analysis/ifeffit/diff_diff.tmpl
 lib/Demeter/templates/analysis/ifeffit/diff_make.tmpl
 lib/Demeter/templates/analysis/ifeffit/lcf_clean.tmpl
@@ -1999,7 +1987,6 @@ lib/Demeter/UI/Hephaestus/Common.pm
 lib/Demeter/UI/Hephaestus/Config.pm
 lib/Demeter/UI/Hephaestus/Data.pm
 lib/Demeter/UI/Hephaestus/data/GPL.dem
-lib/Demeter/UI/Hephaestus/data/hephaestus.pod
 lib/Demeter/UI/Hephaestus/data/ionic_radii.dem
 lib/Demeter/UI/Hephaestus/data/kalziumrc.dem
 lib/Demeter/UI/Hephaestus/data/neutrons.dem

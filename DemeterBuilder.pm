@@ -399,13 +399,7 @@ sub ACTION_bump {
 						       intrp rdfit standards));
   print "
 perl-reversion misses version numbers in
-	bin/bugs.pod
-	bin/contribute.pod
-	bin/help.pod
-	bin/installation.pod
-	bin/nonroot.pod
 	Build.PL
-        lib/Demeter/UI/Hephaestus/data/hephaestus.pod
 
 Don't forget to push and tag!
 "

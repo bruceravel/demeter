@@ -50,3 +50,6 @@
 
 # Avoid tpage generated files
 doc/artug/etc/ttree.cfg
+
+# the non-ascii data file names cause trouble on windows
+examples/data/non-ascii/*
