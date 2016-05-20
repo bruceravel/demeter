@@ -2,7 +2,6 @@ package Demeter::Plugins::Beamlines::BL8;
 
 use File::Basename;
 use File::Spec;
-use Demeter::Constants qw($HC);
 
 my %months = (Jan=>1, Feb=>2, Mar=>3, Apr=>4, May=>5, Jun=>6, Jul=>7, Aug=>8, Sep=>9, Oct=>10, Nov=>11, Dec=>12);
 
@@ -18,10 +17,12 @@ sub is {
     $data->xdi->extra_version("SLRI/1");
     $data->xdi->set_item('Facility', 'name',               'SLRI');
     $data->xdi->set_item('Facility', 'xray_source',        'bend magnet');
+    $data->xdi->set_item('Facility', 'energy',             '1.2 GeV');
     $data->xdi->set_item('Beamline', 'collimation',        'none');
     $data->xdi->set_item('Beamline', 'focusing',           'none');
     $data->xdi->set_item('Beamline', 'harmonic_rejection', 'none');
     $data->xdi->set_item('Beamline', 'name',               'BL8');
+    $data->xdi->set_item('Detector', 'i0',                 'ionization chamber, N2+He');
 
     if ($ENV{XDIBL8} eq 'KTP') {
       $data->xdi->set_item('Mono', 'name',      'KTP(011)');
@@ -110,11 +111,27 @@ sub is {
 	  $data->xdi->set_item('SLRI', 'points', $list[1]);
 	  last SWITCH;
 	};
+
+      	($line =~ m{Transmission-mode}) and do {
+	  $data->xdi->set_item('Detector', 'it', 'ionization chamber, N2+He');
+	  last SWITCH;
+	};
+
+      	($line =~ m{Si Drift}i) and do {
+	  $data->xdi->set_item('Detector', 'if', '4 element silicon drift');
+	  last SWITCH;
+	};
+
+      	($line =~ m{Ge 13-array}i) and do {
+	  $data->xdi->set_item('Detector', 'if', '13 element Ge');
+	  last SWITCH;
+	};
+
       };
     };
 
     close $fh;
-    $data->clear_ifeffit_titles if ($remove_ifeffit_comments);
+    $data->clear_ifeffit_titles; # if ($remove_ifeffit_comments);
     $data->beamline_identified(1);
     return 1;
 
@@ -132,7 +149,7 @@ sub is {
 
 =head1 NAME
 
-Demeter::Plugin::Beamlines::BL8 - beamline recognition plugin for files from SLRi BL8
+Demeter::Plugin::Beamlines::BL8 - beamline recognition plugin for files from SLRI BL8
 
 =head1 VERSION
 
