@@ -69,12 +69,13 @@ sub fix {
   #$ar->po->set(e_mu=>1, e_norm=>0, e_pre=>1, e_post=>1);
   #$ar->plot('E');
   #print $ar->bkg_step, $/;
+  #return $new;
   my $step = $ar->bkg_step;
   foreach my $point (@data_table) {
     my @list = split(" ", $point);
     my $offset = ($list[0] > $ar_k) ? $step : 0;
     printf $N "%10.5E   %10.5E   %10.5E   %10.5E   %10.5E   %10.5E   %10.5E   %10.5E   %10.5E   %10.5E\n",
-      @list[0..2], $list[3]-$offset, @list[4..9];
+      @list[0..2], $list[3]-$offset, $list[4], $list[5]*4, @list[6..9];
   };
   close $N;
   close $D;
