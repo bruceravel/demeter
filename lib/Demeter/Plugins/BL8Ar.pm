@@ -7,8 +7,8 @@ extends 'Demeter::Plugins::FileType';
 
 has '+is_binary'   => (default => 0);
 has '+description' => (default => 'SLRI BL8 (with Ar in I0)');
-has '+version'     => (default => 0.3);
-has 'measurement_mode'         => (is => 'rw', isa => 'Str', default => q{transmission});
+has '+version'     => (default => 0.1);
+has 'measurement_mode' => (is => 'rw', isa => 'Str', default => q{transmission});
 
 my $ar_k = Xray::Absorption->get_energy('Ar', 'K') / 2;
 
@@ -38,6 +38,9 @@ sub fix {
   open(my $D, '<', $file) or die "could not open $file as data (fix in BL8Ar)\n";
   open(my $N, ">", $new)  or die "could not write to $new (fix in BL8Ar)\n";
 
+  my $format = q{};
+  my $ncols = 0;
+  my $nchannels = 0;
   my (@data_table, @e, @i0);
   while (<$D>) {
     next if ($_ =~ m{\A\s*\z});
@@ -45,10 +48,16 @@ sub fix {
       print $N $_;
       if ($_ =~ m{Si Drift 4-Array}) {
 	$self->measurement_mode('sidrift');
+	$ncols = 10;
+	$nchannels = 4;
       } elsif ($_ =~ m{Transmission-mode XAS}) {
-	$self->measurement_mode('sidrift');
+	$self->measurement_mode('trans');
+	$ncols = 6;
+	$nchannels = 1;
       } elsif ($_ =~ m{Ge 13-array}i) {
 	$self->measurement_mode('ge');
+	$ncols = 19;
+	$nchannels = 13;
       };
     } elsif ($_ =~ m{\AEnergy}) {
       1;
@@ -60,7 +69,12 @@ sub fix {
       push @i0, $list[3];
     };
   };
+  $format = "%10.5E   " x $ncols . "\n";;
 
+  print $N "# Energy   BraggAngle   TimeStep   I0   I1   mu";
+  print $N "   SCA0   SCA1   SCA2   SCA3" if ($self->measurement_mode eq 'sidrift');
+  print $N "   SCA0   SCA1   SCA2   SCA3   SCA4   SCA5   SCA6   SCA7   SCA8   SCA9   SCA10   SCA11   SCA12" if ($self->measurement_mode eq 'ge');
+  print $N "\n";
   my $ar = Demeter::Data->put(\@e, \@i0, datatype=>'xanes', bkg_e0=>$ar_k,
 			      bkg_pre1=>-30, bkg_pre2=>-10,
 			      bkg_nor1=>10, bkg_nor2=>30, bkg_nnorm=>2,
@@ -74,8 +88,8 @@ sub fix {
   foreach my $point (@data_table) {
     my @list = split(" ", $point);
     my $offset = ($list[0] > $ar_k) ? $step : 0;
-    printf $N "%10.5E   %10.5E   %10.5E   %10.5E   %10.5E   %10.5E   %10.5E   %10.5E   %10.5E   %10.5E\n",
-      @list[0..2], $list[3]-$offset, $list[4], $list[5]*4, @list[6..9];
+    printf $N $format,
+      @list[0..2], $list[3]-$offset, $list[4], $list[5]*$nchannels, @list[6..5+$nchannels];
   };
   close $N;
   close $D;
@@ -86,7 +100,8 @@ sub fix {
 
 sub suggest {
   my ($self, $which) = @_;
-  $which ||= 'transmission';
+  $which ||= 'fluorescence';
+  $which = 'transmission' if ($self->measurement_mode eq 'trans');
   if ($which eq 'transmission') {
     return (energy      => '$1',
 	    numerator   => '$4',
