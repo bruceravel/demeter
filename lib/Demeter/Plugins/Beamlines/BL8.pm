@@ -24,25 +24,10 @@ sub is {
     $data->xdi->set_item('Beamline', 'name',               'BL8');
     $data->xdi->set_item('Detector', 'i0',                 'ionization chamber, N2+He');
 
-    if ($ENV{XDIBL8} eq 'KTP') {
-      $data->xdi->set_item('Mono', 'name',      'KTP(011)');
-      $data->xdi->set_item('Mono', 'd_spacing',  10.955/2);
-    } elsif ($ENV{XDIBL8} eq 'InSb') {
-      $data->xdi->set_item('Mono', 'name',      'InSb(111)');
-      $data->xdi->set_item('Mono', 'd_spacing',  7.481/2);
-    } elsif ($ENV{XDIBL8} eq 'Si') {
-      $data->xdi->set_item('Mono', 'name',      'Si(111)');
-      $data->xdi->set_item('Mono', 'd_spacing',  6.271/2);
-    } elsif ($ENV{XDIBL8} eq 'Ge') {
-      $data->xdi->set_item('Mono', 'name',      'Ge(220)');
-      $data->xdi->set_item('Mono', 'd_spacing',  4.001/2);
-    } else {
-      $data->xdi->set_item('Mono', 'name',      'Beryl(1010)');
-      $data->xdi->set_item('Mono', 'd_spacing',  15.954/2);
-    };
-
     my $date;
+    my ($elem, $edge);
   FILE: foreach my $line (<$fh>) {
+      chomp $line;
       $line =~ tr{\r}{}d;	# frickin' CRLF
 
     SWITCH: {
@@ -80,6 +65,7 @@ sub is {
 
 	($line =~ m{E0 \(eV\) = (\d+)}) and do {
 	  $data->xdi->set_item('Scan', 'edge_energy', $1 . ' eV');
+	  ($elem, $edge) = $data->find_edge($1);
 	  last SWITCH;
 	};
 
@@ -137,6 +123,26 @@ sub is {
       };
     };
 
+    if (($ENV{XDIBL8} eq 'KTP') or (lc($elem) eq 'al')) {
+      $data->xdi->set_item('Mono', 'name',      'KTP(011)');
+      $data->xdi->set_item('Mono', 'd_spacing',  10.955/2);
+    } elsif (($ENV{XDIBL8} eq 'InSb') or (lc($elem) eq 'si')) {
+      $data->xdi->set_item('Mono', 'name',      'InSb(111)');
+      $data->xdi->set_item('Mono', 'd_spacing',  7.481/2);
+    } elsif ($ENV{XDIBL8} eq 'Si') {
+      $data->xdi->set_item('Mono', 'name',      'Si(111)');
+      $data->xdi->set_item('Mono', 'd_spacing',  6.271/2);
+    } elsif ($ENV{XDIBL8} eq 'Ge') {
+      $data->xdi->set_item('Mono', 'name',      'Ge(220)');
+      $data->xdi->set_item('Mono', 'd_spacing',  4.001/2);
+    } elsif (lc($elem) eq 'mg') {
+      $data->xdi->set_item('Mono', 'name',      'Beryl(1010)');
+      $data->xdi->set_item('Mono', 'd_spacing',  15.954/2);
+    } else {
+      $data->xdi->set_item('Mono', 'name',      'Ge(220)');
+      $data->xdi->set_item('Mono', 'd_spacing',  4.001/2);
+    };
+
     close $fh;
     $data->clear_ifeffit_titles; # if ($remove_ifeffit_comments);
     $data->beamline_identified(1);
@@ -172,6 +178,17 @@ L<Demeter::Data::Beamlines>.
 For information about the XAS Data Interchange format, see
 L<https://github.com/XraySpectroscopy/XAS-Data-Interchange>
 
+=head1 SHORTCOMINGS
+
+Since the mono crystal is not noted in the file header, this uses a
+simple-minded heuristic to guess which mono crystal was used.  Since
+this plugin was developed by Bruce for a measurement of Mg, Al, and Si
+edges, it will fill in the C<Mono.d_spacing> and C<Mono.name> items
+once the line in the data file specifying the E0 value is found.
+Failing that, it will look for an environment variable C<XDIBL8> with
+a value of C<beryl>, C<InSb>, C<KTP>, C<Si>, or C<Ge> and set the
+<Mono.> items accordingly.  Failing that, it presumes the Ge crystals
+were used.
 
 =head1 AUTHOR
 

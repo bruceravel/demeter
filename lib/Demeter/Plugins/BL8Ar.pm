@@ -33,6 +33,7 @@ sub is {
   while (<$D>) {
     if ($_ =~ m{\# E0 \(eV\)\s+=\s+(\d+)}) {
       $is_near_ar = 1 if (($ar_k - $1) < 200);
+      $is_near_ar = 0 if ($ar_k < $1);
       last;
     };
   };
@@ -56,7 +57,7 @@ sub fix {
   while (<$D>) {
     next if ($_ =~ m{\A\s*\z});
     if ($_ =~ m{\A\#}) {
-      print $N $_;
+      print $N $_; 		# pass the headers through to the stash file
       if ($_ =~ m{Si Drift 4-Array}) {
 	$self->measurement_mode('sidrift');
 	$ncols = 10;
@@ -99,11 +100,16 @@ sub fix {
   };
   $self->step_size($ar->bkg_step);
 
+  ## add a header line about the Ar step size and add a useful set of column labels
   printf $N "# Ar K edge step size found in I0 = %.3f\n", $self->step_size;
   print  $N "# Energy   BraggAngle   TimeStep   I0   I1   mu";
   print  $N "   SCA0   SCA1   SCA2   SCA3" if ($self->measurement_mode eq 'sidrift');
   print  $N "   SCA0   SCA1   SCA2   SCA3   SCA4   SCA5   SCA6   SCA7   SCA8   SCA9   SCA10   SCA11   SCA12" if ($self->measurement_mode eq 'ge');
-  print $N "\n";
+  print  $N "\n";
+
+  ## pass through most columns in the data table
+  ## correct the i0 column (column 5)
+  ## scale the mu column (column 6) by the number of channels so it is directly comparable to the corrected data
   foreach my $point (@data_table) {
     my @list = split(" ", $point);
     my $offset = ($list[0] > $ar_k) ? $self->step_size : 0;
@@ -177,7 +183,8 @@ measurement mode.
 
 Note that column 6 is still the unaltered calculation of mu(E).  This
 is left in for easy comparison between the raw and corrected measures
-of mu(E).
+of mu(E).  Try importing column 6 as the reference channel -- uncheck
+the natural log button for the reference.
 
 =back
 
