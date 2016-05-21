@@ -18,6 +18,8 @@
      certain situations (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-January/008429.html][Ian Godrey]])
    - Offer a useful warning when trying to read an Artemis project
      file into Athena (thanks to Galen O'Neil)
+   - Add filetype and beamline plugins related to BL8 at SLRI (thanks
+     to Wantana Klysubun for beamtime!)
 
 *** Artemis
    - Control for enabling 5- and 6-legged paths in Feff tab
@@ -46,14 +48,20 @@
    - Remove t/t symlink.  See #26. (thanks to @dkriegner)
    - Add chi(E) column to xmu output file (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-March/008467.html][Matteo Busi]])
    - Fixed a perl 5.22 issue with Atoms potential list creation
+   - Preserve Scan.start_time metadatum of first group when making a
+     merge
 
 *** Windows
    - Add Win32::Unicode::File to dependency list
+   - use latest Strawberry Perl in installer
+   - add Xray::XDI to package
 
 *** Documentation
    - Begin using new, sphinx-based documentation
    - Fixed a misstatement in the Athena document about the order of
      columns in the norm(E) output file  (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-December/012908.html][Jeff Catalano]])
+   - Add link to Hiroyuki Asakura's translation to sidebar of Athena
+     document
 
 ** 0.9.24   23 October   2015
 *** Demeter

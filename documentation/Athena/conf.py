@@ -61,7 +61,9 @@ numfig = True
 # configures bibliography
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = [os.path.abspath(os.path.join('..', '_templates'))]
+templates_path = [os.path.abspath(os.path.join('..', '_templates')),
+                  os.path.abspath('_templates'),
+]
 
 # The suffix of source filenames.
 source_suffix = '.rst'
@@ -198,6 +200,7 @@ html_static_path = ['_static', '../_static']
 html_sidebars = {
     '**': ['globaltoc.html',
            os.path.abspath(os.path.join('..', '_templates', 'linksbox.html')),
+           os.path.abspath(os.path.join('_templates', 'translations.html')), # comment this line out if this is a translation
            'searchbox.html',
            'sourcelink.html',
        ],
