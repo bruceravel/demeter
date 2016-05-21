@@ -25,6 +25,17 @@ description
   determined.  If the plot is made, the user will be prompted before
   the data import continues.
 
+variable=margin
+type=real
+default=200
+units=eV
+description
+  This sets the margin within which to activate the Ar step
+  correction.  If the E0 recorded in the file header is smaller than
+  the Ar K-edge energy (divided by the harmonic) and within this
+  margin of the the Ar K-edge energy (divided by the harmonic), then
+  the correction will be made.
+
 variable=pre1
 type=real
 default=-30

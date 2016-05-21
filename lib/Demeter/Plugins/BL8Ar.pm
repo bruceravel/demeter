@@ -14,7 +14,7 @@ const my $INIFILE => 'bl8ar.demeter_conf';
 
 has '+conffile'    => (default => File::Spec->catfile(Demeter->dot_folder, $INIFILE));
 has '+is_binary'   => (default => 0);
-has '+description' => (default => 'SLRI BL8 (with Ar in I0)');
+has '+description' => (default => 'SLRI BL8 (correct for Ar in I0)');
 has '+version'     => (default => 0.1);
 has 'measurement_mode' => (is => 'rw', isa => 'Str', default => q{transmission});
 has 'step_size'    => (is => 'rw', isa => 'LaxNum', default => 0);
@@ -32,7 +32,7 @@ sub is {
   my $is_near_ar = 0;
   while (<$D>) {
     if ($_ =~ m{\# E0 \(eV\)\s+=\s+(\d+)}) {
-      $is_near_ar = 1 if (($ar_k - $1) < 200);
+      $is_near_ar = 1 if (($ar_k - $1) < Demeter->co->default('bl8ar', 'margin'));
       $is_near_ar = 0 if ($ar_k < $1);
       last;
     };
@@ -81,7 +81,7 @@ sub fix {
       push @i0, $list[3];
     };
   };
-  $format = "%10.5E   " x $ncols . "\n";;
+  $format = "%10.5E   " x $ncols . "\n";
 
   my $ar = Demeter::Data->put(\@e, \@i0, datatype=>'xanes', bkg_e0=>$ar_k, bkg_nnorm=>2,
 			      bkg_pre1=>Demeter->co->default('bl8ar', 'pre1'),
@@ -164,6 +164,10 @@ the Al K edge.
 The Ar step is visible due to the presence of the second harmonic in
 the incident beam, which is not normally filtered in any way at BL8.
 
+Al is probably the only K edge affected by this problem.  The
+fundamental or the second harmonic could impact measurement of the L3
+edges of Ru, Rh, Pd, As, Se, or Br.
+
 =head1 METHODS
 
 =over 4
@@ -181,10 +185,12 @@ harmonic of the monochromator.)
 Remove the step from I0, then suggest columns appropriate to the
 measurement mode.
 
-Note that column 6 is still the unaltered calculation of mu(E).  This
-is left in for easy comparison between the raw and corrected measures
-of mu(E).  Try importing column 6 as the reference channel -- uncheck
-the natural log button for the reference.
+Note that column 6 is still the unaltered calculation of mu(E),
+although it has been multiplied by the number of detector channels so
+that it may be directly compared with sum of detector channels
+suggested by this plugin.  This allows easy comparison between the raw
+and corrected measures of mu(E).  Try importing column 6 as the
+reference channel -- uncheck the natural log button for the reference.
 
 =back
 
