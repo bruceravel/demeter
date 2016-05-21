@@ -272,7 +272,7 @@ sub merge {
   $string .= $merged->template("process", "merge_end");
   $self->dispose($string);
   #$merged -> set($self->metadata);
-  $merged->xdi_make_clone($self, sprintf("Merge of %d scans", $#used+1), 1) if (Demeter->xdi_exists);
+  $merged->xdi_make_clone($self, sprintf("Merge of %d scans", $#used+1), -1) if (Demeter->xdi_exists);
 
   if ($how !~ m{^k}) {
     $string  = $merged->template("process", "deriv");

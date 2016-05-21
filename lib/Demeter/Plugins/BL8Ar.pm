@@ -1,16 +1,27 @@
 package Demeter::Plugins::BL8Ar;  # -*- cperl -*-
 
+use File::Basename;
 use File::Copy;
+use File::Spec;
+
+use Wx qw( :everything );
 
 use Moose;
 extends 'Demeter::Plugins::FileType';
 
+use Const::Fast;
+const my $INIFILE => 'bl8ar.demeter_conf';
+
+has '+conffile'    => (default => File::Spec->catfile(Demeter->dot_folder, $INIFILE));
 has '+is_binary'   => (default => 0);
 has '+description' => (default => 'SLRI BL8 (with Ar in I0)');
 has '+version'     => (default => 0.1);
 has 'measurement_mode' => (is => 'rw', isa => 'Str', default => q{transmission});
+has 'step_size'    => (is => 'rw', isa => 'LaxNum', default => 0);
 
-my $ar_k = Xray::Absorption->get_energy('Ar', 'K') / 2;
+Demeter -> co -> read_config(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'Plugins', $INIFILE));
+
+my $ar_k = Xray::Absorption->get_energy('Ar', 'K') / Demeter->co->default('bl8ar', 'harmonic');
 
 sub is {
   my ($self) = @_;
@@ -71,26 +82,35 @@ sub fix {
   };
   $format = "%10.5E   " x $ncols . "\n";;
 
-  print $N "# Energy   BraggAngle   TimeStep   I0   I1   mu";
-  print $N "   SCA0   SCA1   SCA2   SCA3" if ($self->measurement_mode eq 'sidrift');
-  print $N "   SCA0   SCA1   SCA2   SCA3   SCA4   SCA5   SCA6   SCA7   SCA8   SCA9   SCA10   SCA11   SCA12" if ($self->measurement_mode eq 'ge');
-  print $N "\n";
-  my $ar = Demeter::Data->put(\@e, \@i0, datatype=>'xanes', bkg_e0=>$ar_k,
-			      bkg_pre1=>-30, bkg_pre2=>-10,
-			      bkg_nor1=>10, bkg_nor2=>30, bkg_nnorm=>2,
+  my $ar = Demeter::Data->put(\@e, \@i0, datatype=>'xanes', bkg_e0=>$ar_k, bkg_nnorm=>2,
+			      bkg_pre1=>Demeter->co->default('bl8ar', 'pre1'),
+			      bkg_pre2=>Demeter->co->default('bl8ar', 'pre2'),
+			      bkg_nor1=>Demeter->co->default('bl8ar', 'nor1'),
+			      bkg_nor2=>Demeter->co->default('bl8ar', 'nor2'),
 			     );
   $ar->_update('background');
-  #$ar->po->set(e_mu=>1, e_norm=>0, e_pre=>1, e_post=>1);
-  #$ar->plot('E');
-  #print $ar->bkg_step, $/;
-  #return $new;
-  my $step = $ar->bkg_step;
+  if (Demeter->co->default('bl8ar', 'plot')) {
+    $ar->po->set(e_mu=>1, e_norm=>0, e_pre=>1, e_post=>1);
+    $ar->po->start_plot;
+    $ar->plot('E');
+    my $message = Wx::MessageDialog->new($::app->{main}, "Plot of I0 is being displayed", "I0 plot displayed", wxOK);
+    $message->ShowModal;
+    #print $ar->bkg_step, $/;
+  };
+  $self->step_size($ar->bkg_step);
+
+  printf $N "# Ar K edge step size found in I0 = %.3f\n", $self->step_size;
+  print  $N "# Energy   BraggAngle   TimeStep   I0   I1   mu";
+  print  $N "   SCA0   SCA1   SCA2   SCA3" if ($self->measurement_mode eq 'sidrift');
+  print  $N "   SCA0   SCA1   SCA2   SCA3   SCA4   SCA5   SCA6   SCA7   SCA8   SCA9   SCA10   SCA11   SCA12" if ($self->measurement_mode eq 'ge');
+  print $N "\n";
   foreach my $point (@data_table) {
     my @list = split(" ", $point);
-    my $offset = ($list[0] > $ar_k) ? $step : 0;
+    my $offset = ($list[0] > $ar_k) ? $self->step_size : 0;
     printf $N $format,
       @list[0..2], $list[3]-$offset, $list[4], $list[5]*$nchannels, @list[6..5+$nchannels];
   };
+  undef($ar);
   close $N;
   close $D;
 

@@ -50,10 +50,11 @@ sub is {
 	  last SWITCH;
 	};
 
-	($line =~ m{\AEnergy} ) and do {
+	($line =~ m{\A\#?\s*Energy} ) and do {
 	  my @list = split(" ", $line);
 	  my $col = 1;
 	  foreach my $item (@list) {
+	    next if ($item =~ m{\#});
 	    next if ($item =~ m{\(});
 	    $data->xdi->set_item('Column', $col, $item);
 	    ++$col;
@@ -109,6 +110,12 @@ sub is {
       	($line =~ m{Points/scan}) and do {
 	  my @list = split(/\s+=\s+/, $line);
 	  $data->xdi->set_item('SLRI', 'points', $list[1]);
+	  last SWITCH;
+	};
+
+      	($line =~ m{Ar K edge step size}) and do {
+	  my @list = split(/\s+=\s+/, $line);
+	  $data->xdi->set_item('SLRI', 'arstep', $list[1]);
 	  last SWITCH;
 	};
 

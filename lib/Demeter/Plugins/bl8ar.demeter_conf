@@ -1,0 +1,77 @@
+## This configuration file is for Demeter version 0.9.25.
+######################################################################
+section=bl8ar
+section_description
+  These variables determine the behavior of the BL8Ar plugin.
+
+variable=harmonic
+type=list
+default=2
+options=1 2 3
+description
+  The monochromator harmonic gving rise to the Ar signal in I0.  The
+  default is 2, i.e. the second harmonic.  In a measurement of, say,
+  the Al K edge (1559 eV) using a KTP monochromator, the Ar signal
+  appears at 1603, half the Ar K edge value of 3206.
+
+variable=plot
+type=boolean
+onvalue=1
+offvalue=0
+default=false
+description
+  When true, this tells Athena to make a plot of the normalization of
+  the I0 signal.  This allows visualization of how the correction is
+  determined.  If the plot is made, the user will be prompted before
+  the data import continues.
+
+variable=pre1
+type=real
+default=-30
+units=eV
+description
+  The beginning value for regressing the pre-edge line used to
+  normalize the jump due to Ar in the I0 signal, in units of eV.  This
+  should be a negative number and is relative to the position of the
+  Ar K-edge signal.  The default is -30, i.e. 30 volts below the Ar
+  signal at 1603 eV. (The Ar K edge is at 3206, but since this effect
+  is due to the second monochromator harmonic, the Ar siganl appears
+  at 1603.)
+
+variable=pre2
+type=real
+default=-10
+units=eV
+description
+  The ending value for regressing the pre-edge line used to normalize
+  the jump due to Ar in the I0 signal, in units of eV.  This should be
+  a negative number and is relative to the position of the Ar K-edge
+  signal.  The default is -10, i.e. 10 volts below the Ar signal at
+  1603 eV. (The Ar K edge is at 3206, but since this effect is due to
+  the second monochromator harmonic, the Ar siganl appears at 1603.)
+
+variable=nor1
+type=real
+default=10
+units=eV
+description
+  The beginning value for regressing the post-edge line used to
+  normalize the jump due to Ar in the I0 signal, in units of eV.  This
+  should be a negative number and is relative to the position of the
+  Ar K-edge signal.  The default is +10, i.e. 10 volts above the Ar
+  signal at 1603 eV. (The Ar K edge is at 3206, but since this effect
+  is due to the second monochromator harmonic, the Ar siganl appears
+  at 1603.)
+
+variable=nor2
+type=real
+default=30
+units=eV
+description
+  The ending value for regressing the post-edge line used to normalize
+  the jump due to Ar in the I0 signal, in units of eV.  This should be
+  a negative number and is relative to the position of the Ar K-edge
+  signal.  The default is +30, i.e. 30 volts below the Ar signal at
+  1603 eV. (The Ar K edge is at 3206, but since this effect is due to
+  the second monochromator harmonic, the Ar siganl appears at 1603.)
+

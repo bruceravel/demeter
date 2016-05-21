@@ -242,7 +242,7 @@ sub xdi_make_clone {
   my ($self, $orig, $process, $remove_times) = @_;
   $self -> xdi($orig->xdi->clone);
   if ($remove_times) {
-    $self -> xdi -> delete_item('Scan', 'start_time');
+    $self -> xdi -> delete_item('Scan', 'start_time') if ($remove_times > 0);
     $self -> xdi -> delete_item('Scan', 'end_time');
   };
   $self -> xdi -> set_item('Element', 'edge',    uc($self->fft_edge));
