@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>13.1. Example 1: FeS2 &mdash; Artemis 0.9.24 documentation</title>
+    <title>13.1. Example 1: FeS2 &mdash; Artemis 0.9.25 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.24',
+        VERSION:     '0.9.25',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="top" title="Artemis 0.9.25 documentation" href="../index.html" />
     <link rel="up" title="13. Worked examples" href="index.html" />
     <link rel="next" title="13.2. Example 2: Methyltin" href="methyltin.html" />
     <link rel="prev" title="13. Worked examples" href="index.html" />
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="index.html" title="13. Worked examples"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.25 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">13. Worked examples</a> &raquo;</li> 
       </ul>
     </div>  
@@ -56,9 +56,16 @@
             
   <div class="section" id="example-1-fes2">
 <h1>13.1. Example 1: FeS2<a class="headerlink" href="#example-1-fes2" title="Permalink to this headline">¶</a></h1>
-<p>Introduction, blah blah, known crystal structure, blah blah, learn the
-mechanics of the program, blah blah</p>
-<p><a class="reference external" href="https://speakerdeck.com/bruceravel/discussion-of-the-fes2-exafs-analysis-example">Lecture notes</a></p>
+<p>Iron pyrite, FeS<sub>2</sub>, is my standard teaching example which I
+use to introduce people to fitting with <font size=-1 color="#8C4112">ARTEMIS</font>.  It is a
+crystal with a well-known structure.  I have beautiful data.  And I am
+able to create a very successful fitting model.  As a cubic crystal,
+the structure is not too complicated.  However, there is some internal
+structure in the unit cell, making this a much less trivial example
+than, say, an FCC metal.</p>
+<p>While this example certainly does not represent a typical research
+problem, it is an excellent introduction to the mechanics of using
+<font size=-1 color="#8C4112">ARTEMIS</font>.</p>
 <div class="section" id="import-data">
 <h2>13.1.1. Import data<a class="headerlink" href="#import-data" title="Permalink to this headline">¶</a></h2>
 <p>After starting <font size=-1 color="#8C4112">ARTEMIS</font>, click on the <kbd class="light">Add</kbd>
@@ -67,7 +74,7 @@ window. This will open a file selection dialog. Click to find the
 <font size=-1 color="#8C4112">ATHENA</font> project file containing the data you want to
 analyze. Opening that project file displays the project selection
 dialog.</p>
-<div class="figure align-center" id="id1">
+<div class="figure align-center" id="id3">
 <span id="fig-fes2importdata"></span><a class="reference external image-reference" href="../_images/fes2-importdata.png"><img alt="../_images/fes2-importdata.png" src="../_images/fes2-importdata.png" style="width: 50%;" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.1 </span><span class="caption-text">Import data into Artemis</span></p>
 </div>
@@ -82,7 +89,7 @@ the known FeS<sub>2</sub> crystal structure. Clicking on the line in the
 Data window that says <span class="guilabel">Import crystal data or a Feff
 calculation</span> will post a file selection dialog.  Click to find the
 <code class="file docutils literal"><span class="pre">atoms.inp</span></code> file containing the FeS<sub>2</sub> crystal structure.</p>
-<div class="figure align-center" id="id2">
+<div class="figure align-center" id="id4">
 <span id="fig-fes2importatoms"></span><a class="reference external image-reference" href="../_images/fes2-importatoms.png"><img alt="../_images/fes2-importatoms.png" src="../_images/fes2-importatoms.png" style="width: 50%;" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.2 </span><span class="caption-text">Import crystal data into Artemis</span></p>
 </div>
@@ -101,7 +108,7 @@ on path <span class="guilabel">0010</span>.  The selected paths will be highligh
 <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> Click on one of the highlighted paths and,
 without letting go of the mouse button, drag the paths over to the
 Data window.  Drop the paths on the empty Path list.</p>
-<div class="figure align-center" id="id3">
+<div class="figure align-center" id="id5">
 <span id="fig-fes2pathsdnd"></span><a class="reference external image-reference" href="../_images/fes2-pathsdnd.png"><img alt="../_images/fes2-pathsdnd.png" src="../_images/fes2-pathsdnd.png" style="width: 50%;" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.3 </span><span class="caption-text">Drag and drop paths onto a data set</span></p>
 </div>
@@ -113,7 +120,7 @@ displayed when that path is clicked upon in the Path list. Shown below
 is the FeS<sub>2</sub> data with its 11 paths. The first path in the list,
 the one representing the contribution to the EXAFS from the S single
 scattering path at 2.257 Å, is currently displayed.</p>
-<div class="figure align-center" id="id4">
+<div class="figure align-center" id="id6">
 <span id="fig-fes2pathsimported"></span><a class="reference external image-reference" href="../_images/fes2-pathsimported.png"><img alt="../_images/fes2-pathsimported.png" src="../_images/fes2-pathsimported.png" style="width: 50%;" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.4 </span><span class="caption-text">Paths associated with a data set</span></p>
 </div>
@@ -132,7 +139,7 @@ those four paths to the Plotting list by selecting
 <p>With the Plotting list poluated as shown below, click on the
 <kbd class="light">R</kbd> plot button in the Plot window to make the plot
 shown.</p>
-<div class="figure align-center" id="id5">
+<div class="figure align-center" id="id7">
 <span id="fig-fes2sspaths"></span><a class="reference external image-reference" href="../_images/fes2-sspaths.png"><img alt="../_images/fes2-sspaths.png" src="../_images/fes2-sspaths.png" style="width: 50%;" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.5 </span><span class="caption-text">FeS2 data plotted with the first four single scattering paths</span></p>
 </div>
@@ -157,7 +164,7 @@ clicking its transfer button: <img alt="transfer button" src="../_images/plot-ic
 multiple scattering paths by clicking their mark buttons.  Select
 <span class="menuselection">Actions ‣ Transfer marked</span>.</p>
 <p>With the Plotting list newly populated, make a new plot of | χ(R)|.</p>
-<div class="figure align-center" id="id6">
+<div class="figure align-center" id="id8">
 <span id="fig-fes2mspaths1"></span><a class="reference external image-reference" href="../_images/fes2-mspaths1.png"><img alt="../_images/fes2-mspaths1.png" src="../_images/fes2-mspaths1.png" style="width: 50%;" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.6 </span><span class="caption-text">FeS2 data plotted with the first three multiple scattering paths</span></p>
 </div>
@@ -173,7 +180,7 @@ shell, contributes significantly to the peak at 2.93 Å. It seems
 unlikely that we will be able to ignore that path.</p>
 <p>To examine the next three multiple scattering paths, clear the Plotting
 list, mark those paths, and repopulate the Plotting list.</p>
-<div class="figure align-center" id="id7">
+<div class="figure align-center" id="id9">
 <span id="fig-fes2mspaths2"></span><a class="reference external image-reference" href="../_images/fes2-mspaths2.png"><img alt="../_images/fes2-mspaths2.png" src="../_images/fes2-mspaths2.png" style="width: 50%;" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.7 </span><span class="caption-text">FeS2 data plotted with the next three multiple scattering paths</span></p>
 </div>
@@ -198,13 +205,15 @@ fit. That is indicated by the triple parentheses in the path list.</li>
 first peak.</li>
 <li>For this simple first shell fit, we set up a simple, four-parameter
 model. The parameters <code class="docutils literal"><span class="pre">amp</span></code>, <code class="docutils literal"><span class="pre">enot</span></code>, <code class="docutils literal"><span class="pre">delr</span></code>, and <code class="docutils literal"><span class="pre">ss</span></code> are
-defined in the GDS window and given sensible initial guess values.</li>
+defined in the GDS window and given sensible initial <span class="guess">guess</span>
+values.</li>
 <li>The path parameters for the first shell path are set. S<sup>2</sup><sub>0</sub> is set to <code class="docutils literal"><span class="pre">amp</span></code>, E<sub>0</sub> is set to <code class="docutils literal"><span class="pre">enot</span></code>, ΔR is set to <code class="docutils literal"><span class="pre">delr</span></code>, and σ<sup>2</sup> is set to <code class="docutils literal"><span class="pre">ss</span></code>.</li>
 </ol>
 <p>Note that the current settings for k- and R-range result in a bit more
-than 7 independent points, as computed from the Nyquist criterion. With
-only 4 guess parameters, this should be a reasonable fitting model.</p>
-<div class="figure align-center" id="id8">
+than 7 independent points, as approximated using the Nyquist
+criterion.  With only 4 <span class="guess">guess</span> parameters, this should be a
+reasonable fitting model.</p>
+<div class="figure align-center" id="id10">
 <span id="fig-fes21stshell"></span><a class="reference external image-reference" href="../_images/fes2-1stshell.png"><img alt="../_images/fes2-1stshell.png" src="../_images/fes2-1stshell.png" style="width: 50%;" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.8 </span><span class="caption-text">Setting up for a first shell fit</span></p>
 </div>
@@ -219,11 +228,11 @@ the evaluation of the happiness parameter.</li>
 <li>The fit is entered into the History window (which is not in the
 screenshot below).</li>
 </ol>
-<div class="figure align-center" id="id9">
+<div class="figure align-center" id="id11">
 <span id="fig-fes2firstshellfit"></span><a class="reference external image-reference" href="../_images/fes2-firstshellfit.png"><img alt="../_images/fes2-firstshellfit.png" src="../_images/fes2-firstshellfit.png" style="width: 50%;" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.9 </span><span class="caption-text">Results of the first shell fit</span></p>
 </div>
-<p>This is not a bad result. The value of <code class="docutils literal"><span class="pre">enot</span></code> is small, indicatng
+<p>This is not a bad result. The value of <code class="docutils literal"><span class="pre">enot</span></code> is small, indicating
 that a reasonable value of E<sub>0</sub> was chosen back in
 <font size=-1 color="#8C4112">ATHENA</font>. <code class="docutils literal"><span class="pre">delr</span></code> is small and consistent with 0, as we
 should expect for a known crystal. <code class="docutils literal"><span class="pre">ss</span></code> is a reasonable value with a
@@ -237,12 +246,116 @@ correctly. All in all, this is a reasonable fit.</p>
 </div>
 <div class="section" id="extending-the-fit-to-higher-shells">
 <h2>13.1.4. Extending the fit to higher shells<a class="headerlink" href="#extending-the-fit-to-higher-shells" title="Permalink to this headline">¶</a></h2>
+<p>Although we know that we will need to include some multiple scattering
+paths in this fit, we'll start by including the next three single
+scattering paths, adjusting the fitting model accordingly.</p>
+<p>This fit will include the peaks in the range of 3 Å to 3.5 Å, so
+set R<sub>max</sub> to 3.8.  Next click on each of next three single
+scattering paths – the ones labeled <span class="guilabel">S.2</span>,
+<span class="guilabel">S.3</span>, and <span class="guilabel">Fe.1</span>,  then click on the
+<span class="guilabel">Include path</span> button for each path.</p>
+<p>At this point we need to begin considering the details of our fitting
+model more carefully.  S<sup>2</sup><sub>0</sub> and E<sub>0</sub> should be
+the same for each path, so we will use the same <span class="guess">guess</span>
+parameters for each path.</p>
+<p>This is a cubic material.  Ignoring the possibility that fractional
+coordinate of the S atom in the original crystal data might be a
+variable in the fit and considering only the prospect of a <a class="reference external" href="../extended/delr.html#volumetric-expansion-coefficient">volumetric
+lattice expansion</a>, we define
+a <span class="guess">guess</span> parameter <code class="docutils literal"><span class="pre">alpha</span></code> and set the ΔR for each
+path to <code class="docutils literal"><span class="pre">alpha*reff</span></code>.</p>
+<p>Finally, we set independent σ<sup>2</sup> parameters for each
+single scattering path.  This gives a total of 7 <span class="guess">guess</span>
+parameters, compared to the Nyquist evaluation of about 16.5, given
+the new value of R<sub>max</sub>.</p>
+<p>Things now look like this:</p>
+<div class="figure align-center" id="id12">
+<span id="fig-fes2fourshellfit-ss"></span><a class="reference external image-reference" href="../_images/fes2-fes2fourshellfit_SS.png"><img alt="../_images/fes2-fes2fourshellfit_SS.png" src="../_images/fes2-fes2fourshellfit_SS.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.10 </span><span class="caption-text">Preparing to run the four-shell fit with only single scattering paths.</span></p>
+</div>
+<p>At this point we can run the fit and see how things go!</p>
+<div class="figure align-center" id="id13">
+<span id="fig-fes2fourshellfit-ss-result"></span><a class="reference external image-reference" href="../_images/fes2-fes2fourshellfit_SS_result.png"><img alt="../_images/fes2-fes2fourshellfit_SS_result.png" src="../_images/fes2-fes2fourshellfit_SS_result.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.11 </span><span class="caption-text">Result of the four-shell fit using on the single scattering paths.
+Note the misfit around 3.2 Å.</span></p>
+</div>
+<p>This fit isn't bad.  It does a good job of representing the data, with
+the exception of some misfit around 3.2 Å.  Most of the fitting
+parameters are pretty reasonable, with the exception of the result for
+<code class="docutils literal"><span class="pre">ss3</span></code>.  This is discussed in some detail in the
+<a class="reference external" href="https://speakerdeck.com/bruceravel/discussion-of-the-fes2-exafs-analysis-example">lecture notes</a>,
+but the bottom line is that the signal from these two S scatterers,
+while a significant contributor of Fourier components to the fit, is
+not large enough to support its own robust σ<sup>2</sup>
+parameter.  We will make <code class="docutils literal"><span class="pre">ss3</span></code> into a <span class="def">def</span> parameters, setting
+it equal to <code class="docutils literal"><span class="pre">ss2</span></code>.</p>
+<div class="figure align-center" id="id14">
+<span id="fig-fes2defss3"></span><a class="reference external image-reference" href="../_images/fes2-defss3_result.png"><img alt="../_images/fes2-defss3.png" src="../_images/fes2-defss3.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.12 </span><span class="caption-text">Making <code class="docutils literal"><span class="pre">ss3</span></code> a <span class="def">def</span> parameter.</span></p>
+</div>
+<p>At this point we need to introduce the two significant multiple
+scattering paths.  Start by clicking the <span class="guilabel">Include path</span>
+button for the <span class="guilabel">S.1 S.2</span> and <span class="guilabel">S.1 Fe.1</span> paths.</p>
+<p>Make sure each of those paths has their S<sup>2</sup><sub>0</sub>, E<sub>0</sub>, and ΔR path parameters set to <code class="docutils literal"><span class="pre">amp</span></code>, <code class="docutils literal"><span class="pre">enot</span></code>, and
+<code class="docutils literal"><span class="pre">alpha*reff</span></code>, respectively.</p>
+<p>As discussed in the <a class="reference external" href="https://speakerdeck.com/bruceravel/discussion-of-the-fes2-exafs-analysis-example">lecture notes</a>,
+we don't necessarily want to give these multiple scattering paths
+independent σ<sup>2</sup> parameters.  Indeed, they are unlikely
+to be robust fitting parameters for the same reason that <code class="docutils literal"><span class="pre">ss3</span></code>
+proved not to be a robust parameter.  Instead, we will approximate
+these two σ<sup>2</sup> parameters using <span class="guess">guess</span> parameters
+already in the fit.</p>
+<p>Consider these two triangular paths on a leg-by-leg basis.  For the
+<span class="guilabel">S.1 Fe.1</span> path, the first and last leg are of the distance
+between the absorber and the Fe scatterer in the fourth shell.  The
+remaining leg is the first shell distance.  In terms of length, this
+path covers the full distance of the fourth shell path and half the
+distance of the first shell path.  Thus we will approximate its
+σ<sup>2</sup> as <code class="docutils literal"><span class="pre">ssfe+ss/2</span></code>.</p>
+<p>The <span class="guilabel">S.1 S.2</span> triangle is a bit more ambiguous, since we do
+not have a parameter describing the leg that goes from the first shell
+S atom to the second shell S atom.  In the absence of a better
+approximation, we will use <code class="docutils literal"><span class="pre">ss*1.5</span></code>, i.e. something a bit bigger
+than the first shell σ<sup>2</sup>.  Neither of these are quite
+right, but neither is ridiculously wrong.  And parameterizing them in
+this way allows us to avoid introducing a weak <span class="guess">guess</span>
+parameter into the fitting model.</p>
+<div class="figure align-center" id="id15">
+<span id="fig-fes2fourshellfit"></span><a class="reference external image-reference" href="../_images/fes2-fourshellfit.png"><img alt="../_images/fes2-fourshellfit.png" src="../_images/fes2-fourshellfit.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.13 </span><span class="caption-text">Result of the four-shell fit including four single scattering paths
+and the two largest multiple scattering paths.</span></p>
+</div>
+<p>This fit does a much better job in the region around 3.2 Å, however
+the last bit of the fitting range is not quite right.  The fitting
+parameters are all quite reasonable and the percentage misfit within
+the fitting range is quite small – around 1%.</p>
 </div>
 <div class="section" id="the-final-fitting-model">
 <h2>13.1.5. The final fitting model<a class="headerlink" href="#the-final-fitting-model" title="Permalink to this headline">¶</a></h2>
+<p>To clean up the last bit of the fitting range, we can include a set of
+three multiple scattering paths that represent collinear paths
+involving the first shell S atoms.  An <font size=-1 color="#8C4112">ARTEMIS</font> project file
+for the final fitting model can be found among the examples at my <a class="reference external" href="https://github.com/bruceravel/XAS-Education/tree/master/Examples/FeS2">XAS
+Education site</a>.
+Adding these three paths and extending R<sub>max</sub> to 4.2 Å
+results in an excellent fit.</p>
+<div class="figure align-center" id="id16">
+<span id="fig-fes2finalfit"></span><a class="reference external image-reference" href="../_images/fes2-finalfit.png"><img alt="../_images/fes2-finalfit.png" src="../_images/fes2-finalfit.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.14 </span><span class="caption-text">Result of the final fitting model including four single scattering
+paths and five multiple scattering paths.</span></p>
 </div>
-<div class="section" id="additional-questions">
-<h2>13.1.6. Additional questions<a class="headerlink" href="#additional-questions" title="Permalink to this headline">¶</a></h2>
+<p>These three collinear multiple scattering paths are introduced into
+the fit without needing to introduce new <span class="guess">guess</span> parameters.
+The <code class="docutils literal"><span class="pre">alpha*reff</span></code> parameterization for ΔR works just as well
+for these paths.  Their σ<sup>2</sup> parameters are expressed in
+terms of the first shell σ<sup>2</sup> following the example of
+Hudson, et al.</p>
+<ul class="simple" id="bibtex-bibliography-examples/fes2-0">
+<li>E.&nbsp;A. Hudson, P.&nbsp;G. Allen, L.&nbsp;J. Terminello, M.&nbsp;A. Denecke, and T.&nbsp;Reich. Polarized x-ray-absorption spectroscopy of the uranyl ion: Comparison of experiment and theory. <em>Phys. Rev. B</em>, 54:156–165, Jul 1996. <a class="reference external" href="https://doi.org/10.1103/PhysRevB.54.156">doi:10.1103/PhysRevB.54.156</a>.</li>
+</ul>
+<p>Please review the <a class="reference external" href="https://speakerdeck.com/bruceravel/discussion-of-the-fes2-exafs-analysis-example">lecture notes</a>
+for this fitting example for discussions of all the decisions that
+went into creating this successful fitting model.</p>
 
 <br>
 
@@ -288,7 +401,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../extended/index.html">15. Extended discussions</a></li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.24</b></p>
+<p>Current version: <b>0.9.25</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
@@ -339,7 +452,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="index.html" title="13. Worked examples"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.25 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="index.html" >13. Worked examples</a> &raquo;</li> 
       </ul>
     </div>
