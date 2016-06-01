@@ -20,6 +20,11 @@
      file into Athena (thanks to Galen O'Neil)
    - Add filetype and beamline plugins related to BL8 at SLRI (thanks
      to Wantana Klysubun for beamtime!)
+   - Fix display issues in peak fitting tool, use three-letter strings
+     rather than numbers as identifiers, discarding works better,
+     action buttons disabled when last function is discarded (thanks
+     to Wantana Klysubun and the participants of the 2016 ASEAN
+     Workshop on XAS)
 
 *** Artemis
    - Control for enabling 5- and 6-legged paths in Feff tab

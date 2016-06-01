@@ -158,6 +158,7 @@ sub push_values {
     next if ($namespace =~ m{athena|artemis}i);
     my $leaf = $this->{tree}->AppendItem($this->{root}, sprintf("%-72s", ucfirst($namespace)));
     $this->{tree} -> SetItemBackgroundColour($leaf,  ($count++ % 2) ? wxWHITE : wxLIGHT_GREY );
+    #EVT_ENTER_WINDOW($leaf, sub{1; $_[1]->Skip});
     foreach my $tag ($data->xdi_tags($namespace)) {
       my $value = $data->xdi_datum($namespace, $tag);
       my $string = sprintf("%-20s = %-47s", lc($tag), $value);

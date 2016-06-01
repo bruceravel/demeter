@@ -42,7 +42,7 @@ $Fityk_exists       = eval "require fityk";
 
 has '+plottable'      => (default => 1);
 has '+data'	      => (isa => Empty.'|Demeter::Data|Demeter::XES');
-has '+name'	      => (default => 'PeakFit' );
+has '+name'	      => (default => 'Peak fit' );
 has 'screen'	      => (is => 'rw', isa => 'Bool',   default => 0);
 has 'buffer'	      => (is => 'rw', isa => 'ArrayRef | ScalarRef');
 has 'engine'	      => (is => 'rw', isa => 'Bool',   default => 1);
