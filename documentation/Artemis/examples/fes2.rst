@@ -5,13 +5,27 @@
 
 .. |transfer button| image:: ../../_static/plot-icon.png
 
+.. role:: guess
+.. role:: def
+.. role:: set
+.. role:: restrain
+.. role:: after
+
+
 Example 1: FeS2
 ===============
 
-Introduction, blah blah, known crystal structure, blah blah, learn the
-mechanics of the program, blah blah
+Iron pyrite, FeS\ :sub:`2`, is my favorite teaching example which I
+use to introduce people to fitting with :demeter:`artemis`.  It is a
+crystal with a well-known structure.  I have beautiful data.  And I am
+able to create a very successful fitting model.  As a cubic crystal,
+the structure is not too complicated.  However, there is some internal
+structure in the unit cell, making this a much less trivial example
+than, say, an FCC metal.
 
-`Lecture notes <https://speakerdeck.com/bruceravel/discussion-of-the-fes2-exafs-analysis-example>`_
+While this example certainly does not represent a typical research
+problem, it is an excellent introduction to the mechanics of using
+:demeter:`artemis` and it results in a very satisfying fit.
 
 
 Import data
@@ -209,15 +223,17 @@ the following:
 
 #. For this simple first shell fit, we set up a simple, four-parameter
    model. The parameters ``amp``, ``enot``, ``delr``, and ``ss`` are
-   defined in the GDS window and given sensible initial guess values.
+   defined in the GDS window and given sensible initial :guess:`guess`
+   values.
 
 #. The path parameters for the first shell path are set. S\ :sup:`2`\
    :sub:`0` is set to ``amp``, E\ :sub:`0` is set to ``enot``, |Delta|
    R is set to ``delr``, and |sigma|\ :sup:`2` is set to ``ss``.
 
 Note that the current settings for k- and R-range result in a bit more
-than 7 independent points, as computed from the Nyquist criterion. With
-only 4 guess parameters, this should be a reasonable fitting model.
+than 7 independent points, as approximated using the Nyquist
+criterion.  With only 4 :guess:`guess` parameters, this should be a
+reasonable fitting model.
 
 .. _fig-fes21stshell:
 .. figure:: ../../_images/fes2-1stshell.png
@@ -250,7 +266,7 @@ the following things happen:
 
    Results of the first shell fit
 
-This is not a bad result. The value of ``enot`` is small, indicatng
+This is not a bad result. The value of ``enot`` is small, indicating
 that a reasonable value of E\ :sub:`0` was chosen back in
 :demeter:`athena`. ``delr`` is small and consistent with 0, as we
 should expect for a known crystal. ``ss`` is a reasonable value with a
@@ -267,11 +283,159 @@ correctly. All in all, this is a reasonable fit.
 Extending the fit to higher shells
 ----------------------------------
 
+Although we know that we will need to include some multiple scattering
+paths in this fit, we'll start by including the next three single
+scattering paths, adjusting the fitting model accordingly.
+
+This fit will include the peaks in the range of 3 |AA| to 3.5 |AA|, so
+set R\ :sub:`max` to 3.8.  Next click on each of next three single
+scattering paths |nd| the ones labeled :guilabel:`S.2`,
+:guilabel:`S.3`, and :guilabel:`Fe.1`,  then click on the
+:guilabel:`Include path` button for each path.
+
+At this point we need to begin considering the details of our fitting
+model more carefully.  S\ :sup:`2`\ :sub:`0` and E\ :sub:`0` should be
+the same for each path, so we will use the same :guess:`guess`
+parameters for each path.
+
+This is a cubic material.  Ignoring the possibility that fractional
+coordinate of the S atom in the original crystal data might be a
+variable in the fit and considering only the prospect of a `volumetric
+lattice expansion
+<../extended/delr.html#volumetric-expansion-coefficient>`_, we define
+a :guess:`guess` parameter ``alpha`` and set the |Delta| R for each
+path to ``alpha*reff``.
+
+Finally, we set independent |sigma|\ :sup:`2` parameters for each
+single scattering path.  This gives a total of 7 :guess:`guess`
+parameters, compared to the Nyquist evaluation of about 16.5, given
+the new value of R\ :sub:`max`.
+
+Things now look like this:
+
+.. _fig-fes2fourshellfit_SS:
+.. figure:: ../../_images/fes2-fes2fourshellfit_SS.png
+   :target: ../_images/fes2-fes2fourshellfit_SS.png
+   :width: 50%
+   :align: center
+
+   Preparing to run the four-shell fit with only single scattering paths.
+
+At this point we can run the fit and see how things go!
+
+.. _fig-fes2fourshellfit_SS_result:
+.. figure:: ../../_images/fes2-fes2fourshellfit_SS_result.png
+   :target: ../_images/fes2-fes2fourshellfit_SS_result.png
+   :width: 50%
+   :align: center
+
+   Result of the four-shell fit using on the single scattering paths.
+   Note the misfit around 3.2 |AA|.
+
+This fit isn't bad.  It does a good job of representing the data, with
+the exception of some misfit around 3.2 |AA|.  Most of the fitting
+parameters are pretty reasonable, with the exception of the result for
+``ss3``.  This is discussed in some detail in the 
+`lecture notes
+<https://speakerdeck.com/bruceravel/discussion-of-the-fes2-exafs-analysis-example>`_,
+but the bottom line is that the signal from these two S scatterers,
+while a significant contributor of Fourier components to the fit, is
+not large enough to support its own robust |sigma|\ :sup:`2`
+parameter.  We will make ``ss3`` into a :def:`def` parameters, setting
+it equal to ``ss2``.
+
+.. _fig-fes2defss3:
+.. figure:: ../../_images/fes2-defss3.png
+   :target: ../_images/fes2-defss3_result.png
+   :align: center
+
+   Making ``ss3`` a :def:`def` parameter.
+
+At this point we need to introduce the two significant multiple
+scattering paths.  Start by clicking the :guilabel:`Include path`
+button for the :guilabel:`S.1 S.2` and :guilabel:`S.1 Fe.1` paths.
+
+Make sure each of those paths has their S\ :sup:`2`\ :sub:`0`, E\
+:sub:`0`, and |Delta| R path parameters set to ``amp``, ``enot``, and
+``alpha*reff``, respectively.
+
+As discussed in the `lecture notes
+<https://speakerdeck.com/bruceravel/discussion-of-the-fes2-exafs-analysis-example>`_,
+we don't necessarily want to give these multiple scattering paths
+independent |sigma|\ :sup:`2` parameters.  Indeed, they are unlikely
+to be robust fitting parameters for the same reason that ``ss3``
+proved not to be a robust parameter.  Instead, we will approximate
+these two |sigma|\ :sup:`2` parameters using :guess:`guess` parameters
+already in the fit.  
+
+Consider these two triangular paths on a leg-by-leg basis.  For the
+:guilabel:`S.1 Fe.1` path, the first and last leg are of the distance
+between the absorber and the Fe scatterer in the fourth shell.  The
+remaining leg is the first shell distance.  In terms of length, this
+path covers the full distance of the fourth shell path and half the
+distance of the first shell path.  Thus we will approximate its
+|sigma|\ :sup:`2` as ``ssfe+ss/2``.
+
+The :guilabel:`S.1 S.2` triangle is a bit more ambiguous, since we do
+not have a parameter describing the leg that goes from the first shell
+S atom to the second shell S atom.  In the absence of a better
+approximation, we will use ``ss*1.5``, i.e. something a bit bigger
+than the first shell |sigma|\ :sup:`2`.  Neither of these are quite
+right, but neither is ridiculously wrong.  And parameterizing them in
+this way allows us to avoid introducing a weak :guess:`guess`
+parameter into the fitting model.
+
+.. _fig-fes2fourshellfit:
+.. figure:: ../../_images/fes2-fourshellfit.png
+   :target: ../_images/fes2-fourshellfit.png
+   :width: 50%
+   :align: center
+
+   Result of the four-shell fit including four single scattering paths
+   and the two largest multiple scattering paths.
+
+This fit does a much better job in the region around 3.2 |AA|, however
+the last bit of the fitting range is not quite right.  The fitting
+parameters are all quite reasonable and the percentage misfit within
+the fitting range is quite small |nd| around 1%.
+
 
 The final fitting model
 -----------------------
 
+To clean up the last bit of the fitting range, we can include a set of
+three multiple scattering paths that represent collinear paths
+involving the first shell S atoms.  An :demeter:`artemis` project file
+for the final fitting model can be found among the examples at my `XAS
+Education site
+<https://github.com/bruceravel/XAS-Education/tree/master/Examples/FeS2>`_.
+Adding these three paths and extending R\ :sub:`max` to 4.2 |AA|
+results in an excellent fit.
 
-Additional questions
---------------------
+.. _fig-fes2finalfit:
+.. figure:: ../../_images/fes2-finalfit.png
+   :target: ../_images/fes2-finalfit.png
+   :width: 50%
+   :align: center
+
+   Result of the final fitting model including four single scattering
+   paths and five multiple scattering paths.
+
+These three collinear multiple scattering paths are introduced into
+the fit without needing to introduce new :guess:`guess` parameters.
+The ``alpha*reff`` parameterization for |Delta| R works just as well
+for these paths.  Their |sigma|\ :sup:`2` parameters are expressed in
+terms of the first shell |sigma|\ :sup:`2` following the example of
+Hudson, et al.
+
+
+.. bibliography:: ../artemis.bib
+   :filter: author % 'Hudson'
+   :list: bullet
+
+
+Please review the `lecture notes
+<https://speakerdeck.com/bruceravel/discussion-of-the-fes2-exafs-analysis-example>`_
+for this fitting example for discussions of all the decisions that
+went into creating this successful fitting model.
 
