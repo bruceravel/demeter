@@ -9,13 +9,13 @@
 Setting math expressions
 ========================
 
-Once some paths have been dragged from the :demeter:`feff` window onto
-the Data window containing the gold foil data, it is time to begin
-defining math expressions for the path parameters. In the following
-figure, the path corresponding to the first coordination shell has
-been selected from the path list. A path is selected by
-:mark:`leftclick,..` left clicking on its label in the path
-list. Doing so, displays that path on the right side of the Data
+Once some paths have been :mark:`drag,..` dragged from the
+:demeter:`feff` window onto the Data window containing the gold foil
+data, it is time to begin defining math expressions for the path
+parameters. In the following figure, the path corresponding to the
+first coordination shell has been selected from the path list. A path
+is selected by :mark:`leftclick,..` left clicking on its label in the
+path list. Doing so, displays that path on the right side of the Data
 window.
 
 At the top of the Path page are two checkboxes. One is used to include

@@ -70,10 +70,10 @@ first 13 paths are selected
    The first 13 paths have been selected.
 
 Now :mark:`leftclick,..` click on any of the selected paths. While
-holding down the left mouse button, drag those paths over to the right
-side of the Data window and drop them by releasing the mouse
-button. This will place all 13 of those paths in the path list on the
-Data window containing the data on the gold foil.
+holding down the left mouse button, :mark:`drag,..` drag those paths
+over to the right side of the Data window and drop them by releasing
+the mouse button. This will place all 13 of those paths in the path
+list on the Data window containing the data on the gold foil.
 
 .. _fig-pathpopulated:
 .. figure:: ../../_images/path-populated.png

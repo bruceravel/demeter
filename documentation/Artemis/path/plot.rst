@@ -19,12 +19,12 @@ paths between the selected one and the one
 
 :button:`Control`-:mark:`leftclick,..` clicking on the path list is
 also a special function used for two purposes. Doing a
-:button:`Control`-:mark:`leftclick,..` click starts a drag-and-drop
-with the path you click on. Dropping the path on another data window,
-copies If you drop the path on the same path list, that path to that
-Data set.  Dropping the path on the same path list is equivalent to
-cloning the dragged path, with the clone being appended to the end of
-the path list.
+:button:`Control`-:mark:`leftclick,..` click starts a :mark:`drag,..`
+drag-and-drop with the path you click on. Dropping the path on another
+data window, copies If you drop the path on the same path list, that
+path to that Data set.  Dropping the path on the same path list is
+equivalent to cloning the dragged path, with the clone being appended
+to the end of the path list.
 
 .. caution:: Mistakenly :button:`Control`-:mark:`leftclick,..`
    clicking rather than :button:`Shift`-:mark:`leftclick,..` clicking

@@ -27,16 +27,24 @@ While this example certainly does not represent a typical research
 problem, it is an excellent introduction to the mechanics of using
 :demeter:`artemis` and it results in a very satisfying fit.
 
+You can find example EXAFS data crystallographic input data at `my XAS
+Education site
+<https://github.com/bruceravel/XAS-Education/tree/master/Examples/FeS2>`_.
+Import the |mu| (E) data into :demeter:`athena`.  When you are content
+with the processing of the data, save an :demeter:`athena` project
+file and dive into this example.
+
+
 
 Import data
 -----------
 
-After starting :demeter:`artemis`, click on the :button:`Add,light`
-button at the top of the :guilabel:`Data sets` list in the Main
-window. This will open a file selection dialog. Click to find the
-:demeter:`athena` project file containing the data you want to
-analyze. Opening that project file displays the project selection
-dialog.
+After starting :demeter:`artemis`, :mark:`leftclick,..` click on the
+:button:`Add,light` button at the top of the :guilabel:`Data sets`
+list in the Main window. This will open a file selection dialog.
+Click to find the :demeter:`athena` project file containing the data
+you want to analyze. Opening that project file displays the project
+selection dialog.
 
 .. _fig-fes2importdata:
 .. figure:: ../../_images/fes2-importdata.png
@@ -49,17 +57,18 @@ dialog.
 The project file used here has several iron standards. Select
 FeS\ :sub:`2` from the list. That data set gets plotted when selected.
 
-Now click the :button:`Import,light` button. That data set gets
-imported into :demeter:`artemis`.  An entry for the FeS\ :sub:`2` is
-created in the Data list, a window for interacting with the FeS\
-:sub:`2` data is created, and the FeS\ :sub:`2` data are plotted as
-|chi| (k).
+Now :mark:`leftclick,..` click the :button:`Import,light` button. That
+data set gets imported into :demeter:`artemis`.  An entry for the FeS\
+:sub:`2` is created in the Data list, a window for interacting with
+the FeS\ :sub:`2` data is created, and the FeS\ :sub:`2` data are
+plotted as |chi| (k).
 
 The next step is to prepare for the :demeter:`feff` calculation using
-the known FeS\ :sub:`2` crystal structure. Clicking on the line in the
-Data window that says :guilabel:`Import crystal data or a Feff
-calculation` will post a file selection dialog.  Click to find the
-:file:`atoms.inp` file containing the FeS\ :sub:`2` crystal structure.
+the known FeS\ :sub:`2` crystal structure.  :mark:`leftclick,..`
+Clicking on the line in the Data window that says :guilabel:`Import
+crystal data or a Feff calculation` will post a file selection dialog.
+Click to find the :file:`atoms.inp` file containing the FeS\ :sub:`2`
+crystal structure.
 
 .. _fig-fes2importatoms:
 .. figure:: ../../_images/fes2-importatoms.png
@@ -70,11 +79,11 @@ calculation` will post a file selection dialog.  Click to find the
    Import crystal data into Artemis 
 
 With the FeS\ :sub:`2` crystal data imported, run :demeter:`atoms` by
-clicking the :button:`Run Atoms,light` button on the :demeter:`atoms`
-tab of the :demeter:`feff` windows. That will display the
-:demeter:`feff` tab containing the :demeter:`feff` input data. Click
-the :button:`Run Feff,light` button to compute the scattering
-potentials and to run the pathfinder.
+:mark:`leftclick,..` clicking the :button:`Run Atoms,light` button on
+the :demeter:`atoms` tab of the :demeter:`feff` windows. That will
+display the :demeter:`feff` tab containing the :demeter:`feff` input
+data.  :mark:`leftclick,..` Click the :button:`Run Feff,light` button
+to compute the scattering potentials and to run the pathfinder.
 
 Once the :demeter:`feff` calculation is finished, the path
 intepretation list is shown in the Paths tab. This is the list of
@@ -83,8 +92,8 @@ scattering paths, sorted by increasing path length. Select the first
 :guilabel:`0000`, then :button:`Shift`-:mark:`leftclick,..` clicking
 on path :guilabel:`0010`.  The selected paths will be highlighted.
 :mark:`leftclick,..` Click on one of the highlighted paths and,
-without letting go of the mouse button, drag the paths over to the
-Data window.  Drop the paths on the empty Path list.
+without letting go of the mouse button, :mark:`drag,..` drag the paths
+over to the Data window and drop them onto the empty Path list.
 
 .. _fig-fes2pathsdnd:
 .. figure:: ../../_images/fes2-pathsdnd.png
@@ -92,11 +101,12 @@ Data window.  Drop the paths on the empty Path list.
    :width: 50%
    :align: center
 
-   Drag and drop paths onto a data set
+   :mark:`drag,..` Drag and drop paths onto a data set
 
-Dropping the paths on the Path list will associate those paths with that
-data set. That is, that group of paths is now available to be used in
-the fitting model for understanding the FeS\ :sub:`2` data.
+:mark:`drag,..` Dropping the paths on the Path list will associate those
+paths with that data set. That is, that group of paths is now
+available to be used in the fitting model for understanding the FeS\
+:sub:`2` data.
 
 Each path will get its own Path page. The Path page for a path is
 displayed when that path is clicked upon in the Path list. Shown below
@@ -124,13 +134,13 @@ to populate the Plotting list with data and paths and make some plots.
 First let's examine how the single scattering paths relate to the
 data.  Mark each of the first four single scattring paths |nd| the
 ones labeled :guilabel:`S.1`, :guilabel:`S.2`, :guilabel:`S.3`, and
-:guilabel:`Fe.1` |nd| by clicking on their check buttons.  Transfer
-those four paths to the Plotting list by selecting
+:guilabel:`Fe.1` |nd| by :mark:`leftclick,..` clicking on their check
+buttons.  Transfer those four paths to the Plotting list by selecting
 :menuselection:`Actions --> Transfer marked`.
 
-With the Plotting list poluated as shown below, click on the
-:button:`R,light` plot button in the Plot window to make the plot
-shown.
+With the Plotting list poluated as shown below, :mark:`leftclick,..`
+click on the :button:`R,light` plot button in the Plot window to make
+the plot shown.
 
 .. _fig-fes2sspaths:
 .. figure:: ../../_images/fes2-sspaths.png
@@ -158,11 +168,12 @@ are some kind of superposition of many paths.
 
 What about the multiple scattering paths?
 
-To examine those, first clear the Plotting list by clicking the
-:button:`Clear,light` button at the bottom of the Plot
-window. Transfer the FeS\ :sub:`2` data back to the Plotting list by
-clicking its transfer button: |transfer button|. Mark the first three
-multiple scattering paths by clicking their mark buttons.  Select
+To examine those, first clear the Plotting list by
+:mark:`leftclick,..` clicking the :button:`Clear,light` button at the
+bottom of the Plot window. Transfer the FeS\ :sub:`2` data back to the
+Plotting list by :mark:`leftclick,..` clicking its transfer button:
+|transfer button|. Mark the first three multiple scattering paths by
+:mark:`leftclick,..` clicking their mark buttons.  Select
 :menuselection:`Actions --> Transfer marked`.
 
 With the Plotting list newly populated, make a new plot of \| |chi|\ (R)\|.
@@ -288,10 +299,11 @@ paths in this fit, we'll start by including the next three single
 scattering paths, adjusting the fitting model accordingly.
 
 This fit will include the peaks in the range of 3 |AA| to 3.5 |AA|, so
-set R\ :sub:`max` to 3.8.  Next click on each of next three single
-scattering paths |nd| the ones labeled :guilabel:`S.2`,
-:guilabel:`S.3`, and :guilabel:`Fe.1`,  then click on the
-:guilabel:`Include path` button for each path.
+set R\ :sub:`max` to 3.8.  Next :mark:`leftclick,..` click on each of
+next three single scattering paths |nd| the ones labeled
+:guilabel:`S.2`, :guilabel:`S.3`, and :guilabel:`Fe.1`, then
+:mark:`leftclick,..` click on the :guilabel:`Include path` button for
+each path.
 
 At this point we need to begin considering the details of our fitting
 model more carefully.  S\ :sup:`2`\ :sub:`0` and E\ :sub:`0` should be
@@ -352,8 +364,9 @@ it equal to ``ss2``.
    Making ``ss3`` a :def:`def` parameter.
 
 At this point we need to introduce the two significant multiple
-scattering paths.  Start by clicking the :guilabel:`Include path`
-button for the :guilabel:`S.1 S.2` and :guilabel:`S.1 Fe.1` paths.
+scattering paths.  Start by :mark:`leftclick,..` clicking the
+:guilabel:`Include path` button for the :guilabel:`S.1 S.2` and
+:guilabel:`S.1 Fe.1` paths.
 
 Make sure each of those paths has their S\ :sup:`2`\ :sub:`0`, E\
 :sub:`0`, and |Delta| R path parameters set to ``amp``, ``enot``, and

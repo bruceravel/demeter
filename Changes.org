@@ -67,6 +67,8 @@
      columns in the norm(E) output file  (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-December/012908.html][Jeff Catalano]])
    - Add link to Hiroyuki Asakura's translation to sidebar of Athena
      document
+   - Finish off FeS2 example in Artemis doc (thanks to Matthew Marcus
+     for the push)
 
 ** 0.9.24   23 October   2015
 *** Demeter

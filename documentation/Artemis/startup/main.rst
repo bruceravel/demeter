@@ -67,8 +67,8 @@ File drag and drop
 ------------------
 
 The data set and :demeter:`feff` calculation area on the main window,
-areas 4 and 5 above, are drop targets for files dragged from your
-computer's file manager.
+areas 4 and 5 above, are drop targets for files :mark:`drag,..`
+dragged from your computer's file manager.
 
 - You can drop :demeter:`athena` project files (:file:`.prj`) onto the
   data set area. To import data from some other source, you are
@@ -82,9 +82,10 @@ computer's file manager.
   import old-style artemis project files or :demeter:`demeter`
   serializations, you are required to use the :file:`File` menu.
 
-You can only drag and drop one file at a time. If you try to drag more
-than one of any file type, a warning will be issued in the status bar
-and no import will happen. Similarly, you may not drop a folder.
+You can only :mark:`drag,..` drag and drop one file at a time. If you
+try to drag more than one of any file type, a warning will be issued
+in the status bar and no import will happen. Similarly, you may not
+drop a folder.
 
 
 The File menu
@@ -123,8 +124,8 @@ the menu.
   to save the current state of the project. :guilabel:`Save current
   fit` will save a project file containing only the current fit,
   without any of the history. These project files are the sort that
-  can be dragged from your computer's file manager onto the data or
-  :demeter:`feff` list.
+  can be :mark:`drag,..` dragged from your computer's file manager
+  onto the data or :demeter:`feff` list.
 
 - The :guilabel:`import` submenu is used to specify the file type to
   import.  Typically, this is not necessary and is only provided for
@@ -291,8 +292,8 @@ selection dialog is used; and so on.
 The standard manner of importing data into :demeter:`artemis` is to
 use an :demeter:`athena` project file. Thus the file selection dialog
 will, by default, look for files with the :file:`.prj` extension. You
-may also drag :file:`.prj` files from your computer's file manager and
-drop them onto the data list.
+may also :mark:`drag,..` drag :file:`.prj` files from your computer's
+file manager and drop them onto the data list.
 
 As you import data, a stack of buttons |nd| one for each data group |nd| is
 made. These buttons are used to show or hide the windows associated
@@ -407,9 +408,9 @@ button will present the same recent file selection dialog as for the
 data list. In this case, the list will contain recently imported
 :demeter:`atoms`, :demeter:`feff`, or CIF files.
 
-You may also drag CIF, :demeter:`atoms` input, or :demeter:`feff`
-input files from your computer's file manager and drop them onto the
-:demeter:`feff` list.
+You may also :mark:`drag,..` drag CIF, :demeter:`atoms` input, or
+:demeter:`feff` input files from your computer's file manager and drop
+them onto the :demeter:`feff` list.
 
 
 Fit information

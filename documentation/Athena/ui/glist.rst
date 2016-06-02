@@ -27,9 +27,9 @@ fundamental user interface features in :demeter:`athena`. Any feature
 of :demeter:`athena` that involves more than one group uses the mark
 buttons.
 
-File can be dragged from your computers file manager (e.g. Windows
-File Explorer, KDE Dolphin, or GNOME Nautilus) and dropped onto the
-group list. These files, which can be `data
+File can be :mark:`drag,..` dragged from your computers file manager
+(e.g. Windows File Explorer, KDE Dolphin, GNOME Nautilus, etc.) and
+dropped onto the group list. These files, which can be `data
 <../import/columns.html>`__ or `project <../import/projsel.html>`__
 files will be appended to the group list. You cannot drop folders onto
 the group list.
@@ -93,9 +93,10 @@ up or down in the list.
 Hitting :button:`Control`-:button:`k` or :button:`Control`-:button:`j` changes the
 current group to the one above or below.
 
-.. caution:: As of version 0.9.20, :button:`Control`-drag-and-drop is no longer
-	     available for reorganizing group list items. That feature
-	     has been discontinued in favor of file drag and drop.
+.. caution:: As of version 0.9.20, :button:`Control`-drag-and-drop is
+   no longer available for reorganizing group list items. That feature
+   has been discontinued in favor of file :mark:`drag,..` drag and
+   drop.
 
 Items can be removed from the list. The current group or the marked
 groups can be removed from the project by selecting

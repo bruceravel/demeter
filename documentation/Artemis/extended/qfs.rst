@@ -351,9 +351,9 @@ Reproducing the plots above
 To start, I imported the FeS\ :sub:`2` data and crystal structure into
 :demeter:`artemis`.  `(You can find them here.)
 <https://github.com/bruceravel/XAS-Education/tree/master/Examples/FeS2>`__
-I ran :demeter:`atoms`, then :demeter:`feff`. I then dragged and
-dropped the nearest neighbor path onto the Data page. At this stage,
-:demeter:`artemis` looks like this:
+I ran :demeter:`atoms`, then :demeter:`feff`. I then :mark:`drag,..`
+dragged and dropped the nearest neighbor path onto the Data page. At
+this stage, :demeter:`artemis` looks like this:
 
 .. _fig-qfsstartqfs:
 .. figure:: ../../_images/qfs-start_qfs.png
@@ -388,9 +388,9 @@ degeneracy of the QFS path to 6 so that I can directly compare the
 normally calculated path (there are 6 nearest neighbor S atoms in FeS\
 :sub:`2`) to the QFS path.  I mark both paths and transfer them to the
 plotting list. I am now ready to compare these two calculations. To
-examine another single scattering path, I drag and drop that path from
-the :demeter:`feff` page to the Data page and redo the QFS calculation
-at that distance.
+examine another single scattering path, I :mark:`drag,..` drag and
+drop that path from the :demeter:`feff` page to the Data page and redo
+the QFS calculation at that distance.
 
 .. _fig-qfscompare:
 .. figure:: ../../_images/qfs-compare.png
