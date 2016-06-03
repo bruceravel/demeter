@@ -4,9 +4,9 @@
    http://creativecommons.org/licenses/by-sa/3.0/
 
 
-.. |redi| unicode:: U+0268
-.. |vowela| unicode:: U+0251
-.. |IPA artemis| replace::  ˈ\ |vowela|\ :rt\ |redi|\ m\ |redi|\ s
+.. |redi|        unicode:: U+0268
+.. |vowela|      unicode:: U+0251
+.. |IPA artemis| replace:: '\ |vowela|\ :rt\ |redi|\ m\ |redi|\ s
 
 
 
@@ -17,7 +17,7 @@ The :demeter:`artemis` program is launched on Windows by
 :mark:`leftclick,..` double-clicking the :demeter:`artemis` icon on
 the desk top, by selecting ``artemis`` from the :demeter:`demeter`
 menu in the Start Menu, or by typing :command:`dartemis` (that's
-pronounced |IPA artemis|, with a silent ``d``) at the command prompt.  If you
+pronounced |IPA artemis|, with a *silent* ``d``) at the command prompt.  If you
 installed :demeter:`demeter` using the standard installer package, you
 can also :mark:`leftclick,..` double-click on an :demeter:`artemis`
 project file (i.e. one with a :file:`.fpj` extension) to open it in

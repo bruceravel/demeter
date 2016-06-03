@@ -3,6 +3,13 @@
    The Creative Commons Attribution-ShareAlike License
    http://creativecommons.org/licenses/by-sa/3.0/
 
+.. |schwa|          unicode:: U+0259
+.. |omfront|        unicode:: U+025B
+.. |lcfront|        unicode:: U+026A
+.. |IPA hephaestus| replace:: h\ |schwa|\ 'f\ |lcfront|\ st\ |schwa|\ s
+
+
+
 Hephaestus
 ==========
 
@@ -19,6 +26,10 @@ Hephaestus
 :demeter:`hephaestus` is a program for making small calculations
 useful to the XAS experimentalist using a periodic table, tables of
 X-ray absorption coefficients, and other elemental data.
+
+To start :demeter:`hephaestus`, double click on its icon or, at the
+command line, type :command:`dhephaestus` (that's pronounced |IPA
+hephaestus|, with a *silent* ``d``).
 
 On the left of the :demeter:`hephaestus` window is a stack of icon
 buttons which are used to select the different tools.  Clicking on one
