@@ -51,7 +51,7 @@ sub new {
   $nb -> SetBackgroundColour( $wxBGC );
   $self->{base} = $base;
   $self->{notebook} = $nb;
-  $self->{feffobject} = $feffobject;
+  $self->{feffobject} = $feffobject || Demeter::Feff->new();
   $self->{component}  = $component;
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
 
@@ -323,7 +323,6 @@ sub OnInit {
   my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Atoms.pm'}), 'Atoms', 'icons', "atoms_nottransparent.png");
   my $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
   $frame -> SetIcon($icon);
-
 
   ## -------- Set up menubar
   my $bar = Wx::MenuBar->new;

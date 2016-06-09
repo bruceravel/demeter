@@ -45,9 +45,11 @@ use Carp;
 use Chemistry::Elements qw(get_Z);
 use File::Basename;
 use List::Util qw(min max reduce);
+use List::MoreUtils qw(any);
 #use Math::Cephes::Fraction qw(fract);
 use POSIX qw(ceil);
 use Safe;
+use Scalar::Util qw(looks_like_number);
 use Text::Template;
 use Xray::Absorption;
 use Xray::Crystal;
@@ -420,13 +422,26 @@ sub parse_line {
            : ($key =~ m{pol}) ? 'polarization'
            :                     $key;
     if (($self->meta->has_method($kk)) and ($key =~ m{shi|daf|qve|ref|pol|ell})) {
-      $self->$kk([$val, $vvv, $vvvv]);
+      if ((not looks_like_number($val)) or (not looks_like_number($val)) or (not looks_like_number($val))) {
+	carp("\"$key\" takes three numbers as its value\nfound \"$key = $val $vvv $vvvv\"\n($file line $.)\n\n");
+	return $self;
+      } else {
+	$self->$kk([$val, $vvv, $vvvv]);
+      }
     } elsif ($self->meta->has_method($key)) {
-      $self->$key(lc($val));
+      if ((any {$key eq $_} (qw(a b c alpha beta gamma rmax rpath rscf nitrogen argon xenon krypton helium)))
+	  and (not looks_like_number($val))) {
+	carp("\"$key\" takes a number as its value\nfound \"$key = $val\"\n($file line $.)\n\n");
+	return $self;
+      } else {
+	$self->$key(lc($val));
+      };
     } elsif (is_AtomsObsolete($key)) {
       carp("\"$key\" is a deprecated Atoms keyword ($file line $.)\n\n");
+      return $self;
     } else {
       carp("\"$key\" is not an Atoms keyword ($file line $.)\n\n");
+      return $self;
     };
   };
   $self->parse_line($rest) if (($rest !~ m{\A\s*\z}) and ($rest !~ m{\A\s*[\#\%\!\*]}));

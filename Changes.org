@@ -35,6 +35,10 @@
    - Configurable plotting range in standards tool
    - Compute transmitted fraction in formulas tool
 
+*** Atoms
+   - Fixed a bug parsing input data for keywords that take numeric
+     values (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-June/008598.html][Jesús Eduardo Vega Castillo]])
+
 *** Demeter
    - When saving LCF results, sort the standards alphabetically.
      (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-November/012859.html][Florian Werner]])
@@ -60,6 +64,7 @@
    - Add Win32::Unicode::File to dependency list
    - use latest Strawberry Perl in installer
    - add Xray::XDI to package
+   - recognize Windows 10 (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-June/008605.html][Jeff Catalano]])
 
 *** Documentation
    - Begin using new, sphinx-based documentation
