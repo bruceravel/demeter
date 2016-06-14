@@ -25,6 +25,8 @@
      action buttons disabled when last function is discarded (thanks
      to Wantana Klysubun and the participants of the 2016 ASEAN
      Workshop on XAS)
+   - persistence in project file for LCF, PCA, peak fit (thanks to
+     [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-May/008551.html][Sunil Patil)]] works for both original and JSON style project files
 
 *** Artemis
    - Control for enabling 5- and 6-legged paths in Feff tab

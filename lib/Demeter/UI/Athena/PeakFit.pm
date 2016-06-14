@@ -330,6 +330,7 @@ sub add {
     $this->{$ac}->Enable(1);
   };
 
+  return $str;
 };
 
 
@@ -888,6 +889,37 @@ sub do_swap_peak {
   };
 };
 
+
+## restore persistent information from a project file
+sub reinstate {
+  my ($this, $hash, $lineshapes) = @_;
+  #print Data::Dumper->Dump([$hash], [qw/*LCF/]);
+  ## fit range
+  my $data  = $this->{PEAK}->mo->fetch('Data', $hash->{datagroup});
+  my $e0  = $data->bkg_e0 || 0;
+  $this->{PEAK}->data($data);
+  $this->{emin}->SetValue($hash->{xmin}-$e0);
+  $this->{emax}->SetValue($hash->{xmax}-$e0);
+
+  $this->{components}->SetValue($hash->{plot_components});
+  $this->{residual}->SetValue($hash->{plot_residual});
+
+  foreach my $ls (@{ $lineshapes }) {
+    my $hash = {@$ls};
+    my $func = ucfirst(lc($hash->{function}));
+    $func = 'Pseudo_Voigt' if (lc($hash->{function}) =~ m{pseudo});
+    my $str = $this->add($func);
+    $this->{'val0'.$str}->SetValue($hash->{a0});
+    $this->{'val1'.$str}->SetValue($hash->{a1});
+    $this->{'val2'.$str}->SetValue($hash->{a2});
+    $this->{'fix0'.$str}->SetValue($hash->{fix0});
+    $this->{'fix1'.$str}->SetValue($hash->{fix1});
+    $this->{'fix2'.$str}->SetValue($hash->{fix2});
+    $this->{fitted} = 1;
+  };
+
+  $::app->{main}->status("Restored Peak Fit state from project file");
+};
 
 1;
 

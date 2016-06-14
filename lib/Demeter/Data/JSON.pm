@@ -48,6 +48,21 @@ has 'entries' => (
 		 );
 has 'n'       => (is => 'rw', isa => 'Int',  default => 0);
 has 'journal' => (is => 'rw', isa => 'Str',  default => q{},);
+has 'lcf'     => (is => 'rw', isa => 'HashRef',  default => sub{ {} },);
+has 'pca'     => (is => 'rw', isa => 'HashRef',  default => sub{ {} },);
+has 'peakfit' => (is => 'rw', isa => 'HashRef',  default => sub{ {} },);
+has 'lineshapes' => (
+		     traits    => ['Array'],
+		     is        => 'rw',
+		     isa       => 'ArrayRef[ArrayRef]',
+		     default   => sub { [] },
+		     handles   => {
+				   'add_lineshape' => 'push',
+				   'remove_lineshape'  => 'pop',
+				   'clear_lineshape' => 'clear',
+				  }
+		    );
+
 
 sub BUILD {
   my ($self, @params) = @_;
@@ -81,6 +96,16 @@ sub Read {
   $self->decoded(decode_json(Demeter->slurp($stash)));
   $self->n($#{$self->decoded->{_____order}} + 1);
   $self->journal(join($/, @{$self->decoded->{_____journal}})) if exists $self->decoded->{_____journal};
+  $self->lcf    ({%{$self->decoded->{_____lcf}}})     if exists $self->decoded->{_____lcf};
+  $self->pca    ({%{$self->decoded->{_____pca}}})     if exists $self->decoded->{_____pca};
+  $self->peakfit({%{$self->decoded->{_____peakfit}}}) if exists $self->decoded->{_____peakfit};
+  my $count = 0;
+  while (exists $self->decoded->{'_____lineshape'.$count}) {
+    my %ls = %{$self->decoded->{'_____lineshape'.$count}};
+    my @ls = %ls;
+    $self->add_lineshape(\@ls);
+    $count++;
+  };
 
   unlink $stash;
   #print join("|", @{$self->decoded->{_____order}}), $/;

@@ -863,11 +863,33 @@ sub _prj {
     };
   };
   return -1 if not $count;
+
   ## delay laying out Journal tool until it is needed for the first time
   $app->make_page('Journal') if (not exists $app->{main}->{Journal});
   $app->{main}->{Journal}->{object}->text($prj->journal);
   $app->{main}->{Journal}->{journal}->SetValue($app->{main}->{Journal}->{object}->text);
   $app->{main}->{Main}->{bkg_stan}->fill($app, 1);
+
+  if ($prj->n == $#records+1) {
+
+    ## found an LCF entry in the project file
+    if (%{$prj->lcf}) {
+      $app->make_page('LCF') if (not exists $app->{main}->{LCF});
+      $app->{main}->{LCF}->reinstate($prj->lcf);
+    };
+
+    ## found a PCA entry in the project file
+    if (%{$prj->pca}) {
+      $app->make_page('PCA') if (not exists $app->{main}->{PCA});
+      $app->{main}->{PCA}->reinstate($prj->pca);
+    };
+
+    ## found a PCA entry in the project file
+    if (%{$prj->peakfit}) {
+      $app->make_page('PeakFit') if (not exists $app->{main}->{PeakFit});
+      $app->{main}->{PeakFit}->reinstate($prj->peakfit, $prj->lineshapes);
+    };
+  };
 
   $data->push_mru("xasdata", $orig);
   $data->push_mru("athena", $orig);

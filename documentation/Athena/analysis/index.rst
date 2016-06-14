@@ -27,6 +27,25 @@ section of the main menu, as shown below.
 
    The data analysis tools in the main menu.
 
+
+.. versionadded:: 0.9.25 
+   The states of the LCF, PCA, and peak fitting tools are now saved in
+   the project file.  These states will be restored from a project
+   file if (and only if) the entire project file is imported.
+   Importing only a subset of the groups in the project file will fail
+   to trigger the import of the analysis states.
+
+   The recording of these states is turned on and off (default is on)
+   by the :configparam:`Athena,analysis_persistence` configuration
+   parameter.  The reason you may want to disable saving state of the
+   analysis tools is that importing from a project file containing
+   that information can change the state of the group list and
+   possibly other aspects of :demeter:`athena`.  
+
+   Note that the project files with saved state for the analysis tools 
+   *should* be backwards compatible to earlier versions.  Please file
+   a bug report if this is not the case.
+
 ----------------
 
 .. toctree::

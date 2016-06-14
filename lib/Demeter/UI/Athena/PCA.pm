@@ -444,6 +444,36 @@ sub save_tt {
   $this->{PCA}->save('tt', $fname, $target);
 };
 
+
+## restore persistent information from a project file
+sub reinstate {
+  my ($this, $hash) = @_;
+  #print Data::Dumper->Dump([$hash], [qw/*LCF/]);
+  ## fit range
+  $this->{xmin}->SetValue($hash->{xmin});
+  $this->{xmax}->SetValue($hash->{xmax});
+
+  ## fitting space
+  $this->{space}->SetSelection(2);
+  $this->{space}->SetSelection(0) if ($hash->{space} eq 'x');
+  $this->{space}->SetSelection(1) if ($hash->{space} eq 'd');
+
+  #foreach qw(ncomp nrecon cluster1 cluster2)
+
+  $::app->mark('none');
+  my $clb = $::app->{main}->{list};
+  my @stackgroups = @{ $hash->{stackgroups} };
+  foreach my $i (0 .. $clb->GetCount-1) {
+    my $g = $clb->GetIndexedData($i)->group;
+    if (any {$_ eq $g} @stackgroups) {
+      $clb->Check($i, 1);
+      $clb->GetIndexedData($i)->marked(1);
+    };
+  };
+  $::app->{main}->status("Restored PCA state from project file");
+};
+
+
 1;
 
 

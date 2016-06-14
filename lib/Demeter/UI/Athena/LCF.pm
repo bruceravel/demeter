@@ -1029,6 +1029,46 @@ sub by_data {
   $hash{$a->group} <=> $hash{$b->group};
 };
 
+## restore persistent information from a project file
+sub reinstate {
+  my ($this, $hash) = @_;
+  #print Data::Dumper->Dump([$hash], [qw/*LCF/]);
+  ## fit range
+  my $e0  = $this->{LCF}->mo->fetch('Data', $hash->{datagroup})->bkg_e0 || 0;
+  $this->{xmin}->SetValue($hash->{xmin} - $e0);
+  $this->{xmax}->SetValue($hash->{xmax} - $e0);
+  ## booleans
+  $this->{components}->SetValue($hash->{plot_components});
+  $this->{residual}->SetValue($hash->{plot_difference});
+  foreach my $k (qw(inclusive unity linear one_e0)) {
+    $this->{$k}->SetValue($hash->{$k});
+  };
+  ## fitting space
+  $this->{space}->SetSelection(2);
+  $this->{space}->SetSelection(0) if ($hash->{space} eq 'norm');
+  $this->{space}->SetSelection(1) if ($hash->{space} eq 'deriv');
+  ## artificial noise, info content, combi
+  $this->{noise}->SetValue($hash->{noise});
+  $this->{ninfo}->SetValue($hash->{ninfo});
+  $this->{max}  ->SetValue($hash->{max_standards});
+
+  $this->_remove_all;
+  my $count = 0;
+  foreach my $g (keys %{ $hash->{options} }) {
+    my $d = $this->{LCF}->mo->fetch('Data', $g);
+    $this->{'standard'.$count}->SetStringSelection($d->name);
+    $this->{'fite0'.$count}   -> SetValue($hash->{options}->{$g}->[0]);
+    $this->{'require'.$count} -> SetValue($hash->{options}->{$g}->[1]);
+    $this->{'weight'.$count}  -> SetValue($hash->{options}->{$g}->[2]);
+    $this->{'e0'.$count}      -> SetValue($hash->{options}->{$g}->[4]);
+    ++$count;
+  };
+  $::app->{main}->status("Restored LCF state from project file");
+
+
+};
+
+
 1;
 
 
