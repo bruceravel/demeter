@@ -35,6 +35,10 @@ section of the main menu, as shown below.
    Importing only a subset of the groups in the project file will fail
    to trigger the import of the analysis states.
 
+   In each case, only the *model* is imported, not the results of the
+   analysis.  You will likely want to re-run the analysis after
+   importing the project file with saved state for the analysis.
+
    The recording of these states is turned on and off (default is on)
    by the :configparam:`Athena,analysis_persistence` configuration
    parameter.  The reason you may want to disable saving state of the
