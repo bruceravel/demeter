@@ -32,10 +32,10 @@
     think rebinning is still relevant for us.  It would be nice to be
     able to rebin without reducing spectral detail in the XANES
     region. -- What is the width of the box?
-  - [ ] 5 and 6 legged paths
+  - [X] 5 and 6 legged paths
   - [ ] PCA improvements
   - [ ] feff8.5L
-  - [ ] persistance of analysis methods in Athena
+  - [X] persistance of analysis methods in Athena
         This can be implemented in the same way I implemented XDI
         persistance -- for each group, serialize a blessed scalar and
         write that to the record
@@ -162,7 +162,7 @@
     3. +PCA+
     4. +boxcar average+
 
-*** needs doing [4/15] [26%]
+*** needs doing [5/15] [33%]
    - [ ] beter error handling in plugins -- specifically need to do a
          better job of trapping errors in the ~fix~ method.  Perhaps
          ~fix~ should always be called within an ~eval~?
@@ -177,8 +177,8 @@
      + add noise to chi data
    - [ ] *Difference tool* [0/1]
      + [ ] difference in k
-   - [ ] *LCF tool* [0/4]
-     + [ ] persistance of LCF results -- /use serialized blessed scalar, like XDI/
+   - [-] *LCF tool* [1/5]
+     + [X] persistance of LCF results -- /use serialized blessed scalar, like XDI/
      + [ ] satisfying both inclusive and unity can be trouble for
            poorly normalized data and/or poor standard selection
            (see email from Jack Hitch)
@@ -188,11 +188,11 @@
            30 May, 2014.  /This is a Larch chore./
      + [ ] plot in norm(E) for this fit in chi(k) or plot in chi(k)
            for this fit in norm(E)
-   - [-] *PCA tool* [2/11]
+   - [-] *PCA tool* [3/11]
      + [ ] test setection against analysis space.  do the right thing
        with xanes data and chi(k) analysis or chi(k) data and energy
        analysis
-     + [ ] persistance -- what's the value of persistance for PCA?
+     + [X] persistance -- what's the value of persistance for PCA?
      + [ ] manual entry of component coefficients (??)
      + [ ] cluster analysis, select two components and plot the
            associations of each data with those two in a scatter plot.
@@ -208,8 +208,8 @@
            and exception.  need to save the list of data that went
            into the PCA and check against that rather than the
            current list of marked groups
-   - [-] *Peakfit tool* [7/12]
-     + [ ] persistance -- /use serialized blessed scalar, like XDI/
+   - [-] *Peakfit tool* [8/12]
+     + [X] persistance -- /use serialized blessed scalar, like XDI/
      + [ ] verify that fit is sensible (ndata/ninfo vs nparam)
      + [ ] broken using XES
      + [ ] explicitly state ninfo and epsilon
@@ -222,14 +222,14 @@
      + [X] +explicitly set title of plot+ (i can live with this)
      + [X] sequence over marked groups
    - [ ] *Data watcher*
-   - [-] *MEE tool* [1/3]
+   - [-] *MEE tool* [2/3]
      + [X] arctan removal
      + [ ] other algorithms from the literature
-     + [ ] good guesses for parameters -- at least a pluck button for shift
+     + [X] good guesses for parameters -- at least a pluck button for shift
    - [ ] *Plot menu*
      + zoom/unzoom/cursor for pgplot
    - [X] *metadata tool*
-   - [ ] *Data summer*
+   - [X] *Data summer*
      + push_values method needs to update menus to reflect changes in group list
 
 ** raw data and plugins
