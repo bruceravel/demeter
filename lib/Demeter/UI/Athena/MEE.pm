@@ -141,6 +141,13 @@ sub quickplot {
   Demeter->po->set(e_mu=>1, e_markers=>0, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
   $::app->current_data->plot($space);
   $::app->{lastplot} = [$space, 'single'];
+  if ($this->{shift}->GetValue > 10) {
+    $::app->current_data->standard;
+    my $indic  = Demeter::Plot::Indicator->new(space=>'E', x=>$this->{shift}->GetValue,);
+    $indic->plot;
+    undef $indic;
+    $::app->current_data->unset_standard;
+  };
   return 1;
 };
 
@@ -167,6 +174,13 @@ sub plot {
   $data->plot($space);
   $this->{mee}->plot($space);
   $::app->{lastplot} = [$space, 'single'];
+  if ($this->{shift}->GetValue > 10) {
+    $::app->current_data->standard;
+    my $indic  = Demeter::Plot::Indicator->new(space=>'E', x=>$this->{shift}->GetValue,);
+    $indic->plot;
+    undef $indic;
+    $::app->current_data->unset_standard;
+  };
   $this->{update} = 0;
 };
 

@@ -28,11 +28,12 @@ discussion of multi-electron excitations see `Iztok Arcon's
 Mulielectron Photoexcitations page
 <http://www.p-ng.si/~arcon/xas/mpe/mpe.htm>`__.
 
-Another similar phenomenon is the presence of a small impurity of the
-Z+1 element, leading to a small edge step well above the measured edge.
-In some cases this small edge step might be hard to see in your |mu| (E)
-data, but are clearly visible as a step in the |chi| (k) which Fourier
-transforms into a low-R contribution in the |chi| (R) spectrum.
+Another phenomenon which is somewhat similar in its effect on your
+data is the presence of a small impurity of the Z+1 element, leading
+to a small edge step well above the measured edge.  In some cases this
+small edge step might be hard to see in your |mu| (E) data, but are
+clearly visible as a step in the |chi| (k) which Fourier transforms
+into a low-R contribution in the |chi| (R) spectrum.
 
 :demeter:`athena` offers two relatively simple algorithms to attempt
 to remove the effect of a step due to multi-electron excitations or
@@ -42,8 +43,8 @@ energy of the excitation. The other places an arctangent function at
 the specified energy. 
 
 .. caution:: The algorithm described here requires considerable user
-   input and sufficient knowledge to properly evaluate the results.
-   Use this carefully!
+   input and sufficient knowledge to reasonably process the data.  In
+   no case will the result be perfect.  Use this carefully!
 
 That said, let's carry on.
 
@@ -118,8 +119,4 @@ excitations on otherwise excellent |chi| (k) data:
     .. bibliography:: ../athena.bib
        :filter: author % "Hennig"
        :list: bullet
-       
-Note that this tool can also be used to approximately remove the
-contamination from a small edge of another element that shows up in the
-data.
 

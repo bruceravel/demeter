@@ -27,6 +27,7 @@
      Workshop on XAS)
    - persistence in project file for LCF, PCA, peak fit (thanks to
      [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-May/008551.html][Sunil Patil)]] works for both original and JSON style project files
+   - Plot indicator in MEE tool
 
 *** Artemis
    - Control for enabling 5- and 6-legged paths in Feff tab
@@ -54,7 +55,7 @@
    - Added a fitting sanity check to verify that the ScatteringPath
      object actually exists
    - Removed ={\267}= from gnuplot plots in k-space (thanks to
-     [[https://github.com/bruceravel/demeter/issues/25][@roentgenium]])
+     [[https://github.com/bruceravel/demeter/issues/25][@roentgenium]] and many others)
    - Explicitly set SIGALRM in several more places, which is helpful
      for command line scripts
    - Remove t/t symlink.  See #26. (thanks to @dkriegner)
@@ -73,7 +74,7 @@
    - Begin using new, sphinx-based documentation
    - Fixed a misstatement in the Athena document about the order of
      columns in the norm(E) output file  (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-December/012908.html][Jeff Catalano]])
-   - Add link to Hiroyuki Asakura's translation to sidebar of Athena
+   - Add [[http://www.moleng.kyoto-u.ac.jp/~moleng_04/asakura/ja/others/aug/index.html][link to Hiroyuki Asakura's translation]] to sidebar of Athena
      document
    - Finish off FeS2 example in Artemis doc (thanks to Matthew Marcus
      for the push)
