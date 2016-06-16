@@ -449,14 +449,16 @@ sub save_tt {
 sub reinstate {
   my ($this, $hash) = @_;
   #print Data::Dumper->Dump([$hash], [qw/*LCF/]);
-  ## fit range
-  $this->{xmin}->SetValue($hash->{xmin});
-  $this->{xmax}->SetValue($hash->{xmax});
 
   ## fitting space
   $this->{space}->SetSelection(2);
   $this->{space}->SetSelection(0) if ($hash->{space} eq 'x');
   $this->{space}->SetSelection(1) if ($hash->{space} eq 'd');
+  $this->OnSpace(q{});
+
+  ## fit range
+  $this->{xmin}->SetValue($hash->{xmin});
+  $this->{xmax}->SetValue($hash->{xmax});
 
   #foreach qw(ncomp nrecon cluster1 cluster2)
 

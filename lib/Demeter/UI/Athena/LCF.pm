@@ -1033,10 +1033,6 @@ sub by_data {
 sub reinstate {
   my ($this, $hash) = @_;
   #print Data::Dumper->Dump([$hash], [qw/*LCF/]);
-  ## fit range
-  my $e0  = $this->{LCF}->mo->fetch('Data', $hash->{datagroup})->bkg_e0 || 0;
-  $this->{xmin}->SetValue($hash->{xmin} - $e0);
-  $this->{xmax}->SetValue($hash->{xmax} - $e0);
   ## booleans
   $this->{components}->SetValue($hash->{plot_components});
   $this->{residual}->SetValue($hash->{plot_difference});
@@ -1047,6 +1043,11 @@ sub reinstate {
   $this->{space}->SetSelection(2);
   $this->{space}->SetSelection(0) if ($hash->{space} eq 'norm');
   $this->{space}->SetSelection(1) if ($hash->{space} eq 'deriv');
+  $this->OnSpace(q());
+  ## fit range
+  my $e0  = $this->{LCF}->mo->fetch('Data', $hash->{datagroup})->bkg_e0 || 0;
+  $this->{xmin}->SetValue($hash->{xmin} - $e0);
+  $this->{xmax}->SetValue($hash->{xmax} - $e0);
   ## artificial noise, info content, combi
   $this->{noise}->SetValue($hash->{noise});
   $this->{ninfo}->SetValue($hash->{ninfo});
