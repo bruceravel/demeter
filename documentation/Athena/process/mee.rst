@@ -25,7 +25,7 @@ excitation will not be small compared to the L\ :sub:`III`
 EXAFS. Other multi-electron excitations have even larger
 cross-sections compared to their primary excitations. For an excellent
 discussion of multi-electron excitations see `Iztok Arcon's
-Mulielectron Photoexcitations page
+Multielectron photo excitations page
 <http://www.p-ng.si/~arcon/xas/mpe/mpe.htm>`__.
 
 Another phenomenon which is somewhat similar in its effect on your
@@ -44,7 +44,7 @@ the specified energy.
 
 .. caution:: The algorithm described here requires considerable user
    input and sufficient knowledge to reasonably process the data.  In
-   no case will the result be perfect.  Use this carefully!
+   no case will the result be perfect.  Use this tool carefully!
 
 That said, let's carry on.
 
@@ -72,14 +72,17 @@ excitation at about 120 volts above the edge.
    The results of removing the [3p4d]5d multi-electron excitation in
    La L\ :sub:`III`-edge data, which occurs at about 120 volts above
    the edge.  This excitation is seen near the cursor in the energy
-   plot. 
+   plot.  This plot is made by :mark:`leftclick,..` clicking
+   :button:`Plot in energy, light`.
 
 .. _fig-meek:
 .. figure::  ../../_images/mee_k.png
    :target: ../_images/mee_k.png
    :width: 100%
 
-   Its effect is much more pronounced in the |chi| (k) data.
+   Its effect is much more pronounced in the |chi| (k) data.  This
+   plot is made by :mark:`leftclick,..` clicking :button:`Plot in
+   k, light`.
 
 .. subfigend::
    :width: 0.45

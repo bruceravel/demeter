@@ -448,7 +448,6 @@ sub save_tt {
 ## restore persistent information from a project file
 sub reinstate {
   my ($this, $hash) = @_;
-  #print Data::Dumper->Dump([$hash], [qw/*LCF/]);
 
   ## fitting space
   $this->{space}->SetSelection(2);

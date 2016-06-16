@@ -32,8 +32,8 @@ section of the main menu, as shown below.
    The states of the LCF, PCA, and peak fitting tools are now saved in
    the project file.  These states will be restored from a project
    file if (and only if) the entire project file is imported.
-   Importing only a subset of the groups in the project file will fail
-   to trigger the import of the analysis states.
+   Importing only a subset of the groups in the project file will *not*
+   trigger the import of the analysis states.
 
    In each case, only the *model* is imported, not the results of the
    analysis.  You will likely want to re-run the analysis after
@@ -46,9 +46,11 @@ section of the main menu, as shown below.
    that information can change the state of the group list and
    possibly other aspects of :demeter:`athena`.  
 
-   Note that the project files with saved state for the analysis tools 
+   Note that the project files with saved state for the analysis tools
    *should* be backwards compatible to earlier versions.  Please file
-   a bug report if this is not the case.
+   `a bug report
+   <http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html>`_
+   if this is not the case.
 
 ----------------
 

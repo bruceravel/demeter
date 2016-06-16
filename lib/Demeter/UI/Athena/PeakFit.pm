@@ -893,7 +893,7 @@ sub do_swap_peak {
 ## restore persistent information from a project file
 sub reinstate {
   my ($this, $hash, $lineshapes) = @_;
-  #print Data::Dumper->Dump([$hash], [qw/*LCF/]);
+
   ## fit range
   my $data  = $this->{PEAK}->mo->fetch('Data', $hash->{datagroup});
   my $e0  = $data->bkg_e0 || 0;
@@ -915,6 +915,10 @@ sub reinstate {
     $this->{'fix0'.$str}->SetValue($hash->{fix0});
     $this->{'fix1'.$str}->SetValue($hash->{fix1});
     $this->{'fix2'.$str}->SetValue($hash->{fix2});
+    #if (lc($selection) =~ m{$PEAK3}) {
+    #  $this->{'val3'.$str}->SetValue($hash->{a3});
+    #  $this->{'fix3'.$str}->SetValue($hash->{fix3});
+    #};
     $this->{fitted} = 1;
   };
 
