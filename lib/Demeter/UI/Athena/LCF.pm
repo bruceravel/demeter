@@ -604,8 +604,10 @@ sub _results {
     my $n = scalar $this->{'standard'.$i}->GetSelection;
     my $stan = $this->{'standard'.$i}->GetClientData($n);
     next if not defined($stan);
-    my $w = sprintf("%.3f", $this->{LCF}->weight($stan));
-    my $e = sprintf("%.3f", $this->{LCF}->e0($stan));
+    my @answer = ($this->{LCF}->weight($stan));
+    my $w = sprintf("%.3f", $answer[0]);
+    @answer = ($this->{LCF}->e0($stan));
+    my $e = sprintf("%.3f", $answer[0]);
     $this->{'weight'.$i}->SetValue($w);
     $this->{'e0'.$i}    ->SetValue($e);
   };

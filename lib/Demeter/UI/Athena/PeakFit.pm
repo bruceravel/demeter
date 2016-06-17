@@ -809,8 +809,10 @@ sub discard {
   delete $this->{"box$n"};
   ## Refit the containiner
   $this->{main}  -> Scroll(0,0);
-  $this->{lsbox} -> Fit($this->{main});
-  $this->{vbox}  -> Fit($this->{panel});
+  #$this->{lsbox} -> Fit($this->{main});
+  #$this->{vbox}  -> Fit($this->{panel});
+  $this->{lsbox} -> Layout;
+  $this->{vbox}  -> Layout;
 
   if (not grep {$_ =~ m{func\w{3}}} (keys %$this)) {
     foreach my $ac (qw(fit plot fitmarked reset save)) {
