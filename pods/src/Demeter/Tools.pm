@@ -192,6 +192,8 @@ sub windows_version {
     $os = "Windows Server 2008", last SWITCH if (($os[4] == 2) and ($os[1] == 6) and ($os[2] == 0));
     $os = "Windows 7",           last SWITCH if (($os[4] == 2) and ($os[1] == 6) and ($os[2] == 1));
     $os = "Windows 8",           last SWITCH if (($os[4] == 2) and ($os[1] == 6) and ($os[2] == 2));
+    $os = "Windows 8.1",         last SWITCH if (($os[4] == 2) and ($os[1] == 6) and ($os[2] == 3));
+    $os = "Windows 10",          last SWITCH if (($os[4] == 2) and ($os[1] == 10));
   };
   return $os;
 };
@@ -590,7 +592,7 @@ Demeter::Tools - Utility methods for the Demeter class
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.24.
+This documentation refers to Demeter version 0.9.25.
 
 =head1 DESCRIPTION
 

@@ -59,9 +59,9 @@ interesting plots much faster and easier.
 The :button:`Clear,light` button at the bottom of the Plot window is
 used to remove all content from the plotting list.
 
-Items in the list can be reordered by dragging and dropping while
-holding down the control key. Note that an item will be placed *after*
-the item on which it is dropped.
+Items in the list can be reordered by :mark:`drag,..` dragging and
+dropping while holding down the control key. Note that an item will be
+placed *after* the item on which it is dropped.
 
 :mark:`rightclick,..` Right clicking on an item will post a pop-up
 button for removing that item from the list. Selecting more than one

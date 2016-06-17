@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>2.1.1. The main window &mdash; Artemis 0.9.24 documentation</title>
+    <title>2.1. The main window &mdash; Artemis 0.9.25 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.24',
+        VERSION:     '0.9.25',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,9 +24,9 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Artemis 0.9.24 documentation" href="../index.html" />
+    <link rel="top" title="Artemis 0.9.25 documentation" href="../index.html" />
     <link rel="up" title="2. Starting Artemis" href="index.html" />
-    <link rel="next" title="2.1.2. The plot window" href="plot.html" />
+    <link rel="next" title="2.2. The plot window" href="plot.html" />
     <link rel="prev" title="2. Starting Artemis" href="index.html" />
 
     <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
@@ -39,12 +39,12 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="plot.html" title="2.1.2. The plot window"
+          <a href="plot.html" title="2.2. The plot window"
              accesskey="N">next</a></li>
         <li class="right" >
           <a href="index.html" title="2. Starting Artemis"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.25 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">2. Starting Artemis</a> &raquo;</li> 
       </ul>
     </div>  
@@ -55,7 +55,7 @@
           <div class="body" role="main">
             
   <div class="section" id="the-main-window">
-<h1>2.1.1. The main window<a class="headerlink" href="#the-main-window" title="Permalink to this headline">¶</a></h1>
+<h1>2.1. The main window<a class="headerlink" href="#the-main-window" title="Permalink to this headline">¶</a></h1>
 <p>The main window provides an overview of the state of
 <font size=-1 color="#8C4112">ARTEMIS</font> as well as of your current fitting project. This
 window is divided into 7 areas.</p>
@@ -102,10 +102,10 @@ to show or hide a window containing the results from the most
 recent fit.</li>
 </ol>
 <div class="section" id="file-drag-and-drop">
-<h2>2.1.1.1. File drag and drop<a class="headerlink" href="#file-drag-and-drop" title="Permalink to this headline">¶</a></h2>
+<h2>2.1.1. File drag and drop<a class="headerlink" href="#file-drag-and-drop" title="Permalink to this headline">¶</a></h2>
 <p>The data set and <font size=-1 color="#8C4112">FEFF</font> calculation area on the main window,
-areas 4 and 5 above, are drop targets for files dragged from your
-computer's file manager.</p>
+areas 4 and 5 above, are drop targets for files <img alt="drag" title="Drag and drop" src="../_static/drag.png" hspace="3"></a>
+dragged from your computer's file manager.</p>
 <ul class="simple">
 <li>You can drop <font size=-1 color="#8C4112">ATHENA</font> project files (<code class="file docutils literal"><span class="pre">.prj</span></code>) onto the
 data set area. To import data from some other source, you are
@@ -117,12 +117,13 @@ either of the data set and <font size=-1 color="#8C4112">FEFF</font> calculation
 import old-style artemis project files or <font size=-1 color="#8C4112">DEMETER</font>
 serializations, you are required to use the <code class="file docutils literal"><span class="pre">File</span></code> menu.</li>
 </ul>
-<p>You can only drag and drop one file at a time. If you try to drag more
-than one of any file type, a warning will be issued in the status bar
-and no import will happen. Similarly, you may not drop a folder.</p>
+<p>You can only <img alt="drag" title="Drag and drop" src="../_static/drag.png" hspace="3"></a> drag and drop one file at a time. If you
+try to drag more than one of any file type, a warning will be issued
+in the status bar and no import will happen. Similarly, you may not
+drop a folder.</p>
 </div>
 <div class="section" id="the-file-menu">
-<h2>2.1.1.2. The File menu<a class="headerlink" href="#the-file-menu" title="Permalink to this headline">¶</a></h2>
+<h2>2.1.2. The File menu<a class="headerlink" href="#the-file-menu" title="Permalink to this headline">¶</a></h2>
 <p>Clicking on <span class="guilabel">File</span> displays this menu, which is mostly used
 for various kinds of input and output. Note that some menu items that
 have keyboard shortcuts attached and that these shortcuts are shown in
@@ -150,8 +151,8 @@ one. <span class="guilabel">Save project as</span> will prompt for the name to w
 to save the current state of the project. <span class="guilabel">Save current
 fit</span> will save a project file containing only the current fit,
 without any of the history. These project files are the sort that
-can be dragged from your computer's file manager onto the data or
-<font size=-1 color="#8C4112">FEFF</font> list.</li>
+can be <img alt="drag" title="Drag and drop" src="../_static/drag.png" hspace="3"></a> dragged from your computer's file manager
+onto the data or <font size=-1 color="#8C4112">FEFF</font> list.</li>
 <li>The <span class="guilabel">import</span> submenu is used to specify the file type to
 import.  Typically, this is not necessary and is only provided for
 the rare situation when <font size=-1 color="#8C4112">ARTEMIS</font> fails to recognize one of
@@ -173,7 +174,7 @@ to save your fitting option if you have not recently done so.</li>
 </ul>
 </div>
 <div class="section" id="the-monitor-menu">
-<h2>2.1.1.3. The Monitor menu<a class="headerlink" href="#the-monitor-menu" title="Permalink to this headline">¶</a></h2>
+<h2>2.1.3. The Monitor menu<a class="headerlink" href="#the-monitor-menu" title="Permalink to this headline">¶</a></h2>
 <p>This menu provides several options for monitoring the state of
 <font size=-1 color="#8C4112">ARTEMIS</font>, <font size=-1 color="#8C4112">IFEFFIT</font>, and the plotting backend
 (usually <strong class="program">Gnuplot</strong>).</p>
@@ -211,7 +212,7 @@ somewhat unreliable calculation of the resources still available to
 </ul>
 </div>
 <div class="section" id="the-plot-menu">
-<h2>2.1.1.4. The Plot menu<a class="headerlink" href="#the-plot-menu" title="Permalink to this headline">¶</a></h2>
+<h2>2.1.4. The Plot menu<a class="headerlink" href="#the-plot-menu" title="Permalink to this headline">¶</a></h2>
 <div class="figure align-center" id="id5">
 <span id="fit-artemisplotmenu"></span><a class="reference external image-reference" href="../_images/plotmenu.png"><img alt="../_images/plotmenu.png" src="../_images/plotmenu.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 2.5 </span><span class="caption-text">The <span class="guilabel">Plot</span> menu.</span></p>
@@ -231,7 +232,7 @@ Once you have installed the font, simply check the
 <span class="menuselection">Plot ‣ Plot XKCD style</span> button. Enjoy!</p>
 </div>
 <div class="section" id="the-main-help-menu">
-<h2>2.1.1.5. The Main help menu<a class="headerlink" href="#the-main-help-menu" title="Permalink to this headline">¶</a></h2>
+<h2>2.1.5. The Main help menu<a class="headerlink" href="#the-main-help-menu" title="Permalink to this headline">¶</a></h2>
 <p>This menu is used to display this document or to display information
 about <font size=-1 color="#8C4112">ARTEMIS</font>, including its open source licensing terms.</p>
 <div class="figure align-center" id="id6">
@@ -240,7 +241,7 @@ about <font size=-1 color="#8C4112">ARTEMIS</font>, including its open source li
 </div>
 </div>
 <div class="section" id="status-bar">
-<h2>2.1.1.6. Status bar<a class="headerlink" href="#status-bar" title="Permalink to this headline">¶</a></h2>
+<h2>2.1.6. Status bar<a class="headerlink" href="#status-bar" title="Permalink to this headline">¶</a></h2>
 <p>This area in the main window is used to display various kinds of
 messages, including updates on long-running tasks, hints about
 controls underneath the mouse, and other announcements.</p>
@@ -261,7 +262,7 @@ buffer with green or red text.  Messages which only indicate the
 progress of a long running task are not recorded in the buffer.</p>
 </div>
 <div class="section" id="the-data-list">
-<h2>2.1.1.7. The Data list<a class="headerlink" href="#the-data-list" title="Permalink to this headline">¶</a></h2>
+<h2>2.1.7. The Data list<a class="headerlink" href="#the-data-list" title="Permalink to this headline">¶</a></h2>
 <p>The data list starts off with a single control, which is used to
 import data into your fitting project. Clicking the
 <kbd class="light">Add</kbd> button will open the standard file selection
@@ -275,8 +276,8 @@ selection dialog is used; and so on.</p>
 <p>The standard manner of importing data into <font size=-1 color="#8C4112">ARTEMIS</font> is to
 use an <font size=-1 color="#8C4112">ATHENA</font> project file. Thus the file selection dialog
 will, by default, look for files with the <code class="file docutils literal"><span class="pre">.prj</span></code> extension. You
-may also drag <code class="file docutils literal"><span class="pre">.prj</span></code> files from your computer's file manager and
-drop them onto the data list.</p>
+may also <img alt="drag" title="Drag and drop" src="../_static/drag.png" hspace="3"></a> drag <code class="file docutils literal"><span class="pre">.prj</span></code> files from your computer's
+file manager and drop them onto the data list.</p>
 <p>As you import data, a stack of buttons – one for each data group – is
 made. These buttons are used to show or hide the windows associated
 with each data group. In this example, a multiple data set fit
@@ -300,7 +301,7 @@ may get confused.  <em>And so will you</em>.</p>
 </div>
 </div>
 <div class="section" id="the-athena-project-selection-dialog">
-<h2>2.1.1.8. The Athena project selection dialog<a class="headerlink" href="#the-athena-project-selection-dialog" title="Permalink to this headline">¶</a></h2>
+<h2>2.1.8. The Athena project selection dialog<a class="headerlink" href="#the-athena-project-selection-dialog" title="Permalink to this headline">¶</a></h2>
 <p>When importing data from an <font size=-1 color="#8C4112">ATHENA</font> project file, the
 project selection dialog is shown. It presents you with a list of all
 data groups from the project file. The file listing is configured such
@@ -329,7 +330,7 @@ will be retained.</p>
 <kbd class="light">Cancel</kbd> button dismisses this dialog without importing data.</p>
 </div>
 <div class="section" id="the-recent-data-dialog">
-<h2>2.1.1.9. The recent data dialog<a class="headerlink" href="#the-recent-data-dialog" title="Permalink to this headline">¶</a></h2>
+<h2>2.1.9. The recent data dialog<a class="headerlink" href="#the-recent-data-dialog" title="Permalink to this headline">¶</a></h2>
 <p>You can access a list of recently imported data by
 <img alt="rightclick" title="Right mouse button" src="../_static/rightclick.png" hspace="3"></a> <em>right</em> clicking on the <kbd class="light">Add</kbd>
 button. This presents a dialog with a selection list.  Click on one of
@@ -342,7 +343,7 @@ your choice in the list of recent files.</p>
 </div>
 </div>
 <div class="section" id="the-feff-list">
-<h2>2.1.1.10. The Feff list<a class="headerlink" href="#the-feff-list" title="Permalink to this headline">¶</a></h2>
+<h2>2.1.10. The Feff list<a class="headerlink" href="#the-feff-list" title="Permalink to this headline">¶</a></h2>
 <p>The <font size=-1 color="#8C4112">FEFF</font> list starts off with a single control, which is
 used to import structural data into your fitting project.  Clicking
 the <kbd class="light">Add</kbd> button will open the standard file selection
@@ -368,12 +369,12 @@ chapter.</a></p>
 button will present the same recent file selection dialog as for the
 data list. In this case, the list will contain recently imported
 <font size=-1 color="#8C4112">ATOMS</font>, <font size=-1 color="#8C4112">FEFF</font>, or CIF files.</p>
-<p>You may also drag CIF, <font size=-1 color="#8C4112">ATOMS</font> input, or <font size=-1 color="#8C4112">FEFF</font>
-input files from your computer's file manager and drop them onto the
-<font size=-1 color="#8C4112">FEFF</font> list.</p>
+<p>You may also <img alt="drag" title="Drag and drop" src="../_static/drag.png" hspace="3"></a> drag CIF, <font size=-1 color="#8C4112">ATOMS</font> input, or
+<font size=-1 color="#8C4112">FEFF</font> input files from your computer's file manager and drop
+them onto the <font size=-1 color="#8C4112">FEFF</font> list.</p>
 </div>
 <div class="section" id="fit-information">
-<h2>2.1.1.11. Fit information<a class="headerlink" href="#fit-information" title="Permalink to this headline">¶</a></h2>
+<h2>2.1.11. Fit information<a class="headerlink" href="#fit-information" title="Permalink to this headline">¶</a></h2>
 <p>This section of the main window is used to specify properties of the
 fit. The name is a short bit of text that will be used as a label for
 each fit. The number will be auto-incremented unless you explicitly
@@ -395,7 +396,7 @@ is associated, the file selection dialog will prompt you for a
 file. The default is to use the .fpj extension.</p>
 </div>
 <div class="section" id="fit-and-log-buttons">
-<h2>2.1.1.12. Fit and log buttons<a class="headerlink" href="#fit-and-log-buttons" title="Permalink to this headline">¶</a></h2>
+<h2>2.1.12. Fit and log buttons<a class="headerlink" href="#fit-and-log-buttons" title="Permalink to this headline">¶</a></h2>
 <p>All the way to the right of the main window are the
 <kbd class="light">Fit</kbd> and <kbd class="light">Show log</kbd> buttons.  Click the
 Fit button to initiate the fit. The log button is used to show and
@@ -436,7 +437,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">2. Starting Artemis</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="index.html#folders-and-log-files">2.1. Folders and log files</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">2.1. The main window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html">2.2. The plot window</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
@@ -454,14 +456,14 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../extended/index.html">15. Extended discussions</a></li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.24</b></p>
+<p>Current version: <b>0.9.25</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -500,12 +502,12 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="plot.html" title="2.1.2. The plot window"
+          <a href="plot.html" title="2.2. The plot window"
              >next</a></li>
         <li class="right" >
           <a href="index.html" title="2. Starting Artemis"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.24 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.25 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="index.html" >2. Starting Artemis</a> &raquo;</li> 
       </ul>
     </div>

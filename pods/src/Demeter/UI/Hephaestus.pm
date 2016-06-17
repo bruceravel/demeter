@@ -324,8 +324,8 @@ sub OnInit {
   EVT_MENU( $frame, $CONFIG,   sub{shift->{book}->SetSelection(9)});
   #EVT_MENU( $frame, $DOCUMENT, sub{shift->{book}->SetSelection(10)});
   EVT_MENU( $frame, $DOCUMENT, \&document);
-  EVT_MENU( $frame, $BUG,      sub{Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/bugs.pod.html#OVERVIEW')});
-  EVT_MENU( $frame, $QUESTION, sub{Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/help.pod.html#Asking_questions_soliciting_help')});
+  EVT_MENU( $frame, $BUG,      sub{Wx::LaunchDefaultBrowser(q{http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html})});
+  EVT_MENU( $frame, $QUESTION, sub{Wx::LaunchDefaultBrowser(q{http://bruceravel.github.io/demeter/documents/SinglePage/help.html})});
   EVT_MENU( $frame, wxID_ABOUT, \&on_about );
   EVT_MENU( $frame, wxID_EXIT, sub{Demeter->stop_larch_server; shift->Close} );
 
@@ -363,7 +363,7 @@ sub on_close {
 
 sub document {
   my ($self) = @_;
-  my @path = ('Demeter', 'UI', 'Athena', 'share', 'aug', 'html');
+  my @path = ('Demeter', 'share', 'documentation', 'Athena');
   my $url = Demeter->co->default('athena', 'doc_url') . '/hephaestus.html';
   my $fname = File::Spec->catfile(dirname($INC{'Demeter.pm'}), @path, 'hephaestus.html');
   if (-e $fname) {
@@ -446,7 +446,7 @@ Demeter::UI::Hephaestus - A souped-up periodic table for XAS
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.24.
+This documentation refers to Demeter version 0.9.25.
 
 =head1 SYNOPSIS
 

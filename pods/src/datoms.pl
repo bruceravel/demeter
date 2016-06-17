@@ -44,7 +44,7 @@ my $result = GetOptions (
 			 "c|cif"      => \$cif,
 			 "rec=i"      => \$record,
 			 "r|rmax=s"   => \$rmax,
-			 "0|output=s" => \$output,
+			 "o|output=s" => \$output,
 			 "wx"         => \$wx,
 			);
 
@@ -89,7 +89,7 @@ atoms - Convert crystallography data to a feff.inp file
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.24.
+This documentation refers to Demeter version 0.9.25.
 
 =head1 SYNOPSIS
 

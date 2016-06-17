@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>1. Forward &mdash; Athena 0.9.24 documentation</title>
+    <title>1. Forward &mdash; Athena 0.9.25 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.24',
+        VERSION:     '0.9.25',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/wheat.ico"/>
-    <link rel="top" title="Athena 0.9.24 documentation" href="index.html" />
+    <link rel="top" title="Athena 0.9.25 documentation" href="index.html" />
     <link rel="next" title="2. Introduction to ATHENA" href="intro.html" />
     <link rel="prev" title="ATHENA: XAS Data Processing" href="index.html" />
 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="index.html" title="ATHENA: XAS Data Processing"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Athena 0.9.24 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Athena 0.9.25 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -159,15 +159,17 @@ lot of the material covered by <font size=-1 color="#8C4112">ATHENA</font>:</p>
 <ul class="simple">
 <li><a class="reference external" href="http://sphinx-doc.org/">The Sphinx Documentation Generator</a> and
 <a class="reference external" href="http://sphinx-doc.org/rest.html">reStructuredText</a></li>
+<li>The <a class="reference external" href="http://www.sphinx-doc.org/en/stable/theming.html">Sphinx nature theme</a>, which I have
+modified slightly.</li>
 <li>The <a class="reference external" href="http://www.gnu.org/software/emacs/">Emacs</a> text editor along
 with <a class="reference external" href="http://docutils.sourceforge.net/docs/user/emacs.html">rst-mode</a> and the
 simply wonderful <a class="reference external" href="http://ecb.sourceforge.net/">Emacs Code Browser</a></li>
 <li>The <a class="reference external" href="http://pybtex.org/">pybtex</a> bibliography processor for
 python.</li>
 <li>The <a class="reference external" href="https://sphinxcontrib-bibtex.readthedocs.org/en/latest/">sphinxcontrib-bibtex</a>
-package, which is Sphinx extension for BibTeX style citations.</li>
+package, which is a Sphinx extension for BibTeX style citations.</li>
 <li>The <a class="reference external" href="https://github.com/jterrace/sphinxtr">sphinxtr</a> package,
-which is Sphinx extension for supporting a few LaTeX environments.
+which is a Sphinx extension for supporting a few LaTeX environments.
 Currently, the <code class="docutils literal"><span class="pre">subfig</span></code> package is used for grouping figures, but
 the <code class="docutils literal"><span class="pre">numfig</span></code> package is not used for figure numbering.</li>
 <li>The <a class="reference external" href="https://github.com/michaelhue/keyscss">keys.css stylesheet</a>,
@@ -188,8 +190,9 @@ the navigation box of the html document are from
 <a class="reference external" href="http://www.artchive.com">http://www.artchive.com</a>.</p>
 <p>The image used as the <font size=-1 color="#8C4112">ATHENA</font> program icon is from a
 “Terracotta lekythos depicting Athena holding a spear and
-aphlaston.”. The image is licensed as Creative Commons
-Attribution-Share Alike 3.0 and can be found at <a class="reference external" href="http://commons.wikimedia.org/wiki/File:Brygos_Painter_lekythos_Athena_holding_spear_MET.jpg">Wikimedia Commons</a>.</p>
+aphlaston”. The image is licensed as <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0">Creative Commons
+Attribution-Share Alike 3.0</a> and can be found at
+<a class="reference external" href="http://commons.wikimedia.org/wiki/File:Brygos_Painter_lekythos_Athena_holding_spear_MET.jpg">Wikimedia Commons</a>.</p>
 </div>
 <div class="section" id="data-citations">
 <h2>1.3. Data citations<a class="headerlink" href="#data-citations" title="Permalink to this headline">¶</a></h2>
@@ -228,10 +231,8 @@ taken from my own PhD thesis.</li>
 <dt><strong>Linux, BSD, and other unixes</strong></dt>
 <dd>It is not especially hard to build <font size=-1 color="#8C4112">ATHENA</font>
 from source code. The
-procedure is explained in detail on this web page:
-<a class="reference external" href="http://bruceravel.github.io/demeter/pods/installation.pod.html">http://bruceravel.github.io/demeter/pods/installation.pod.html</a>. An
-excellent addendum to those instructions is at
-<a class="reference external" href="https://gist.github.com/3959252">https://gist.github.com/3959252</a>.</dd>
+procedure is <a class="reference external" href="http://bruceravel.github.io/demeter/documents/SinglePage/packages.html">explained in detail here</a>. An
+excellent addendum to those instructions is <a class="reference external" href="https://gist.github.com/3959252">found here</a>.</dd>
 <dt><strong>Windows</strong></dt>
 <dd>Follow the links to <a class="reference external" href="http://bruceravel.github.io/demeter/#windows">the Windows instructions on the Demeter
 homepage</a> to download the
@@ -249,10 +250,10 @@ at this time.</dd>
 <div class="section" id="building-this-document-from-source">
 <h2>1.5. Building this document from source<a class="headerlink" href="#building-this-document-from-source" title="Permalink to this headline">¶</a></h2>
 <p>The source files and all images files for this document can be
-downloaded using Git. To grab the source, you will need an <a class="reference external" href="http://git-scm.com/">Git
+downloaded using Git. To grab the source, you will need a <a class="reference external" href="http://git-scm.com/">Git
 client</a> on your computer. This command checks a
 copy of the source out and downloads it onto your computer:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>git clone https://github.com/bruceravel/demeter.git
+<div class="highlight-bash"><div class="highlight"><pre><span></span>git clone https://github.com/bruceravel/demeter.git
 </pre></div>
 </div>
 <p>The document is found in the <code class="file docutils literal"><span class="pre">documentation/</span></code> folder.</p>
@@ -269,9 +270,13 @@ for me to incorporate your changes into the source.)</p>
 <div class="section" id="building-the-html-document">
 <h3>1.5.1. Building the html document<a class="headerlink" href="#building-the-html-document" title="Permalink to this headline">¶</a></h3>
 <p>Building the <font size=-1 color="#8C4112">ATHENA</font> document requires at least version 1.3
-of <strong class="program">sphinx-build</strong>.  Note that Ubuntu 15.04 comes with version
-1.2, so you will need to upgrade by doing</p>
-<div class="code bash highlight-python"><div class="highlight"><pre><span></span>sudo pip install --upgrade sphinx
+of <strong class="program">Sphinx</strong>.  Note that Ubuntu 15.04 comes with version
+1.2, so you may need to upgrade by doing</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>sudo pip install --upgrade sphinx
+</pre></div>
+</div>
+<p>You can check the version of <strong class="program">Sphinx</strong> with this command</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>sphinx-build --version
 </pre></div>
 </div>
 <p>You will also need to install the following python packages</p>
@@ -282,13 +287,13 @@ python.</li>
 package, which is Sphinx extension for BibTeX style citations.</li>
 </ol>
 <p>These can be installed at the command line by</p>
-<div class="code highlight-python"><div class="highlight"><pre><span></span>sudo pip install pybtex
+<div class="highlight-bash"><div class="highlight"><pre><span></span>sudo pip install pybtex
 sudo pip install sphinxcontrib-bibtex
 </pre></div>
 </div>
 <p>To build the html document, do the following</p>
-<div class="code bash highlight-python"><div class="highlight"><pre><span></span>cd documentation/
-cd Athena/
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">cd</span> documentation/
+<span class="nb">cd</span> Athena/
 make html
 </pre></div>
 </div>
@@ -297,6 +302,10 @@ html pages.  The html pages will be placed in <code class="file docutils literal
 This folder is a self-contained package.  The <code class="file docutils literal"><span class="pre">html/</span></code> folder can
 be copied and placed somewhere else.  The web pages can be accessed
 with full functionality in any location.</p>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<p class="last">Provide the equivalent conda commands</p>
+</div>
 </div>
 <div class="section" id="building-the-latex-document">
 <h3>1.5.2. Building the LaTeX document<a class="headerlink" href="#building-the-latex-document" title="Permalink to this headline">¶</a></h3>
@@ -357,14 +366,14 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="hephaestus.html">13. Hephaestus</a></li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.24</b></p>
+<p>Current version: <b>0.9.25</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -372,6 +381,11 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
+</ul>
+<p>
+<h3>Translations</h3>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://www.moleng.kyoto-u.ac.jp/~moleng_04/asakura/ja/others/aug/index.html">日本語 (Japanese)</a>
 </ul>
 <p>
 
@@ -408,7 +422,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="index.html" title="ATHENA: XAS Data Processing"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Athena 0.9.24 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Athena 0.9.25 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

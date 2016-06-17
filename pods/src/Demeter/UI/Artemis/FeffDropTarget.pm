@@ -44,7 +44,7 @@ Demeter::UI::Artemis::FileDropTarget - A CIF and atoms/feff input file drop targ
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.24.
+This documentation refers to Demeter version 0.9.25.
 
 =head1 SYNOPSIS
 

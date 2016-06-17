@@ -18,9 +18,9 @@ Forward
 
 
 .. todo:: 
-   #. `Data citations <#id1>`_
-   #. Finish `FeS2 section <examples/fes2.html>`_
    #. Write `methyltin section <examples/methyltin.html>`_
+   #. Write an example section using the Hg-DNA problem, DOI:
+      10.1016/j.radphyschem.2009.05.024
    #. Write `constraints and restraints section <extended/constraints.html>`_
    #. Document histograms
       
@@ -65,7 +65,8 @@ presentation media.
 
 - A click of the left mouse button is often indicated with this icon:
   :mark:`leftclick,.`.  A click of the right mouse button is indicated
-  by this icon: :mark:`rightclick,.`.
+  by this icon: :mark:`rightclick,.`.  A drag-and-drop action is
+  indicated by this icon: :mark:`drag,.`.
 
 .. CAUTION::
    Points that require special attention are indicated
@@ -197,6 +198,43 @@ You should check out his macro photography.  It's amazing!
 Data citations
 --------------
 
+- The iron foil data shown in `the Data Window section
+  <data.html>`__ and elsewhere were measured by me while I
+  was commissioning NSLS beamline X11B in 2004.
+
+- The gold foil and any other gold edge data are taken from
+  measurements published as
+
+  .. bibliography:: artemis.bib
+     :filter: author % "Lengke"
+     :list: bullet
+
+- The cobalt foil data shown in `the plotting chapter
+  <plot/stack.html>`__ were measured by me at NSLS beamline X23A2.
+
+- The copper foil data shown in `the empirical standards section
+  <extended/empirical.html>`__ were measured by Matt Newville, Yanjun
+  Zhang, and me at NSLS beamline X11A way back in 1992.
+
+- Tin edge data which appear in several places are from
+   
+  .. bibliography:: artemis.bib
+     :filter: author % "Impellitteri"
+     :list: bullet
+
+- FeS\ :sub:`2` data were measured by Matt Newville at APS 13BM and
+  are found among the data at `my XAS Education site
+  <https://github.com/bruceravel/XAS-Education/tree/master/Examples/FeS2>`_.
+
+- Uranium L\ :sub:`III` data on uranyl are from 
+
+  .. bibliography:: artemis.bib
+     :filter: author % "Fein"
+     :list: bullet
+
+- The parabibromobenzene data shown in `the section on higher order
+  scattering paths <extended/fivesix.html>`__ were measured by me at
+  NSLS beamline X23A2 using a sample prepared by Alessandra Leri.
 
 
    

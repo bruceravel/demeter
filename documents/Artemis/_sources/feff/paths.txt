@@ -93,9 +93,9 @@ dragging the little vertical line that separates the
 :guilabel:`Scattering path` and :guilabel:`Rank` columns in the header
 row).
 
-Also, when dragging a path onto the data page, the angles out and in
-will be displayed in the path geometry box on the `path
-page <../path/index.html>`__.
+Also, when :mark:`drag,..` dragging a path onto the data page, the
+angles out and in will be displayed in the path geometry box on the
+`path page <../path/index.html>`__.
 
 Optionally, the angles can be displayed in the path list label by
 setting the :configparam:`Pathfinder,label` configuration parameter
@@ -155,8 +155,8 @@ below.
 
 The other context menu options are used to set the path select on the
 basis of distance, ranking, or scattering geometry. These options are
-useful for selecting groups of paths to drag and drop onto the Data
-window.
+useful for selecting groups of paths to :mark:`drag,..` drag and drop
+onto the Data window.
 
 .. figure:: ../../_images/feff-pathsinfo.png
    :target: ../_images/feff-pathsinfo.png

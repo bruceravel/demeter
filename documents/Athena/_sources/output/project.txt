@@ -101,6 +101,26 @@ level of compression, albeit without the common ``.gz`` file
 extension. Both :demeter:`athena` and :demeter:`artemis` use these
 files.
 
+Saving state of analysis tools
+------------------------------
+
+.. versionadded:: 0.9.25 
+   The states of the LCF, PCA, and peak fitting tools are now saved in
+   the project file.  These states will be restored from a project
+   file if (and only if) the entire project file is imported.
+   Importing only a subset of the groups in the project file will fail
+   to trigger the import of the analysis states.
+
+In the original format, these are additional Data::Dumper strings
+written to the project file.  These lines should be silently ignored
+by earlier versions of :demeter:`demeter`.
+
+In the JSON format (see below), they are written just prior to the 
+``_____journal`` line and have these descriptive keys in the JSON
+dictionary: ``_____lcf``, ``_____pca``, and ``_____peakfit``.  The
+lineshape objects used by the peak fitting tool have keys like
+``_____lineshape0``, ``_____lineshape1``, and so on.
+
 The new JSON-style project file
 -------------------------------
 
@@ -155,6 +175,11 @@ Summary
 
 #. A project journal is optionally specified with the key
    ``_____journal`` and a list of strings containing the jounral text.
+
+#. State of the LCF, PCA, and Peak Fit analysis tools are optionally
+   saved with keys ``_____lcf``, ``_____pca``, and ``_____peakfit``
+   with the lineshape objects used in peak fitting saved as
+   ``_____lineshape0``, ``_____lineshape1``, and so on.
 
 Fields in the JSON file
 ~~~~~~~~~~~~~~~~~~~~~~~

@@ -3,17 +3,24 @@
    The Creative Commons Attribution-ShareAlike License
    http://creativecommons.org/licenses/by-sa/3.0/
 
+
+.. |redi|        unicode:: U+0268
+.. |vowela|      unicode:: U+0251
+.. |IPA artemis| replace:: '\ |vowela|\ :rt\ |redi|\ m\ |redi|\ s
+
+
+
 Starting Artemis
 ================
 
 The :demeter:`artemis` program is launched on Windows by
 :mark:`leftclick,..` double-clicking the :demeter:`artemis` icon on
 the desk top, by selecting ``artemis`` from the :demeter:`demeter`
-menu in the Start Menu, or by typing :command:`dartemis` (with a
-silent :button:`d`) at the command prompt.  If you installed
-:demeter:`demeter` using the standard installer package, you can also
-:mark:`leftclick,..` double-click on an :demeter:`artemis` project
-file (i.e. one with a :file:`.fpj` extension) to open it in
+menu in the Start Menu, or by typing :command:`dartemis` (that's
+pronounced |IPA artemis|, with a *silent* ``d``) at the command prompt.  If you
+installed :demeter:`demeter` using the standard installer package, you
+can also :mark:`leftclick,..` double-click on an :demeter:`artemis`
+project file (i.e. one with a :file:`.fpj` extension) to open it in
 :demeter:`artemis`.
 
 On a unix computer, :demeter:`artemis` is launched by typing
@@ -58,13 +65,12 @@ these two windows. We will return these many times throughout this
 document.
 
 
-Folders and log files
----------------------
+**Folders and log files**
 
-On occasion, it is helpful to know something about how
-:demeter:`artemis` writes information to disk during its operations.
+  On occasion, it is helpful to know something about how
+  :demeter:`artemis` writes information to disk during its operations.
 
-**working folder**
+  **working folder**
 
     Many of :demeter:`artemis`' chores involve writing temporary
     files. Project files are unpacked in temporary folders. The
@@ -74,7 +80,7 @@ On occasion, it is helpful to know something about how
     :file:`~/.horae/stash/`.  On Windows this is
     :file:`%APPDATA%\\demeter\\stash`.
 
-**log files**
+  **log files**
 
     When :demeter:`artemis` runs into problems, it attempts to write
     enough information to the screen that the problem can be
@@ -87,13 +93,13 @@ On occasion, it is helpful to know something about how
     log file. This log file is called dartemis.log and can be found in
     the :file:`%APPDATA%\\demeter` folder.
 
-``%APPDATA%`` is :file:`C:\\Users\\<username>\\AppDataRoaming\\` on
-Windows 7.
+  ``%APPDATA%`` is :file:`C:\\Users\\<username>\\AppDataRoaming\\` on
+  Windows 7.
 
-It is :file:`C:\\Documents and Settings\\<username>\\Application Data`
-on Windows XP and Vista.
+  It is :file:`C:\\Documents and Settings\\<username>\\Application Data`
+  on Windows XP and Vista.
 
-In either case, ``<username>`` is your log-in name.
+  In either case, ``<username>`` is your log-in name.
 
 -------------
 

@@ -260,8 +260,8 @@ sub plot {
 		    e_post => 0,
 		    e_markers => 0,
 		    e_smooth => $ddd->co->default("plot", "e_smooth"),
-		    emin   => $self->config('emin'),
-		    emax   => $self->config('emax'),
+		    emin   => Demeter->co->default('hephaestus', 'standards_emin') || $self->config('emin'),
+		    emax   => Demeter->co->default('hephaestus', 'standards_emax') || $self->config('emax'),
 		    );
   $ddd->po->start_plot;
   $ddd -> plot('E');
@@ -595,7 +595,7 @@ Demeter::UI::Standards -  Interactions with standard reference data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.24.
+This documentation refers to Demeter version 0.9.25.
 
 =head1 SYNOPSIS
 

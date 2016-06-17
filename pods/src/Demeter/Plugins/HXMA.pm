@@ -107,7 +107,7 @@ Demeter::Plugin::HXMA - Demystify files from the HXMA beamline at the CLS
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.24.
+This documentation refers to Demeter version 0.9.25.
 
 =head1 SYNOPSIS
 

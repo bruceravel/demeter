@@ -43,18 +43,19 @@ All data sets in the Data list which have the :guilabel:`Include in
 fit` button checked on will be used in the fit.
 
 Each data set has a list of one or more paths associated with it.  In
-:demeter:`artemis` a path is associated with a data set by dragging
-and dropping it onto a data set's path list.  The converse is also
-true.  All paths used in a fit must be associated with a Data set.
+:demeter:`artemis` a path is associated with a data set by
+:mark:`drag,..` dragging and dropping it onto a data set's path list.
+The converse is also true.  All paths used in a fit must be associated
+with a Data set.
 
 Paths typically come from a :demeter:`feff` calculation explicitly
 initiated by the user.  That is, the user imports an :demeter:`atoms`
 input file, a :demeter:`feff` input file, or a CIF
 file. :demeter:`feff` is run and the interpretation list is displayed
-in the :demeter:`feff` window.  Paths are dragged from that list and
-dropped on a Data set.  Thus paths are not only associated with a Data
-set, they are also associated with a specific :demeter:`feff`
-calculation.
+in the :demeter:`feff` window.  Paths are :mark:`drag,..` dragged from
+that list and dropped on a Data set.  Thus paths are not only
+associated with a Data set, they are also associated with a specific
+:demeter:`feff` calculation.
 
 Each path must have its path parameters set in some manner, even if
 they are merely set to 0 or some other constant.  Typically, path

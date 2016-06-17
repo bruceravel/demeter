@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>10. Data analysis &mdash; Athena 0.9.24 documentation</title>
+    <title>10. Data analysis &mdash; Athena 0.9.25 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.24',
+        VERSION:     '0.9.25',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Athena 0.9.24 documentation" href="../index.html" />
+    <link rel="top" title="Athena 0.9.25 documentation" href="../index.html" />
     <link rel="next" title="10.1. Linear combination fitting" href="lcf.html" />
     <link rel="prev" title="9.13. Data summation" href="../process/sum.html" />
 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../process/sum.html" title="9.13. Data summation"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.25 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -68,6 +68,26 @@ section of the main menu, as shown below.</p>
 <div class="figure align-center" id="id1">
 <span id="fig-analysis"></span><a class="reference external image-reference" href="../_images/analysis.png"><img alt="../_images/analysis.png" src="../_images/analysis.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 10.1 </span><span class="caption-text">The data analysis tools in the main menu.</span></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.25: </span>The states of the LCF, PCA, and peak fitting tools are now saved in
+the project file.  These states will be restored from a project
+file if (and only if) the entire project file is imported.
+Importing only a subset of the groups in the project file will <em>not</em>
+trigger the import of the analysis states.</p>
+<p>In each case, only the <em>model</em> is imported, not the results of the
+analysis.  You will likely want to re-run the analysis after
+importing the project file with saved state for the analysis.</p>
+<p>The recording of these states is turned on and off (default is on)
+by the <font color="#636A24">♦Athena→analysis_persistence</font> configuration
+parameter.  The reason you may want to disable saving state of the
+analysis tools is that importing from a project file containing
+that information can change the state of the group list and
+possibly other aspects of <font size=-1 color="#8C4112">ATHENA</font>.</p>
+<p>Note that the project files with saved state for the analysis tools
+<em>should</em> be backwards compatible to earlier versions.  Please file
+<a class="reference external" href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">a bug report</a>
+if this is not the case.</p>
 </div>
 <hr class="docutils" />
 <div class="toctree-wrapper compound">
@@ -138,14 +158,14 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.24</b></p>
+<p>Current version: <b>0.9.25</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -153,6 +173,11 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
+</ul>
+<p>
+<h3>Translations</h3>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://www.moleng.kyoto-u.ac.jp/~moleng_04/asakura/ja/others/aug/index.html">日本語 (Japanese)</a>
 </ul>
 <p>
 
@@ -189,7 +214,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="../process/sum.html" title="9.13. Data summation"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.25 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

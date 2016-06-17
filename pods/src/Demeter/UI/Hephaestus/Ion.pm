@@ -108,7 +108,7 @@ sub new {
 
 
   $parent->{primary} = Wx::Slider->new($self, -1, 100, 0, 100, [-1,-1], [-1,-1],
-				     wxSL_VERTICAL|wxSL_AUTOTICKS|wxSL_LABELS|wxSL_RIGHT|wxSL_INVERSE);
+				       wxSL_VERTICAL|wxSL_AUTOTICKS|wxSL_LABELS|wxSL_RIGHT|wxSL_INVERSE);
   $primary_box->Add($parent->{primary}, 1, wxALL|wxEXPAND, 5);
 
   $self->SetSizerAndFit($primary_box);
@@ -425,7 +425,7 @@ Demeter::UI::Hephaestus::Ion - Hephaestus' ion chamber utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.24.
+This documentation refers to Demeter version 0.9.25.
 
 =head1 SYNOPSIS
 

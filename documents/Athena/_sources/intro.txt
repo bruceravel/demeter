@@ -3,6 +3,11 @@
    The Creative Commons Attribution-ShareAlike License
    http://creativecommons.org/licenses/by-sa/3.0/
 
+.. |schwa|           unicode:: U+0259
+.. |dentalfricative| unicode:: U+03b8
+.. |IPA athena|      replace:: |schwa|\ '\ |dentalfricative|\ i:n\ |schwa|
+
+
 Introduction to ATHENA
 ======================
 
@@ -63,6 +68,10 @@ Among :demeter:`athena`'s many, many features, you will find:
 
 First Look at ATHENA
 --------------------
+
+To start :demeter:`athena`, double click on its icon or, at the
+command line, type :command:`dathena` (that's pronounced |IPA athena|,
+with a *silent* ``d``).
 
 When :demeter:`athena` first starts, something like the picture below
 appears on your computer screen. The :demeter:`athena` window is

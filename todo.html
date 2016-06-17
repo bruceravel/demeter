@@ -3,145 +3,13 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2016-04-11 Mon 09:51 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="viewport" content="width=device-width, initial-scale=1" />
 <title>Demeter/Athena/Artemis To Do List</title>
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Bruce Ravel" />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
-  .title  { text-align: center;
-             margin-bottom: .2em; }
-  .subtitle { text-align: center;
-              font-size: medium;
-              font-weight: bold;
-              margin-top:0; }
-  .todo   { font-family: monospace; color: red; }
-  .done   { font-family: monospace; color: green; }
-  .priority { font-family: monospace; color: orange; }
-  .tag    { background-color: #eee; font-family: monospace;
-            padding: 2px; font-size: 80%; font-weight: normal; }
-  .timestamp { color: #bebebe; }
-  .timestamp-kwd { color: #5f9ea0; }
-  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
-  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
-  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
-  .underline { text-decoration: underline; }
-  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
-  p.verse { margin-left: 3%; }
-  pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
-    padding: 8pt;
-    font-family: monospace;
-    overflow: auto;
-    margin: 1.2em;
-  }
-  pre.src {
-    position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
-  }
-  pre.src:before {
-    display: none;
-    position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
-    padding: 3px;
-    border: 1px solid black;
-  }
-  pre.src:hover:before { display: inline;}
-  pre.src-sh:before    { content: 'sh'; }
-  pre.src-bash:before  { content: 'sh'; }
-  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
-  pre.src-R:before     { content: 'R'; }
-  pre.src-perl:before  { content: 'Perl'; }
-  pre.src-java:before  { content: 'Java'; }
-  pre.src-sql:before   { content: 'SQL'; }
-
-  table { border-collapse:collapse; }
-  caption.t-above { caption-side: top; }
-  caption.t-bottom { caption-side: bottom; }
-  td, th { vertical-align:top;  }
-  th.org-right  { text-align: center;  }
-  th.org-left   { text-align: center;   }
-  th.org-center { text-align: center; }
-  td.org-right  { text-align: right;  }
-  td.org-left   { text-align: left;   }
-  td.org-center { text-align: center; }
-  dt { font-weight: bold; }
-  .footpara { display: inline; }
-  .footdef  { margin-bottom: 1em; }
-  .figure { padding: 1em; }
-  .figure p { text-align: center; }
-  .inlinetask {
-    padding: 10px;
-    border: 2px solid gray;
-    margin: 10px;
-    background: #ffffcc;
-  }
-  #org-div-home-and-up
-   { text-align: right; font-size: 70%; white-space: nowrap; }
-  textarea { overflow-x: auto; }
-  .linenr { font-size: smaller }
-  .code-highlighted { background-color: #ffff00; }
-  .org-info-js_info-navigation { border-style: none; }
-  #org-info-js_console-label
-    { font-size: 10px; font-weight: bold; white-space: nowrap; }
-  .org-info-js_search-highlight
-    { background-color: #ffff00; color: #000000; font-weight: bold; }
-  /*]]>*/-->
-</style>
 <link rel="stylesheet" type="text/css" href="stylesheets/orgstyle.css" />
 <link rel="stylesheet" type="text/css" href="stylesheets/orgtocstyle.css" />
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2013 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
-</script>
 <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
         displayAlign: "center",
@@ -206,7 +74,7 @@ for the JavaScript code in this tag.
 </ul>
 </li>
 <li><a href="#orgheadline35">6. Ifeffit</a></li>
-<li><a href="#orgheadline36">7. Weird stuff I'd prefer not to implement unless demanded</a></li>
+<li><a href="#orgheadline36">7. Weird stuff I&rsquo;d prefer not to implement unless demanded</a></li>
 </ul>
 </div>
 </div>
@@ -250,10 +118,10 @@ only reproduce the conventional energy grid through rebinning so I
 think rebinning is still relevant for us.  It would be nice to be
 able to rebin without reducing spectral detail in the XANES
 region. &#x2013; What is the width of the box?</li>
-<li class="off"><code>[&#xa0;]</code> 5 and 6 legged paths</li>
+<li class="on"><code>[X]</code> 5 and 6 legged paths</li>
 <li class="off"><code>[&#xa0;]</code> PCA improvements</li>
 <li class="off"><code>[&#xa0;]</code> feff8.5L</li>
-<li class="off"><code>[&#xa0;]</code> persistance of analysis methods in Athena
+<li class="on"><code>[X]</code> persistance of analysis methods in Athena
 This can be implemented in the same way I implemented XDI
 persistance &#x2013; for each group, serialize a blessed scalar and
 write that to the record</li>
@@ -284,12 +152,12 @@ write that to the record</li>
 <ul class="org-ul">
 <li>Xray/Absorption/CL.pm &#x2013; this needs to be refactored</li>
 <li>t/ tests need to be tested with Larch</li>
-<li>in particular, need a t/001<sub>larch.t</sub> test (with an appropriate SKIP in case of no server)</li>
-<li>"nergy": XDAC vs. Ifeffit.  Larch will see "energy".
+<li>in particular, need a t/001_larch.t test (with an appropriate SKIP in case of no server)</li>
+<li>&ldquo;nergy&rdquo;: XDAC vs. Ifeffit.  Larch will see &ldquo;energy&rdquo;.
 <ul class="org-ul">
 <li>Perhaps a larch or ifeffit configuration attribute</li>
 <li><p>
-ack-ing for '\bnergy\b' yields:
+ack-ing for &rsquo;\bnergy\b&rsquo; yields:
 </p>
 <pre class="example">
 examples/recipes/MultiChannel/mc2prj
@@ -363,11 +231,11 @@ the executables can all be found,</li>
 <h3 id="orgheadline10"><span class="section-number-3">4.4</span> Demeter bugs, shortcomings, missing features  <code>[5/21]</code> <code>[23%]</code></h3>
 <div class="outline-text-3" id="text-4-4">
 <ul class="org-ul">
-<li class="off"><code>[&#xa0;]</code> in <code>Demeter::Data::IO::save_many</code>, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)</li>
+<li class="off"><code>[&#xa0;]</code> in <code>Demeter::Data::IO::save_many</code>, why doesn&rsquo;t updating in n specifying &ldquo;background&rdquo; not work to bring data up to date?  (fft, i.e. doing autobk, does work)</li>
 <li class="off"><code>[&#xa0;]</code> tie multiple groups together (e.g. MED data with reference)</li>
 <li class="off"><code>[&#xa0;]</code> config param updated AND that param is currently showing in the Prefs tool &#x2013; need to update display in Prefs tool</li>
 <li class="off"><code>[&#xa0;]</code> add a record to an existing Athena project file</li>
-<li class="off"><code>[&#xa0;]</code> clnorm + Julia and Jingen's MBACK replacement</li>
+<li class="off"><code>[&#xa0;]</code> clnorm + Julia and Jingen&rsquo;s MBACK replacement</li>
 <li class="off"><code>[&#xa0;]</code> Data object should note that datatype is xanes and not compute fbkg since the bkg array does not exist</li>
 <li class="off"><code>[&#xa0;]</code> cannot specify title for stddev and variance plots</li>
 <li class="off"><code>[&#xa0;]</code> Demeter command backend needs lots of polishing</li>
@@ -379,7 +247,7 @@ the executables can all be found,</li>
 <li class="off"><code>[&#xa0;]</code> Feff8 integration</li>
 <li class="off"><code>[&#xa0;]</code> Use PDL in pathfinder</li>
 <li class="off"><code>[&#xa0;]</code> background groups for AXAFS</li>
-<li class="on"><code>[X]</code> Add tests to Path ranking framework (Karine Provost's idea, implemented in Demeter)</li>
+<li class="on"><code>[X]</code> Add tests to Path ranking framework (Karine Provost&rsquo;s idea, implemented in Demeter)</li>
 <li class="on"><code>[X]</code> serialize VPath, put VPath into dpj and fpj files</li>
 <li class="on"><code>[X]</code> set E0 to peak of white line</li>
 <li class="on"><code>[X]</code> need to disable indicators during the Rk plot.  Indicators (as implemented) are not consistent with multiplot</li>
@@ -443,7 +311,7 @@ the executables can all be found,</li>
 </div>
 
 <div id="outline-container-orgheadline14" class="outline-4">
-<h4 id="orgheadline14"><span class="section-number-4">4.5.3</span> needs doing <code>[4/15]</code> <code>[26%]</code></h4>
+<h4 id="orgheadline14"><span class="section-number-4">4.5.3</span> needs doing <code>[5/15]</code> <code>[33%]</code></h4>
 <div class="outline-text-4" id="text-4-5-3">
 <ul class="org-ul">
 <li class="off"><code>[&#xa0;]</code> beter error handling in plugins &#x2013; specifically need to do a
@@ -455,8 +323,8 @@ better job of trapping errors in the <code>fix</code> method.  Perhaps
 <li class="on"><code>[X]</code> <b>Main window</b> <code>[3/3]</code> <code>[100%]</code>
 <ul class="org-ul">
 <li class="on"><code>[X]</code> <del>SpinCtrl for use with Rbkg</del>, event handler triggered twice on first use (found work-around)</li>
-<li class="on"><code>[X]</code> <del>SpinCtrl for use with bkg<sub>spl1</sub>/2 (I find this to be a much worse idea)</del> (not implemented)</li>
-<li class="on"><code>[X]</code> push bkg<sub>e0</sub> <i>algorithm</i> onto marked/all groups and recalculate</li>
+<li class="on"><code>[X]</code> <del>SpinCtrl for use with bkg_spl1/2 (I find this to be a much worse idea)</del> (not implemented)</li>
+<li class="on"><code>[X]</code> push bkg_e0 <i>algorithm</i> onto marked/all groups and recalculate</li>
 </ul></li>
 <li class="off"><code>[&#xa0;]</code> <b>Convolve/noise tool</b>
 <ul class="org-ul">
@@ -466,9 +334,9 @@ better job of trapping errors in the <code>fix</code> method.  Perhaps
 <ul class="org-ul">
 <li class="off"><code>[&#xa0;]</code> difference in k</li>
 </ul></li>
-<li class="off"><code>[&#xa0;]</code> <b>LCF tool</b> <code>[0/4]</code>
+<li class="trans"><code>[-]</code> <b>LCF tool</b> <code>[1/5]</code>
 <ul class="org-ul">
-<li class="off"><code>[&#xa0;]</code> persistance of LCF results &#x2013; <i>use serialized blessed scalar, like XDI</i></li>
+<li class="on"><code>[X]</code> persistance of LCF results &#x2013; <i>use serialized blessed scalar, like XDI</i></li>
 <li class="off"><code>[&#xa0;]</code> satisfying both inclusive and unity can be trouble for
 poorly normalized data and/or poor standard selection
 (see email from Jack Hitch)</li>
@@ -479,21 +347,21 @@ mail from Scott 7 January 2012)</li>
 <li class="off"><code>[&#xa0;]</code> plot in norm(E) for this fit in chi(k) or plot in chi(k)
 for this fit in norm(E)</li>
 </ul></li>
-<li class="trans"><code>[-]</code> <b>PCA tool</b> <code>[2/11]</code>
+<li class="trans"><code>[-]</code> <b>PCA tool</b> <code>[3/11]</code>
 <ul class="org-ul">
 <li class="off"><code>[&#xa0;]</code> test setection against analysis space.  do the right thing
 with xanes data and chi(k) analysis or chi(k) data and energy
 analysis</li>
-<li class="off"><code>[&#xa0;]</code> persistance &#x2013; what's the value of persistance for PCA?</li>
+<li class="on"><code>[X]</code> persistance &#x2013; what&rsquo;s the value of persistance for PCA?</li>
 <li class="off"><code>[&#xa0;]</code> manual entry of component coefficients (??)</li>
 <li class="off"><code>[&#xa0;]</code> cluster analysis, select two components and plot the
 associations of each data with those two in a scatter plot.</li>
-<li class="off"><code>[&#xa0;]</code> worry about "def group.tt" line being too long in tt template</li>
+<li class="off"><code>[&#xa0;]</code> worry about &ldquo;def group.tt&rdquo; line being too long in tt template</li>
 <li class="off"><code>[&#xa0;]</code> plotting in pgplot</li>
 <li class="off"><code>[&#xa0;]</code> error analysis, RET, SPOIL, etc, determination of number
 of components, validity of TT, etc</li>
 <li class="off"><code>[&#xa0;]</code> specialized file headers for reconstruction and tt save files</li>
-<li class="off"><code>[&#xa0;]</code> pluck buttons for analysis range don't work</li>
+<li class="off"><code>[&#xa0;]</code> pluck buttons for analysis range don&rsquo;t work</li>
 <li class="on"><code>[X]</code> save eigenvectors to a file</li>
 <li class="on"><code>[X]</code> if the marked groups are changed after performing the PCA
 but before reconstructing data, the plot will fail with
@@ -501,9 +369,9 @@ and exception.  need to save the list of data that went
 into the PCA and check against that rather than the
 current list of marked groups</li>
 </ul></li>
-<li class="trans"><code>[-]</code> <b>Peakfit tool</b> <code>[7/12]</code>
+<li class="trans"><code>[-]</code> <b>Peakfit tool</b> <code>[8/12]</code>
 <ul class="org-ul">
-<li class="off"><code>[&#xa0;]</code> persistance &#x2013; <i>use serialized blessed scalar, like XDI</i></li>
+<li class="on"><code>[X]</code> persistance &#x2013; <i>use serialized blessed scalar, like XDI</i></li>
 <li class="off"><code>[&#xa0;]</code> verify that fit is sensible (ndata/ninfo vs nparam)</li>
 <li class="off"><code>[&#xa0;]</code> broken using XES</li>
 <li class="off"><code>[&#xa0;]</code> explicitly state ninfo and epsilon</li>
@@ -517,20 +385,20 @@ current list of marked groups</li>
 <li class="on"><code>[X]</code> sequence over marked groups</li>
 </ul></li>
 <li class="off"><code>[&#xa0;]</code> <b>Data watcher</b></li>
-<li class="trans"><code>[-]</code> <b>MEE tool</b> <code>[1/3]</code>
+<li class="trans"><code>[-]</code> <b>MEE tool</b> <code>[2/3]</code>
 <ul class="org-ul">
 <li class="on"><code>[X]</code> arctan removal</li>
 <li class="off"><code>[&#xa0;]</code> other algorithms from the literature</li>
-<li class="off"><code>[&#xa0;]</code> good guesses for parameters &#x2013; at least a pluck button for shift</li>
+<li class="on"><code>[X]</code> good guesses for parameters &#x2013; at least a pluck button for shift</li>
 </ul></li>
 <li class="off"><code>[&#xa0;]</code> <b>Plot menu</b>
 <ul class="org-ul">
 <li>zoom/unzoom/cursor for pgplot</li>
 </ul></li>
 <li class="on"><code>[X]</code> <b>metadata tool</b></li>
-<li class="off"><code>[&#xa0;]</code> <b>Data summer</b>
+<li class="on"><code>[X]</code> <b>Data summer</b>
 <ul class="org-ul">
-<li>push<sub>values</sub> method needs to update menus to reflect changes in group list</li>
+<li>push_values method needs to update menus to reflect changes in group list</li>
 </ul></li>
 </ul>
 </div>
@@ -551,9 +419,9 @@ current list of marked groups</li>
 <h3 id="orgheadline17"><span class="section-number-3">4.7</span> Windows issues <code>[4/9]</code> <code>[44%]</code></h3>
 <div class="outline-text-3" id="text-4-7">
 <ul class="org-ul">
-<li class="on"><code>[X]</code> parameter group context menus don't get posted (see
+<li class="on"><code>[X]</code> parameter group context menus don&rsquo;t get posted (see
 <a href="http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html">http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html</a>)</li>
-<li class="off"><code>[&#xa0;]</code> the frickin' Gnuplot error logs seem to remain open and locked
+<li class="off"><code>[&#xa0;]</code> the frickin&rsquo; Gnuplot error logs seem to remain open and locked
 on Windows when a crash happens</li>
 <li class="off"><code>[&#xa0;]</code> status bar does not get color for wait or error messages
 <i>this may be unfixable, see</i>
@@ -587,7 +455,7 @@ calling Strawberry in the .bat files</b></li>
 <h4 id="orgheadline22"><span class="section-number-4">4.8.1</span> Artemis bugs and missing features <code>[1/8]</code>  <code>[12%]</code></h4>
 <div class="outline-text-4" id="text-4-8-1">
 <ul class="org-ul">
-<li class="on"><code>[X]</code> More work on history, see Anthony Ardizzi's issue</li>
+<li class="on"><code>[X]</code> More work on history, see Anthony Ardizzi&rsquo;s issue</li>
 <li class="off"><code>[&#xa0;]</code> Reorganize lists, move individual items up and down, move
 blocks up and down, Path list, <del>Plot list</del></li>
 <li class="off"><code>[&#xa0;]</code> do SSPaths get serialized and deserialized with the pointers
@@ -601,11 +469,11 @@ for R123 plots.</li>
 Artemis &#x2013; should be able to import it directly from the
 athena project file.</li>
 <li class="off"><code>[&#xa0;]</code> Display of S02 glyph on some Windows is broken, breaking S02 context menu</li>
-<li class="off"><code>[&#xa0;]</code> Eric says: "if u use the automatic choice of parameters for
+<li class="off"><code>[&#xa0;]</code> Eric says: &ldquo;if u use the automatic choice of parameters for
 the paths, in combination with a few quick first shell models
 and an imported feff.inp the whole thing runs in trouble. I
-don't really expect name collisions, but it seems to loose
-track between all the feff runs."  <i>This is a bit unclear&#x2026;</i></li>
+don&rsquo;t really expect name collisions, but it seems to loose
+track between all the feff runs.&rdquo;  <i>This is a bit unclear&#x2026;</i></li>
 <li class="off"><code>[&#xa0;]</code> Path drag and drop <code>[0/3]</code>
 <ul class="org-ul">
 <li class="off"><code>[&#xa0;]</code> DND of an SSPath does not work correctly</li>
@@ -707,8 +575,8 @@ More standards!!
 <h3 id="orgheadline28"><span class="section-number-3">5.1</span> CIF <code>[0/3]</code> <code>[0%]</code></h3>
 <div class="outline-text-3" id="text-5-1">
 <ul class="org-ul">
-<li class="off"><code>[&#xa0;]</code> CIF issue: CIF file with "<sub>eof</sub>" token at end of file, as in <a href="notes/H16PW12O46.cif">this cif file</a></li>
-<li class="off"><code>[&#xa0;]</code> Handle CIF import problems more gracefully (See Shelly's other email from 17 June 2011)</li>
+<li class="off"><code>[&#xa0;]</code> CIF issue: CIF file with &ldquo;_eof&rdquo; token at end of file, as in <a href="notes/H16PW12O46.cif">this cif file</a></li>
+<li class="off"><code>[&#xa0;]</code> Handle CIF import problems more gracefully (See Shelly&rsquo;s other email from 17 June 2011)</li>
 <li class="off"><code>[&#xa0;]</code> CIF errors are not handled gracefully (e.g. multiple occupancy)</li>
 </ul>
 </div>
@@ -720,15 +588,15 @@ More standards!!
 <ul class="org-ul">
 <li class="on"><code>[X]</code> Setting of Ba2Co9O14 (Chanapa Kongmark), also some problem with ZnFe2O4</li>
 <li class="on"><code>[X]</code> should be a way to insert tabulated shift vector, if it exists</li>
-<li class="on"><code>[X]</code> handle ": setting" notation: <code>:R</code>, <code>:H</code>, <code>:1</code>, <code>:2</code> <a href="http://research.cems.umn.edu/morse/code/svn/pscf/doc/man/sec.php?section=Appendix:%20Space%20Groups&amp;">(for example)</a>
+<li class="on"><code>[X]</code> handle &ldquo;: setting&rdquo; notation: <code>:R</code>, <code>:H</code>, <code>:1</code>, <code>:2</code> <a href="http://research.cems.umn.edu/morse/code/svn/pscf/doc/man/sec.php?section=Appendix:%20Space%20Groups&amp;">(for example)</a>
 <ul class="org-ul">
 <li><code>:1</code> and <code>:2</code> seem to have to do with whether the shift vector should be used, see <a href="examples/atoms/ZnFe2O4.cif">ZnFe2O4.cif</a> and use the shift vector</li>
 <li><code>:R</code>, <code>:H</code> specify rhombohedral or tri/hexagonal setting</li>
 </ul></li>
 <li class="on"><code>[X]</code> Lepidocrocite issue (amam gets changed to cmcm)</li>
 <li class="off"><code>[&#xa0;]</code> 2 sites at the same position with occupancies &lt;1.  see file above for an example</li>
-<li class="off"><code>[&#xa0;]</code> George Sterbinsky's <a href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2011-May/009936.html">mailing list post</a> that turned out to be about 
-atoms' sphere and rhomboid in a non-orthogonal group</li>
+<li class="off"><code>[&#xa0;]</code> George Sterbinsky&rsquo;s <a href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2011-May/009936.html">mailing list post</a> that turned out to be about 
+atoms&rsquo; sphere and rhomboid in a non-orthogonal group</li>
 <li class="off"><code>[&#xa0;]</code> very confusing error message when core is not a tag</li>
 <li class="on"><code>[X]</code> Shell tags in the feff.inp ATOMS list</li>
 <li class="on"><code>[X]</code> <p>
@@ -848,12 +716,12 @@ character*(*) s, t , messg*1024
 </div>
 
 <div id="outline-container-orgheadline36" class="outline-2">
-<h2 id="orgheadline36"><span class="section-number-2">7</span> Weird stuff I'd prefer not to implement unless demanded</h2>
+<h2 id="orgheadline36"><span class="section-number-2">7</span> Weird stuff I&rsquo;d prefer not to implement unless demanded</h2>
 <div class="outline-text-2" id="text-7">
 <ol class="org-ol">
 <li>xfit output (only used by women who glow and men who plunder)</li>
 <li>csv and text report (excel <b>is</b> implemented)</li>
-<li>point finder (this was Shelly's request)</li>
+<li>point finder (this was Shelly&rsquo;s request)</li>
 <li>session defaults (did anyone but me actually use these?)</li>
 <li>set to standard (i.e. the one that is marked) &#x2013; confusing and
 little used</li>
@@ -870,7 +738,6 @@ worth implementing)</li>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Bruce Ravel</p>
-<p class="date">Created: 2016-04-11 Mon 09:51</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

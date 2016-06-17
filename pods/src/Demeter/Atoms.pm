@@ -45,9 +45,11 @@ use Carp;
 use Chemistry::Elements qw(get_Z);
 use File::Basename;
 use List::Util qw(min max reduce);
+use List::MoreUtils qw(any);
 #use Math::Cephes::Fraction qw(fract);
 use POSIX qw(ceil);
 use Safe;
+use Scalar::Util qw(looks_like_number);
 use Text::Template;
 use Xray::Absorption;
 use Xray::Crystal;
@@ -420,13 +422,26 @@ sub parse_line {
            : ($key =~ m{pol}) ? 'polarization'
            :                     $key;
     if (($self->meta->has_method($kk)) and ($key =~ m{shi|daf|qve|ref|pol|ell})) {
-      $self->$kk([$val, $vvv, $vvvv]);
+      if ((not looks_like_number($val)) or (not looks_like_number($val)) or (not looks_like_number($val))) {
+	carp("\"$key\" takes three numbers as its value\nfound \"$key = $val $vvv $vvvv\"\n($file line $.)\n\n");
+	return $self;
+      } else {
+	$self->$kk([$val, $vvv, $vvvv]);
+      }
     } elsif ($self->meta->has_method($key)) {
-      $self->$key(lc($val));
+      if ((any {$key eq $_} (qw(a b c alpha beta gamma rmax rpath rscf nitrogen argon xenon krypton helium)))
+	  and (not looks_like_number($val))) {
+	carp("\"$key\" takes a number as its value\nfound \"$key = $val\"\n($file line $.)\n\n");
+	return $self;
+      } else {
+	$self->$key(lc($val));
+      };
     } elsif (is_AtomsObsolete($key)) {
       carp("\"$key\" is a deprecated Atoms keyword ($file line $.)\n\n");
+      return $self;
     } else {
       carp("\"$key\" is not an Atoms keyword ($file line $.)\n\n");
+      return $self;
     };
   };
   $self->parse_line($rest) if (($rest !~ m{\A\s*\z}) and ($rest !~ m{\A\s*[\#\%\!\*]}));
@@ -782,20 +797,23 @@ sub potentials_list {
   my ($self, $pattern) = @_;
   $self->set_ipots if (not $self->is_ipots_set);
   $pattern ||= "     %d     %-2d     %-10s\n";
+  my $is_feff8 = 0;
+  my @list = split(" ", $pattern);
+  $is_feff8 = 2 if ($#list > 3);
   my ($cell, $core) = $self->get("cell", "core");
   my @sites = @{ $cell->sites };
   my $string = q{};
   my %seen = ();
   my ($abs) = $cell->central($core);
   my $l = Xray::Absorption->get_l($abs->element);
-  $string .= sprintf($pattern, 0, get_Z($abs->element), $abs->element,
-		     $l, $l, 0.001);
+  @list = ($is_feff8) ? (0, get_Z($abs->element), $abs->element, $l, $l, 0.001) : (0, get_Z($abs->element), $abs->element);
+  $string .= sprintf($pattern, @list);
   foreach my $s (sort {$a->ipot <=> $b->ipot} @sites) {
     next if not $s->ipot;
     next if $seen{$s->ipot};
     $l = Xray::Absorption->get_l($s->element);
-    $string .= sprintf($pattern, $s->ipot, get_Z($s->element),
-		       $s->element, $l, $l, $s->stoi);
+    @list = ($is_feff8) ? ($s->ipot, get_Z($s->element), $s->element, $l, $l, $s->stoi) : ($s->ipot, get_Z($s->element), $s->element);
+    $string .= sprintf($pattern, @list);
     $seen{$s->ipot} = 1;
   };
   return $string;
@@ -1142,7 +1160,7 @@ Demeter::Atoms - Convert crystallographic data to atomic lists
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.24.
+This documentation refers to Demeter version 0.9.25.
 
 =head1 SYNOPSIS
 

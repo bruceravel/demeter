@@ -73,37 +73,38 @@ with the processing of the data, save an <font size=-1 color="#8C4112">ATHENA</f
 file and dive into this example.</p>
 <div class="section" id="import-data">
 <h2>13.1.1. Import data<a class="headerlink" href="#import-data" title="Permalink to this headline">¶</a></h2>
-<p>After starting <font size=-1 color="#8C4112">ARTEMIS</font>, click on the <kbd class="light">Add</kbd>
-button at the top of the <span class="guilabel">Data sets</span> list in the Main
-window. This will open a file selection dialog. Click to find the
-<font size=-1 color="#8C4112">ATHENA</font> project file containing the data you want to
-analyze. Opening that project file displays the project selection
-dialog.</p>
+<p>After starting <font size=-1 color="#8C4112">ARTEMIS</font>, <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> click on the
+<kbd class="light">Add</kbd> button at the top of the <span class="guilabel">Data sets</span>
+list in the Main window. This will open a file selection dialog.
+Click to find the <font size=-1 color="#8C4112">ATHENA</font> project file containing the data
+you want to analyze. Opening that project file displays the project
+selection dialog.</p>
 <div class="figure align-center" id="id3">
 <span id="fig-fes2importdata"></span><a class="reference external image-reference" href="../_images/fes2-importdata.png"><img alt="../_images/fes2-importdata.png" src="../_images/fes2-importdata.png" style="width: 50%;" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.1 </span><span class="caption-text">Import data into Artemis</span></p>
 </div>
 <p>The project file used here has several iron standards. Select
 FeS<sub>2</sub> from the list. That data set gets plotted when selected.</p>
-<p>Now click the <kbd class="light">Import</kbd> button. That data set gets
-imported into <font size=-1 color="#8C4112">ARTEMIS</font>.  An entry for the FeS<sub>2</sub> is
-created in the Data list, a window for interacting with the FeS<sub>2</sub> data is created, and the FeS<sub>2</sub> data are plotted as
-χ(k).</p>
+<p>Now <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> click the <kbd class="light">Import</kbd> button. That
+data set gets imported into <font size=-1 color="#8C4112">ARTEMIS</font>.  An entry for the FeS<sub>2</sub> is created in the Data list, a window for interacting with
+the FeS<sub>2</sub> data is created, and the FeS<sub>2</sub> data are
+plotted as χ(k).</p>
 <p>The next step is to prepare for the <font size=-1 color="#8C4112">FEFF</font> calculation using
-the known FeS<sub>2</sub> crystal structure. Clicking on the line in the
-Data window that says <span class="guilabel">Import crystal data or a Feff
-calculation</span> will post a file selection dialog.  Click to find the
-<code class="file docutils literal"><span class="pre">atoms.inp</span></code> file containing the FeS<sub>2</sub> crystal structure.</p>
+the known FeS<sub>2</sub> crystal structure.  <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a>
+Clicking on the line in the Data window that says <span class="guilabel">Import
+crystal data or a Feff calculation</span> will post a file selection dialog.
+Click to find the <code class="file docutils literal"><span class="pre">atoms.inp</span></code> file containing the FeS<sub>2</sub>
+crystal structure.</p>
 <div class="figure align-center" id="id4">
 <span id="fig-fes2importatoms"></span><a class="reference external image-reference" href="../_images/fes2-importatoms.png"><img alt="../_images/fes2-importatoms.png" src="../_images/fes2-importatoms.png" style="width: 50%;" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.2 </span><span class="caption-text">Import crystal data into Artemis</span></p>
 </div>
 <p>With the FeS<sub>2</sub> crystal data imported, run <font size=-1 color="#8C4112">ATOMS</font> by
-clicking the <kbd class="light">Run Atoms</kbd> button on the <font size=-1 color="#8C4112">ATOMS</font>
-tab of the <font size=-1 color="#8C4112">FEFF</font> windows. That will display the
-<font size=-1 color="#8C4112">FEFF</font> tab containing the <font size=-1 color="#8C4112">FEFF</font> input data. Click
-the <kbd class="light">Run Feff</kbd> button to compute the scattering
-potentials and to run the pathfinder.</p>
+<img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> clicking the <kbd class="light">Run Atoms</kbd> button on
+the <font size=-1 color="#8C4112">ATOMS</font> tab of the <font size=-1 color="#8C4112">FEFF</font> windows. That will
+display the <font size=-1 color="#8C4112">FEFF</font> tab containing the <font size=-1 color="#8C4112">FEFF</font> input
+data.  <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> Click the <kbd class="light">Run Feff</kbd> button
+to compute the scattering potentials and to run the pathfinder.</p>
 <p>Once the <font size=-1 color="#8C4112">FEFF</font> calculation is finished, the path
 intepretation list is shown in the Paths tab. This is the list of
 scattering paths, sorted by increasing path length. Select the first
@@ -111,15 +112,15 @@ scattering paths, sorted by increasing path length. Select the first
 <span class="guilabel">0000</span>, then <kbd class="dark">Shift</kbd>-<img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> clicking
 on path <span class="guilabel">0010</span>.  The selected paths will be highlighted.
 <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> Click on one of the highlighted paths and,
-without letting go of the mouse button, drag the paths over to the
-Data window.  Drop the paths on the empty Path list.</p>
+without letting go of the mouse button, <img alt="drag" title="Drag and drop" src="../_static/drag.png" hspace="3"></a> drag the paths
+over to the Data window and drop them onto the empty Path list.</p>
 <div class="figure align-center" id="id5">
 <span id="fig-fes2pathsdnd"></span><a class="reference external image-reference" href="../_images/fes2-pathsdnd.png"><img alt="../_images/fes2-pathsdnd.png" src="../_images/fes2-pathsdnd.png" style="width: 50%;" /></a>
-<p class="caption"><span class="caption-number">Fig. 13.3 </span><span class="caption-text">Drag and drop paths onto a data set</span></p>
+<p class="caption"><span class="caption-number">Fig. 13.3 </span><span class="caption-text"><img alt="drag" title="Drag and drop" src="../_static/drag.png" hspace="3"></a> Drag and drop paths onto a data set</span></p>
 </div>
-<p>Dropping the paths on the Path list will associate those paths with that
-data set. That is, that group of paths is now available to be used in
-the fitting model for understanding the FeS<sub>2</sub> data.</p>
+<p><img alt="drag" title="Drag and drop" src="../_static/drag.png" hspace="3"></a> Dropping the paths on the Path list will associate those
+paths with that data set. That is, that group of paths is now
+available to be used in the fitting model for understanding the FeS<sub>2</sub> data.</p>
 <p>Each path will get its own Path page. The Path page for a path is
 displayed when that path is clicked upon in the Path list. Shown below
 is the FeS<sub>2</sub> data with its 11 paths. The first path in the list,
@@ -138,12 +139,12 @@ to populate the Plotting list with data and paths and make some plots.</p>
 <p>First let's examine how the single scattering paths relate to the
 data.  Mark each of the first four single scattring paths – the
 ones labeled <span class="guilabel">S.1</span>, <span class="guilabel">S.2</span>, <span class="guilabel">S.3</span>, and
-<span class="guilabel">Fe.1</span> – by clicking on their check buttons.  Transfer
-those four paths to the Plotting list by selecting
+<span class="guilabel">Fe.1</span> – by <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> clicking on their check
+buttons.  Transfer those four paths to the Plotting list by selecting
 <span class="menuselection">Actions ‣ Transfer marked</span>.</p>
-<p>With the Plotting list poluated as shown below, click on the
-<kbd class="light">R</kbd> plot button in the Plot window to make the plot
-shown.</p>
+<p>With the Plotting list poluated as shown below, <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a>
+click on the <kbd class="light">R</kbd> plot button in the Plot window to make
+the plot shown.</p>
 <div class="figure align-center" id="id7">
 <span id="fig-fes2sspaths"></span><a class="reference external image-reference" href="../_images/fes2-sspaths.png"><img alt="../_images/fes2-sspaths.png" src="../_images/fes2-sspaths.png" style="width: 50%;" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.5 </span><span class="caption-text">FeS2 data plotted with the first four single scattering paths</span></p>
@@ -162,11 +163,12 @@ spectral weight to both of the peaks at 2.93 Å and 3.45 Å.</p>
 <p>The first peak shold be reather simple to interpret, but higher shells
 are some kind of superposition of many paths.</p>
 <p>What about the multiple scattering paths?</p>
-<p>To examine those, first clear the Plotting list by clicking the
-<kbd class="light">Clear</kbd> button at the bottom of the Plot
-window. Transfer the FeS<sub>2</sub> data back to the Plotting list by
-clicking its transfer button: <img alt="transfer button" src="../_images/plot-icon1.png" />. Mark the first three
-multiple scattering paths by clicking their mark buttons.  Select
+<p>To examine those, first clear the Plotting list by
+<img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> clicking the <kbd class="light">Clear</kbd> button at the
+bottom of the Plot window. Transfer the FeS<sub>2</sub> data back to the
+Plotting list by <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> clicking its transfer button:
+<img alt="transfer button" src="../_images/plot-icon1.png" />. Mark the first three multiple scattering paths by
+<img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> clicking their mark buttons.  Select
 <span class="menuselection">Actions ‣ Transfer marked</span>.</p>
 <p>With the Plotting list newly populated, make a new plot of | χ(R)|.</p>
 <div class="figure align-center" id="id8">
@@ -255,10 +257,11 @@ correctly. All in all, this is a reasonable fit.</p>
 paths in this fit, we'll start by including the next three single
 scattering paths, adjusting the fitting model accordingly.</p>
 <p>This fit will include the peaks in the range of 3 Å to 3.5 Å, so
-set R<sub>max</sub> to 3.8.  Next click on each of next three single
-scattering paths – the ones labeled <span class="guilabel">S.2</span>,
-<span class="guilabel">S.3</span>, and <span class="guilabel">Fe.1</span>,  then click on the
-<span class="guilabel">Include path</span> button for each path.</p>
+set R<sub>max</sub> to 3.8.  Next <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> click on each of
+next three single scattering paths – the ones labeled
+<span class="guilabel">S.2</span>, <span class="guilabel">S.3</span>, and <span class="guilabel">Fe.1</span>, then
+<img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> click on the <span class="guilabel">Include path</span> button for
+each path.</p>
 <p>At this point we need to begin considering the details of our fitting
 model more carefully.  S<sup>2</sup><sub>0</sub> and E<sub>0</sub> should be
 the same for each path, so we will use the same <span class="guess">guess</span>
@@ -299,8 +302,9 @@ it equal to <code class="docutils literal"><span class="pre">ss2</span></code>.<
 <p class="caption"><span class="caption-number">Fig. 13.12 </span><span class="caption-text">Making <code class="docutils literal"><span class="pre">ss3</span></code> a <span class="def">def</span> parameter.</span></p>
 </div>
 <p>At this point we need to introduce the two significant multiple
-scattering paths.  Start by clicking the <span class="guilabel">Include path</span>
-button for the <span class="guilabel">S.1 S.2</span> and <span class="guilabel">S.1 Fe.1</span> paths.</p>
+scattering paths.  Start by <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> clicking the
+<span class="guilabel">Include path</span> button for the <span class="guilabel">S.1 S.2</span> and
+<span class="guilabel">S.1 Fe.1</span> paths.</p>
 <p>Make sure each of those paths has their S<sup>2</sup><sub>0</sub>, E<sub>0</sub>, and ΔR path parameters set to <code class="docutils literal"><span class="pre">amp</span></code>, <code class="docutils literal"><span class="pre">enot</span></code>, and
 <code class="docutils literal"><span class="pre">alpha*reff</span></code>, respectively.</p>
 <p>As discussed in the <a class="reference external" href="https://speakerdeck.com/bruceravel/discussion-of-the-fes2-exafs-analysis-example">lecture notes</a>,
@@ -412,8 +416,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>

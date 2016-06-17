@@ -215,6 +215,14 @@ sub is_zipproj {
 	undef $zip;
 	return 1;
       };
+      ($type eq 'guess') and do {
+	my $ret = 1;
+	$ret = -1 if $zip->memberNamed('order');
+	$ret = -2 if $zip->memberNamed('gds.yaml');
+	$ret = -3 if $zip->memberNamed('HORAE');
+	undef $zip;
+	return $ret;
+      };
       ($type eq 'fpj') and do {
 	print "not a fitting project file\n" if $verbose;
 	undef $zip, return 0 if not $zip->memberNamed('order');
@@ -254,12 +262,12 @@ Demeter::Files - File import tests
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.24.
+This documentation refers to Demeter version 0.9.25.
 
 =head1 DESCRIPTION
 
 This role contains several methods for identifying files common to the
-Feff and Ifeffit/Larch universes.
+Demeter, Feff, and Ifeffit/Larch universes.
 
 =head1 METHODS
 
@@ -267,11 +275,85 @@ Feff and Ifeffit/Larch universes.
 
 =item C<is_atoms>
 
+Return true if a file is recognized as an atoms input file.  This uses
+simple semantics based on the file contents.
+
+  my $yesno = Demeter->is_atoms($file, $verbose);
+
 =item C<is_cif>
+
+Return true if a file is recognized as a CIF file.  This is a pretty
+dumb method -- it returns true if the file extension is C<.cif>.
+
+  my $yesno = Demeter->is_cif($file, $verbose);
 
 =item C<is_feff>
 
+Return true if a file is recognized as a Feff input file.  This uses
+simple semantics based on the file contents.
+
+  my $yesno = Demeter->is_feff($file, $verbose);
+
 =item C<is_data>
+
+Return true is Ifeffit/Larch recognizes this file as a data file.
+
+  my $yesno = Demeter->is_data($file, $verbose);
+
+=item C<is_prj>
+
+Return true if this is a conventional Athena project file.
+
+  my $yesno = Demeter->is_prj($file, $verbose);
+
+=item C<is_json>
+
+Return true if this is a JSON-style Athena project file.
+
+  my $yesno = Demeter->is_json($file, $verbose);
+
+=item C<is_zipproj>
+
+Return true if this is a zip file which can be recognized as a save
+file for some aspect of Artemis.
+
+  my $yesno = Demeter->is_zipproj($file, $verbose, $type);
+
+C<$type> can be one of:
+
+=over 4
+
+=item C<any>
+
+Returns true if the file is any kind of recognized save file in a zip
+format.
+
+=item C<guess>
+
+Returns true if the file is any kind of recognized save file in a zip
+format.  The return value tells you what kind.  -1 means an Artemis
+project file., -2 means a Demeter fit serialization file, and -3 means
+an old-style Artemis project file.
+
+=item C<fpj>
+
+Returns true only if the file is an Artemis project file.
+
+=item C<dpj>
+
+Returns true only if the file is a Demeter fit serialization file.
+
+=item C<apj>
+
+Returns true only if the file is an old-style Artemis project file.
+
+=back
+
+=item C<is_xdi>
+
+Return true if the file is recognizably an XDI file.
+
+  my $yesno = Demeter->is_xdi($file, $verbose);
 
 =back
 

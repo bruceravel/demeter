@@ -61,6 +61,48 @@ sub write_athena {
       $gzout->gzwrite($d->_write_record_athena);
     };
   };
+
+  if (Demeter->co->default('athena', 'analysis_persistence')) {
+    ## LCF persistence
+    if (defined($::app->{main}->{LCF}->{LCF})) {
+      if (Demeter->co->default('athena', 'project_format') eq 'json') {
+	$gzout->gzwrite("\n\"_____lcf\": " . encode_json({$::app->{main}->{LCF}->{LCF}->all}) . ",\n");
+      } else {
+	local $Data::Dumper::Indent = 0;
+	$gzout->gzwrite(Data::Dumper->Dump([[$::app->{main}->{LCF}->{LCF}->all]], [qw/*LCF/]) . "\n\n");
+      };
+    };
+
+    ## PCA persistence
+    if (defined($::app->{main}->{PCA}->{PCA})) {
+      if (Demeter->co->default('athena', 'project_format') eq 'json') {
+	$gzout->gzwrite("\n\"_____pca\": " . encode_json({$::app->{main}->{PCA}->{PCA}->all}) . ",\n");
+      } else {
+	local $Data::Dumper::Indent = 0;
+	$gzout->gzwrite(Data::Dumper->Dump([[$::app->{main}->{PCA}->{PCA}->all]], [qw/*PCA/]) . "\n\n");
+      };
+    };
+
+    ## peak fitting persistence
+    if (defined($::app->{main}->{PeakFit}->{PEAK})) {
+      if (Demeter->co->default('athena', 'project_format') eq 'json') {
+	$gzout->gzwrite("\n\"_____peakfit\": " . encode_json({$::app->{main}->{PeakFit}->{PEAK}->all}) . ",\n");
+	my $count = 0;
+	foreach my $ls (@{ $::app->{main}->{PeakFit}->{PEAK}->lineshapes }) {
+	  $gzout->gzwrite("\n\"_____lineshape$count\": " . encode_json({$ls->all}) . ",\n");
+	  $count++;
+	};
+      } else {
+	local $Data::Dumper::Indent = 0;
+	$gzout->gzwrite(Data::Dumper->Dump([[$::app->{main}->{PeakFit}->{PEAK}->all]], [qw/*peakfit/]) . "\n");
+	foreach my $ls (@{ $::app->{main}->{PeakFit}->{PEAK}->lineshapes }) {
+	  $gzout->gzwrite(Data::Dumper->Dump([[$ls->all]], [qw/*lineshape/]) . "\n");
+	};
+	$gzout->gzwrite("\n");
+      };
+    };
+  };
+
   if ($journal) {
     my @journal = split(/\n/, $journal->text);
     if (Demeter->co->default('athena', 'project_format') eq 'json') {
@@ -245,7 +287,7 @@ Demeter::Data::Athena - Write Athena project files
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.24.
+This documentation refers to Demeter version 0.9.25.
 
 =head1 DESCRIPTION
 

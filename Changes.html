@@ -3,145 +3,13 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2016-04-11 Mon 09:52 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="viewport" content="width=device-width, initial-scale=1" />
 <title>Demeter revision history</title>
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Bruce Ravel" />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
-  .title  { text-align: center;
-             margin-bottom: .2em; }
-  .subtitle { text-align: center;
-              font-size: medium;
-              font-weight: bold;
-              margin-top:0; }
-  .todo   { font-family: monospace; color: red; }
-  .done   { font-family: monospace; color: green; }
-  .priority { font-family: monospace; color: orange; }
-  .tag    { background-color: #eee; font-family: monospace;
-            padding: 2px; font-size: 80%; font-weight: normal; }
-  .timestamp { color: #bebebe; }
-  .timestamp-kwd { color: #5f9ea0; }
-  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
-  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
-  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
-  .underline { text-decoration: underline; }
-  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
-  p.verse { margin-left: 3%; }
-  pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
-    padding: 8pt;
-    font-family: monospace;
-    overflow: auto;
-    margin: 1.2em;
-  }
-  pre.src {
-    position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
-  }
-  pre.src:before {
-    display: none;
-    position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
-    padding: 3px;
-    border: 1px solid black;
-  }
-  pre.src:hover:before { display: inline;}
-  pre.src-sh:before    { content: 'sh'; }
-  pre.src-bash:before  { content: 'sh'; }
-  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
-  pre.src-R:before     { content: 'R'; }
-  pre.src-perl:before  { content: 'Perl'; }
-  pre.src-java:before  { content: 'Java'; }
-  pre.src-sql:before   { content: 'SQL'; }
-
-  table { border-collapse:collapse; }
-  caption.t-above { caption-side: top; }
-  caption.t-bottom { caption-side: bottom; }
-  td, th { vertical-align:top;  }
-  th.org-right  { text-align: center;  }
-  th.org-left   { text-align: center;   }
-  th.org-center { text-align: center; }
-  td.org-right  { text-align: right;  }
-  td.org-left   { text-align: left;   }
-  td.org-center { text-align: center; }
-  dt { font-weight: bold; }
-  .footpara { display: inline; }
-  .footdef  { margin-bottom: 1em; }
-  .figure { padding: 1em; }
-  .figure p { text-align: center; }
-  .inlinetask {
-    padding: 10px;
-    border: 2px solid gray;
-    margin: 10px;
-    background: #ffffcc;
-  }
-  #org-div-home-and-up
-   { text-align: right; font-size: 70%; white-space: nowrap; }
-  textarea { overflow-x: auto; }
-  .linenr { font-size: smaller }
-  .code-highlighted { background-color: #ffff00; }
-  .org-info-js_info-navigation { border-style: none; }
-  #org-info-js_console-label
-    { font-size: 10px; font-weight: bold; white-space: nowrap; }
-  .org-info-js_search-highlight
-    { background-color: #ffff00; color: #000000; font-weight: bold; }
-  /*]]>*/-->
-</style>
 <link rel="stylesheet" type="text/css" href="stylesheets/orgstyle.css" />
 <link rel="stylesheet" type="text/css" href="stylesheets/orgtocstyle.css" />
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2013 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
-</script>
 <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
         displayAlign: "center",
@@ -172,61 +40,61 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgheadline143">1. 0.9 series</a>
+<li><a href="#orgheadline146">1. 0.9 series</a>
 <ul>
-<li><a href="#orgheadline5">1.1. 0.9.25   XX December  2015</a></li>
-<li><a href="#orgheadline9">1.2. 0.9.24   23 October   2015</a></li>
-<li><a href="#orgheadline15">1.3. 0.9.23   15 October   2015</a></li>
-<li><a href="#orgheadline21">1.4. 0.9.22   29 July      2015</a></li>
-<li><a href="#orgheadline29">1.5. 0.9.21   26 February  2015</a></li>
-<li><a href="#orgheadline38">1.6. 0.9.20   12 May       2014</a></li>
-<li><a href="#orgheadline45">1.7. 0.9.19    8 January   2014 (withdrawn)</a></li>
-<li><a href="#orgheadline46">1.8. 0.9.18.3 28 January   2014</a></li>
-<li><a href="#orgheadline49">1.9. 0.9.18.2 29 August    2013</a></li>
-<li><a href="#orgheadline51">1.10. 0.9.18.1 28 August    2013</a></li>
-<li><a href="#orgheadline61">1.11. 0.9.18   27 August    2013</a></li>
-<li><a href="#orgheadline65">1.12. 0.9.17   28 May       2013</a></li>
-<li><a href="#orgheadline70">1.13. 0.9.16   28 March     2013</a></li>
-<li><a href="#orgheadline74">1.14. 0.9.15   21 February  2013</a></li>
-<li><a href="#orgheadline81">1.15. 0.9.14    2 January   2013</a></li>
-<li><a href="#orgheadline86">1.16. 0.9.13    2 October   2012</a></li>
-<li><a href="#orgheadline90">1.17. 0.9.12   26 September 2012</a></li>
-<li><a href="#orgheadline96">1.18. 0.9.11   18 September 2012</a></li>
-<li><a href="#orgheadline102">1.19. 0.9.10   17 July      2012</a></li>
-<li><a href="#orgheadline108">1.20. 0.9.9    20 April     2012</a></li>
-<li><a href="#orgheadline113">1.21. 0.9.8    30 January   2012</a></li>
-<li><a href="#orgheadline118">1.22. 0.9.7    12 January   2012</a></li>
-<li><a href="#orgheadline124">1.23. 0.9.6    12 December  2011</a></li>
-<li><a href="#orgheadline126">1.24. 0.9.5    11 November  2011</a></li>
-<li><a href="#orgheadline129">1.25. 0.9.4    10 November  2011</a></li>
-<li><a href="#orgheadline133">1.26. 0.9.3     8 November  2011</a></li>
-<li><a href="#orgheadline137">1.27. 0.9.2     7 November  2011</a></li>
-<li><a href="#orgheadline140">1.28. 0.9.1     2 November  2011</a></li>
-<li><a href="#orgheadline142">1.29. 0.9.0    31 October   2011</a></li>
+<li><a href="#orgheadline8">1.1. 0.9.25   10 May       2016</a></li>
+<li><a href="#orgheadline12">1.2. 0.9.24   23 October   2015</a></li>
+<li><a href="#orgheadline18">1.3. 0.9.23   15 October   2015</a></li>
+<li><a href="#orgheadline24">1.4. 0.9.22   29 July      2015</a></li>
+<li><a href="#orgheadline32">1.5. 0.9.21   26 February  2015</a></li>
+<li><a href="#orgheadline41">1.6. 0.9.20   12 May       2014</a></li>
+<li><a href="#orgheadline48">1.7. 0.9.19    8 January   2014 (withdrawn)</a></li>
+<li><a href="#orgheadline49">1.8. 0.9.18.3 28 January   2014</a></li>
+<li><a href="#orgheadline52">1.9. 0.9.18.2 29 August    2013</a></li>
+<li><a href="#orgheadline54">1.10. 0.9.18.1 28 August    2013</a></li>
+<li><a href="#orgheadline64">1.11. 0.9.18   27 August    2013</a></li>
+<li><a href="#orgheadline68">1.12. 0.9.17   28 May       2013</a></li>
+<li><a href="#orgheadline73">1.13. 0.9.16   28 March     2013</a></li>
+<li><a href="#orgheadline77">1.14. 0.9.15   21 February  2013</a></li>
+<li><a href="#orgheadline84">1.15. 0.9.14    2 January   2013</a></li>
+<li><a href="#orgheadline89">1.16. 0.9.13    2 October   2012</a></li>
+<li><a href="#orgheadline93">1.17. 0.9.12   26 September 2012</a></li>
+<li><a href="#orgheadline99">1.18. 0.9.11   18 September 2012</a></li>
+<li><a href="#orgheadline105">1.19. 0.9.10   17 July      2012</a></li>
+<li><a href="#orgheadline111">1.20. 0.9.9    20 April     2012</a></li>
+<li><a href="#orgheadline116">1.21. 0.9.8    30 January   2012</a></li>
+<li><a href="#orgheadline121">1.22. 0.9.7    12 January   2012</a></li>
+<li><a href="#orgheadline127">1.23. 0.9.6    12 December  2011</a></li>
+<li><a href="#orgheadline129">1.24. 0.9.5    11 November  2011</a></li>
+<li><a href="#orgheadline132">1.25. 0.9.4    10 November  2011</a></li>
+<li><a href="#orgheadline136">1.26. 0.9.3     8 November  2011</a></li>
+<li><a href="#orgheadline140">1.27. 0.9.2     7 November  2011</a></li>
+<li><a href="#orgheadline143">1.28. 0.9.1     2 November  2011</a></li>
+<li><a href="#orgheadline145">1.29. 0.9.0    31 October   2011</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline189">2. Beta testing releases:</a>
+<li><a href="#orgheadline192">2. Beta testing releases:</a>
 <ul>
-<li><a href="#orgheadline149">2.1. Release 9: 30 October   2011</a></li>
-<li><a href="#orgheadline154">2.2. Release 8: 11 October   2011</a></li>
-<li><a href="#orgheadline159">2.3. Release 7: 10 October   2011</a></li>
-<li><a href="#orgheadline164">2.4. Release 6: 09 September 2011</a></li>
-<li><a href="#orgheadline169">2.5. Release 5: 18 August    2011</a></li>
-<li><a href="#orgheadline175">2.6. Release 4: 12 August    2011</a></li>
-<li><a href="#orgheadline181">2.7. Release 3:  8 July      2011</a></li>
-<li><a href="#orgheadline187">2.8. Release 2: 24 June      2011</a></li>
-<li><a href="#orgheadline188">2.9. Release 1: 10 June      2011</a></li>
+<li><a href="#orgheadline152">2.1. Release 9: 30 October   2011</a></li>
+<li><a href="#orgheadline157">2.2. Release 8: 11 October   2011</a></li>
+<li><a href="#orgheadline162">2.3. Release 7: 10 October   2011</a></li>
+<li><a href="#orgheadline167">2.4. Release 6: 09 September 2011</a></li>
+<li><a href="#orgheadline172">2.5. Release 5: 18 August    2011</a></li>
+<li><a href="#orgheadline178">2.6. Release 4: 12 August    2011</a></li>
+<li><a href="#orgheadline184">2.7. Release 3:  8 July      2011</a></li>
+<li><a href="#orgheadline190">2.8. Release 2: 24 June      2011</a></li>
+<li><a href="#orgheadline191">2.9. Release 1: 10 June      2011</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline143" class="outline-2">
-<h2 id="orgheadline143"><span class="section-number-2">1</span> 0.9 series</h2>
+<div id="outline-container-orgheadline146" class="outline-2">
+<h2 id="orgheadline146"><span class="section-number-2">1</span> 0.9 series</h2>
 <div class="outline-text-2" id="text-1">
-</div><div id="outline-container-orgheadline5" class="outline-3">
-<h3 id="orgheadline5"><span class="section-number-3">1.1</span> 0.9.25   XX December  2015</h3>
+</div><div id="outline-container-orgheadline8" class="outline-3">
+<h3 id="orgheadline8"><span class="section-number-3">1.1</span> 0.9.25   10 May       2016</h3>
 <div class="outline-text-3" id="text-1-1">
 </div><div id="outline-container-orgheadline1" class="outline-4">
 <h4 id="orgheadline1"><span class="section-number-4">1.1.1</span> Athena</h4>
@@ -241,6 +109,18 @@ bringing this to my attention)</li>
 XANES data (thanks to <a href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-December/012912.html">Jeff Catalano</a>)</li>
 <li>Fixed a problem with selections in data summer being unset in
 certain situations (thanks to <a href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-January/008429.html">Ian Godrey</a>)</li>
+<li>Offer a useful warning when trying to read an Artemis project
+file into Athena (thanks to Galen O&rsquo;Neil)</li>
+<li>Add filetype and beamline plugins related to BL8 at SLRI (thanks
+to Wantana Klysubun for beamtime!)</li>
+<li>Fix display issues in peak fitting tool, use three-letter strings
+rather than numbers as identifiers, discarding works better,
+action buttons disabled when last function is discarded (thanks
+to Wantana Klysubun and the participants of the 2016 ASEAN
+Workshop on XAS)</li>
+<li>persistence in project file for LCF, PCA, peak fit (thanks to
+<a href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-May/008551.html">Sunil Patil)</a> works for both original and JSON style project files</li>
+<li>Plot indicator in MEE tool</li>
 </ul>
 </div>
 </div>
@@ -250,15 +130,36 @@ certain situations (thanks to <a href="http://millenia.cars.aps.anl.gov/pipermai
 <div class="outline-text-4" id="text-1-1-2">
 <ul class="org-ul">
 <li>Control for enabling 5- and 6-legged paths in Feff tab</li>
-<li>Don't consider skip parameters when checking for unique parameter
+<li>Don&rsquo;t consider skip parameters when checking for unique parameter
 names</li>
 </ul>
 </div>
 </div>
 
 <div id="outline-container-orgheadline3" class="outline-4">
-<h4 id="orgheadline3"><span class="section-number-4">1.1.3</span> Demeter</h4>
+<h4 id="orgheadline3"><span class="section-number-4">1.1.3</span> Hephaestus</h4>
 <div class="outline-text-4" id="text-1-1-3">
+<ul class="org-ul">
+<li>Configurable plotting range in standards tool</li>
+<li>Compute transmitted fraction in formulas tool</li>
+<li>Add newly named element data Nh, Mc, Ts, &amp; Og</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgheadline4" class="outline-4">
+<h4 id="orgheadline4"><span class="section-number-4">1.1.4</span> Atoms</h4>
+<div class="outline-text-4" id="text-1-1-4">
+<ul class="org-ul">
+<li>Fixed a bug parsing input data for keywords that take numeric
+values (thanks to <a href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-June/008598.html">Jesús Eduardo Vega Castillo</a>)</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgheadline5" class="outline-4">
+<h4 id="orgheadline5"><span class="section-number-4">1.1.5</span> Demeter</h4>
+<div class="outline-text-4" id="text-1-1-5">
 <ul class="org-ul">
 <li>When saving LCF results, sort the standards alphabetically.
 (thanks to <a href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-November/012859.html">Florian Werner</a>)</li>
@@ -271,31 +172,51 @@ mount (thanks to Karen Chen-Wiegart)</li>
 <li>Added a fitting sanity check to verify that the ScatteringPath
 object actually exists</li>
 <li>Removed <code>{\267}</code> from gnuplot plots in k-space (thanks to
-<a href="https://github.com/bruceravel/demeter/issues/25">@roentgenium</a>)</li>
+<a href="https://github.com/bruceravel/demeter/issues/25">@roentgenium</a> and many others)</li>
 <li>Explicitly set SIGALRM in several more places, which is helpful
 for command line scripts</li>
 <li>Remove t/t symlink.  See #26. (thanks to @dkriegner)</li>
 <li>Add chi(E) column to xmu output file (thanks to <a href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-March/008467.html">Matteo Busi</a>)</li>
+<li>Fixed a perl 5.22 issue with Atoms potential list creation</li>
+<li>Preserve Scan.start_time metadatum of first group when making a
+merge</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline4" class="outline-4">
-<h4 id="orgheadline4"><span class="section-number-4">1.1.4</span> Documentation</h4>
-<div class="outline-text-4" id="text-1-1-4">
+<div id="outline-container-orgheadline6" class="outline-4">
+<h4 id="orgheadline6"><span class="section-number-4">1.1.6</span> Windows</h4>
+<div class="outline-text-4" id="text-1-1-6">
 <ul class="org-ul">
+<li>Add Win32::Unicode::File to dependency list</li>
+<li>use latest Strawberry Perl in installer</li>
+<li>add Xray::XDI to package</li>
+<li>recognize Windows 10 (thanks to <a href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-June/008605.html">Jeff Catalano</a>)</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgheadline7" class="outline-4">
+<h4 id="orgheadline7"><span class="section-number-4">1.1.7</span> Documentation</h4>
+<div class="outline-text-4" id="text-1-1-7">
+<ul class="org-ul">
+<li>Begin using new, sphinx-based documentation</li>
 <li>Fixed a misstatement in the Athena document about the order of
 columns in the norm(E) output file  (thanks to <a href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-December/012908.html">Jeff Catalano</a>)</li>
+<li>Add <a href="http://www.moleng.kyoto-u.ac.jp/~moleng_04/asakura/ja/others/aug/index.html">link to Hiroyuki Asakura&rsquo;s translation</a> to sidebar of Athena
+document</li>
+<li>Finish off FeS2 example in Artemis doc (thanks to Matthew Marcus
+for the push)</li>
 </ul>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgheadline9" class="outline-3">
-<h3 id="orgheadline9"><span class="section-number-3">1.2</span> 0.9.24   23 October   2015</h3>
+<div id="outline-container-orgheadline12" class="outline-3">
+<h3 id="orgheadline12"><span class="section-number-3">1.2</span> 0.9.24   23 October   2015</h3>
 <div class="outline-text-3" id="text-1-2">
-</div><div id="outline-container-orgheadline6" class="outline-4">
-<h4 id="orgheadline6"><span class="section-number-4">1.2.1</span> Demeter</h4>
+</div><div id="outline-container-orgheadline9" class="outline-4">
+<h4 id="orgheadline9"><span class="section-number-4">1.2.1</span> Demeter</h4>
 <div class="outline-text-4" id="text-1-2-1">
 <ul class="org-ul">
 <li>Fix a problem related to spaces in path names when opening the
@@ -304,8 +225,8 @@ pipe to gnuplot</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline7" class="outline-4">
-<h4 id="orgheadline7"><span class="section-number-4">1.2.2</span> Artemis</h4>
+<div id="outline-container-orgheadline10" class="outline-4">
+<h4 id="orgheadline10"><span class="section-number-4">1.2.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-2-2">
 <ul class="org-ul">
 <li>Half-hearted attempt to fix an odd edge case in importing
@@ -314,8 +235,8 @@ old-style project files with a <code>FEFF.INP</code> file (in caps).</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline8" class="outline-4">
-<h4 id="orgheadline8"><span class="section-number-4">1.2.3</span> Hephaestus</h4>
+<div id="outline-container-orgheadline11" class="outline-4">
+<h4 id="orgheadline11"><span class="section-number-4">1.2.3</span> Hephaestus</h4>
 <div class="outline-text-4" id="text-1-2-3">
 <ul class="org-ul">
 <li>A few changes to display of beamline customizations</li>
@@ -324,20 +245,20 @@ old-style project files with a <code>FEFF.INP</code> file (in caps).</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline15" class="outline-3">
-<h3 id="orgheadline15"><span class="section-number-3">1.3</span> 0.9.23   15 October   2015</h3>
+<div id="outline-container-orgheadline18" class="outline-3">
+<h3 id="orgheadline18"><span class="section-number-3">1.3</span> 0.9.23   15 October   2015</h3>
 <div class="outline-text-3" id="text-1-3">
-</div><div id="outline-container-orgheadline10" class="outline-4">
-<h4 id="orgheadline10"><span class="section-number-4">1.3.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline13" class="outline-4">
+<h4 id="orgheadline13"><span class="section-number-4">1.3.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-3-1">
 <ul class="org-ul">
-<li>In plugin configuration tool, fix crashiness of "reset all"
+<li>In plugin configuration tool, fix crashiness of &ldquo;reset all&rdquo;
 button (thanks to roentgenium, issue #23) Note: in the end, the
-reset<sub>all</sub> button was commented out &#x2013; it is implemented awkwardly.</li>
+reset_all button was commented out &#x2013; it is implemented awkwardly.</li>
 <li>Changes made to plugin configuration now correctly saved to and
 restored from demeter.ini (thanks to roentgenium, issue #23)</li>
 <li>implement a functional normalization control (thanks to Giuliana
-Aquilanti) {<i>pre3</i>} also athena-&gt;show<sub>funnorm</sub> configuration
+Aquilanti) {<i>pre3</i>} also athena-&gt;show_funnorm configuration
 parameter, enable control if athena project file is read which
 uses funnorm.</li>
 <li>rearrange controls in normalization and background removal group
@@ -347,8 +268,8 @@ which background removal</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline11" class="outline-4">
-<h4 id="orgheadline11"><span class="section-number-4">1.3.2</span> Artemis</h4>
+<div id="outline-container-orgheadline14" class="outline-4">
+<h4 id="orgheadline14"><span class="section-number-4">1.3.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-3-2">
 <ul class="org-ul">
 <li>Fixed a serious problem setting windowing function in Artemis.
@@ -359,14 +280,14 @@ changes to the model.  (thanks to Ian Godfrey)</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline12" class="outline-4">
-<h4 id="orgheadline12"><span class="section-number-4">1.3.3</span> Hephaestus</h4>
+<div id="outline-container-orgheadline15" class="outline-4">
+<h4 id="orgheadline15"><span class="section-number-4">1.3.3</span> Hephaestus</h4>
 <div class="outline-text-4" id="text-1-3-3">
 <ul class="org-ul">
 <li>configurable energy width used for computing edge steps.  <a href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-September/012762.html">see
 comment from Matthew Marcus</a> {<i>pre3</i>}</li>
 <li>on Data tool, added Shannon atomic radii using json version of
-<a href="http://v.web.umkc.edu/vanhornj/Radii.txt">David van Horn's</a> compilation of the <a href="https://doi.org/10.1107/S0567739476001551">Shannon data</a> (thanks to Neil
+<a href="http://v.web.umkc.edu/vanhornj/Radii.txt">David van Horn&rsquo;s</a> compilation of the <a href="https://doi.org/10.1107/S0567739476001551">Shannon data</a> (thanks to Neil
 Hyatt)</li>
 <li>On Data tool, added neutron scattering lengths and cross sections
 from <a href="https://doi.org/10.1080/10448639208218770">V.F. Sears, Neutron News, 3:3 (1992) pp. 26-37</a> and <a href="https://www.ncnr.nist.gov/resources/n-lengths/list.html">NIST NCNR</a>.</li>
@@ -382,16 +303,17 @@ elements by decade of discovery</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline13" class="outline-4">
-<h4 id="orgheadline13"><span class="section-number-4">1.3.4</span> Demeter</h4>
+<div id="outline-container-orgheadline16" class="outline-4">
+<h4 id="orgheadline16"><span class="section-number-4">1.3.4</span> Demeter</h4>
 <div class="outline-text-4" id="text-1-3-4">
 <ul class="org-ul">
 <li>Fixed a crashy bug in Demeter::Data::XDI</li>
 <li>Removed a bit of code related to choice of plot terminal with
 Gnuplot 5 that was not respecting the configured terminal value
 (thanks to Ian Godfrey)</li>
-<li>use <a href="https://metacpan.org/pod/File::Slurper"><a href=":Slurper">:Slurper</a></a> instead of <a href="https://metacpan.org/pod/File::Slurp::Tiny"><a href=":Slurp#MissingReference">:Slurp#MissingReference</a></a> in DemeterBuilder,
-see <a href="http://blogs.perl.org/users/leon_timmermans/2015/08/fileslurp-is-broken-and-wrong.html">this</a></li>
+<li>use <a href="https://metacpan.org/pod/File::Slurper">https://metacpan.org/pod/File::Slurper</a> instead of
+<a href="https://metacpan.org/pod/File::Slurp::Tiny">https://metacpan.org/pod/File::Slurp::Tiny</a> in DemeterBuilder, see
+<a href="http://blogs.perl.org/users/leon_timmermans/2015/08/fileslurp-is-broken-and-wrong.html">this</a></li>
 <li>implement a functional normalization for use in tender energy
 fluorescence EXAFS data where I0 changes a lot over the course of
 the scan.  this divides mu(E) by (post-pre) before removing
@@ -403,8 +325,8 @@ useful (simply do another double-click before the time out).</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline14" class="outline-4">
-<h4 id="orgheadline14"><span class="section-number-4">1.3.5</span> Windows</h4>
+<div id="outline-container-orgheadline17" class="outline-4">
+<h4 id="orgheadline17"><span class="section-number-4">1.3.5</span> Windows</h4>
 <div class="outline-text-4" id="text-1-3-5">
 <ul class="org-ul">
 <li>Handle path munging at the level of the .bat file header. take
@@ -414,11 +336,11 @@ care with relocation (thanks to Matt)</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline21" class="outline-3">
-<h3 id="orgheadline21"><span class="section-number-3">1.4</span> 0.9.22   29 July      2015</h3>
+<div id="outline-container-orgheadline24" class="outline-3">
+<h3 id="orgheadline24"><span class="section-number-3">1.4</span> 0.9.22   29 July      2015</h3>
 <div class="outline-text-3" id="text-1-4">
-</div><div id="outline-container-orgheadline16" class="outline-4">
-<h4 id="orgheadline16"><span class="section-number-4">1.4.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline19" class="outline-4">
+<h4 id="orgheadline19"><span class="section-number-4">1.4.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-4-1">
 <ul class="org-ul">
 <li>Fixed behavior of UI::Athena::Cursor when time-out happens by
@@ -430,7 +352,7 @@ Ian Godfrey) <i>{pre1}</i></li>
 {<i>pre4</i>}</li>
 <li>Deglitching now uses energy shift correctly (thanks to Shoaib
 Muhammad) {<i>pre4</i>}</li>
-<li>Do not disable "Save fit sequence" button when selecting
+<li>Do not disable &ldquo;Save fit sequence&rdquo; button when selecting
 groups. (Thanks to a fellow named Muhammad at the 2015 ASEAN
 Workshop on X-ray Absorption Spectroscopy)</li>
 <li>A change in 0.9.20 made it impossible to change the defaults for
@@ -438,14 +360,14 @@ plotting ranges in the four spaces.  This has been fixed.  (thanks
 to Lisa Bovenkamp)</li>
 <li>Fix buglet with ln checkbutton in col. sel. dialog reported as
 issue #22 (thanks to roetgenium)</li>
-<li>Better handle case of i0<sub>string</sub> = 1, leading to an array of ones
+<li>Better handle case of i0_string = 1, leading to an array of ones
 for the i0 array</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline17" class="outline-4">
-<h4 id="orgheadline17"><span class="section-number-4">1.4.2</span> Artemis</h4>
+<div id="outline-container-orgheadline20" class="outline-4">
+<h4 id="orgheadline20"><span class="section-number-4">1.4.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-4-2">
 <ul class="org-ul">
 <li>Care with path-like objects when Xray::XDI is not
@@ -466,19 +388,19 @@ Matt) {<i>pre4</i>}</li>
 <li>plot after fit now certain to respect k-weight setting in Plot
 window</li>
 <li>data+fit save file in Artemis are now XDI files</li>
-<li>crude fix for an odd situation where the _fit group's k array
+<li>crude fix for an odd situation where the _fit group&rsquo;s k array
 gets reset to something different from the Data k grid.
 Interpolate back onto the expected k-grid.  (thanks to Rosalie
 Hocking)</li>
 <li>Remove spurious minus sign appended to results of GDS evaluate
 button</li>
-<li>remove wxSHAPED attribute from GDS window's toolbar</li>
+<li>remove wxSHAPED attribute from GDS window&rsquo;s toolbar</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline18" class="outline-4">
-<h4 id="orgheadline18"><span class="section-number-4">1.4.3</span> Hephaestus</h4>
+<div id="outline-container-orgheadline21" class="outline-4">
+<h4 id="orgheadline21"><span class="section-number-4">1.4.3</span> Hephaestus</h4>
 <div class="outline-text-4" id="text-1-4-3">
 <ul class="org-ul">
 <li><a href="https://github.com/bruceravel/demeter/commit/0c90d3bf4950cac9422590b6f2cc05d6153ebfa3">Added annotations</a> for many Ag standards. (thanks to Ian Godfrey)
@@ -490,8 +412,8 @@ density/molarity units correctly (thanks for Guanghui Zhang)</li>
 </div>
 
 
-<div id="outline-container-orgheadline19" class="outline-4">
-<h4 id="orgheadline19"><span class="section-number-4">1.4.4</span> Demeter</h4>
+<div id="outline-container-orgheadline22" class="outline-4">
+<h4 id="orgheadline22"><span class="section-number-4">1.4.4</span> Demeter</h4>
 <div class="outline-text-4" id="text-1-4-4">
 <ul class="org-ul">
 <li>Manage deprecation of Module::Build from perl core by placing
@@ -501,11 +423,11 @@ Module::Build in `inc/`.  See <a href="https://metacpan.org/pod/Module::Build::C
 qt with gnuplot 5.0</li>
 <li>Adjust build script to try to set the terminal default sensibly
 at install time</li>
-<li>Fix is<sub>json</sub> file test for files with CR line termination (thanks
+<li>Fix is_json file test for files with CR line termination (thanks
 to Anna Zimina) {<i>pre3</i>}</li>
 <li>Add capacity to Atoms, Feff, ScatteringPath objects to
 accommodate polarization</li>
-<li>In some cases, chi<sub>noise</sub> called with 0 for kmax.  Use fft<sub>kmax</sub> in
+<li>In some cases, chi_noise called with 0 for kmax.  Use fft_kmax in
 that case.</li>
 <li>Change default for copyright statement in plot to false</li>
 <li>Fixed a testing bug resulting from gnuplot not being found
@@ -516,8 +438,8 @@ Ullom)</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline20" class="outline-4">
-<h4 id="orgheadline20"><span class="section-number-4">1.4.5</span> Windows</h4>
+<div id="outline-container-orgheadline23" class="outline-4">
+<h4 id="orgheadline23"><span class="section-number-4">1.4.5</span> Windows</h4>
 <div class="outline-text-4" id="text-1-4-5">
 <ul class="org-ul">
 <li>Now using gnuplot 5.0.0 in the Windows installer</li>
@@ -526,8 +448,8 @@ Ullom)</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline29" class="outline-3">
-<h3 id="orgheadline29"><span class="section-number-3">1.5</span> 0.9.21   26 February  2015</h3>
+<div id="outline-container-orgheadline32" class="outline-3">
+<h3 id="orgheadline32"><span class="section-number-3">1.5</span> 0.9.21   26 February  2015</h3>
 <div class="outline-text-3" id="text-1-5">
 <p>
 Begin practice of using <i>{preN}</i> tags to indicate exactly when a
@@ -536,8 +458,8 @@ feature was added.  Also begin practice of acknowledging the
 </p>
 </div>
 
-<div id="outline-container-orgheadline22" class="outline-4">
-<h4 id="orgheadline22"><span class="section-number-4">1.5.1</span> Athena</h4>
+<div id="outline-container-orgheadline25" class="outline-4">
+<h4 id="orgheadline25"><span class="section-number-4">1.5.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-5-1">
 <ul class="org-ul">
 <li>XDI integration (available in Demeter, but Xray::XDI is not
@@ -564,8 +486,8 @@ format. (thanks to Matt for the prompt)</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline23" class="outline-4">
-<h4 id="orgheadline23"><span class="section-number-4">1.5.2</span> Artemis</h4>
+<div id="outline-container-orgheadline26" class="outline-4">
+<h4 id="orgheadline26"><span class="section-number-4">1.5.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-5-2">
 <ul class="org-ul">
 <li>Disable run atoms and run feff buttons after first DnD of a path
@@ -582,13 +504,13 @@ from a project file.  (thanks to Ian Godfrey) <i>{pre3}</i></li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline24" class="outline-4">
-<h4 id="orgheadline24"><span class="section-number-4">1.5.3</span> Atoms</h4>
+<div id="outline-container-orgheadline27" class="outline-4">
+<h4 id="orgheadline27"><span class="section-number-4">1.5.3</span> Atoms</h4>
 <div class="outline-text-4" id="text-1-5-3">
 <ul class="org-ul">
 <li>Menu items for reporting a bug and asking a question</li>
 <li>slapped an eval around the feff run.  this allows feff to fail a
-bit more gracefully.  feff's error message gets sent to STDERR
+bit more gracefully.  feff&rsquo;s error message gets sent to STDERR
 (i.e. the screen or the log file on Windows) and an inscrutible
 message gets posted via carp, but Artemis/Atoms does not crash.
 (thanks to Stephen Parry) <i>{pre4}</i></li>
@@ -596,8 +518,8 @@ message gets posted via carp, but Artemis/Atoms does not crash.
 </div>
 </div>
 
-<div id="outline-container-orgheadline25" class="outline-4">
-<h4 id="orgheadline25"><span class="section-number-4">1.5.4</span> Hephaestus</h4>
+<div id="outline-container-orgheadline28" class="outline-4">
+<h4 id="orgheadline28"><span class="section-number-4">1.5.4</span> Hephaestus</h4>
 <div class="outline-text-4" id="text-1-5-4">
 <ul class="org-ul">
 <li>Menu items for reporting a bug and asking a question</li>
@@ -605,8 +527,8 @@ message gets posted via carp, but Artemis/Atoms does not crash.
 </div>
 </div>
 
-<div id="outline-container-orgheadline26" class="outline-4">
-<h4 id="orgheadline26"><span class="section-number-4">1.5.5</span> Demeter</h4>
+<div id="outline-container-orgheadline29" class="outline-4">
+<h4 id="orgheadline29"><span class="section-number-4">1.5.5</span> Demeter</h4>
 <div class="outline-text-4" id="text-1-5-5">
 <ul class="org-ul">
 <li>Sensible message and die when encountering a problem loading
@@ -630,22 +552,22 @@ Ognjanovic)</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline27" class="outline-4">
-<h4 id="orgheadline27"><span class="section-number-4">1.5.6</span> Larch</h4>
+<div id="outline-container-orgheadline30" class="outline-4">
+<h4 id="orgheadline30"><span class="section-number-4">1.5.6</span> Larch</h4>
 <div class="outline-text-4" id="text-1-5-6">
 <ul class="org-ul">
 <li>Much work on both Athena and Artemis to work properly with Larch,
 particularly in light of recent changes to larch server</li>
-<li>Made "l" versions of A, A, and H.  These set DEMETER<sub>BACKEND</sub> to
-"larch" in the BEGIN block</li>
+<li>Made &ldquo;l&rdquo; versions of A, A, and H.  These set DEMETER_BACKEND to
+&ldquo;larch&rdquo; in the BEGIN block</li>
 <li>Made <code>larch_server.ini</code> file, specify windows path for
-larch<sub>server</sub></li>
+larch_server</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline28" class="outline-4">
-<h4 id="orgheadline28"><span class="section-number-4">1.5.7</span> Windows</h4>
+<div id="outline-container-orgheadline31" class="outline-4">
+<h4 id="orgheadline31"><span class="section-number-4">1.5.7</span> Windows</h4>
 <div class="outline-text-4" id="text-1-5-7">
 <ul class="org-ul">
 <li>Add Demeter version number to screen/log file messages <i>{pre3}</i></li>
@@ -654,20 +576,20 @@ larch<sub>server</sub></li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline38" class="outline-3">
-<h3 id="orgheadline38"><span class="section-number-3">1.6</span> 0.9.20   12 May       2014</h3>
+<div id="outline-container-orgheadline41" class="outline-3">
+<h3 id="orgheadline41"><span class="section-number-3">1.6</span> 0.9.20   12 May       2014</h3>
 <div class="outline-text-3" id="text-1-6">
-</div><div id="outline-container-orgheadline30" class="outline-4">
-<h4 id="orgheadline30"><span class="section-number-4">1.6.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline33" class="outline-4">
+<h4 id="orgheadline33"><span class="section-number-4">1.6.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-6-1">
 <ul class="org-ul">
 <li>File drag-n-drop onto the group list from the system file manager</li>
 <li>Control-left-click for reorganzing group list items disabled in
 favor of file drag-n-drop</li>
 <li>Booth self-absorption algorithm now implemented correctly</li>
-<li>Added Hephaestus doc to the Athena Users' Guide</li>
+<li>Added Hephaestus doc to the Athena Users&rsquo; Guide</li>
 <li>remove coloration characters when saving the contents of the
-status bar buffer so as not to trigger perl's wide character
+status bar buffer so as not to trigger perl&rsquo;s wide character
 warning</li>
 <li>error messages for zero plotting range, excessive columns in save
 marked groups with Ifeffit, and lots of groups with Ifeffit</li>
@@ -687,8 +609,8 @@ sets with a similar problem, such a diffraction peak</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline31" class="outline-4">
-<h4 id="orgheadline31"><span class="section-number-4">1.6.2</span> Artemis</h4>
+<div id="outline-container-orgheadline34" class="outline-4">
+<h4 id="orgheadline34"><span class="section-number-4">1.6.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-6-2">
 <ul class="org-ul">
 <li>Drag and drop Athena or Artemis project files onto the Data list</li>
@@ -699,21 +621,21 @@ buttons from History, Log, and Journal</li>
 <li>fixed problems handling import of chi(k) data into Artemis
 <ul class="org-ul">
 <li>fixed a problem serializing data that had been imported as chi(k)</li>
-<li>take care to toggle the from<sub>yaml</sub> attribute to true when
+<li>take care to toggle the from_yaml attribute to true when
 importing data from a project file.  this was needed to pass
-the "data exists" fit sanity check</li>
+the &ldquo;data exists&rdquo; fit sanity check</li>
 </ul></li>
-<li>corrected an odd bug whereby relation between a FSPath and it's
+<li>corrected an odd bug whereby relation between a FSPath and it&rsquo;s
 Feff calculation could be lost in a project file (see thread
 starting at
 <a href="http://www.mail-archive.com/ifeffit@millenia.cars.aps.anl.gov/msg04288.html">http://www.mail-archive.com/ifeffit@millenia.cars.aps.anl.gov/msg04288.html</a>)</li>
 <li>save path interpretation from Path page in Atoms window</li>
 <li>reorganized some buttons in the Atoms window</li>
 <li>attempted to fix a bug wherein an incorrect argument could be
-sent to Wx::ComboBox's SetStringSelection method in Align, LCF,
+sent to Wx::ComboBox&rsquo;s SetStringSelection method in Align, LCF,
 and a few other places</li>
 <li>parse a feff.inp file for feff8/9 correctly for use with feff6</li>
-<li>I think I've fixed the problem of the data set being lost if a
+<li>I think I&rsquo;ve fixed the problem of the data set being lost if a
 project is saved before a fit is made</li>
 <li>fixed a display problem with radio button label widths on SS tab
 in Atoms</li>
@@ -721,8 +643,8 @@ in Atoms</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline32" class="outline-4">
-<h4 id="orgheadline32"><span class="section-number-4">1.6.3</span> Hephaestus</h4>
+<div id="outline-container-orgheadline35" class="outline-4">
+<h4 id="orgheadline35"><span class="section-number-4">1.6.3</span> Hephaestus</h4>
 <div class="outline-text-4" id="text-1-6-3">
 <ul class="org-ul">
 <li>Document now displayed in the system web browser (Wx::Html was
@@ -739,8 +661,8 @@ properly displayed</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline33" class="outline-4">
-<h4 id="orgheadline33"><span class="section-number-4">1.6.4</span> Atoms</h4>
+<div id="outline-container-orgheadline36" class="outline-4">
+<h4 id="orgheadline36"><span class="section-number-4">1.6.4</span> Atoms</h4>
 <div class="outline-text-4" id="text-1-6-4">
 <ul class="org-ul">
 <li>sensible error messages from CLI version when no input file
@@ -755,7 +677,7 @@ for publication by the time this is released), but only for Atoms
 in Artemis, not for stand-alone.  Wrote documentation page for
 aggregate calculation</li>
 <li>put controls for degeneracy margins front and center</li>
-<li>deal sensibly with Feff's hard-wired maximum cluster size of 500
+<li>deal sensibly with Feff&rsquo;s hard-wired maximum cluster size of 500
 atoms by writing only the first 499 sites, regardless of how many
 atoms are within Rmax</li>
 <li>somehow, the shift vector never got implemented in Demeter (even
@@ -765,33 +687,33 @@ is now fixed.</li>
 an alternate orthorhombic setting was used in the CIF file</li>
 <li>progress on getting Atoms and the GUI to work correctly with
 rhombohedral groups</li>
-<li>new button in GUI for inserting shift vector from Int'l tables</li>
+<li>new button in GUI for inserting shift vector from Int&rsquo;l tables</li>
 <li>launching GUI from command line now respects input file argument</li>
 <li>handle <code>:R</code>, <code>:H</code>, <code>:1</code>, and <code>:2</code> symbol modifiers</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline34" class="outline-4">
-<h4 id="orgheadline34"><span class="section-number-4">1.6.5</span> Larch</h4>
+<div id="outline-container-orgheadline37" class="outline-4">
+<h4 id="orgheadline37"><span class="section-number-4">1.6.5</span> Larch</h4>
 <div class="outline-text-4" id="text-1-6-5">
 <ul class="org-ul">
 <li>Athena w/Larch now mostly works on Windows</li>
-<li>use fill<sub>value</sub>=0.0 with interp() to avoid issues with NaN values
+<li>use fill_value=0.0 with interp() to avoid issues with NaN values
 in arrays (no longer necessary, see <a href="https://github.com/xraypy/xraylarch/issues/63">https://github.com/xraypy/xraylarch/issues/63</a>)</li>
 <li>escape backslashes in filenames before sending them to Larch</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline35" class="outline-4">
-<h4 id="orgheadline35"><span class="section-number-4">1.6.6</span> Demeter</h4>
+<div id="outline-container-orgheadline38" class="outline-4">
+<h4 id="orgheadline38"><span class="section-number-4">1.6.6</span> Demeter</h4>
 <div class="outline-text-4" id="text-1-6-6">
 <ul class="org-ul">
 <li>lots of code clean-up</li>
 <li>improved methodology for populating Config pages in the GUIs</li>
-<li>improvements to the PDF versions of the users' guides</li>
-<li>return to using wxFD<sub>OVERWRITE</sub><sub>PROMPT</sub> with Wx::FileDialog rather
+<li>improvements to the PDF versions of the users&rsquo; guides</li>
+<li>return to using wxFD_OVERWRITE_PROMPT with Wx::FileDialog rather
 than Demeter::UI::Wx::OverwritePrompt, which was fixing a problem
 in GTK 2.20</li>
 <li>several enhancements to standards subsystem</li>
@@ -799,12 +721,12 @@ in GTK 2.20</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline36" class="outline-4">
-<h4 id="orgheadline36"><span class="section-number-4">1.6.7</span> Windows / Mac</h4>
+<div id="outline-container-orgheadline39" class="outline-4">
+<h4 id="orgheadline39"><span class="section-number-4">1.6.7</span> Windows / Mac</h4>
 <div class="outline-text-4" id="text-1-6-7">
 <ul class="org-ul">
 <li>This is the drop-the-D edition for Windows.  The desktop icons
-no longer have "(D)" in their names.</li>
+no longer have &ldquo;(D)&rdquo; in their names.</li>
 <li>Athena w/Larch now mostly works on Windows</li>
 <li>Fixed a problem with real and integer configuration parameters
 being unset upon first time running Demeter. <b>This was the
@@ -820,14 +742,14 @@ and made it recommended in Build.PL</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline37" class="outline-4">
-<h4 id="orgheadline37"><span class="section-number-4">1.6.8</span> Acknowledgements</h4>
+<div id="outline-container-orgheadline40" class="outline-4">
+<h4 id="orgheadline40"><span class="section-number-4">1.6.8</span> Acknowledgements</h4>
 <div class="outline-text-4" id="text-1-6-8">
 <ul class="org-ul">
 <li>Georges Siddiqi, Kevin Jorissen, Robert Gordon, Shoaib Muhammad
 all helped me address the problems with the 0.9.19 release on
 Windows</li>
-<li>Frank Schima made yeoman's progress on a MacPorts version of
+<li>Frank Schima made yeoman&rsquo;s progress on a MacPorts version of
 Demeter.  He also suggested file drag-n-drop.</li>
 <li>George Strbinsky helped me track down some issues in the
 Macports version</li>
@@ -848,8 +770,8 @@ an Artemis project before doing a fit</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline45" class="outline-3">
-<h3 id="orgheadline45"><span class="section-number-3">1.7</span> 0.9.19    8 January   2014 (withdrawn)</h3>
+<div id="outline-container-orgheadline48" class="outline-3">
+<h3 id="orgheadline48"><span class="section-number-3">1.7</span> 0.9.19    8 January   2014 (withdrawn)</h3>
 <div class="outline-text-3" id="text-1-7">
 <p>
 The windows installer for this release had too many problems and was
@@ -858,8 +780,8 @@ withdrawn a couple of days after its release.  One of the goals of
 </p>
 </div>
 
-<div id="outline-container-orgheadline39" class="outline-4">
-<h4 id="orgheadline39"><span class="section-number-4">1.7.1</span> Athena</h4>
+<div id="outline-container-orgheadline42" class="outline-4">
+<h4 id="orgheadline42"><span class="section-number-4">1.7.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-7-1">
 <ul class="org-ul">
 <li>escape group names when renaming, i.e. treat metacharacters in
@@ -872,25 +794,25 @@ mouseover hint</li>
 is measured with the cap on the detector, resulting in some 0s in
 the slow column</li>
 <li>choice of X-ray absorption tables now easily configurable in
-"absorption" group</li>
+&ldquo;absorption&rdquo; group</li>
 <li>fixed a bunch of problems with the Booth self-absorption
 algorithm</li>
 <li>keyboard shortcuts for merging (C-S-m, C-S-n, C-S-c for merging
 in mu, norm, chi)</li>
 <li>right click on several plot buttons makes a special plot from the
 Plot menu + status bar hints</li>
-<li>added "Shrink" to plot options.  this hides the k-weight and plot
+<li>added &ldquo;Shrink&rdquo; to plot options.  this hides the k-weight and plot
 options controls, allowing more room for the group list.  also
 shows a button for restoring the k-weight and plot options
 controls</li>
-<li>added "Show measurement uncertainties" submenu to Group menu with
+<li>added &ldquo;Show measurement uncertainties&rdquo; submenu to Group menu with
 options for this, marked, and all</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline40" class="outline-4">
-<h4 id="orgheadline40"><span class="section-number-4">1.7.2</span> Artemis</h4>
+<div id="outline-container-orgheadline43" class="outline-4">
+<h4 id="orgheadline43"><span class="section-number-4">1.7.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-7-2">
 <ul class="org-ul">
 <li>Fixed a bug in SSPath creation by drag-n-drop from pathlike tab</li>
@@ -909,13 +831,13 @@ that record when selected</li>
 <li>fixed a bug resulting in repetitious display of parameter values
 in log file</li>
 <li>save VPaths to and restore from Artemis project files</li>
-<li>added "transfer all" button to VPaths tab in Plot window</li>
+<li>added &ldquo;transfer all&rdquo; button to VPaths tab in Plot window</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline41" class="outline-4">
-<h4 id="orgheadline41"><span class="section-number-4">1.7.3</span> Atoms</h4>
+<div id="outline-container-orgheadline44" class="outline-4">
+<h4 id="orgheadline44"><span class="section-number-4">1.7.3</span> Atoms</h4>
 <div class="outline-text-4" id="text-1-7-3">
 <ul class="org-ul">
 <li>fixed a bug processing hexagonal and trigonal groups with the
@@ -928,30 +850,30 @@ from button on intrp page</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline42" class="outline-4">
-<h4 id="orgheadline42"><span class="section-number-4">1.7.4</span> Demeter</h4>
+<div id="outline-container-orgheadline45" class="outline-4">
+<h4 id="orgheadline45"><span class="section-number-4">1.7.4</span> Demeter</h4>
 <div class="outline-text-4" id="text-1-7-4">
 <ul class="org-ul">
 <li>Made the Demeter::Feff::Aggregate object for performing the
 pathfinder fuzzily over multiple crystallographic sites.</li>
-<li>Addressed some failed tests in 012<sub>atoms</sub></li>
+<li>Addressed some failed tests in 012_atoms</li>
 <li>Fixed a problem with fixed edge step value and XANES data</li>
 <li>Added plus/minus sign to Demeter::UI::Wx::SpecialCharacters</li>
 <li>Require MooseX::Types::LaxNum since Moose now has a much more
 strict definition of Num in a type constraint.</li>
-<li>Fixed an issue surrounding Plot object's terminal<sub>number</sub>
+<li>Fixed an issue surrounding Plot object&rsquo;s terminal_number
      parameter and pgplot</li>
 <li>Fixed a bug in the filetype plugin for the Lytle database</li>
 <li>Require Archive::Zip &gt;= 1.31 to get the option of
 Archive::Zip::UNICODE=1 which should help computers with unicode
 language settings</li>
-<li>Implement Karine Provost's path ranking criteria</li>
+<li>Implement Karine Provost&rsquo;s path ranking criteria</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline43" class="outline-4">
-<h4 id="orgheadline43"><span class="section-number-4">1.7.5</span> Windows</h4>
+<div id="outline-container-orgheadline46" class="outline-4">
+<h4 id="orgheadline46"><span class="section-number-4">1.7.5</span> Windows</h4>
 <div class="outline-text-4" id="text-1-7-5">
 <ul class="org-ul">
 <li>New installer package with perl 5.18.1 and most recent versions
@@ -961,17 +883,17 @@ of all dependencies</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline44" class="outline-4">
-<h4 id="orgheadline44"><span class="section-number-4">1.7.6</span> Acknowledgments</h4>
+<div id="outline-container-orgheadline47" class="outline-4">
+<h4 id="orgheadline47"><span class="section-number-4">1.7.6</span> Acknowledgments</h4>
 <div class="outline-text-4" id="text-1-7-6">
 <ul class="org-ul">
-<li><span class="underline">Fred Mosselmans</span> noticed that the add a site button didn't work
+<li><span class="underline">Fred Mosselmans</span> noticed that the add a site button didn&rsquo;t work
 in Atoms and that a project file saved before a fit is performed
 will crash Artemis</li>
 <li><span class="underline">Andrei Shiryaev</span> and <span class="underline">Fen Fen Zhu</span> noticed that unicode in
 Artemis project files was problematic and <span class="underline">Matt Newville</span>
 suggested a solution</li>
-<li><span class="underline">Denis Testamale</span> noticed that test 012<sub>atoms</sub> was failing</li>
+<li><span class="underline">Denis Testamale</span> noticed that test 012_atoms was failing</li>
 <li><span class="underline">George Sterbinsky</span> for noting that a fixed edge step value was
 not respected for XANES data, for noticing the problem renaming
 Athena group names, and for noticing numeric type constraint
@@ -988,8 +910,8 @@ self-absorption implementation was horribly flawed</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline46" class="outline-3">
-<h3 id="orgheadline46"><span class="section-number-3">1.8</span> 0.9.18.3 28 January   2014</h3>
+<div id="outline-container-orgheadline49" class="outline-3">
+<h3 id="orgheadline49"><span class="section-number-3">1.8</span> 0.9.18.3 28 January   2014</h3>
 <div class="outline-text-3" id="text-1-8">
 <p>
 This is a branch created to facilitate development of the Macports
@@ -1012,7 +934,7 @@ Athena.</li>
 <li>Adds the CPAN modules MooseX::Types::LaxNum to the requirements
 in Build.PL</li>
 
-<li>Backports from HEAD a page in the Athena Users' Guide and
+<li>Backports from HEAD a page in the Athena Users&rsquo; Guide and
 several image file so that Hephaestus has something to show in the
 browser</li>
 
@@ -1021,11 +943,11 @@ browser</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline49" class="outline-3">
-<h3 id="orgheadline49"><span class="section-number-3">1.9</span> 0.9.18.2 29 August    2013</h3>
+<div id="outline-container-orgheadline52" class="outline-3">
+<h3 id="orgheadline52"><span class="section-number-3">1.9</span> 0.9.18.2 29 August    2013</h3>
 <div class="outline-text-3" id="text-1-9">
-</div><div id="outline-container-orgheadline47" class="outline-4">
-<h4 id="orgheadline47"><span class="section-number-4">1.9.1</span> Artemis</h4>
+</div><div id="outline-container-orgheadline50" class="outline-4">
+<h4 id="orgheadline50"><span class="section-number-4">1.9.1</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-9-1">
 <ul class="org-ul">
 <li>Fixed several bugs importing old-style artemis projects</li>
@@ -1033,8 +955,8 @@ browser</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline48" class="outline-4">
-<h4 id="orgheadline48"><span class="section-number-4">1.9.2</span> Acknowledgments</h4>
+<div id="outline-container-orgheadline51" class="outline-4">
+<h4 id="orgheadline51"><span class="section-number-4">1.9.2</span> Acknowledgments</h4>
 <div class="outline-text-4" id="text-1-9-2">
 <ul class="org-ul">
 <li><span class="underline">Mattie Peck</span> for reporting these problems importing old-style Artemis projects</li>
@@ -1043,24 +965,24 @@ browser</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline51" class="outline-3">
-<h3 id="orgheadline51"><span class="section-number-3">1.10</span> 0.9.18.1 28 August    2013</h3>
+<div id="outline-container-orgheadline54" class="outline-3">
+<h3 id="orgheadline54"><span class="section-number-3">1.10</span> 0.9.18.1 28 August    2013</h3>
 <div class="outline-text-3" id="text-1-10">
-</div><div id="outline-container-orgheadline50" class="outline-4">
-<h4 id="orgheadline50"><span class="section-number-4">1.10.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline53" class="outline-4">
+<h4 id="orgheadline53"><span class="section-number-4">1.10.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-10-1">
 <ul class="org-ul">
-<li>Fixed a bug involving the order of items in Athena's main menu</li>
+<li>Fixed a bug involving the order of items in Athena&rsquo;s main menu</li>
 </ul>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgheadline61" class="outline-3">
-<h3 id="orgheadline61"><span class="section-number-3">1.11</span> 0.9.18   27 August    2013</h3>
+<div id="outline-container-orgheadline64" class="outline-3">
+<h3 id="orgheadline64"><span class="section-number-3">1.11</span> 0.9.18   27 August    2013</h3>
 <div class="outline-text-3" id="text-1-11">
-</div><div id="outline-container-orgheadline52" class="outline-4">
-<h4 id="orgheadline52"><span class="section-number-4">1.11.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline55" class="outline-4">
+<h4 id="orgheadline55"><span class="section-number-4">1.11.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-11-1">
 <ul class="org-ul">
 <li>Display uncertainties in fitted E0 shifts</li>
@@ -1101,13 +1023,13 @@ browser</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline53" class="outline-4">
-<h4 id="orgheadline53"><span class="section-number-4">1.11.2</span> Artemis</h4>
+<div id="outline-container-orgheadline56" class="outline-4">
+<h4 id="orgheadline56"><span class="section-number-4">1.11.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-11-2">
 <ul class="org-ul">
 <li>Benefit by improved pathfinder performance</li>
 <li>Clear project name when closing a project</li>
-<li>fixed a problem importing data via "Open project or data" in certain situations</li>
+<li>fixed a problem importing data via &ldquo;Open project or data&rdquo; in certain situations</li>
 <li>temporarily disable any non-critical sanity check for a fit</li>
 <li>button for not saving a fit to the history</li>
 <li>recognize keep attribute of fit object for finer control over history creation</li>
@@ -1121,23 +1043,23 @@ removal standard</li>
 <li>add tool for computing bond valence sums from marked path(s)</li>
 <li>new pre-fit sanity check to make sure that GDS parameter names only have allowed characters</li>
 <li>right click on cards in feff.inp to go directly to the on-line Feff documentation</li>
-<li>button to evaluate and display GDS parameter without fitting (i.e. "spell-check" your def parameters)</li>
+<li>button to evaluate and display GDS parameter without fitting (i.e. &ldquo;spell-check&rdquo; your def parameters)</li>
 <li>can now stretch the Data window and adjust the size of the path list</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline54" class="outline-4">
-<h4 id="orgheadline54"><span class="section-number-4">1.11.3</span> Demeter</h4>
+<div id="outline-container-orgheadline57" class="outline-4">
+<h4 id="orgheadline57"><span class="section-number-4">1.11.3</span> Demeter</h4>
 <div class="outline-text-4" id="text-1-11-3">
 <ul class="org-ul">
-<li>switching between ifeffit and larch is more sensible with DEMETER<sub>BACKEND</sub> and DEMETER<sub>DEVFLAG</sub> environment variables
+<li>switching between ifeffit and larch is more sensible with DEMETER_BACKEND and DEMETER_DEVFLAG environment variables
 <ul class="org-ul">
 <li><code>export DEMETER_BACKEND = ifeffit|larch</code> to control which backend is used</li>
 <li><code>export DEMETER_DEVFLAG = 0|1</code> to control whether development screen messages are printed</li>
 </ul></li>
 <li>Did some profiling on path finder, found a way to significantly improve performance</li>
-<li>Added Eric Breynaert's SPEC file plugin for SNBL at ESRF</li>
+<li>Added Eric Breynaert&rsquo;s SPEC file plugin for SNBL at ESRF</li>
 <li>Deal more gracefully with a corrupted MRU file</li>
 <li>Add interface to bond valence sum database</li>
 <li>Record uncertainty in E0 shift when auto-aligning</li>
@@ -1145,8 +1067,8 @@ removal standard</li>
 <li>LCF linear term now works, but only in Larch</li>
 <li>changed <code>ifeffit</code> attribute in Mode object to <code>backend</code>
 <ul class="org-ul">
-<li>made "ifeffit" and "larch" as aliases for "backend"</li>
-<li>replaced "ifeffit" with "backend" everywhere in the distribution</li>
+<li>made &ldquo;ifeffit&rdquo; and &ldquo;larch&rdquo; as aliases for &ldquo;backend&rdquo;</li>
+<li>replaced &ldquo;ifeffit&rdquo; with &ldquo;backend&rdquo; everywhere in the distribution</li>
 </ul></li>
 <li>removed dependence on MooseX::StrictConstructor (this addresses a
 problem with backwards compatibility of project files which have
@@ -1160,7 +1082,7 @@ actually solvable looking backwards, but should be forwards)</li>
 <li>deal sensibly with 4-parameter lineshapes</li>
 <li>implemented pseudo-Voigt function with Ifeffit</li>
 <li>fixed an ifeffit bug related to e0 shifts in peak fitting that has been plaguing Athena for a long time</li>
-<li>updated Athena Users' Guide page to explain all the new features</li>
+<li>updated Athena Users&rsquo; Guide page to explain all the new features</li>
 </ul></li>
 <li>deglitching no longer prohibited on datatype=xanes</li>
 <li>respect the gnuplot-&gt;datastyle configuration parameter</li>
@@ -1176,8 +1098,8 @@ actually solvable looking backwards, but should be forwards)</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline55" class="outline-4">
-<h4 id="orgheadline55"><span class="section-number-4">1.11.4</span> Larch</h4>
+<div id="outline-container-orgheadline58" class="outline-4">
+<h4 id="orgheadline58"><span class="section-number-4">1.11.4</span> Larch</h4>
 <div class="outline-text-4" id="text-1-11-4">
 <ul class="org-ul">
 <li>Larch templates for LCF fitting</li>
@@ -1190,8 +1112,8 @@ export in Athena when larch is in use</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline56" class="outline-4">
-<h4 id="orgheadline56"><span class="section-number-4">1.11.5</span> Wx</h4>
+<div id="outline-container-orgheadline59" class="outline-4">
+<h4 id="orgheadline59"><span class="section-number-4">1.11.5</span> Wx</h4>
 <div class="outline-text-4" id="text-1-11-5">
 <ul class="org-ul">
 <li>Fixed a Wx bug involving misuse of the wxNullColour symbol</li>
@@ -1203,10 +1125,10 @@ export in Athena when larch is in use</li>
 </div>
 
 
-<div id="outline-container-orgheadline59" class="outline-4">
-<h4 id="orgheadline59"><span class="section-number-4">1.11.6</span> Top of the to do list</h4>
+<div id="outline-container-orgheadline62" class="outline-4">
+<h4 id="orgheadline62"><span class="section-number-4">1.11.6</span> Top of the to do list</h4>
 <div class="outline-text-4" id="text-1-11-6">
-</div><ol class="org-ol"><li><a id="orgheadline57"></a>certainly for 0.9.19:<br  /><div class="outline-text-5" id="text-1-11-6-1">
+</div><ol class="org-ol"><li><a id="orgheadline60"></a>certainly for 0.9.19:<br  /><div class="outline-text-5" id="text-1-11-6-1">
 <ul class="org-ul">
 <li>Implement dispersive data tool (acknowledgment: Pinit Kidkhunthod)</li>
 <li>Address several Atoms bugs (acknowledgment: Chanapa Kongmark)</li>
@@ -1216,7 +1138,7 @@ export in Athena when larch is in use</li>
 </ul>
 </div></li>
 
-<li><a id="orgheadline58"></a>hopefully for 0.9.19:<br  /><div class="outline-text-5" id="text-1-11-6-2">
+<li><a id="orgheadline61"></a>hopefully for 0.9.19:<br  /><div class="outline-text-5" id="text-1-11-6-2">
 <ul class="org-ul">
 <li>Fuzzy degeneracy over multiple sites (Shelly pushed for this)</li>
 <li>feff8.5exafs integration (<a href="https://github.com/xraypy/feff85exafs">https://github.com/xraypy/feff85exafs</a>)</li>
@@ -1226,17 +1148,17 @@ export in Athena when larch is in use</li>
 </div>
 
 
-<div id="outline-container-orgheadline60" class="outline-4">
-<h4 id="orgheadline60"><span class="section-number-4">1.11.7</span> Acknowledgments</h4>
+<div id="outline-container-orgheadline63" class="outline-4">
+<h4 id="orgheadline63"><span class="section-number-4">1.11.7</span> Acknowledgments</h4>
 <div class="outline-text-4" id="text-1-11-7">
 <p>
-With so many new features and bug fixes, I owe a big "Thank You!" to lots of people:
+With so many new features and bug fixes, I owe a big &ldquo;Thank You!&rdquo; to lots of people:
 </p>
 
 <ul class="org-ul">
 <li><span class="underline">John Hayes</span> (reported a PCA bug)</li>
 <li><span class="underline">Martin Stennet</span> and <span class="underline">Neil Hyatt</span> (for requesting the multi-electron excitation tool)</li>
-<li><span class="underline">Chachi Rojas</span> and <span class="underline">Anthony Ardizzi</span> (for bug reports and suggestions regarding to Artemis' fit history)</li>
+<li><span class="underline">Chachi Rojas</span> and <span class="underline">Anthony Ardizzi</span> (for bug reports and suggestions regarding to Artemis&rsquo; fit history)</li>
 <li><span class="underline">Shelly Kelly</span> (for pointing out bugs involving background removal standards and
 importing chi(k) data  and for suggesting improvements to the Path Interpretation page)</li>
 <li><span class="underline">Eric Breyneart</span> (for contributing a SPEC file plugin and for reporting a bug in the use of fuzzy degeneracy)</li>
@@ -1244,29 +1166,29 @@ importing chi(k) data  and for suggesting improvements to the Path Interpretatio
 step uncertainty tool, and the plot of norm(E) scaled by edge step)</li>
 <li><span class="underline">Roberto Rodriguez</span> (for reporting a bug involving a corrupted MRU file)</li>
 <li><span class="underline">George Strbinsky</span> (for reporting bugs in the deglithing tool and in the gnuplot interface)</li>
-<li><span class="underline">Joe Woicik</span> and others (for noticing several bugs in Artemis' File-&gt;Import data menu item)</li>
-<li><span class="underline">Shoaib Muhammad</span> (for suggesting a change to Artemis' interaction with autosave files
+<li><span class="underline">Joe Woicik</span> and others (for noticing several bugs in Artemis&rsquo; File-&gt;Import data menu item)</li>
+<li><span class="underline">Shoaib Muhammad</span> (for suggesting a change to Artemis&rsquo; interaction with autosave files
 and for reporting a bug in clearing Feff calculcation when closing projects</li>
 <li><span class="underline">Simon Bare</span> (for pointing out that (Ctrl/Alt)-(j/k) were implemented inconsistently</li>
 <li><span class="underline">Kevin Jorissen</span> (for suggesting direct linking to the on-line Feff document)</li>
 </ul>
 
 <p>
-I think that's everyone.  If I missed your name, it's just that I suck
-at record-keeping, not that I don't value your input.
+I think that&rsquo;s everyone.  If I missed your name, it&rsquo;s just that I suck
+at record-keeping, not that I don&rsquo;t value your input.
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgheadline65" class="outline-3">
-<h3 id="orgheadline65"><span class="section-number-3">1.12</span> 0.9.17   28 May       2013</h3>
+<div id="outline-container-orgheadline68" class="outline-3">
+<h3 id="orgheadline68"><span class="section-number-3">1.12</span> 0.9.17   28 May       2013</h3>
 <div class="outline-text-3" id="text-1-12">
-</div><div id="outline-container-orgheadline62" class="outline-4">
-<h4 id="orgheadline62"><span class="section-number-4">1.12.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline65" class="outline-4">
+<h4 id="orgheadline65"><span class="section-number-4">1.12.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-12-1">
 <ul class="org-ul">
-<li>Fixed a bug where a column label of "xmu" would cause a definition loop</li>
+<li>Fixed a bug where a column label of &ldquo;xmu&rdquo; would cause a definition loop</li>
 <li>Fixed an issue regarding selection of energy units in column selection dialog</li>
 <li>Fixed a problem with rebinning parameters not being honored when
 making a rebinned group from the rebin tool or column selection dialog</li>
@@ -1276,8 +1198,8 @@ making a rebinned group from the rebin tool or column selection dialog</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline63" class="outline-4">
-<h4 id="orgheadline63"><span class="section-number-4">1.12.2</span> Artemis</h4>
+<div id="outline-container-orgheadline66" class="outline-4">
+<h4 id="orgheadline66"><span class="section-number-4">1.12.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-12-2">
 <ul class="org-ul">
 <li>Scrub characters from atom tags that will confuse Feff.  This was
@@ -1295,8 +1217,8 @@ yet being defined when a fit is run</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline64" class="outline-4">
-<h4 id="orgheadline64"><span class="section-number-4">1.12.3</span> Demeter</h4>
+<div id="outline-container-orgheadline67" class="outline-4">
+<h4 id="orgheadline67"><span class="section-number-4">1.12.3</span> Demeter</h4>
 <div class="outline-text-4" id="text-1-12-3">
 <ul class="org-ul">
 <li>Lots more Larch templates</li>
@@ -1306,11 +1228,11 @@ yet being defined when a fit is run</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline70" class="outline-3">
-<h3 id="orgheadline70"><span class="section-number-3">1.13</span> 0.9.16   28 March     2013</h3>
+<div id="outline-container-orgheadline73" class="outline-3">
+<h3 id="orgheadline73"><span class="section-number-3">1.13</span> 0.9.16   28 March     2013</h3>
 <div class="outline-text-3" id="text-1-13">
-</div><div id="outline-container-orgheadline66" class="outline-4">
-<h4 id="orgheadline66"><span class="section-number-4">1.13.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline69" class="outline-4">
+<h4 id="orgheadline69"><span class="section-number-4">1.13.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-13-1">
 <ul class="org-ul">
 <li>fixed a couple bugs in difference spectrum tool</li>
@@ -1324,8 +1246,8 @@ preprocessing and for the alignment tool</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline67" class="outline-4">
-<h4 id="orgheadline67"><span class="section-number-4">1.13.2</span> Artemis</h4>
+<div id="outline-container-orgheadline70" class="outline-4">
+<h4 id="orgheadline70"><span class="section-number-4">1.13.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-13-2">
 <ul class="org-ul">
 <li>phase corrected transforms implemented</li>
@@ -1335,8 +1257,8 @@ preprocessing and for the alignment tool</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline68" class="outline-4">
-<h4 id="orgheadline68"><span class="section-number-4">1.13.3</span> Hephaestus</h4>
+<div id="outline-container-orgheadline71" class="outline-4">
+<h4 id="orgheadline71"><span class="section-number-4">1.13.3</span> Hephaestus</h4>
 <div class="outline-text-4" id="text-1-13-3">
 <ul class="org-ul">
 <li>fixed an error precluding the formulas tool from reporting the
@@ -1345,32 +1267,32 @@ penetration depth for a unit edge step for a nearby edge</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline69" class="outline-4">
-<h4 id="orgheadline69"><span class="section-number-4">1.13.4</span> Demeter</h4>
+<div id="outline-container-orgheadline72" class="outline-4">
+<h4 id="orgheadline72"><span class="section-number-4">1.13.4</span> Demeter</h4>
 <div class="outline-text-4" id="text-1-13-4">
 <ul class="org-ul">
 <li>rebinning was ridiculously broken</li>
 <li>much progress on Larch templates</li>
 <li>fixed an issue surrounding the conditional loading of either
 Ifeffit.pm or Larch.pm</li>
-<li>added a new unit test file 023<sub>miscellany</sub></li>
-<li>fixed a bug bringing data up to date before calling write<sub>many</sub></li>
+<li>added a new unit test file 023_miscellany</li>
+<li>fixed a bug bringing data up to date before calling write_many</li>
 </ul>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgheadline74" class="outline-3">
-<h3 id="orgheadline74"><span class="section-number-3">1.14</span> 0.9.15   21 February  2013</h3>
+<div id="outline-container-orgheadline77" class="outline-3">
+<h3 id="orgheadline77"><span class="section-number-3">1.14</span> 0.9.15   21 February  2013</h3>
 <div class="outline-text-3" id="text-1-14">
-</div><div id="outline-container-orgheadline71" class="outline-4">
-<h4 id="orgheadline71"><span class="section-number-4">1.14.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline74" class="outline-4">
+<h4 id="orgheadline74"><span class="section-number-4">1.14.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-14-1">
 <ul class="org-ul">
 <li>manage update flags in a much better way, making Athena much
-snappier by reducing the number of calls to pre<sub>edge</sub>() and
+snappier by reducing the number of calls to pre_edge() and
 autobk()</li>
-<li>Interface to Athena Users' Guide from within Athena via browser</li>
+<li>Interface to Athena Users&rsquo; Guide from within Athena via browser</li>
 <li>Improved plucking from gnuplot window, the interaction is much
 more natural &#x2013; no intermediate dialog window</li>
 <li>Implemented Data Summation tool</li>
@@ -1388,11 +1310,11 @@ files</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline72" class="outline-4">
-<h4 id="orgheadline72"><span class="section-number-4">1.14.2</span> Artemis</h4>
+<div id="outline-container-orgheadline75" class="outline-4">
+<h4 id="orgheadline75"><span class="section-number-4">1.14.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-14-2">
 <ul class="org-ul">
-<li>Interface to Artemis Users' Guide from within Artemis via browser</li>
+<li>Interface to Artemis Users&rsquo; Guide from within Artemis via browser</li>
 <li>menu items for sending last plot to png or pdf file</li>
 <li>added right click context menu to the items in the Data and Feff
 lists</li>
@@ -1403,15 +1325,15 @@ paths.</li>
 GDS find function</li>
 <li>added menu item for saving current fit to a project (i.e. current
 fit without history)</li>
-<li>added Plot menu items for turning on and off plot<sub>after</sub> for all
+<li>added Plot menu items for turning on and off plot_after for all
 data sets</li>
-<li>more sensible default for Data plot<sub>after</sub><sub>fit</sub> parameter</li>
+<li>more sensible default for Data plot_after_fit parameter</li>
 <li>unfreeze data as imported from an Athena project file</li>
 <li>better error message for paths outside of fintting Rmax</li>
 <li>can enlarge GDS window vertically</li>
 <li>tab order set sensibly between path parameter text boxes on Path
 page</li>
-<li>data plot<sub>after</sub> flags managed more sensibly in a MDS fit</li>
+<li>data plot_after flags managed more sensibly in a MDS fit</li>
 <li>fit history enhancements</li>
 <li>can save current fit to a project without history (good for bug
 reports!)</li>
@@ -1419,8 +1341,8 @@ reports!)</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline73" class="outline-4">
-<h4 id="orgheadline73"><span class="section-number-4">1.14.3</span> Demeter</h4>
+<div id="outline-container-orgheadline76" class="outline-4">
+<h4 id="orgheadline76"><span class="section-number-4">1.14.3</span> Demeter</h4>
 <div class="outline-text-4" id="text-1-14-3">
 <ul class="org-ul">
 <li>Begin work on Larch integration, normally disabled</li>
@@ -1428,7 +1350,7 @@ reports!)</li>
 <li>send gnuplot plot to file terminal type with special
 configuration for PDF terminal and no real support for many of
 the terminal types.  Gif and jpg, for instance, look like crap.</li>
-<li>Install Artemis Users' Guide into Demeter/UI/Artemis/share</li>
+<li>Install Artemis Users&rsquo; Guide into Demeter/UI/Artemis/share</li>
 <li>added code to DemeterBuilder.pm to build artug reliably even on
 Windows</li>
 <li>added data summation recipe</li>
@@ -1441,11 +1363,11 @@ a specified verb on the yes button</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline81" class="outline-3">
-<h3 id="orgheadline81"><span class="section-number-3">1.15</span> 0.9.14    2 January   2013</h3>
+<div id="outline-container-orgheadline84" class="outline-3">
+<h3 id="orgheadline84"><span class="section-number-3">1.15</span> 0.9.14    2 January   2013</h3>
 <div class="outline-text-3" id="text-1-15">
-</div><div id="outline-container-orgheadline75" class="outline-4">
-<h4 id="orgheadline75"><span class="section-number-4">1.15.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline78" class="outline-4">
+<h4 id="orgheadline78"><span class="section-number-4">1.15.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-15-1">
 <ul class="org-ul">
 <li>Plot indicators when plotting from deglitch tool</li>
@@ -1459,7 +1381,7 @@ appropriately, compute avg and stddev of edge steps for norm
 parameters</li>
 <li>Implemented deglitching by margins</li>
 <li>Reset smoothing parameter after plot or fit in the align tool</li>
-<li>Constraining parameters no longer pushed value of bkg<sub>eshift</sub></li>
+<li>Constraining parameters no longer pushed value of bkg_eshift</li>
 <li>Difference spectra:
 <ul class="org-ul">
 <li>can be made of mu, norm, deriv, second, norm/deriv, and
@@ -1488,11 +1410,11 @@ denominator for the reference channel</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline76" class="outline-4">
-<h4 id="orgheadline76"><span class="section-number-4">1.15.2</span> Artemis</h4>
+<div id="outline-container-orgheadline79" class="outline-4">
+<h4 id="orgheadline79"><span class="section-number-4">1.15.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-15-2">
 <ul class="org-ul">
-<li>LOTS of work on Users' Guide</li>
+<li>LOTS of work on Users&rsquo; Guide</li>
 <li>fixed a problem where crystal data entered by hand got flagged as
 unused, resulting in crashy behavior when running Atoms</li>
 <li>Fixed a bug causing a crash when restoring a fit from the fit
@@ -1515,8 +1437,8 @@ data/project imported</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline77" class="outline-4">
-<h4 id="orgheadline77"><span class="section-number-4">1.15.3</span> Atoms</h4>
+<div id="outline-container-orgheadline80" class="outline-4">
+<h4 id="orgheadline80"><span class="section-number-4">1.15.3</span> Atoms</h4>
 <div class="outline-text-4" id="text-1-15-3">
 <ul class="org-ul">
 <li>fixed a crashy problem in getting space group symbol from some
@@ -1526,13 +1448,13 @@ CIF files</li>
 was done by redefining a STAR::DataBlock method in the
 Demeter::Atoms::CIF file</li>
 <li>fixed a display issue with very recent Wx &#x2013; needed to
-SetSizerAndFit in make<sub>feff</sub><sub>frame</sub> to fully size the Atoms page</li>
+SetSizerAndFit in make_feff_frame to fully size the Atoms page</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline78" class="outline-4">
-<h4 id="orgheadline78"><span class="section-number-4">1.15.4</span> Hephaestus</h4>
+<div id="outline-container-orgheadline81" class="outline-4">
+<h4 id="orgheadline81"><span class="section-number-4">1.15.4</span> Hephaestus</h4>
 <div class="outline-text-4" id="text-1-15-4">
 <ul class="org-ul">
 <li>Display wavelengths in several places where energies are displayed</li>
@@ -1542,8 +1464,8 @@ SetSizerAndFit in make<sub>feff</sub><sub>frame</sub> to fully size the Atoms pa
 </div>
 </div>
 
-<div id="outline-container-orgheadline79" class="outline-4">
-<h4 id="orgheadline79"><span class="section-number-4">1.15.5</span> Demeter</h4>
+<div id="outline-container-orgheadline82" class="outline-4">
+<h4 id="orgheadline82"><span class="section-number-4">1.15.5</span> Demeter</h4>
 <div class="outline-text-4" id="text-1-15-5">
 <ul class="org-ul">
 <li>Nicer looking plot indicators in gnuplot backend (now plot as
@@ -1566,20 +1488,20 @@ with error function</li>
 objects</li>
 <li>added multiplier attribute to the Data object</li>
 <li>At build, do a simple test to determine if gnuplot is present on
-the system and modify 'plot.demeter<sub>conf</sub>' accordingly.  This
+the system and modify &rsquo;plot.demeter_conf&rsquo; accordingly.  This
 works for new installations, it will not retrofit an existing
-installation.  In that case, user should modify "plot-&gt;plotwith".</li>
+installation.  In that case, user should modify &ldquo;plot-&gt;plotwith&rdquo;.</li>
 <li>Fixed an issue with Wx::FileDialog on Ubuntu 12.10 &#x2013;
 GetDirectory returns the wrong thing, use GetPath instead</li>
 <li>compute R-factor by k-weight per data set after an MDS fit</li>
 <li>Added smoothing of data by boxcar average, Gaussian filter</li>
-<li>Corrected spurious warnings in t/005<sub>plot.t</sub> and t/016<sub>fspath.t</sub></li>
+<li>Corrected spurious warnings in t/005_plot.t and t/016_fspath.t</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline80" class="outline-4">
-<h4 id="orgheadline80"><span class="section-number-4">1.15.6</span> Windows</h4>
+<div id="outline-container-orgheadline83" class="outline-4">
+<h4 id="orgheadline83"><span class="section-number-4">1.15.6</span> Windows</h4>
 <div class="outline-text-4" id="text-1-15-6">
 <ul class="org-ul">
 <li>downgraded to Ifeffit 1.2.11d to correct a problem in how Ifeffit
@@ -1596,11 +1518,11 @@ programs</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline86" class="outline-3">
-<h3 id="orgheadline86"><span class="section-number-3">1.16</span> 0.9.13    2 October   2012</h3>
+<div id="outline-container-orgheadline89" class="outline-3">
+<h3 id="orgheadline89"><span class="section-number-3">1.16</span> 0.9.13    2 October   2012</h3>
 <div class="outline-text-3" id="text-1-16">
-</div><div id="outline-container-orgheadline82" class="outline-4">
-<h4 id="orgheadline82"><span class="section-number-4">1.16.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline85" class="outline-4">
+<h4 id="orgheadline85"><span class="section-number-4">1.16.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-16-1">
 <ul class="org-ul">
 <li>Updated the HXMA plugin</li>
@@ -1610,8 +1532,8 @@ before the column selection dialog</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline83" class="outline-4">
-<h4 id="orgheadline83"><span class="section-number-4">1.16.2</span> Artemis</h4>
+<div id="outline-container-orgheadline86" class="outline-4">
+<h4 id="orgheadline86"><span class="section-number-4">1.16.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-16-2">
 <ul class="org-ul">
 <li>read files.dat from old-style fit serialization so that path
@@ -1623,8 +1545,8 @@ manner</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline84" class="outline-4">
-<h4 id="orgheadline84"><span class="section-number-4">1.16.3</span> Demeter</h4>
+<div id="outline-container-orgheadline87" class="outline-4">
+<h4 id="orgheadline87"><span class="section-number-4">1.16.3</span> Demeter</h4>
 <div class="outline-text-4" id="text-1-16-3">
 <ul class="org-ul">
 <li>Coerce numbers 0-5 into sensible window functions in
@@ -1638,8 +1560,8 @@ in Artemis</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline85" class="outline-4">
-<h4 id="orgheadline85"><span class="section-number-4">1.16.4</span> Windows</h4>
+<div id="outline-container-orgheadline88" class="outline-4">
+<h4 id="orgheadline88"><span class="section-number-4">1.16.4</span> Windows</h4>
 <div class="outline-text-4" id="text-1-16-4">
 <ul class="org-ul">
 <li>Implemented updater packages using Inno and wrapping up the
@@ -1650,11 +1572,11 @@ Inno script updater.iss to repo</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline90" class="outline-3">
-<h3 id="orgheadline90"><span class="section-number-3">1.17</span> 0.9.12   26 September 2012</h3>
+<div id="outline-container-orgheadline93" class="outline-3">
+<h3 id="orgheadline93"><span class="section-number-3">1.17</span> 0.9.12   26 September 2012</h3>
 <div class="outline-text-3" id="text-1-17">
-</div><div id="outline-container-orgheadline87" class="outline-4">
-<h4 id="orgheadline87"><span class="section-number-4">1.17.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline90" class="outline-4">
+<h4 id="orgheadline90"><span class="section-number-4">1.17.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-17-1">
 <ul class="org-ul">
 <li>Fixed a crashy bug when changing normalization order</li>
@@ -1665,11 +1587,11 @@ dialog</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline88" class="outline-4">
-<h4 id="orgheadline88"><span class="section-number-4">1.17.2</span> Artemis</h4>
+<div id="outline-container-orgheadline91" class="outline-4">
+<h4 id="orgheadline91"><span class="section-number-4">1.17.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-17-2">
 <ul class="org-ul">
-<li>P1 output from Atoms now correctly sets space group as "P 1"</li>
+<li>P1 output from Atoms now correctly sets space group as &ldquo;P 1&rdquo;</li>
 <li>Better (and less crashy) error message in case of multiple
 occupancy in crystal data</li>
 <li>Fixed a problem importing a project file containing only a feff
@@ -1681,8 +1603,8 @@ closing a project</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline89" class="outline-4">
-<h4 id="orgheadline89"><span class="section-number-4">1.17.3</span> Demeter</h4>
+<div id="outline-container-orgheadline92" class="outline-4">
+<h4 id="orgheadline92"><span class="section-number-4">1.17.3</span> Demeter</h4>
 <div class="outline-text-4" id="text-1-17-3">
 <ul class="org-ul">
 <li>Added CONTRIBUTING file to distro for use at GitHub</li>
@@ -1691,11 +1613,11 @@ closing a project</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline96" class="outline-3">
-<h3 id="orgheadline96"><span class="section-number-3">1.18</span> 0.9.11   18 September 2012</h3>
+<div id="outline-container-orgheadline99" class="outline-3">
+<h3 id="orgheadline99"><span class="section-number-3">1.18</span> 0.9.11   18 September 2012</h3>
 <div class="outline-text-3" id="text-1-18">
-</div><div id="outline-container-orgheadline91" class="outline-4">
-<h4 id="orgheadline91"><span class="section-number-4">1.18.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline94" class="outline-4">
+<h4 id="orgheadline94"><span class="section-number-4">1.18.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-18-1">
 <ul class="org-ul">
 <li>Self absorption: plot information depth in energy and check to be
@@ -1710,11 +1632,11 @@ data</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline92" class="outline-4">
-<h4 id="orgheadline92"><span class="section-number-4">1.18.2</span> Artemis</h4>
+<div id="outline-container-orgheadline95" class="outline-4">
+<h4 id="orgheadline95"><span class="section-number-4">1.18.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-18-2">
 <ul class="org-ul">
-<li>fixed a bug in Artemis' quick first shell interface to allow Am
+<li>fixed a bug in Artemis&rsquo; quick first shell interface to allow Am
 through Cf as absorbers (although Feff only allows up to Cm)</li>
 <li>fixed some problems related to importing old-style Artemis
 projects</li>
@@ -1724,8 +1646,8 @@ projects</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline93" class="outline-4">
-<h4 id="orgheadline93"><span class="section-number-4">1.18.3</span> Demeter</h4>
+<div id="outline-container-orgheadline96" class="outline-4">
+<h4 id="orgheadline96"><span class="section-number-4">1.18.3</span> Demeter</h4>
 <div class="outline-text-4" id="text-1-18-3">
 <ul class="org-ul">
 <li>dispense method at a wrapper around dispose and template</li>
@@ -1734,7 +1656,7 @@ projects</li>
 preparation for Larch integration</li>
 <li>fixed bugs in how rebinning parameters were determined and used</li>
 <li>extensive preparation for Larch</li>
-<li>added a test for clear<sub>ifeffit</sub><sub>methods</sub> in 004<sub>data.t</sub></li>
+<li>added a test for clear_ifeffit_methods in 004_data.t</li>
 <li>fixed several bugs in difference spectrum calculation</li>
 <li>fixed various problems involving the use of rebin parameters</li>
 <li>framework for path ranking</li>
@@ -1743,22 +1665,22 @@ preparation for Larch integration</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline94" class="outline-4">
-<h4 id="orgheadline94"><span class="section-number-4">1.18.4</span> Windows</h4>
+<div id="outline-container-orgheadline97" class="outline-4">
+<h4 id="orgheadline97"><span class="section-number-4">1.18.4</span> Windows</h4>
 <div class="outline-text-4" id="text-1-18-4">
 <ul class="org-ul">
 <li>updated to most recent Ifeffit from github + patched Feff6L to
 allow Am and Cm as absorbers</li>
 <li>fixed a problem following shortcuts into folders in certain
 situations</li>
-<li>explicitly call demeter's version of perl from BAT files, this
+<li>explicitly call demeter&rsquo;s version of perl from BAT files, this
 invloved a post-installation script run by Inno</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline95" class="outline-4">
-<h4 id="orgheadline95"><span class="section-number-4">1.18.5</span> Acknowledgements for this release</h4>
+<div id="outline-container-orgheadline98" class="outline-4">
+<h4 id="orgheadline98"><span class="section-number-4">1.18.5</span> Acknowledgements for this release</h4>
 <div class="outline-text-4" id="text-1-18-5">
 <ul class="org-ul">
 <li>Eric Breynaert</li>
@@ -1777,11 +1699,11 @@ invloved a post-installation script run by Inno</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline102" class="outline-3">
-<h3 id="orgheadline102"><span class="section-number-3">1.19</span> 0.9.10   17 July      2012</h3>
+<div id="outline-container-orgheadline105" class="outline-3">
+<h3 id="orgheadline105"><span class="section-number-3">1.19</span> 0.9.10   17 July      2012</h3>
 <div class="outline-text-3" id="text-1-19">
-</div><div id="outline-container-orgheadline97" class="outline-4">
-<h4 id="orgheadline97"><span class="section-number-4">1.19.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline100" class="outline-4">
+<h4 id="orgheadline100"><span class="section-number-4">1.19.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-19-1">
 <ul class="org-ul">
 <li>Improved X23A2 and HXMA plugins</li>
@@ -1799,7 +1721,7 @@ step labels.</li>
 shorter than the first set in the group.  If so, exclude them
 from the merge.  Made configuration parameters for defining how
 much shorter and whether to exclude.</li>
-<li>Fixed behavior of up arrow for Athena's string entry dialogs that
+<li>Fixed behavior of up arrow for Athena&rsquo;s string entry dialogs that
 have buffers.  The first time pressing up arrow went to an
 unpredictable part of the buffer.  It now will go to the most
 recent entry.</li>
@@ -1808,8 +1730,8 @@ recent entry.</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline98" class="outline-4">
-<h4 id="orgheadline98"><span class="section-number-4">1.19.2</span> Artemis</h4>
+<div id="outline-container-orgheadline101" class="outline-4">
+<h4 id="orgheadline101"><span class="section-number-4">1.19.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-19-2">
 <ul class="org-ul">
 <li>Display a useful error message when the phase.bin file is not
@@ -1837,8 +1759,8 @@ created</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline99" class="outline-4">
-<h4 id="orgheadline99"><span class="section-number-4">1.19.3</span> Atoms</h4>
+<div id="outline-container-orgheadline102" class="outline-4">
+<h4 id="orgheadline102"><span class="section-number-4">1.19.3</span> Atoms</h4>
 <div class="outline-text-4" id="text-1-19-3">
 <ul class="org-ul">
 <li>Disable path DnD for stand-alone Atoms</li>
@@ -1848,8 +1770,8 @@ of scattering geometry</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline100" class="outline-4">
-<h4 id="orgheadline100"><span class="section-number-4">1.19.4</span> Hephaestus</h4>
+<div id="outline-container-orgheadline103" class="outline-4">
+<h4 id="orgheadline103"><span class="section-number-4">1.19.4</span> Hephaestus</h4>
 <div class="outline-text-4" id="text-1-19-4">
 <ul class="org-ul">
 <li>Prevent notebook from capturing carriage return on Windows</li>
@@ -1857,8 +1779,8 @@ of scattering geometry</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline101" class="outline-4">
-<h4 id="orgheadline101"><span class="section-number-4">1.19.5</span> Demeter</h4>
+<div id="outline-container-orgheadline104" class="outline-4">
+<h4 id="orgheadline104"><span class="section-number-4">1.19.5</span> Demeter</h4>
 <div class="outline-text-4" id="text-1-19-5">
 <ul class="org-ul">
 <li>Convert histogram calculations to use PDL &#x2013; much faster!
@@ -1868,7 +1790,7 @@ of scattering geometry</li>
 <li>Changed default gnuplot color #4 to yellow4 (#808000)</li>
 <li>Added window functions to Rk plot</li>
 <li>Made ed plot</li>
-<li>Begin Artemis Users' Guide</li>
+<li>Begin Artemis Users&rsquo; Guide</li>
 <li>Prefer the Co K edge to the Re L3 edge when finding the edge (is
 that the right choice?)</li>
 </ul>
@@ -1876,11 +1798,11 @@ that the right choice?)</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline108" class="outline-3">
-<h3 id="orgheadline108"><span class="section-number-3">1.20</span> 0.9.9    20 April     2012</h3>
+<div id="outline-container-orgheadline111" class="outline-3">
+<h3 id="orgheadline111"><span class="section-number-3">1.20</span> 0.9.9    20 April     2012</h3>
 <div class="outline-text-3" id="text-1-20">
-</div><div id="outline-container-orgheadline103" class="outline-4">
-<h4 id="orgheadline103"><span class="section-number-4">1.20.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline106" class="outline-4">
+<h4 id="orgheadline106"><span class="section-number-4">1.20.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-20-1">
 <ul class="org-ul">
 <li>Delay laying out most windows until needed for the first time.
@@ -1890,16 +1812,16 @@ computer</li>
 <li>Mostly functional file watcher + added functionality to IO methods</li>
 <li>Importance was not being imported from a project file</li>
 <li>Made the importance control normal width</li>
-<li>Added athena-&gt;interactive<sub>fixstep</sub> configuration parameter for
+<li>Added athena-&gt;interactive_fixstep configuration parameter for
 disabling the interaction between pre-edge, normalization, and
 edge step controls and the fixstep button.</li>
 <li>when importing a sequence of files and one cannot be imported
 (e.g. aborted scan) offer to continue or quit importing sequence</li>
 <li>XDI as a known file extension when importing data</li>
-<li>Importance and plot<sub>multiplier</sub> functionality for bent Laue data
+<li>Importance and plot_multiplier functionality for bent Laue data
 from 10ID</li>
 <li>Return to main button was being displayed incorrectly</li>
-<li>Found a normalization bug in Ifeffit, norm<sub>order</sub> not respected in
+<li>Found a normalization bug in Ifeffit, norm_order not respected in
 call to spline().  Submitted patch to Matt.</li>
 <li>Smooth works in Calibrate tool</li>
 <li>Visual feedback when element &lt; 5 or E0 &lt; 150</li>
@@ -1909,15 +1831,15 @@ call to spline().  Submitted patch to Matt.</li>
 parameter for color of frozen group display + button</li>
 <li>Display of peak fitting page is functuional (but not quite right)
 even on Windows.</li>
-<li>Fixed a column selection bug involving the "import each channel"
+<li>Fixed a column selection bug involving the &ldquo;import each channel&rdquo;
 button</li>
 <li>Edge step was not reliably updated after a new plot</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline104" class="outline-4">
-<h4 id="orgheadline104"><span class="section-number-4">1.20.2</span> Artemis</h4>
+<div id="outline-container-orgheadline107" class="outline-4">
+<h4 id="orgheadline107"><span class="section-number-4">1.20.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-20-2">
 <ul class="org-ul">
 <li>Fixed (mostly) a bug laying out Atoms/Feff notebook tabs when
@@ -1931,8 +1853,8 @@ when replacing a data group</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline105" class="outline-4">
-<h4 id="orgheadline105"><span class="section-number-4">1.20.3</span> Hephaestus</h4>
+<div id="outline-container-orgheadline108" class="outline-4">
+<h4 id="orgheadline108"><span class="section-number-4">1.20.3</span> Hephaestus</h4>
 <div class="outline-text-4" id="text-1-20-3">
 <ul class="org-ul">
 <li>Delay laying out most windows until needed for the first time.
@@ -1944,8 +1866,8 @@ divide by zero crash</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline106" class="outline-4">
-<h4 id="orgheadline106"><span class="section-number-4">1.20.4</span> Atoms stand-alone</h4>
+<div id="outline-container-orgheadline109" class="outline-4">
+<h4 id="orgheadline109"><span class="section-number-4">1.20.4</span> Atoms stand-alone</h4>
 <div class="outline-text-4" id="text-1-20-4">
 <ul class="org-ul">
 <li>Used delayed layout and careful loading of Demeter modules to
@@ -1957,8 +1879,8 @@ posted without any content &#x2013; not so helpful.</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline107" class="outline-4">
-<h4 id="orgheadline107"><span class="section-number-4">1.20.5</span> Demeter</h4>
+<div id="outline-container-orgheadline110" class="outline-4">
+<h4 id="orgheadline110"><span class="section-number-4">1.20.5</span> Demeter</h4>
 <div class="outline-text-4" id="text-1-20-5">
 <ul class="org-ul">
 <li>Begin using Perl::Version to manage version numbering of files
@@ -1970,22 +1892,22 @@ performance improvement</li>
 <li>Made Demeter::IniReader, a subclass of Config::INI</li>
 <li>Fully deprecate use of MooseX::AttributeHelpers and remove it as
 a dependency</li>
-<li>Make <a href=":Monitor#MissingReference">:Monitor#MissingReference</a> a recommended module (for data watcher)</li>
-<li>More care and more options for loading "pragmata" for improved
+<li>Make <a href="https://metacpan.org/pod/File::Monitor::Lite">https://metacpan.org/pod/File::Monitor::Lite</a> a recommended module (for data watcher)</li>
+<li>More care and more options for loading &ldquo;pragmata&rdquo; for improved
 startup times</li>
 <li>Take better care when processing Data not to do normalization and
 spline more often than is necessary</li>
-<li>Take care not to "use Demeter" unless absolutely necessary
+<li>Take care not to &ldquo;use Demeter&rdquo; unless absolutely necessary
 throughout code base</li>
-<li>Deal with Unity's use of a global menu</li>
+<li>Deal with Unity&rsquo;s use of a global menu</li>
 <li>Many improvements to histogram subsystem</li>
 <li>Added a Build directive for forcing update to ifeffit wrapper</li>
 <li>Cut &gt;20 seconds off the running of the test suite by correctly
-using import "pragmata"</li>
+using import &ldquo;pragmata&rdquo;</li>
 <li>Implemented frozen groups as an attribute trait which silently
 disables setting an attribute &#x2013; see MooseX::Quenchable.
 Implementing it this deeply in the underlying object obviates the
-issue of disabling Athena's various "action at a distance"
+issue of disabling Athena&rsquo;s various &ldquo;action at a distance&rdquo;
 features, e.g. constaining parameters.</li>
 <li>Fixed a bug whereby a group with datatype of xanes did not have
 its normalized derivative and second derivative spectra
@@ -1995,11 +1917,11 @@ calculated.</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline113" class="outline-3">
-<h3 id="orgheadline113"><span class="section-number-3">1.21</span> 0.9.8    30 January   2012</h3>
+<div id="outline-container-orgheadline116" class="outline-3">
+<h3 id="orgheadline116"><span class="section-number-3">1.21</span> 0.9.8    30 January   2012</h3>
 <div class="outline-text-3" id="text-1-21">
-</div><div id="outline-container-orgheadline109" class="outline-4">
-<h4 id="orgheadline109"><span class="section-number-4">1.21.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline112" class="outline-4">
+<h4 id="orgheadline112"><span class="section-number-4">1.21.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-21-1">
 <ul class="org-ul">
 <li>Only set project name if the project name is unset and an entire
@@ -2014,8 +1936,8 @@ chi(k) as the data type</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline110" class="outline-4">
-<h4 id="orgheadline110"><span class="section-number-4">1.21.2</span> Artemis</h4>
+<div id="outline-container-orgheadline113" class="outline-4">
+<h4 id="orgheadline113"><span class="section-number-4">1.21.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-21-2">
 <ul class="org-ul">
 <li>Can now export a particular fit from the history to an fpj file</li>
@@ -2027,12 +1949,12 @@ broken.</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline111" class="outline-4">
-<h4 id="orgheadline111"><span class="section-number-4">1.21.3</span> Demeter</h4>
+<div id="outline-container-orgheadline114" class="outline-4">
+<h4 id="orgheadline114"><span class="section-number-4">1.21.3</span> Demeter</h4>
 <div class="outline-text-4" id="text-1-21-3">
 <ul class="org-ul">
-<li>Add file-chik<sub>out</sub> parameter to control how writing a chi(K)
-output file work.  "all" means write a multicolumn file, 0, 1, 2,
+<li>Add file-chik_out parameter to control how writing a chi(K)
+output file work.  &ldquo;all&rdquo; means write a multicolumn file, 0, 1, 2,
 3, or kw mean to write a two-column file using that k-weight</li>
 <li>Added a tool for efficiently merging a large number of data
 files, see Demeter::Data::BulkMerge</li>
@@ -2041,8 +1963,8 @@ files, see Demeter::Data::BulkMerge</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline112" class="outline-4">
-<h4 id="orgheadline112"><span class="section-number-4">1.21.4</span> Acknowledgements for this release</h4>
+<div id="outline-container-orgheadline115" class="outline-4">
+<h4 id="orgheadline115"><span class="section-number-4">1.21.4</span> Acknowledgements for this release</h4>
 <div class="outline-text-4" id="text-1-21-4">
 <ul class="org-ul">
 <li>Eric Breynaert</li>
@@ -2053,18 +1975,18 @@ files, see Demeter::Data::BulkMerge</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline118" class="outline-3">
-<h3 id="orgheadline118"><span class="section-number-3">1.22</span> 0.9.7    12 January   2012</h3>
+<div id="outline-container-orgheadline121" class="outline-3">
+<h3 id="orgheadline121"><span class="section-number-3">1.22</span> 0.9.7    12 January   2012</h3>
 <div class="outline-text-3" id="text-1-22">
-</div><div id="outline-container-orgheadline114" class="outline-4">
-<h4 id="orgheadline114"><span class="section-number-4">1.22.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline117" class="outline-4">
+<h4 id="orgheadline117"><span class="section-number-4">1.22.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-22-1">
 <ul class="org-ul">
 <li>Fixed a problem in the X23A2MED plugin &#x2013; it was getting confused
 by an incomplete set of (roi, slow, fast) columns.</li>
-<li>Fixed a bug resulting in bkg<sub>fixstep</sub> sometimes getting unset when
+<li>Fixed a bug resulting in bkg_fixstep sometimes getting unset when
 plotting multiple groups</li>
-<li>Constraining "Current group" parameters via context menu now
+<li>Constraining &ldquo;Current group&rdquo; parameters via context menu now
 works correctly.  It had mistakenly changed group attribute, a
 very dangerous thing!</li>
 <li>Extensive support for current XDI draft</li>
@@ -2081,8 +2003,8 @@ also made marked group I0 plot crash with &gt;6 marked groups.</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline115" class="outline-4">
-<h4 id="orgheadline115"><span class="section-number-4">1.22.2</span> Artemis</h4>
+<div id="outline-container-orgheadline118" class="outline-4">
+<h4 id="orgheadline118"><span class="section-number-4">1.22.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-22-2">
 <ul class="org-ul">
 <li>New icons!</li>
@@ -2090,10 +2012,10 @@ also made marked group I0 plot crash with &gt;6 marked groups.</li>
 report, and journal</li>
 <li>plot stacking parameters could evaluate to an empty string, so
 explicitly make the 0 in that case</li>
-<li>can now discard and rename Feff calculations + simple "about
-Feff" dialog</li>
+<li>can now discard and rename Feff calculations + simple &ldquo;about
+Feff&rdquo; dialog</li>
 <li>fixed a bug causing a segfault when discarding data or feff</li>
-<li>capture Atoms' statusbar messages in Artemis' status buffer</li>
+<li>capture Atoms&rsquo; statusbar messages in Artemis&rsquo; status buffer</li>
 <li>Faster project file import using partial deserialization of each
 item in the fit history.  However, history plot tool is not
 currently working.</li>
@@ -2103,16 +2025,16 @@ currently working.</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline116" class="outline-4">
-<h4 id="orgheadline116"><span class="section-number-4">1.22.3</span> Demeter</h4>
+<div id="outline-container-orgheadline119" class="outline-4">
+<h4 id="orgheadline119"><span class="section-number-4">1.22.3</span> Demeter</h4>
 <div class="outline-text-4" id="text-1-22-3">
 <ul class="org-ul">
 <li>explicitly unset xrange at the start of every gnuplot plot.  this
 should fix any problem where zooming results in a backwards
 x-axis.</li>
-<li>added clear<sub>ifeffit</sub><sub>titles</sub> method to clear out $group<sub>title</sub><sub>NN</sub>
+<li>added clear_ifeffit_titles method to clear out $group_title_NN
      strings when no longer needed, use wrap to make this more efficient</li>
-<li>bkg<sub>eshift</sub> was not applied when saving a group as mu(E) or
+<li>bkg_eshift was not applied when saving a group as mu(E) or
 norm(E)</li>
 <li>serializing Atoms object made safe for GUI display of object
 contents</li>
@@ -2122,8 +2044,8 @@ plugin</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline117" class="outline-4">
-<h4 id="orgheadline117"><span class="section-number-4">1.22.4</span> Acknowledgements for this release</h4>
+<div id="outline-container-orgheadline120" class="outline-4">
+<h4 id="orgheadline120"><span class="section-number-4">1.22.4</span> Acknowledgements for this release</h4>
 <div class="outline-text-4" id="text-1-22-4">
 <ul class="org-ul">
 <li>Eric Breynaert</li>
@@ -2136,11 +2058,11 @@ plugin</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline124" class="outline-3">
-<h3 id="orgheadline124"><span class="section-number-3">1.23</span> 0.9.6    12 December  2011</h3>
+<div id="outline-container-orgheadline127" class="outline-3">
+<h3 id="orgheadline127"><span class="section-number-3">1.23</span> 0.9.6    12 December  2011</h3>
 <div class="outline-text-3" id="text-1-23">
-</div><div id="outline-container-orgheadline119" class="outline-4">
-<h4 id="orgheadline119"><span class="section-number-4">1.23.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline122" class="outline-4">
+<h4 id="orgheadline122"><span class="section-number-4">1.23.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-23-1">
 <ul class="org-ul">
 <li>Fixed bug preventing import of multiple files with each channel
@@ -2155,7 +2077,7 @@ tabulated value if the ifeffit-found value is far from the e0 of
 the associated data.  This is essential for data that needs
 rebinning.</li>
 <li>Correctly handle the situation where a column data file has a
-column named "xmu".  Previously, that situation could lead to
+column named &ldquo;xmu&rdquo;.  Previously, that situation could lead to
 data being corrupted in an unrecoverable manner as the column
 selection dialog uses that same suffix to hold the mu(E) data.
 This is done by constantly rereading the data file &#x2013; something
@@ -2172,14 +2094,14 @@ dialog before actually rebinning</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline120" class="outline-4">
-<h4 id="orgheadline120"><span class="section-number-4">1.23.2</span> Artemis</h4>
+<div id="outline-container-orgheadline123" class="outline-4">
+<h4 id="orgheadline123"><span class="section-number-4">1.23.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-23-2">
 <ul class="org-ul">
 <li>Trim leading and trailing spaces from gds names.</li>
 <li>Write parameter history reports correctly.</li>
 <li>Improved window management.  Showing and hiding windows now works
-correctly in conjunction with the window manager's minimize
+correctly in conjunction with the window manager&rsquo;s minimize
 (iconize) function.</li>
 <li>When right clicking on a word in a path parameter math expression
 to define a parameter, the value is now sensitive to which path
@@ -2192,8 +2114,8 @@ disable selection of that tab was guaranteed to fail on Windows
 </div>
 </div>
 
-<div id="outline-container-orgheadline121" class="outline-4">
-<h4 id="orgheadline121"><span class="section-number-4">1.23.3</span> Hephaestus</h4>
+<div id="outline-container-orgheadline124" class="outline-4">
+<h4 id="orgheadline124"><span class="section-number-4">1.23.3</span> Hephaestus</h4>
 <div class="outline-text-4" id="text-1-23-3">
 <ul class="org-ul">
 <li>Allow floats as values in the ion chamber tool</li>
@@ -2201,8 +2123,8 @@ disable selection of that tab was guaranteed to fail on Windows
 </div>
 </div>
 
-<div id="outline-container-orgheadline122" class="outline-4">
-<h4 id="orgheadline122"><span class="section-number-4">1.23.4</span> Demeter</h4>
+<div id="outline-container-orgheadline125" class="outline-4">
+<h4 id="orgheadline125"><span class="section-number-4">1.23.4</span> Demeter</h4>
 <div class="outline-text-4" id="text-1-23-4">
 <ul class="org-ul">
 <li>Check that user value, then default value of executable
@@ -2213,15 +2135,15 @@ This guards against a number of issues.  If Demeter is installed on
 Windows in one location, then unistalled and reinstalled elsewhere,
 the ini file will retain the incorrect value.  This also guards
 against having an executable in a place with somethinng like 
-"system (x86)" or a unicode character in the path.</li>
-<li>Begin playing around with using Demeter::Return as a function's
-return value (see rebin<sub>is</sub><sub>sensible</sub> in Demeter::Data::Process</li>
+&ldquo;system (x86)&rdquo; or a unicode character in the path.</li>
+<li>Begin playing around with using Demeter::Return as a function&rsquo;s
+return value (see rebin_is_sensible in Demeter::Data::Process</li>
 <li>Explicitly reset xtics when starting a new plot with gnuplot.
 This is necessary because the components plot afetr a fit
 sequence specifies an array of xtic labels.</li>
 <li>Prefer the Pd K edge to the Bk L2 edge when finding the edge</li>
-<li>Set bkg<sub>pre2</sub> to a value which is sensitive to the edge energy.
-For higher energies (i.e. broader edges) move bkg<sub>pre2</sub> to a lower
+<li>Set bkg_pre2 to a value which is sensitive to the edge energy.
+For higher energies (i.e. broader edges) move bkg_pre2 to a lower
 energy to improve the default pre-edge line</li>
 <li>Do a better job of recognizing as data are imported whether an
 energy array is in keV units</li>
@@ -2231,23 +2153,23 @@ SPEC file.</li>
 <li>Added a filetype plugin for data from the old SRS.  This is
 intended to cover data from DUBBLE as well (thus deprecating the
 DUBBLE plugin).</li>
-<li>Test to see whether local time can be used in Demeter's <code>now</code>
+<li>Test to see whether local time can be used in Demeter&rsquo;s <code>now</code>
 method.  Using local time will make a program die if the
 computer's time zone is not set.  The fallback is to use
 DateTime's floating time zone.</li>
 <li>Fixed 2 tests in the test suite to respond to recent changes to
-the alignment algorithm and the Fit object's fetch<sub>gds</sub> method</li>
+the alignment algorithm and the Fit object&rsquo;s fetch_gds method</li>
 <li>Correctly identify files as being not data in the case where it
 nominally looks like data (i.e. it has a header and column labels
 as Ifeffit expects), but which has 0, 1, or too few lines of data</li>
-<li>Made file-&gt;minlength configuration parameter to define "too few"
+<li>Made file-&gt;minlength configuration parameter to define &ldquo;too few&rdquo;
 points in a data file.</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline123" class="outline-4">
-<h4 id="orgheadline123"><span class="section-number-4">1.23.5</span> Acknowledgements for this release</h4>
+<div id="outline-container-orgheadline126" class="outline-4">
+<h4 id="orgheadline126"><span class="section-number-4">1.23.5</span> Acknowledgements for this release</h4>
 <div class="outline-text-4" id="text-1-23-5">
 <ul class="org-ul">
 <li>The participants of the Diamond 2011 XAFS course who unwittingly
@@ -2260,11 +2182,11 @@ became beta testers for this software</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline126" class="outline-3">
-<h3 id="orgheadline126"><span class="section-number-3">1.24</span> 0.9.5    11 November  2011</h3>
+<div id="outline-container-orgheadline129" class="outline-3">
+<h3 id="orgheadline129"><span class="section-number-3">1.24</span> 0.9.5    11 November  2011</h3>
 <div class="outline-text-3" id="text-1-24">
-</div><div id="outline-container-orgheadline125" class="outline-4">
-<h4 id="orgheadline125"><span class="section-number-4">1.24.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline128" class="outline-4">
+<h4 id="orgheadline128"><span class="section-number-4">1.24.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-24-1">
 <ul class="org-ul">
 <li>Fixed a crash caused by constraining all parameters</li>
@@ -2273,11 +2195,11 @@ became beta testers for this software</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline129" class="outline-3">
-<h3 id="orgheadline129"><span class="section-number-3">1.25</span> 0.9.4    10 November  2011</h3>
+<div id="outline-container-orgheadline132" class="outline-3">
+<h3 id="orgheadline132"><span class="section-number-3">1.25</span> 0.9.4    10 November  2011</h3>
 <div class="outline-text-3" id="text-1-25">
-</div><div id="outline-container-orgheadline127" class="outline-4">
-<h4 id="orgheadline127"><span class="section-number-4">1.25.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline130" class="outline-4">
+<h4 id="orgheadline130"><span class="section-number-4">1.25.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-25-1">
 <ul class="org-ul">
 <li>Fixed a problem accessing the column selection persitance file
@@ -2287,31 +2209,31 @@ for the first time</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline128" class="outline-4">
-<h4 id="orgheadline128"><span class="section-number-4">1.25.2</span> Artemis</h4>
+<div id="outline-container-orgheadline131" class="outline-4">
+<h4 id="orgheadline131"><span class="section-number-4">1.25.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-25-2">
 <ul class="org-ul">
-<li>Don't list excluded paths in the log file</li>
+<li>Don&rsquo;t list excluded paths in the log file</li>
 </ul>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgheadline133" class="outline-3">
-<h3 id="orgheadline133"><span class="section-number-3">1.26</span> 0.9.3     8 November  2011</h3>
+<div id="outline-container-orgheadline136" class="outline-3">
+<h3 id="orgheadline136"><span class="section-number-3">1.26</span> 0.9.3     8 November  2011</h3>
 <div class="outline-text-3" id="text-1-26">
-</div><div id="outline-container-orgheadline130" class="outline-4">
-<h4 id="orgheadline130"><span class="section-number-4">1.26.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline133" class="outline-4">
+<h4 id="orgheadline133"><span class="section-number-4">1.26.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-26-1">
 <ul class="org-ul">
 <li>Progress messages when autoaligning marked groups (also truncating)</li>
-<li>Better first guess for autoalignment ($DS-&gt;bkg<sub>e0</sub> - $D-&gt;bkg<sub>e0</sub>)</li>
+<li>Better first guess for autoalignment ($DS-&gt;bkg_e0 - $D-&gt;bkg_e0)</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline131" class="outline-4">
-<h4 id="orgheadline131"><span class="section-number-4">1.26.2</span> Artemis</h4>
+<div id="outline-container-orgheadline134" class="outline-4">
+<h4 id="orgheadline134"><span class="section-number-4">1.26.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-26-2">
 <ul class="org-ul">
 <li>Fix a problem importing a project file into which data and Feff
@@ -2322,8 +2244,8 @@ data</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline132" class="outline-4">
-<h4 id="orgheadline132"><span class="section-number-4">1.26.3</span> Demeter</h4>
+<div id="outline-container-orgheadline135" class="outline-4">
+<h4 id="orgheadline135"><span class="section-number-4">1.26.3</span> Demeter</h4>
 <div class="outline-text-4" id="text-1-26-3">
 <ul class="org-ul">
 <li>Added <code>current</code> attribute to Mode as a way of identifying data
@@ -2333,11 +2255,11 @@ groups in asequence when making progress messages in a GUI</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline137" class="outline-3">
-<h3 id="orgheadline137"><span class="section-number-3">1.27</span> 0.9.2     7 November  2011</h3>
+<div id="outline-container-orgheadline140" class="outline-3">
+<h3 id="orgheadline140"><span class="section-number-3">1.27</span> 0.9.2     7 November  2011</h3>
 <div class="outline-text-3" id="text-1-27">
-</div><div id="outline-container-orgheadline134" class="outline-4">
-<h4 id="orgheadline134"><span class="section-number-4">1.27.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline137" class="outline-4">
+<h4 id="orgheadline137"><span class="section-number-4">1.27.1</span> Athena</h4>
 <div class="outline-text-4" id="text-1-27-1">
 <ul class="org-ul">
 <li>Preserve source attribute when reading a project, display it as a
@@ -2350,8 +2272,8 @@ mouseover for file TextCtrl</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline135" class="outline-4">
-<h4 id="orgheadline135"><span class="section-number-4">1.27.2</span> Artemis</h4>
+<div id="outline-container-orgheadline138" class="outline-4">
+<h4 id="orgheadline138"><span class="section-number-4">1.27.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-27-2">
 <ul class="org-ul">
 <li>Fixed spurious creation of feff workspaces when importoing
@@ -2367,8 +2289,8 @@ correctly in the history.  Oh well&#x2026;.</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline136" class="outline-4">
-<h4 id="orgheadline136"><span class="section-number-4">1.27.3</span> Thanks to</h4>
+<div id="outline-container-orgheadline139" class="outline-4">
+<h4 id="orgheadline139"><span class="section-number-4">1.27.3</span> Thanks to</h4>
 <div class="outline-text-4" id="text-1-27-3">
 <ul class="org-ul">
 <li>Jason Gaudet</li>
@@ -2378,15 +2300,15 @@ correctly in the history.  Oh well&#x2026;.</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline140" class="outline-3">
-<h3 id="orgheadline140"><span class="section-number-3">1.28</span> 0.9.1     2 November  2011</h3>
+<div id="outline-container-orgheadline143" class="outline-3">
+<h3 id="orgheadline143"><span class="section-number-3">1.28</span> 0.9.1     2 November  2011</h3>
 <div class="outline-text-3" id="text-1-28">
-</div><div id="outline-container-orgheadline138" class="outline-4">
-<h4 id="orgheadline138"><span class="section-number-4">1.28.1</span> Artemis</h4>
+</div><div id="outline-container-orgheadline141" class="outline-4">
+<h4 id="orgheadline141"><span class="section-number-4">1.28.1</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-28-1">
 <ul class="org-ul">
-<li>Take care with fit<sub>include</sub> attribute of the Data in a Fit.  Need
-to set data<sub>total</sub> correctly in Ifeffit</li>
+<li>Take care with fit_include attribute of the Data in a Fit.  Need
+to set data_total correctly in Ifeffit</li>
 <li>Fix lots of issues with importing FSPaths from a project file</li>
 <li>Take care with path seperators when moving aproject between
 windows and unix</li>
@@ -2398,8 +2320,8 @@ one path associated with it</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline139" class="outline-4">
-<h4 id="orgheadline139"><span class="section-number-4">1.28.2</span> Thanks to</h4>
+<div id="outline-container-orgheadline142" class="outline-4">
+<h4 id="orgheadline142"><span class="section-number-4">1.28.2</span> Thanks to</h4>
 <div class="outline-text-4" id="text-1-28-2">
 <ul class="org-ul">
 <li>Jason Gaudet</li>
@@ -2408,8 +2330,8 @@ one path associated with it</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline142" class="outline-3">
-<h3 id="orgheadline142"><span class="section-number-3">1.29</span> 0.9.0    31 October   2011</h3>
+<div id="outline-container-orgheadline145" class="outline-3">
+<h3 id="orgheadline145"><span class="section-number-3">1.29</span> 0.9.0    31 October   2011</h3>
 <div class="outline-text-3" id="text-1-29">
 <p>
 This is substantively identical to beta release 9.  This initial
@@ -2427,8 +2349,8 @@ Path to 1.0:
 </ol>
 </div>
 
-<div id="outline-container-orgheadline141" class="outline-4">
-<h4 id="orgheadline141"><span class="section-number-4">1.29.1</span> Artemis</h4>
+<div id="outline-container-orgheadline144" class="outline-4">
+<h4 id="orgheadline144"><span class="section-number-4">1.29.1</span> Artemis</h4>
 <div class="outline-text-4" id="text-1-29-1">
 <ul class="org-ul">
 <li>Verify that fit folder exists before trying to deserialize it</li>
@@ -2439,14 +2361,14 @@ Path to 1.0:
 </div>
 
 
-<div id="outline-container-orgheadline189" class="outline-2">
-<h2 id="orgheadline189"><span class="section-number-2">2</span> Beta testing releases:</h2>
+<div id="outline-container-orgheadline192" class="outline-2">
+<h2 id="orgheadline192"><span class="section-number-2">2</span> Beta testing releases:</h2>
 <div class="outline-text-2" id="text-2">
-</div><div id="outline-container-orgheadline149" class="outline-3">
-<h3 id="orgheadline149"><span class="section-number-3">2.1</span> Release 9: 30 October   2011</h3>
+</div><div id="outline-container-orgheadline152" class="outline-3">
+<h3 id="orgheadline152"><span class="section-number-3">2.1</span> Release 9: 30 October   2011</h3>
 <div class="outline-text-3" id="text-2-1">
-</div><div id="outline-container-orgheadline144" class="outline-4">
-<h4 id="orgheadline144"><span class="section-number-4">2.1.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline147" class="outline-4">
+<h4 id="orgheadline147"><span class="section-number-4">2.1.1</span> Athena</h4>
 <div class="outline-text-4" id="text-2-1-1">
 <ul class="org-ul">
 <li>Display YAMLs for PCA and PeakFit objects</li>
@@ -2461,8 +2383,8 @@ old Athena</li>
 now done correctly</li>
 <li>Athena project file now records and recovers marked state</li>
 <li>Record imported and exported athena project files for use in
-"recently used" menus in such a way that they show up in
-Artemis's MRU menu as well.</li>
+&ldquo;recently used&rdquo; menus in such a way that they show up in
+Artemis&rsquo;s MRU menu as well.</li>
 <li>Refuse to plot xanes or chi data as a quadplot.</li>
 <li>Added a user-specified pause between traces in a marked group
 plot &#x2013; this slows down the display of a sequence of traces</li>
@@ -2470,8 +2392,8 @@ plot &#x2013; this slows down the display of a sequence of traces</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline145" class="outline-4">
-<h4 id="orgheadline145"><span class="section-number-4">2.1.2</span> Artemis</h4>
+<div id="outline-container-orgheadline148" class="outline-4">
+<h4 id="orgheadline148"><span class="section-number-4">2.1.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-2-1-2">
 <ul class="org-ul">
 <li>Fixed a bug deleting items from plotting list</li>
@@ -2498,8 +2420,8 @@ imported.</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline146" class="outline-4">
-<h4 id="orgheadline146"><span class="section-number-4">2.1.3</span> Demeter</h4>
+<div id="outline-container-orgheadline149" class="outline-4">
+<h4 id="orgheadline149"><span class="section-number-4">2.1.3</span> Demeter</h4>
 <div class="outline-text-4" id="text-2-1-3">
 <ul class="org-ul">
 <li>Atoms cluster list now tags atoms by shell</li>
@@ -2509,18 +2431,18 @@ stable</li>
 <li>override <code>all</code> method in Demeter::PeakFit</li>
 <li>standards from column files did not have datatype attribute set
 correctly, so standards part of Hephaestus was broken</li>
-<li>don't run find<sub>edge</sub> method on data if the element is already set
+<li>don&rsquo;t run find_edge method on data if the element is already set
 to something other than H</li>
 <li>Made a <code>marked</code> attribute of Demeter::Data object for use with
 Athena</li>
 <li>Corrected an error is sorting the display of the MRU files</li>
-<li>added plot<sub>pause</sub> attribute to the Plot object</li>
+<li>added plot_pause attribute to the Plot object</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline147" class="outline-4">
-<h4 id="orgheadline147"><span class="section-number-4">2.1.4</span> Windows installer</h4>
+<div id="outline-container-orgheadline150" class="outline-4">
+<h4 id="orgheadline150"><span class="section-number-4">2.1.4</span> Windows installer</h4>
 <div class="outline-text-4" id="text-2-1-4">
 <ul class="org-ul">
 <li>have inno make an Atoms desktop icon</li>
@@ -2528,8 +2450,8 @@ Athena</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline148" class="outline-4">
-<h4 id="orgheadline148"><span class="section-number-4">2.1.5</span> Acknowledgements for this release</h4>
+<div id="outline-container-orgheadline151" class="outline-4">
+<h4 id="orgheadline151"><span class="section-number-4">2.1.5</span> Acknowledgements for this release</h4>
 <div class="outline-text-4" id="text-2-1-5">
 <ul class="org-ul">
 <li>Emmanuel Doelsch</li>
@@ -2540,11 +2462,11 @@ Athena</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline154" class="outline-3">
-<h3 id="orgheadline154"><span class="section-number-3">2.2</span> Release 8: 11 October   2011</h3>
+<div id="outline-container-orgheadline157" class="outline-3">
+<h3 id="orgheadline157"><span class="section-number-3">2.2</span> Release 8: 11 October   2011</h3>
 <div class="outline-text-3" id="text-2-2">
-</div><div id="outline-container-orgheadline150" class="outline-4">
-<h4 id="orgheadline150"><span class="section-number-4">2.2.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline153" class="outline-4">
+<h4 id="orgheadline153"><span class="section-number-4">2.2.1</span> Athena</h4>
 <div class="outline-text-4" id="text-2-2-1">
 <ul class="org-ul">
 <li>use Demeter::FPath so that empirical standard can be written</li>
@@ -2559,8 +2481,8 @@ when using the column selection dialog</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline151" class="outline-4">
-<h4 id="orgheadline151"><span class="section-number-4">2.2.2</span> Artemis</h4>
+<div id="outline-container-orgheadline154" class="outline-4">
+<h4 id="orgheadline154"><span class="section-number-4">2.2.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-2-2-2">
 <ul class="org-ul">
 <li>fixed a bug importing chi(k) column data file</li>
@@ -2568,8 +2490,8 @@ when using the column selection dialog</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline152" class="outline-4">
-<h4 id="orgheadline152"><span class="section-number-4">2.2.3</span> Demeter</h4>
+<div id="outline-container-orgheadline155" class="outline-4">
+<h4 id="orgheadline155"><span class="section-number-4">2.2.3</span> Demeter</h4>
 <div class="outline-text-4" id="text-2-2-3">
 <ul class="org-ul">
 <li>Datatype was not set correctly in Data::MultiChannel object</li>
@@ -2577,8 +2499,8 @@ when using the column selection dialog</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline153" class="outline-4">
-<h4 id="orgheadline153"><span class="section-number-4">2.2.4</span> Acknowledgements for this release</h4>
+<div id="outline-container-orgheadline156" class="outline-4">
+<h4 id="orgheadline156"><span class="section-number-4">2.2.4</span> Acknowledgements for this release</h4>
 <div class="outline-text-4" id="text-2-2-4">
 <ul class="org-ul">
 <li>Fred Mosslemans</li>
@@ -2588,14 +2510,14 @@ when using the column selection dialog</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline159" class="outline-3">
-<h3 id="orgheadline159"><span class="section-number-3">2.3</span> Release 7: 10 October   2011</h3>
+<div id="outline-container-orgheadline162" class="outline-3">
+<h3 id="orgheadline162"><span class="section-number-3">2.3</span> Release 7: 10 October   2011</h3>
 <div class="outline-text-3" id="text-2-3">
-</div><div id="outline-container-orgheadline155" class="outline-4">
-<h4 id="orgheadline155"><span class="section-number-4">2.3.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline158" class="outline-4">
+<h4 id="orgheadline158"><span class="section-number-4">2.3.1</span> Athena</h4>
 <div class="outline-text-4" id="text-2-3-1">
 <ul class="org-ul">
-<li>Handle changes to rmax<sub>out</sub> correctly</li>
+<li>Handle changes to rmax_out correctly</li>
 <li>Handle the absence of PDL more gracefully</li>
 <li>Implemented peak fitting tool</li>
 <li>Fixed a bug that was slowing down the response of the column
@@ -2608,20 +2530,20 @@ selection dialog.</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline156" class="outline-4">
-<h4 id="orgheadline156"><span class="section-number-4">2.3.2</span> Artemis</h4>
+<div id="outline-container-orgheadline159" class="outline-4">
+<h4 id="orgheadline159"><span class="section-number-4">2.3.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-2-3-2">
 <ul class="org-ul">
 <li>Fixed a formatting error reporting correlations in the log file</li>
 <li>Changed the logic for how GDS params get updated before a plot</li>
-<li>Issue Ifeffit's unguess command at the beginning of a fit to make
+<li>Issue Ifeffit&rsquo;s unguess command at the beginning of a fit to make
 sure that discarded or skipped (or def-ed or set) guess
 parameters do not remain as guesses in Ifeffit, which makes it
 impossible to evaluate uncertainties.</li>
 <li>Fixed a bug in how the pathfinder-&gt;label configuration parameter
 was being interpreted.  Also changed the default absorber token
 to @</li>
-<li>Handle changes to rmax<sub>out</sub> correctly</li>
+<li>Handle changes to rmax_out correctly</li>
 <li>Fixed a bug importing projects from earlier versions of Artemis
 (deprecated nindicators attribute of the Plot onject)</li>
 <li>Quick first shell (FSPath) now properly respects a change in N</li>
@@ -2638,22 +2560,22 @@ context menu for creating/modifying GDS parameters</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline157" class="outline-4">
-<h4 id="orgheadline157"><span class="section-number-4">2.3.3</span> Demeter</h4>
+<div id="outline-container-orgheadline160" class="outline-4">
+<h4 id="orgheadline160"><span class="section-number-4">2.3.3</span> Demeter</h4>
 <div class="outline-text-4" id="text-2-3-3">
 <ul class="org-ul">
 <li>Fixed a problem interpreting rhombohedral space groups in Atoms.</li>
 <li>Implemented peak fitting using Ifeffit as the backend (other
 option is fityk)</li>
 <li>Files with very wide column label lines can run into a length
-limit in Ifeffit, specifically in ishtxt iff<sub>show.f</sub>.  Since
-Demeter relies on Ifeffit reporting $column<sub>label</sub> correctly, this
+limit in Ifeffit, specifically in ishtxt iff_show.f.  Since
+Demeter relies on Ifeffit reporting $column_label correctly, this
 lead to truncation of columns available when importing such data.</li>
-<li>Made the save<sub>many</sub> and save("fit",&#x2026;) methods understand either
-set of strings denoting the part to be saved.  (save<sub>many</sub> took
-things like 'chik2' and 'chir<sub>mag</sub>', which save("fit",&#x2026;) took
-things like 'k2' and 'rmag').  Also added a useful error message
-to save<sub>many</sub> warning against passing it ScatteringPath objects.</li>
+<li>Made the save_many and save(&ldquo;fit&rdquo;,&#x2026;) methods understand either
+set of strings denoting the part to be saved.  (save_many took
+things like &rsquo;chik2&rsquo; and &rsquo;chir_mag&rsquo;, which save(&ldquo;fit&rdquo;,&#x2026;) took
+things like &rsquo;k2&rsquo; and &rsquo;rmag&rsquo;).  Also added a useful error message
+to save_many warning against passing it ScatteringPath objects.</li>
 <li>Improvements to the Dubble plugin</li>
 <li>Fit sanity check: notice an obvious case of attempting to use the
 same data set more than once in a multiple data set fit.  This is
@@ -2667,21 +2589,21 @@ this is not a very serious problem.</li>
 <li>Fixed a bug wherein a cloned Data group did not have its
 derivative computed</li>
 <li>Fixed a bug in aligning data.  Also modified code to perform
-alignment exactly like the old version.  Made "interp" the
+alignment exactly like the old version.  Made &ldquo;interp&rdquo; the
 default interpolation function (was qinterp).</li>
 <li>Found a few places where files or directories were opened and not
 closed</li>
 <li>The element symbol type constraint was missing Am through Cf</li>
-<li>New "trace" method for printing a colorized stack trace from any
+<li>New &ldquo;trace&rdquo; method for printing a colorized stack trace from any
 location to stdout</li>
 <li>Fixed a bug in the automated alignment algorithm (now using
-data's current bkg<sub>eshift</sub> as the initial guess)</li>
+data&rsquo;s current bkg_eshift as the initial guess)</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline158" class="outline-4">
-<h4 id="orgheadline158"><span class="section-number-4">2.3.4</span> Acknowledgements for this release</h4>
+<div id="outline-container-orgheadline161" class="outline-4">
+<h4 id="orgheadline161"><span class="section-number-4">2.3.4</span> Acknowledgements for this release</h4>
 <div class="outline-text-4" id="text-2-3-4">
 <ul class="org-ul">
 <li>Eric Breynaert, superstar (literally dozens of bug reports from the last release!)</li>
@@ -2694,19 +2616,19 @@ data's current bkg<sub>eshift</sub> as the initial guess)</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline164" class="outline-3">
-<h3 id="orgheadline164"><span class="section-number-3">2.4</span> Release 6: 09 September 2011</h3>
+<div id="outline-container-orgheadline167" class="outline-3">
+<h3 id="orgheadline167"><span class="section-number-3">2.4</span> Release 6: 09 September 2011</h3>
 <div class="outline-text-3" id="text-2-4">
-</div><div id="outline-container-orgheadline160" class="outline-4">
-<h4 id="orgheadline160"><span class="section-number-4">2.4.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline163" class="outline-4">
+<h4 id="orgheadline163"><span class="section-number-4">2.4.1</span> Athena</h4>
 <div class="outline-text-4" id="text-2-4-1">
 <ul class="org-ul">
 <li>Corrected the behavior of the LCF tool when plotting without
 fitting in several edge cases that involve either a single
 standard or weights set by hand</li>
 <li>Added a fourth plotting terminal</li>
-<li>Issue error to statusbar when kmax<sub>suggest</sub> is oddly small</li>
-<li>Implemented Scott's deriv(phase(chi(R))) idea with a
+<li>Issue error to statusbar when kmax_suggest is oddly small</li>
+<li>Implemented Scott&rsquo;s deriv(phase(chi(R))) idea with a
 configuration parameter for turning it on and off</li>
 <li>Copying a group now copies its marked state</li>
 <li>Added invert button to column selection dialog</li>
@@ -2717,40 +2639,40 @@ unimplemented</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline161" class="outline-4">
-<h4 id="orgheadline161"><span class="section-number-4">2.4.2</span> Artemis</h4>
+<div id="outline-container-orgheadline164" class="outline-4">
+<h4 id="orgheadline164"><span class="section-number-4">2.4.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-2-4-2">
 <ul class="org-ul">
 <li>Added a fourth plotting terminal</li>
 <li>Make the import file menu entry recognize all plausible file
 types and do the right thing.  This makes the Import submenu
 somewhat redundant.</li>
-<li>Issue error to statusbar when kmax<sub>suggest</sub> is oddly small</li>
+<li>Issue error to statusbar when kmax_suggest is oddly small</li>
 <li>Add triangular paths to Histogram subsystem</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline162" class="outline-4">
-<h4 id="orgheadline162"><span class="section-number-4">2.4.3</span> Demeter</h4>
+<div id="outline-container-orgheadline165" class="outline-4">
+<h4 id="orgheadline165"><span class="section-number-4">2.4.3</span> Demeter</h4>
 <div class="outline-text-4" id="text-2-4-3">
 <ul class="org-ul">
 <li>When reading epsilon from Ifeffit, recognize when it finds NaN
 and do something sensible</li>
-<li>Implemented Scott's deriv(phase(chi(R))) idea in all plotting
+<li>Implemented Scott&rsquo;s deriv(phase(chi(R))) idea in all plotting
 backends and in column output</li>
 <li>Boolean flag for indicating a single data group fit and setting
 the Data plotkey attribute appropriately in R or q.</li>
 <li>Fixed a configuration bug wherein the GUIs could clobber one
-another's configuration changes</li>
+another&rsquo;s configuration changes</li>
 <li>Added inv attribute for negating column selection</li>
 <li>Implemented PCA using PDL + specialty plots</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline163" class="outline-4">
-<h4 id="orgheadline163"><span class="section-number-4">2.4.4</span> Acknowledgements for this release</h4>
+<div id="outline-container-orgheadline166" class="outline-4">
+<h4 id="orgheadline166"><span class="section-number-4">2.4.4</span> Acknowledgements for this release</h4>
 <div class="outline-text-4" id="text-2-4-4">
 <ul class="org-ul">
 <li>Fred Mosselmans</li>
@@ -2761,21 +2683,21 @@ another's configuration changes</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline169" class="outline-3">
-<h3 id="orgheadline169"><span class="section-number-3">2.5</span> Release 5: 18 August    2011</h3>
+<div id="outline-container-orgheadline172" class="outline-3">
+<h3 id="orgheadline172"><span class="section-number-3">2.5</span> Release 5: 18 August    2011</h3>
 <div class="outline-text-3" id="text-2-5">
-</div><div id="outline-container-orgheadline165" class="outline-4">
-<h4 id="orgheadline165"><span class="section-number-4">2.5.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline168" class="outline-4">
+<h4 id="orgheadline168"><span class="section-number-4">2.5.1</span> Athena</h4>
 <div class="outline-text-4" id="text-2-5-1">
 <ul class="org-ul">
 <li>Fixed a display problem in the column selection dialog</li>
 <li>Fixed several problems with restoring LCF fits after performing a
 combinatorial sequence</li>
 <li>Allow seeting window function for back transform independently</li>
-<li>Fix default settings for LCF object in athena's LCF dialog</li>
+<li>Fix default settings for LCF object in athena&rsquo;s LCF dialog</li>
 <li>Tie together merge and reference for merge when the reference for
 the merge is also made</li>
-<li>Added a "change all groups" option to the chnage type dialog</li>
+<li>Added a &ldquo;change all groups&rdquo; option to the chnage type dialog</li>
 <li>Made the LCF layout a bit prettier</li>
 <li>Do not unlink autosave file at start-up &#x2013; it needs to stick
 around in case the problem that lead to the crash happens again</li>
@@ -2784,8 +2706,8 @@ around in case the problem that lead to the crash happens again</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline166" class="outline-4">
-<h4 id="orgheadline166"><span class="section-number-4">2.5.2</span> Artemis</h4>
+<div id="outline-container-orgheadline169" class="outline-4">
+<h4 id="orgheadline169"><span class="section-number-4">2.5.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-2-5-2">
 <ul class="org-ul">
 <li>Allow seeting window function for back transform independently</li>
@@ -2795,8 +2717,8 @@ when importing old-style project files</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline167" class="outline-4">
-<h4 id="orgheadline167"><span class="section-number-4">2.5.3</span> Demeter</h4>
+<div id="outline-container-orgheadline170" class="outline-4">
+<h4 id="orgheadline170"><span class="section-number-4">2.5.3</span> Demeter</h4>
 <div class="outline-text-4" id="text-2-5-3">
 <ul class="org-ul">
 <li>Correctly restore restoring LCF fits after performing a
@@ -2805,8 +2727,8 @@ combinatorial sequence</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline168" class="outline-4">
-<h4 id="orgheadline168"><span class="section-number-4">2.5.4</span> Acknowledgements for this release</h4>
+<div id="outline-container-orgheadline171" class="outline-4">
+<h4 id="orgheadline171"><span class="section-number-4">2.5.4</span> Acknowledgements for this release</h4>
 <div class="outline-text-4" id="text-2-5-4">
 <ul class="org-ul">
 <li>Eric Breynaert</li>
@@ -2819,11 +2741,11 @@ combinatorial sequence</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline175" class="outline-3">
-<h3 id="orgheadline175"><span class="section-number-3">2.6</span> Release 4: 12 August    2011</h3>
+<div id="outline-container-orgheadline178" class="outline-3">
+<h3 id="orgheadline178"><span class="section-number-3">2.6</span> Release 4: 12 August    2011</h3>
 <div class="outline-text-3" id="text-2-6">
-</div><div id="outline-container-orgheadline170" class="outline-4">
-<h4 id="orgheadline170"><span class="section-number-4">2.6.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline173" class="outline-4">
+<h4 id="orgheadline173"><span class="section-number-4">2.6.1</span> Athena</h4>
 <div class="outline-text-4" id="text-2-6-1">
 <ul class="org-ul">
 <li>Inmplemented an autosave feature + recovery of autosave after a crash</li>
@@ -2831,14 +2753,14 @@ combinatorial sequence</li>
 <li>Use arbitrary k-weights more sensibly</li>
 <li>Fixed a bug plucking spline range in k</li>
 <li>Better message in pluck dialog</li>
-<li>Use demeter's configuration dialog to configure Plugins that have
+<li>Use demeter&rsquo;s configuration dialog to configure Plugins that have
 configuration parameters (currently, 10BMMultiChannel and X23A2MED)</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline171" class="outline-4">
-<h4 id="orgheadline171"><span class="section-number-4">2.6.2</span> Artemis</h4>
+<div id="outline-container-orgheadline174" class="outline-4">
+<h4 id="orgheadline174"><span class="section-number-4">2.6.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-2-6-2">
 <ul class="org-ul">
 <li>The path-like tab in the Atoms/Feff frame is now set correctly
@@ -2860,7 +2782,7 @@ parameter type.  Change all selected params:
 <li>Alt-r: restrain</li>
 <li>Alt-p: penalty</li>
 </ul></li>
-<li>New config parameter (artemis-&gt;plot<sub>frame</sub><sub>x</sub>) for aligning the
+<li>New config parameter (artemis-&gt;plot_frame_x) for aligning the
 Plot window properly on a multiple monitor setup (something I am
 having trouble figuring out properly)</li>
 <li>Follow Windows link files for various import types</li>
@@ -2880,8 +2802,8 @@ return to the Atoms tab</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline172" class="outline-4">
-<h4 id="orgheadline172"><span class="section-number-4">2.6.3</span> Demeter</h4>
+<div id="outline-container-orgheadline175" class="outline-4">
+<h4 id="orgheadline175"><span class="section-number-4">2.6.3</span> Demeter</h4>
 <div class="outline-text-4" id="text-2-6-3">
 <ul class="org-ul">
 <li>Integrate VASP MD output into histogram subsystem</li>
@@ -2893,12 +2815,12 @@ file attribute</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline173" class="outline-4">
-<h4 id="orgheadline173"><span class="section-number-4">2.6.4</span> Windows installer</h4>
+<div id="outline-container-orgheadline176" class="outline-4">
+<h4 id="orgheadline176"><span class="section-number-4">2.6.4</span> Windows installer</h4>
 </div>
 
-<div id="outline-container-orgheadline174" class="outline-4">
-<h4 id="orgheadline174"><span class="section-number-4">2.6.5</span> Acknowledgements for this release</h4>
+<div id="outline-container-orgheadline177" class="outline-4">
+<h4 id="orgheadline177"><span class="section-number-4">2.6.5</span> Acknowledgements for this release</h4>
 <div class="outline-text-4" id="text-2-6-5">
 <ol class="org-ol">
 <li>Scott Calvin</li>
@@ -2909,11 +2831,11 @@ file attribute</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline181" class="outline-3">
-<h3 id="orgheadline181"><span class="section-number-3">2.7</span> Release 3:  8 July      2011</h3>
+<div id="outline-container-orgheadline184" class="outline-3">
+<h3 id="orgheadline184"><span class="section-number-3">2.7</span> Release 3:  8 July      2011</h3>
 <div class="outline-text-3" id="text-2-7">
-</div><div id="outline-container-orgheadline176" class="outline-4">
-<h4 id="orgheadline176"><span class="section-number-4">2.7.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline179" class="outline-4">
+<h4 id="orgheadline179"><span class="section-number-4">2.7.1</span> Athena</h4>
 <div class="outline-text-4" id="text-2-7-1">
 <ul class="org-ul">
 <li>Plugin registry: right click open a menu with for plugin
@@ -2928,7 +2850,7 @@ from the 1-element Vortex.</li>
 <li>Pluck buttons implemented in more places</li>
 <li>Merging groups with reference channels also merges reference
 channels into a reference group for the merge</li>
-<li>Tools for monitoring Ifeffit's memory use</li>
+<li>Tools for monitoring Ifeffit&rsquo;s memory use</li>
 <li>Modified SSRLA plugin to handle data from the ESRF ROBL beamline.
 ROBL writes some high-ASCII characters in a way that confuses the
 column selection dialog, so theplugin strips them from the file</li>
@@ -2937,8 +2859,8 @@ column selection dialog, so theplugin strips them from the file</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline177" class="outline-4">
-<h4 id="orgheadline177"><span class="section-number-4">2.7.2</span> Artemis</h4>
+<div id="outline-container-orgheadline180" class="outline-4">
+<h4 id="orgheadline180"><span class="section-number-4">2.7.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-2-7-2">
 <ul class="org-ul">
 <li>Pluck buttons now work on the Data page and on the indicators tab</li>
@@ -2946,21 +2868,21 @@ column selection dialog, so theplugin strips them from the file</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline178" class="outline-4">
-<h4 id="orgheadline178"><span class="section-number-4">2.7.3</span> Demeter</h4>
+<div id="outline-container-orgheadline181" class="outline-4">
+<h4 id="orgheadline181"><span class="section-number-4">2.7.3</span> Demeter</h4>
 <div class="outline-text-4" id="text-2-7-3">
 <ul class="org-ul">
 <li>Changed the default color of indicators to a dark brown, which
 stand out better against a red trace (i.e. line color #2)</li>
-<li>Mode object now has attributes for keeping track of Ifeffit's
+<li>Mode object now has attributes for keeping track of Ifeffit&rsquo;s
 memory use.  Data and Path _update methods + Fit and LCF fit
 methods update those attributes.</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline179" class="outline-4">
-<h4 id="orgheadline179"><span class="section-number-4">2.7.4</span> Windows installer</h4>
+<div id="outline-container-orgheadline182" class="outline-4">
+<h4 id="orgheadline182"><span class="section-number-4">2.7.4</span> Windows installer</h4>
 <div class="outline-text-4" id="text-2-7-4">
 <ul class="org-ul">
 <li>This time I <b>really</b> made it so that all bat file launchers save
@@ -2974,8 +2896,8 @@ paths.</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline180" class="outline-4">
-<h4 id="orgheadline180"><span class="section-number-4">2.7.5</span> Acknowledgements for this release</h4>
+<div id="outline-container-orgheadline183" class="outline-4">
+<h4 id="orgheadline183"><span class="section-number-4">2.7.5</span> Acknowledgements for this release</h4>
 <div class="outline-text-4" id="text-2-7-5">
 <p>
 Same gang as last time + Stephen Price.
@@ -2984,18 +2906,18 @@ Same gang as last time + Stephen Price.
 </div>
 </div>
 
-<div id="outline-container-orgheadline187" class="outline-3">
-<h3 id="orgheadline187"><span class="section-number-3">2.8</span> Release 2: 24 June      2011</h3>
+<div id="outline-container-orgheadline190" class="outline-3">
+<h3 id="orgheadline190"><span class="section-number-3">2.8</span> Release 2: 24 June      2011</h3>
 <div class="outline-text-3" id="text-2-8">
-</div><div id="outline-container-orgheadline182" class="outline-4">
-<h4 id="orgheadline182"><span class="section-number-4">2.8.1</span> Athena</h4>
+</div><div id="outline-container-orgheadline185" class="outline-4">
+<h4 id="orgheadline185"><span class="section-number-4">2.8.1</span> Athena</h4>
 <div class="outline-text-4" id="text-2-8-1">
 <ul class="org-ul">
 <li>Fixed some language issues in the Files menu</li>
-<li>Fixed several bugs surrounding the bkg<sub>fixstep</sub> Data attribute and
+<li>Fixed several bugs surrounding the bkg_fixstep Data attribute and
 made its behavior in relation to editing the normalization,
 pre-edge, and edge step text entry boxes more sensible</li>
-<li>Added wxTE<sub>PROCESS</sub><sub>ENTER</sub> style to all text entry boxes.  This
+<li>Added wxTE_PROCESS_ENTER style to all text entry boxes.  This
 allows replotting or other actions (or none at all) upon hitting
 return with focus in a text box.  This is in response to a
 complaint that hitting enter in a text box caused focus to shift
@@ -3022,24 +2944,24 @@ configuration files</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline183" class="outline-4">
-<h4 id="orgheadline183"><span class="section-number-4">2.8.2</span> Artemis</h4>
+<div id="outline-container-orgheadline186" class="outline-4">
+<h4 id="orgheadline186"><span class="section-number-4">2.8.2</span> Artemis</h4>
 <div class="outline-text-4" id="text-2-8-2">
 <ul class="org-ul">
 <li>Completely rewrote mechanism for importing old-style Artemis
 project files, which now works much more reliably.</li>
-<li>Feff object's rdinp method now recognizes a Feff8 input file.
+<li>Feff object&rsquo;s rdinp method now recognizes a Feff8 input file.
 This is mostly used by Artemis to refuse to import such a thing as
 Feff8 is not yet supported in Demeter</li>
 <li>Implemented Rk plot and made a button for it</li>
-<li>Added wxTE<sub>PROCESS</sub><sub>ENTER</sub> style to all one-line text entry boxes.</li>
+<li>Added wxTE_PROCESS_ENTER style to all one-line text entry boxes.</li>
 <li>Multiple plotting terminals with Gnuplot</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline184" class="outline-4">
-<h4 id="orgheadline184"><span class="section-number-4">2.8.3</span> Demeter</h4>
+<div id="outline-container-orgheadline187" class="outline-4">
+<h4 id="orgheadline187"><span class="section-number-4">2.8.3</span> Demeter</h4>
 <div class="outline-text-4" id="text-2-8-3">
 <ul class="org-ul">
 <li>Changes to selection of the plotting backend just prior to R1
@@ -3049,19 +2971,19 @@ tests were fixed.</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline185" class="outline-4">
-<h4 id="orgheadline185"><span class="section-number-4">2.8.4</span> Windows Installer</h4>
+<div id="outline-container-orgheadline188" class="outline-4">
+<h4 id="orgheadline188"><span class="section-number-4">2.8.4</span> Windows Installer</h4>
 <div class="outline-text-4" id="text-2-8-4">
 <ul class="org-ul">
-<li>Renamed desktop icons so as to not overwrite Horae's icons</li>
+<li>Renamed desktop icons so as to not overwrite Horae&rsquo;s icons</li>
 <li>All bat file launchers save STDOUT and STDERR from the current
 session to a log file in %APPDATA%\demeter\</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline186" class="outline-4">
-<h4 id="orgheadline186"><span class="section-number-4">2.8.5</span> Acknowledgements for this release</h4>
+<div id="outline-container-orgheadline189" class="outline-4">
+<h4 id="orgheadline189"><span class="section-number-4">2.8.5</span> Acknowledgements for this release</h4>
 <div class="outline-text-4" id="text-2-8-5">
 <ol class="org-ol">
 <li>Scott Calvin</li>
@@ -3074,8 +2996,8 @@ session to a log file in %APPDATA%\demeter\</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline188" class="outline-3">
-<h3 id="orgheadline188"><span class="section-number-3">2.9</span> Release 1: 10 June      2011</h3>
+<div id="outline-container-orgheadline191" class="outline-3">
+<h3 id="orgheadline191"><span class="section-number-3">2.9</span> Release 1: 10 June      2011</h3>
 <div class="outline-text-3" id="text-2-9">
 <p>
 Initial beta testing release
@@ -3086,7 +3008,6 @@ Initial beta testing release
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Bruce Ravel</p>
-<p class="date">Created: 2016-04-11 Mon 09:52</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

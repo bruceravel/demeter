@@ -47,6 +47,20 @@ has 'entries' => (
 has 'n'       => (is => 'rw', isa => 'Int',  default => 0);
 
 has 'journal' => (is => 'rw', isa => 'Str',  default => q{},);
+has 'lcf'     => (is => 'rw', isa => 'HashRef',  default => sub{ {} },);
+has 'pca'     => (is => 'rw', isa => 'HashRef',  default => sub{ {} },);
+has 'peakfit' => (is => 'rw', isa => 'HashRef',  default => sub{ {} },);
+has 'lineshapes' => (
+		     traits    => ['Array'],
+		     is        => 'rw',
+		     isa       => 'ArrayRef[ArrayRef]',
+		     default   => sub { [] },
+		     handles   => {
+				   'add_lineshape' => 'push',
+				   'remove_lineshape'  => 'pop',
+				   'clear_lineshape' => 'clear',
+				  }
+		    );
 
 sub BUILD {
   my ($self, @params) = @_;
@@ -74,11 +88,37 @@ sub Read {
   my $cpt = new Safe;
   while ($athena_fh->gzreadline($line) > 0) {
     ++$nline;
+
     if ($line =~ m{\A\@journal}) { # original style
       @ {$cpt->varglob('journal')} = $cpt->reval( $line );
       my @journal = @ {$cpt->varglob('journal')};
       $self->journal(join($/, @journal));
     };
+
+    if ($line =~ m{\A\@LCF}) {
+      @ {$cpt->varglob('LCF')} = $cpt->reval( $line );
+      my @lcf = @ {$cpt->varglob('LCF')};
+      $self->lcf({@lcf});
+      #print Data::Dumper->Dump([$self->lcf], [qw/*LCF/]);
+    };
+
+    if ($line =~ m{\A\@PCA}) {
+      @ {$cpt->varglob('PCA')} = $cpt->reval( $line );
+      my @pca = @ {$cpt->varglob('PCA')};
+      $self->pca({@pca});
+    };
+
+    if ($line =~ m{\A\@peakfit}) {
+      @ {$cpt->varglob('peakfit')} = $cpt->reval( $line );
+      my @peakfit = @ {$cpt->varglob('peakfit')};
+      $self->peakfit({@peakfit});
+    };
+    if ($line =~ m{\A\@lineshape}) {
+      @ {$cpt->varglob('lineshape')} = $cpt->reval( $line );
+      my @ls = @ {$cpt->varglob('lineshape')};
+      $self->add_lineshape(\@ls);
+    };
+
     next unless ($line =~ /^\$old_group/);
     ## need to make a map to the groups by old group name so that
     ## background removal with a standard can be performed correctly
@@ -494,7 +534,7 @@ Demeter::Data::Prj - Read data from original-style Athena project files
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.24.
+This documentation refers to Demeter version 0.9.25.
 
 =head1 DESCRIPTION
 

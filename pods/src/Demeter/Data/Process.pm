@@ -272,7 +272,7 @@ sub merge {
   $string .= $merged->template("process", "merge_end");
   $self->dispose($string);
   #$merged -> set($self->metadata);
-  $merged->xdi_make_clone($self, sprintf("Merge of %d scans", $#used+1), 1) if (Demeter->xdi_exists);
+  $merged->xdi_make_clone($self, sprintf("Merge of %d scans", $#used+1), -1) if (Demeter->xdi_exists);
 
   if ($how !~ m{^k}) {
     $string  = $merged->template("process", "deriv");
@@ -710,7 +710,7 @@ Demeter::Data::Process - Processing XAS data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.24.
+This documentation refers to Demeter version 0.9.25.
 
 =head1 DESCRIPTION
 

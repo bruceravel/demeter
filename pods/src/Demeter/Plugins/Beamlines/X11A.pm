@@ -70,7 +70,7 @@ sub is {
 	};
 
 
-	## put several useful and readily intepretable parts of the header into the XDAC family
+	## put several useful and readily intepretable parts of the header into the EDC family
 	($li =~ m{\ASRB=}) and do {
 	  $data->xdi->set_item('EDC', 'SRB', join(" ", @line[1..$#line]));
 	  last SWITCH;
@@ -113,7 +113,7 @@ Demeter::Plugin::Beamlines::X11A - beamline recognition plugin for files from pr
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.24.
+This documentation refers to Demeter version 0.9.25.
 
 =head1 SYNOPSIS
 

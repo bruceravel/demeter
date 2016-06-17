@@ -47,7 +47,7 @@ my $tcsize = [60,-1];
 my $icon     = File::Spec->catfile(dirname($INC{"Demeter/UI/Athena.pm"}), 'Athena', , 'icons', "bullseye.png");
 my $bullseye = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
 
-my %map  = (atan => "Arctangent", erf => "Error function", logistic => 'Logistic',
+my %map  = (atan => "Arctan", erf => "Error fun.", logistic => 'Logistic',
 	    gaussian => "Gaussian", lorentzian => "Lorentzian", voigt => 'Voigt',
 	    pvoigt => 'Pseudo-Voigt', pseudo_voigt => 'Pseudo-Voigt',
 	    pearson7 => 'Pearson7', breit_wigner => 'Breit-Wigner', lognormal => 'LogNormal',
@@ -296,10 +296,12 @@ sub add {
   my ($this, $function) = @_;
   ++$this->{count};
   my $box;
+  my $str;
   my @list = (@$steps, @$peaks);
   if (any {$function eq $_} @list) {
     my $func = lc($function);
-    ($box, $this->{'func'.$this->{count}}) = $this->threeparam($func, $this->{count});
+    $str = Demeter->randomstring(3);
+    ($box, $this->{'func'.$str}) = $this->threeparam($func, $str);
   } else {
     $this->tilt("$function is not yet implemented",1);
     --$this->{count};
@@ -310,16 +312,17 @@ sub add {
 #  $this->{main}  -> SetScrollbars(0, 72, 0, $this->{count});
 #  $this->{main}  -> SetSizer($this->{lsbox});
   $this->{main}  -> Scroll(0,0);
-  $this->{lsbox} -> Add($this->{'func'.$this->{count}}, 0, wxGROW|wxALL, 5);
+  $this->{lsbox} -> Add($this->{'func'.$str}, 0, wxGROW|wxALL, 5);
   $this->{main}  -> SetSizer($this->{lsbox});
-  my $n               = ($this->{count}<5) ? 5 : $this->{count};
+  my $nn = grep {$_ =~ m{func\w{3}}} (keys %$this);
+  my $n               = ($nn<5) ? 5 : $nn;
   my ($x,$y)          = $box->GetSizeWH;
   $this->{increment}  = max($y, $this->{increment});
   $this->{main}  -> SetScrollbars(10, $n, 30, $this->{increment}+11);
   $this->{main}  -> Refresh;
   ($x,$y)             = $box->GetSizeWH;
   $this->{increment}  = max($y, $this->{increment});
-  if ($this->{count}>4) {
+  if ($nn>4) {
     $this->{main}  -> Scroll(0,$n*$this->{increment});
   };
 
@@ -327,13 +330,14 @@ sub add {
     $this->{$ac}->Enable(1);
   };
 
+  return $str;
 };
 
 
 sub threeparam {
   my ($this, $fun, $n) = @_;
 
-  my $index = $this->increment($fun);
+  #my $index = $this->increment($fun);
 
   my $box       = Wx::StaticBox->new($this->{main}, -1, $map{$fun}, wxDefaultPosition, wxDefaultSize);
   my $boxsizer  = Wx::StaticBoxSizer->new( $box, wxVERTICAL );
@@ -344,7 +348,7 @@ sub threeparam {
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $boxsizer->Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 3);
   $hbox -> Add(Wx::StaticText->new($this->{main}, -1, "Name"), 0, wxALL, 3);
-  $this->{'name'.$n} = Wx::TextCtrl->new($this->{main}, -1, lc($map{$fun})." ".$index, wxDefaultPosition, [120,-1], wxTE_PROCESS_ENTER);
+  $this->{'name'.$n} = Wx::TextCtrl->new($this->{main}, -1, lc($map{$fun})." ".$n, wxDefaultPosition, [120,-1], wxTE_PROCESS_ENTER);
   $hbox -> Add($this->{'name'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
   if (($ENV{DEMETER_BACKEND} eq 'ifeffit') and ($fun =~ m{$STEPLIKE})) {
@@ -432,10 +436,10 @@ sub threeparam {
 sub increment {
   my ($this, $fun) = @_;
   my $index = 0;
-  foreach my $i (1 .. $this->{count}) {
-    next if (not exists $this->{"func$i"});
-    next if ($this->{'type'.$i} ne $fun);
-    $index = $1 if ($this->{'name'.$i}->GetValue =~ m{$fun\s*(\d+)}i);
+  foreach my $k (keys %$this) {
+    next if ($k !~ m{func(\w{3})});
+    next if ($this->{'type'.$1} ne $fun);
+    $index = $1 if ($this->{'name'.$1}->GetValue =~ m{$fun\s*(\d+)}i);
   };
   ++$index;
   return $index;
@@ -497,43 +501,44 @@ sub fetch {
   $peak -> plot_components($this->{components}->GetValue);
   $peak -> plot_residual($this->{residual}->GetValue);
   my $nls = 0;
-  foreach my $i (1 .. $this->{count}) {
-    next if (not exists $this->{"func$i"});
-    next if $this->{'skip'.$i}->GetValue;
+  foreach my $k (keys %$this) {
+    next if ($k !~ m{func(\w{3})});
+    my $key = $1;
+    next if $this->{'skip'.$key}->GetValue;
     ++$nls;
-    my $fun = $this->{'type'.$i};
+    my $fun = $this->{'type'.$key};
     $fun = 'pvoigt' if $fun =~ m{pseudo[-_]voigt}i;
-    $this->{'lineshape'.$i} = $peak -> add($fun,
-					   name  => $this->{'name'.$i}->GetValue,
-					   a0    => $this->{'val0'.$i}->GetValue,
-					   fix0  => $this->{'fix0'.$i}->GetValue,
-					   a1    => $this->{'val1'.$i}->GetValue,
-					   fix1  => $this->{'fix1'.$i}->GetValue,
-					   a2    => $this->{'val2'.$i}->GetValue,
-					   fix2  => $this->{'fix2'.$i}->GetValue,
-					   a3    => 0,
-					   fix3  => 1,
-					  );
+    $this->{'lineshape'.$key} = $peak -> add($fun,
+					     name  => $this->{'name'.$key}->GetValue,
+					     a0    => $this->{'val0'.$key}->GetValue,
+					     fix0  => $this->{'fix0'.$key}->GetValue,
+					     a1    => $this->{'val1'.$key}->GetValue,
+					     fix1  => $this->{'fix1'.$key}->GetValue,
+					     a2    => $this->{'val2'.$key}->GetValue,
+					     fix2  => $this->{'fix2'.$key}->GetValue,
+					     a3    => 0,
+					     fix3  => 1,
+					    );
     ## sanity checks
-    if ($this->{'val1'.$i}->GetValue < ($this->{PEAK}->data->bkg_e0-30)) {
+    if ($this->{'val1'.$key}->GetValue < ($this->{PEAK}->data->bkg_e0-30)) {
       $string .= sprintf("The centroid of %s appears to be well below the XANES data range.\n\n",
-			 $this->{'lineshape'.$i}->name);
+			 $this->{'lineshape'.$key}->name);
     };
-    if ($this->{'val1'.$i}->GetValue > ($this->{PEAK}->data->bkg_e0+200)) {
+    if ($this->{'val1'.$key}->GetValue > ($this->{PEAK}->data->bkg_e0+200)) {
       $string .= sprintf("The centroid of %s appears to be well above the XANES data range.\n\n",
-			 $this->{'lineshape'.$i}->name);
+			 $this->{'lineshape'.$key}->name);
     };
-    if ($this->{'val2'.$i}->GetValue < 0) {
+    if ($this->{'val2'.$key}->GetValue < 0) {
       $string .= sprintf("The width of %s is negative.\n\n",
-			 $this->{'lineshape'.$i}->name);
+			 $this->{'lineshape'.$key}->name);
     };
-    if ($this->{'lineshape'.$i}->nparams == 4) {
-      $this->{'lineshape'.$i}->a3($this->{'val3'.$i}->GetValue);
-      $this->{'lineshape'.$i}->fix3($this->{'fix3'.$i}->GetValue);
+    if ($this->{'lineshape'.$key}->nparams == 4) {
+      $this->{'lineshape'.$key}->a3($this->{'val3'.$key}->GetValue);
+      $this->{'lineshape'.$key}->fix3($this->{'fix3'.$key}->GetValue);
       ## sanity checks
-      if ($this->{'val3'.$i}->GetValue < 0) {
+      if ($this->{'val3'.$key}->GetValue < 0) {
 	$string .= sprintf("The 4th parameter of %s is negative.\n\n",
-			   $this->{'lineshape'.$i}->name);
+			   $this->{'lineshape'.$key}->name);
       };
     };
   };
@@ -566,14 +571,15 @@ sub fit {
   if (not $nofit) {
     $this->{result}->Clear;
     $this->{result}->SetValue($peak->report);
-    foreach my $i (1 .. $this->{count}) {
-      next if not exists $this->{"func$i"};
-      next if $this->{'skip'.$i}->GetValue;
-      $this->{'val0'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a0));
-      $this->{'val1'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a1));
-      $this->{'val2'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a2));
-      if ($this->{'lineshape'.$i}->nparams == 4) {
-	$this->{'val3'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a3));
+    foreach my $k (keys %$this) {
+      next if ($k !~ m{func(\w{3})});
+      my $key = $1;
+      next if $this->{'skip'.$key}->GetValue;
+      $this->{'val0'.$key}->SetValue(sprintf("%.3f", $this->{'lineshape'.$key}->a0));
+      $this->{'val1'.$key}->SetValue(sprintf("%.3f", $this->{'lineshape'.$key}->a1));
+      $this->{'val2'.$key}->SetValue(sprintf("%.3f", $this->{'lineshape'.$key}->a2));
+      if ($this->{'lineshape'.$key}->nparams == 4) {
+	$this->{'val3'.$key}->SetValue(sprintf("%.3f", $this->{'lineshape'.$key}->a3));
       };
     };
     $this->{fitted} = 1;
@@ -612,14 +618,15 @@ sub sequence {
   ## restore the proper fit
   $this->{result}->Clear;
   $this->{result}->SetValue($this->{PEAK}->report);
-  foreach my $i (1 .. $this->{count}) {
-    next if not exists $this->{"func$i"};
-    next if $this->{'skip'.$i}->GetValue;
-    $this->{'val0'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a0));
-    $this->{'val1'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a1));
-    $this->{'val2'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a2));
-    if ($this->{'lineshape'.$i}->nparams == 4) {
-      $this->{'val3'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a3));
+  foreach my $k (keys %$this) {
+    next if ($k !~ m{func(\w{3})});
+    my $key = $1;
+    next if $this->{'skip'.$key}->GetValue;
+    $this->{'val0'.$key}->SetValue(sprintf("%.3f", $this->{'lineshape'.$key}->a0));
+    $this->{'val1'.$key}->SetValue(sprintf("%.3f", $this->{'lineshape'.$key}->a1));
+    $this->{'val2'.$key}->SetValue(sprintf("%.3f", $this->{'lineshape'.$key}->a2));
+    if ($this->{'lineshape'.$key}->nparams == 4) {
+      $this->{'val3'.$key}->SetValue(sprintf("%.3f", $this->{'lineshape'.$key}->a3));
     };
   };
 
@@ -746,24 +753,25 @@ sub save {
 sub reset_all {
   my ($this) = @_;
   $this->{result}->Clear;
-  foreach my $i (1 .. $this->{count}) {
-    next if not exists $this->{"func$i"};
+  foreach my $k (keys %$this) {
+    next if ($k !~ m{func(\w{3})});
+    my $key = $1;
     ## height of data at centroid
-    my $y = $this->{PEAK}->data->yofx($this->{PEAK}->data->nsuff, q{}, $this->{'val1'.$i}->GetValue);
-    $this->{'val0'.$i}->SetValue(sprintf("%.3f", $y));
+    my $y = $this->{PEAK}->data->yofx($this->{PEAK}->data->nsuff, q{}, $this->{'val1'.$key}->GetValue);
+    $this->{'val0'.$key}->SetValue(sprintf("%.3f", $y));
     ## width=0.5 or gamma_ch for $STEPLIKE
-    $this->{'val2'.$i}->SetValue(0.5);
-    if ($this->{"type$i"} =~ m{$STEPLIKE}) {
-      $this->{'val2'.$i}->SetValue(sprintf("%.3f", Xray::Absorption->get_gamma($this->{PEAK}->data->bkg_z,
+    $this->{'val2'.$key}->SetValue(0.5);
+    if ($this->{"type$key"} =~ m{$STEPLIKE}) {
+      $this->{'val2'.$key}->SetValue(sprintf("%.3f", Xray::Absorption->get_gamma($this->{PEAK}->data->bkg_z,
 										$this->{PEAK}->data->fft_edge)))
     };
-    if ($this->{'lineshape'.$i}->nparams == 4) {
-      $this->{'val3'.$i}->SetValue(0.5);
+    if ($this->{'lineshape'.$key}->nparams == 4) {
+      $this->{'val3'.$key}->SetValue(0.5);
     };
-    $this->{'fix0'.$i}->SetValue(0);
-    $this->{'fix1'.$i}->SetValue(1);
-    $this->{'fix2'.$i}->SetValue(0);
-    $this->{'fix3'.$i}->SetValue(0) if ($this->{"type$i"} !~ m{$STEPLIKE});
+    $this->{'fix0'.$key}->SetValue(0);
+    $this->{'fix1'.$key}->SetValue(1);
+    $this->{'fix2'.$key}->SetValue(0);
+    $this->{'fix3'.$key}->SetValue(0) if ($this->{"type$key"} !~ m{$STEPLIKE});
   };
 };
 
@@ -776,7 +784,7 @@ sub discard {
   my ($this, $n) = @_;
   my $name = $this->{'name'.$n}->GetValue;
   my $yesno = Demeter::UI::Wx::VerbDialog->new($::app->{main}, -1,
-					       "Really delete $name (lineshape #$n)?",
+					       "Really delete $name?",
 					       "Delete lineshape?",
 					       "Delete lineshape");
   my $result = $yesno->ShowModal;
@@ -800,8 +808,18 @@ sub discard {
   delete $this->{"func$n"};
   delete $this->{"box$n"};
   ## Refit the containiner
-  $this->{lsbox} -> Fit($this->{main});
-  $this->{vbox}  -> Fit($this->{panel});
+  $this->{main}  -> Scroll(0,0);
+  #$this->{lsbox} -> Fit($this->{main});
+  #$this->{vbox}  -> Fit($this->{panel});
+  $this->{lsbox} -> Layout;
+  $this->{vbox}  -> Layout;
+
+  if (not grep {$_ =~ m{func\w{3}}} (keys %$this)) {
+    foreach my $ac (qw(fit plot fitmarked reset save)) {
+      $this->{$ac}->Enable(0);
+    };
+  };
+
   $::app->{main}->status("Deleted $name (lineshape #$n)");
 };
 
@@ -874,6 +892,41 @@ sub do_swap_peak {
 };
 
 
+## restore persistent information from a project file
+sub reinstate {
+  my ($this, $hash, $lineshapes) = @_;
+
+  ## fit range
+  my $data  = $this->{PEAK}->mo->fetch('Data', $hash->{datagroup});
+  my $e0  = $data->bkg_e0 || 0;
+  $this->{PEAK}->data($data);
+  $this->{emin}->SetValue($hash->{xmin}-$e0);
+  $this->{emax}->SetValue($hash->{xmax}-$e0);
+
+  $this->{components}->SetValue($hash->{plot_components});
+  $this->{residual}->SetValue($hash->{plot_residual});
+
+  foreach my $ls (@{ $lineshapes }) {
+    my $hash = {@$ls};
+    my $func = ucfirst(lc($hash->{function}));
+    $func = 'Pseudo_Voigt' if (lc($hash->{function}) =~ m{pseudo});
+    my $str = $this->add($func);
+    $this->{'val0'.$str}->SetValue($hash->{a0});
+    $this->{'val1'.$str}->SetValue($hash->{a1});
+    $this->{'val2'.$str}->SetValue($hash->{a2});
+    $this->{'fix0'.$str}->SetValue($hash->{fix0});
+    $this->{'fix1'.$str}->SetValue($hash->{fix1});
+    $this->{'fix2'.$str}->SetValue($hash->{fix2});
+    #if (lc($selection) =~ m{$PEAK3}) {
+    #  $this->{'val3'.$str}->SetValue($hash->{a3});
+    #  $this->{'fix3'.$str}->SetValue($hash->{fix3});
+    #};
+    $this->{fitted} = 1;
+  };
+
+  $::app->{main}->status("Restored Peak Fit state from project file");
+};
+
 1;
 
 
@@ -883,7 +936,7 @@ Demeter::UI::Athena::PeakFit - A peak fitting for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.24.
+This documentation refers to Demeter version 0.9.25.
 
 =head1 SYNOPSIS
 

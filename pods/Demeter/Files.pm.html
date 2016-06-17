@@ -67,21 +67,71 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.24.</p>
+<p>This documentation refers to Demeter version 0.9.25.</p>
 
 <h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
 <p>This role contains several methods for identifying files common to the
-Feff and Ifeffit/Larch universes.</p>
+Demeter, Feff, and Ifeffit/Larch universes.</p>
 
 <h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
 <dl>
 	<dt><code>is_atoms</code></dt>
-	<dt><code>is_cif</code></dt>
-	<dt><code>is_feff</code></dt>
-	<dt><code>is_data</code></dt>
+		<dd><p>Return true if a file is recognized as an atoms input file.  This uses
+simple semantics based on the file contents.</p></dd>
+<dd><pre>  my $yesno = Demeter-&gt;is_atoms($file, $verbose);
+
+</pre></dd>	<dt><code>is_cif</code></dt>
+		<dd><p>Return true if a file is recognized as a CIF file.  This is a pretty
+dumb method -- it returns true if the file extension is <code>.cif</code>.</p></dd>
+<dd><pre>  my $yesno = Demeter-&gt;is_cif($file, $verbose);
+
+</pre></dd>	<dt><code>is_feff</code></dt>
+		<dd><p>Return true if a file is recognized as a Feff input file.  This uses
+simple semantics based on the file contents.</p></dd>
+<dd><pre>  my $yesno = Demeter-&gt;is_feff($file, $verbose);
+
+</pre></dd>	<dt><code>is_data</code></dt>
+		<dd><p>Return true is Ifeffit/Larch recognizes this file as a data file.</p></dd>
+<dd><pre>  my $yesno = Demeter-&gt;is_data($file, $verbose);
+
+</pre></dd>	<dt><code>is_prj</code></dt>
+		<dd><p>Return true if this is a conventional Athena project file.</p></dd>
+<dd><pre>  my $yesno = Demeter-&gt;is_prj($file, $verbose);
+
+</pre></dd>	<dt><code>is_json</code></dt>
+		<dd><p>Return true if this is a JSON-style Athena project file.</p></dd>
+<dd><pre>  my $yesno = Demeter-&gt;is_json($file, $verbose);
+
+</pre></dd>	<dt><code>is_zipproj</code></dt>
+		<dd><p>Return true if this is a zip file which can be recognized as a save
+file for some aspect of Artemis.</p></dd>
+<dd><pre>  my $yesno = Demeter-&gt;is_zipproj($file, $verbose, $type);
+
+</pre></dd>		<dd><p><code>$type</code> can be one of:</p></dd>
+<dd><dl>
+	<dt><code>any</code></dt>
+		<dd><p>Returns true if the file is any kind of recognized save file in a zip
+format.</p></dd>
+	<dt><code>guess</code></dt>
+		<dd><p>Returns true if the file is any kind of recognized save file in a zip
+format.  The return value tells you what kind.  -1 means an Artemis
+project file., -2 means a Demeter fit serialization file, and -3 means
+an old-style Artemis project file.</p></dd>
+	<dt><code>fpj</code></dt>
+		<dd><p>Returns true only if the file is an Artemis project file.</p></dd>
+	<dt><code>dpj</code></dt>
+		<dd><p>Returns true only if the file is a Demeter fit serialization file.</p></dd>
+	<dt><code>apj</code></dt>
+		<dd><p>Returns true only if the file is an old-style Artemis project file.</p></dd>
 </dl>
+</dd>
+	<dt><code>is_xdi</code></dt>
+		<dd><p>Return true if the file is recognizably an XDI file.</p></dd>
+<dd><pre>  my $yesno = Demeter-&gt;is_xdi($file, $verbose);
+
+</pre></dd></dl>
 <h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
 <p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration system.</p>

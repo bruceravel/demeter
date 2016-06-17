@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>9.11. Multi-electron excitation removal &mdash; Athena 0.9.24 documentation</title>
+    <title>9.11. Multi-electron excitation removal &mdash; Athena 0.9.25 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.24',
+        VERSION:     '0.9.25',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Athena 0.9.24 documentation" href="../index.html" />
+    <link rel="top" title="Athena 0.9.25 documentation" href="../index.html" />
     <link rel="up" title="9. Data processing" href="index.html" />
     <link rel="next" title="9.12. Copy series" href="series.html" />
     <link rel="prev" title="9.10. Dispersive XAS" href="pixel.html" />
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="pixel.html" title="9.10. Dispersive XAS"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.25 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">9. Data processing</a> &raquo;</li> 
       </ul>
     </div>  
@@ -73,12 +73,13 @@ excitation will not be small compared to the L<sub>III</sub>
 EXAFS. Other multi-electron excitations have even larger
 cross-sections compared to their primary excitations. For an excellent
 discussion of multi-electron excitations see <a class="reference external" href="http://www.p-ng.si/~arcon/xas/mpe/mpe.htm">Iztok Arcon's
-Mulielectron Photoexcitations page</a>.</p>
-<p>Another similar phenomenon is the presence of a small impurity of the
-Z+1 element, leading to a small edge step well above the measured edge.
-In some cases this small edge step might be hard to see in your μ(E)
-data, but are clearly visible as a step in the χ(k) which Fourier
-transforms into a low-R contribution in the χ(R) spectrum.</p>
+Multielectron photo excitations page</a>.</p>
+<p>Another phenomenon which is somewhat similar in its effect on your
+data is the presence of a small impurity of the Z+1 element, leading
+to a small edge step well above the measured edge.  In some cases this
+small edge step might be hard to see in your μ(E) data, but are
+clearly visible as a step in the χ(k) which Fourier transforms
+into a low-R contribution in the χ(R) spectrum.</p>
 <p><font size=-1 color="#8C4112">ATHENA</font> offers two relatively simple algorithms to attempt
 to remove the effect of a step due to multi-electron excitations or
 small impurities from your data. One models the multi-electron
@@ -88,8 +89,8 @@ the specified energy.</p>
 <div class="admonition caution">
 <p class="first admonition-title">Caution</p>
 <p class="last">The algorithm described here requires considerable user
-input and sufficient knowledge to properly evaluate the results.
-Use this carefully!</p>
+input and sufficient knowledge to reasonably process the data.  In
+no case will the result be perfect.  Use this tool carefully!</p>
 </div>
 <p>That said, let's carry on.</p>
 <div class="figure align-center" id="id1">
@@ -107,11 +108,14 @@ excitation at about 120 volts above the edge.</p>
 <p class="caption"><span class="caption-number">Fig. 9.33 </span><span class="caption-text">The results of removing the [3p4d]5d multi-electron excitation in
 La L<sub>III</sub>-edge data, which occurs at about 120 volts above
 the edge.  This excitation is seen near the cursor in the energy
-plot.</span></p>
+plot.  This plot is made by <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> clicking
+<kbd class=" light">Plot in energy</kbd>.</span></p>
 </div>
 <div style="width: 45%" class="subfigure" id="id3">
 <span id="fig-meek"></span><a class="reference external image-reference" href="../_images/mee_k.png"><img alt="../_images/mee_k.png" src="../_images/mee_k.png" style="width: 100%;" /></a>
-<p class="caption"><span class="caption-number">Fig. 9.34 </span><span class="caption-text">Its effect is much more pronounced in the χ(k) data.</span></p>
+<p class="caption"><span class="caption-number">Fig. 9.34 </span><span class="caption-text">Its effect is much more pronounced in the χ(k) data.  This
+plot is made by <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> clicking <kbd class=" light">Plot in
+k</kbd>.</span></p>
 </div>
 </div><p id="_fig-meedone">For more information about multi-electron excitations, see</p>
 <blockquote>
@@ -141,9 +145,6 @@ excitations on otherwise excellent χ(k) data:</p>
 <li>Christoph Hennig. Evidence for double-electron excitations in the L3-edge x-ray absorption spectra of actinides. <em>Phys. Rev. B</em>, 75:035120, Jan 2007. <a class="reference external" href="https://doi.org/10.1103/PhysRevB.75.035120">doi:10.1103/PhysRevB.75.035120</a>.</li>
 </ul>
 </div></blockquote>
-<p>Note that this tool can also be used to approximately remove the
-contamination from a small edge of another element that shows up in the
-data.</p>
 
 <br>
 
@@ -197,14 +198,14 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.24</b></p>
+<p>Current version: <b>0.9.25</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -212,6 +213,11 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
+</ul>
+<p>
+<h3>Translations</h3>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://www.moleng.kyoto-u.ac.jp/~moleng_04/asakura/ja/others/aug/index.html">日本語 (Japanese)</a>
 </ul>
 <p>
 
@@ -248,7 +254,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="pixel.html" title="9.10. Dispersive XAS"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.25 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="index.html" >9. Data processing</a> &raquo;</li> 
       </ul>
     </div>

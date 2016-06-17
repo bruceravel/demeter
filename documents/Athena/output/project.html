@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>8.2. Project files &mdash; Athena 0.9.24 documentation</title>
+    <title>8.2. Project files &mdash; Athena 0.9.25 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.24',
+        VERSION:     '0.9.25',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Athena 0.9.24 documentation" href="../index.html" />
+    <link rel="top" title="Athena 0.9.25 documentation" href="../index.html" />
     <link rel="up" title="8. Data export" href="index.html" />
     <link rel="next" title="8.3. Parameter report files" href="report.html" />
     <link rel="prev" title="8.1. Column output files" href="column.html" />
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="column.html" title="8.1. Column output files"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.25 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">8. Data export</a> &raquo;</li> 
       </ul>
     </div>  
@@ -132,8 +132,26 @@ level of compression, albeit without the common <code class="docutils literal"><
 extension. Both <font size=-1 color="#8C4112">ATHENA</font> and <font size=-1 color="#8C4112">ARTEMIS</font> use these
 files.</p>
 </div>
+<div class="section" id="saving-state-of-analysis-tools">
+<h2>8.2.3. Saving state of analysis tools<a class="headerlink" href="#saving-state-of-analysis-tools" title="Permalink to this headline">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.25: </span>The states of the LCF, PCA, and peak fitting tools are now saved in
+the project file.  These states will be restored from a project
+file if (and only if) the entire project file is imported.
+Importing only a subset of the groups in the project file will fail
+to trigger the import of the analysis states.</p>
+</div>
+<p>In the original format, these are additional <a class="reference external" href="Data::Dumper">Data::Dumper</a> strings
+written to the project file.  These lines should be silently ignored
+by earlier versions of <font size=-1 color="#8C4112">DEMETER</font>.</p>
+<p>In the JSON format (see below), they are written just prior to the
+<code class="docutils literal"><span class="pre">_____journal</span></code> line and have these descriptive keys in the JSON
+dictionary: <code class="docutils literal"><span class="pre">_____lcf</span></code>, <code class="docutils literal"><span class="pre">_____pca</span></code>, and <code class="docutils literal"><span class="pre">_____peakfit</span></code>.  The
+lineshape objects used by the peak fitting tool have keys like
+<code class="docutils literal"><span class="pre">_____lineshape0</span></code>, <code class="docutils literal"><span class="pre">_____lineshape1</span></code>, and so on.</p>
+</div>
 <div class="section" id="the-new-json-style-project-file">
-<h2>8.2.3. The new JSON-style project file<a class="headerlink" href="#the-new-json-style-project-file" title="Permalink to this headline">¶</a></h2>
+<h2>8.2.4. The new JSON-style project file<a class="headerlink" href="#the-new-json-style-project-file" title="Permalink to this headline">¶</a></h2>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.9.21: </span>A new feature in <font size=-1 color="#8C4112">ATHENA</font> allows one
 to write project files in the form of a compressed <a class="reference external" href="http://www.json.org/">JSON</a> file.  That is, the data that are
@@ -149,7 +167,7 @@ with earlier versions of <font size=-1 color="#8C4112">ATHENA</font>.  Versions 
 will recognize and read the JSON-style project file regardless of the
 value of <font color="#636A24">♦Athena→project_format</font>.</p>
 <div class="section" id="summary">
-<h3>8.2.3.1. Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.4.1. Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>JSON-style project file is valid JSON, possibly gzipped</li>
 <li>File contains a single dictionary</li>
@@ -174,10 +192,14 @@ array. Other optional arrays are possible.</li>
 <font size=-1 color="#8C4112">ATHENA</font> can be relied upon to set sensible defaults.</li>
 <li>A project journal is optionally specified with the key
 <code class="docutils literal"><span class="pre">_____journal</span></code> and a list of strings containing the jounral text.</li>
+<li>State of the LCF, PCA, and Peak Fit analysis tools are optionally
+saved with keys <code class="docutils literal"><span class="pre">_____lcf</span></code>, <code class="docutils literal"><span class="pre">_____pca</span></code>, and <code class="docutils literal"><span class="pre">_____peakfit</span></code>
+with the lineshape objects used in peak fitting saved as
+<code class="docutils literal"><span class="pre">_____lineshape0</span></code>, <code class="docutils literal"><span class="pre">_____lineshape1</span></code>, and so on.</li>
 </ol>
 </div>
 <div class="section" id="fields-in-the-json-file">
-<h3>8.2.3.2. Fields in the JSON file<a class="headerlink" href="#fields-in-the-json-file" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.4.2. Fields in the JSON file<a class="headerlink" href="#fields-in-the-json-file" title="Permalink to this headline">¶</a></h3>
 <p>The JSON-style project file is typically saved as a gzipped file with
 a <code class="docutils literal"><span class="pre">.prj</span></code> extension. <font size=-1 color="#8C4112">ATHENA</font>/<font size=-1 color="#8C4112">ARTEMIS</font> are able to
 read the file gzipped or as plain text. That is, an external
@@ -196,7 +218,7 @@ programming language, yet underscores are likely to be valid characters
 for variable or dictionary key names in most languages.</p>
 </div>
 <div class="section" id="headers">
-<h3>8.2.3.3. Headers<a class="headerlink" href="#headers" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.4.3. Headers<a class="headerlink" href="#headers" title="Permalink to this headline">¶</a></h3>
 <p>Standard JSON does not have comments, so special headers are used to
 carry material that might have gone into comments.</p>
 <p>The first several lines should look something like this</p>
@@ -234,7 +256,7 @@ said, those two headers are not used in any way by <font size=-1 color="#8C4112"
 or <font size=-1 color="#8C4112">ARTEMIS</font>.</p>
 </div>
 <div class="section" id="other-fields">
-<h3>8.2.3.4. Other fields<a class="headerlink" href="#other-fields" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.4.4. Other fields<a class="headerlink" href="#other-fields" title="Permalink to this headline">¶</a></h3>
 <p>There <strong>must</strong> be a field called <code class="docutils literal"><span class="pre">_____order</span></code> which is a list of
 group names in the order of display. Because the decoded JSON file is
 a dictionary, the order of entries cannot be guaranteed once
@@ -251,7 +273,7 @@ file. In the context of <font size=-1 color="#8C4112">ATHENA</font>, this is the
 <a class="reference external" href="../other/journal.html">project journal</a>.</p>
 </div>
 <div class="section" id="data-fields">
-<h3>8.2.3.5. Data fields<a class="headerlink" href="#data-fields" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.4.5. Data fields<a class="headerlink" href="#data-fields" title="Permalink to this headline">¶</a></h3>
 <p>A data field has a key which is used as the <font size=-1 color="#8C4112">DEMETER</font> group
 attribute, the <font size=-1 color="#8C4112">IFEFFIT</font> group name, and the <font size=-1 color="#8C4112">LARCH</font>
 group name. In the <font size=-1 color="#8C4112">LARCH</font> context, a data group might be
@@ -334,7 +356,7 @@ be valid JSON, but can be linted in any way. <font size=-1 color="#8C4112">ATHEN
 subfields as single lines, but that is <strong>not required</strong>.</p>
 </div>
 <div class="section" id="attributes">
-<h3>8.2.3.6. Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.4.6. Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h3>
 <p>The following tables explain all the attributes found in a project
 file written by <font size=-1 color="#8C4112">ATHENA</font>. They are all listed here for the
 sake of completeness and to document the contents of an
@@ -360,7 +382,7 @@ sufficiently easy for <font size=-1 color="#8C4112">DEMETER</font> to be retrofi
 lexicon.</p>
 </div>
 <div class="section" id="essential-attributes">
-<h3>8.2.3.7. Essential attributes<a class="headerlink" href="#essential-attributes" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.4.7. Essential attributes<a class="headerlink" href="#essential-attributes" title="Permalink to this headline">¶</a></h3>
 <p>A data entry in the project file cannot be considered complete without
 these attributes included in the <code class="docutils literal"><span class="pre">args</span></code> dictionary.</p>
 <table border="1" class="docutils">
@@ -400,7 +422,7 @@ used as the key. Hmmm....</p>
 be.</p>
 </div>
 <div class="section" id="background-removal-attributes">
-<h3>8.2.3.8. Background removal attributes<a class="headerlink" href="#background-removal-attributes" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.4.8. Background removal attributes<a class="headerlink" href="#background-removal-attributes" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="docutils">
 <colgroup>
 <col width="16%" />
@@ -574,7 +596,7 @@ be.</p>
 </table>
 </div>
 <div class="section" id="forward-transform-parameters">
-<h3>8.2.3.9. Forward transform parameters<a class="headerlink" href="#forward-transform-parameters" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.4.9. Forward transform parameters<a class="headerlink" href="#forward-transform-parameters" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="docutils">
 <colgroup>
 <col width="20%" />
@@ -628,7 +650,7 @@ be.</p>
 </table>
 </div>
 <div class="section" id="backward-transform-parameters">
-<h3>8.2.3.10. Backward transform parameters<a class="headerlink" href="#backward-transform-parameters" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.4.10. Backward transform parameters<a class="headerlink" href="#backward-transform-parameters" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="docutils">
 <colgroup>
 <col width="18%" />
@@ -665,7 +687,7 @@ back-transform range in <font size=-1 color="#8C4112">ATHENA</font> and uses the
 attributes.</p>
 </div>
 <div class="section" id="fitting-parameters">
-<h3>8.2.3.11. Fitting parameters<a class="headerlink" href="#fitting-parameters" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.4.11. Fitting parameters<a class="headerlink" href="#fitting-parameters" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="docutils">
 <colgroup>
 <col width="16%" />
@@ -749,7 +771,7 @@ attributes.</p>
 <font size=-1 color="#8C4112">ATHENA</font> and uses the same attributes.</p>
 </div>
 <div class="section" id="plotting-parameters">
-<h3>8.2.3.12. Plotting parameters<a class="headerlink" href="#plotting-parameters" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.4.12. Plotting parameters<a class="headerlink" href="#plotting-parameters" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="docutils">
 <colgroup>
 <col width="15%" />
@@ -779,7 +801,7 @@ attributes.</p>
 </table>
 </div>
 <div class="section" id="parameters-related-to-contructing-data-from-column-ascii-files">
-<h3>8.2.3.13. Parameters related to contructing data from column ascii files<a class="headerlink" href="#parameters-related-to-contructing-data-from-column-ascii-files" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.4.13. Parameters related to contructing data from column ascii files<a class="headerlink" href="#parameters-related-to-contructing-data-from-column-ascii-files" title="Permalink to this headline">¶</a></h3>
 <p>An external application saving an <font size=-1 color="#8C4112">ATHENA</font> project file can probably
 ignore this group of attributes. In <font size=-1 color="#8C4112">ATHENA</font>, for a derived data group (a
 merge of data, for example) the string attributes are set to an empty
@@ -865,7 +887,7 @@ string and the booleans are set to false.</p>
 </table>
 </div>
 <div class="section" id="other-data-processing-parameters">
-<h3>8.2.3.14. Other data processing parameters<a class="headerlink" href="#other-data-processing-parameters" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.4.14. Other data processing parameters<a class="headerlink" href="#other-data-processing-parameters" title="Permalink to this headline">¶</a></h3>
 <p>Again, these are all things that an external program is unlikely to need
 to specify.</p>
 <table border="1" class="docutils">
@@ -933,7 +955,7 @@ to specify.</p>
 </table>
 </div>
 <div class="section" id="and-all-the-rest">
-<h3>8.2.3.15. And all the rest<a class="headerlink" href="#and-all-the-rest" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.4.15. And all the rest<a class="headerlink" href="#and-all-the-rest" title="Permalink to this headline">¶</a></h3>
 <p>Much of this need not be written by an external application.  Some of
 this is chaff. I've been working on <font size=-1 color="#8C4112">ATHENA</font> for a loooong
 time now....</p>
@@ -1161,14 +1183,14 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.24</b></p>
+<p>Current version: <b>0.9.25</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -1176,6 +1198,11 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
+</ul>
+<p>
+<h3>Translations</h3>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://www.moleng.kyoto-u.ac.jp/~moleng_04/asakura/ja/others/aug/index.html">日本語 (Japanese)</a>
 </ul>
 <p>
 
@@ -1212,7 +1239,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="column.html" title="8.1. Column output files"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.24 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.25 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="index.html" >8. Data export</a> &raquo;</li> 
       </ul>
     </div>

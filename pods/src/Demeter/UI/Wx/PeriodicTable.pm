@@ -147,12 +147,12 @@ my @elements = (['H',  0, 0,  'g'],
 		['Ds', 6, 9,  'u'],
 		['Rg', 6, 10, 'u'],
 		['Cn', 6, 11, 'm'],
-		['Uut',6, 12, 'u'],
+		['Nh', 6, 12, 'u'],
 		['Fl', 6, 13, 'u'],
-		['Uup',6, 14, 'u'],
+		['Mc', 6, 14, 'u'],
 		['Lv', 6, 15, 'u'],
-		['Uus',6, 16, 'u'],
-		['Uuo',6, 17, 'u'],
+		['Ts', 6, 16, 'u'],
+		['Og', 6, 17, 'u'],
 	       );
 
 my %color_of = (
@@ -216,7 +216,7 @@ Demeter::UI::Wx::PeriodicTable - A periodic table widget
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.24.
+This documentation refers to Demeter version 0.9.25.
 
 =head1 SYNOPSIS
 

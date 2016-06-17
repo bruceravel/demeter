@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>13. Hephaestus &mdash; Athena 0.9.24 documentation</title>
+    <title>13. Hephaestus &mdash; Athena 0.9.25 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.24',
+        VERSION:     '0.9.25',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/wheat.ico"/>
-    <link rel="top" title="Athena 0.9.24 documentation" href="index.html" />
+    <link rel="top" title="Athena 0.9.25 documentation" href="index.html" />
     <link rel="prev" title="12.2. Linear combination analysis" href="examples/aucl.html" />
 
     <link rel="stylesheet" type="text/css" href="_static/demeter.css" />
@@ -39,7 +39,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="examples/aucl.html" title="12.2. Linear combination analysis"
              accesskey="P">previous</a></li>
-        <li class="nav-item nav-item-0"><a href="index.html">Athena 0.9.24 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Athena 0.9.25 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -58,9 +58,11 @@ agriculture are the support of civilization.
                              Mythology, Edith Hamilton
 </pre></div>
 </div>
-<p><font size=-1 color="#8C4112">HEPHAESTUS</font> is a program for making calculations useful to the XAS
-experimentalist using a periodic table, tables of X-ray absorption
-coefficients, and other elemental data.</p>
+<p><font size=-1 color="#8C4112">HEPHAESTUS</font> is a program for making small calculations
+useful to the XAS experimentalist using a periodic table, tables of
+X-ray absorption coefficients, and other elemental data.</p>
+<p>To start <font size=-1 color="#8C4112">HEPHAESTUS</font>, double click on its icon or, at the
+command line, type <strong class="command">dhephaestus</strong> (that's pronounced hə'fɪstəs, with a <em>silent</em> <code class="docutils literal"><span class="pre">d</span></code>).</p>
 <p>On the left of the <font size=-1 color="#8C4112">HEPHAESTUS</font> window is a stack of icon
 buttons which are used to select the different tools.  Clicking on one
 of the icon buttons enables that tool.</p>
@@ -134,7 +136,7 @@ measured and use the Z-2 element.</li>
 <li>Use I for a Ba absorber because Xe is also a silly filter material.</li>
 <li>For elements above Z=57, assume the L<sub>III</sub> edge is being
 measured. Use the first element whose K edge is more than 90 eV
-above the L α <sub>1</sub> line of the absorber.</li>
+above the Lα<sub>1</sub> line of the absorber.</li>
 <li>Use Rb for a U or Np absorber because Kr is still a silly filter
 material.</li>
 <li>For elements below Z=24 (chromium), no filter choice is given.
@@ -208,6 +210,15 @@ from the choice menu.</p>
 <span id="fig-hephformulas"></span><a class="reference external image-reference" href="_images/Hephaestus_formulas.png"><img alt="_images/Hephaestus_formulas.png" src="_images/Hephaestus_formulas.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.4 </span><span class="caption-text">The formulas tool.</span></p>
 </div>
+<p>At the bottom of the page is a tool for computing transmitted fraction
+from the material just computed.  You can enter a sample thickness and
+choose from μm, m, and cm units.  Pressing the <kbd class="light">Compute
+transmitted fraction</kbd> button will use the cross section reported
+above to display the transmitted fraction of X-rays at the current
+energy through the sample.  This is presented as a percentage of the
+incident intensity transmitted through the sample.</p>
+<div class="section" id="detailed-explanation">
+<h3>13.2.1. Detailed explanation<a class="headerlink" href="#detailed-explanation" title="Permalink to this headline">¶</a></h3>
 <p>Here is an example of the results printed for BN, with a specific
 gravity of 2.29 and at energy of 7800 eV:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span>  element   number   barns/atom     cm^2/gm
@@ -341,6 +352,7 @@ a cryostat or furnace. Other materials are commonly used for this
 purpose, such as graphite, polyethylene glycol, and sucrose.</li>
 </ol>
 </div>
+</div>
 <div class="section" id="ion-chambers">
 <h2>13.3. Ion Chambers<a class="headerlink" href="#ion-chambers" title="Permalink to this headline">¶</a></h2>
 <p>This tool is used to determine appropriate contents of ion chambers at a
@@ -403,7 +415,7 @@ for the major isotopes.</p>
 <dd>List of Mossbauer active isotopes is from <a class="reference external" href="http://mossbauer.org">http://mossbauer.org</a>,
 which used to be a site about Mossbauer spectroscopy but now seems
 to be a unmaintained science news site.  <a class="reference external" href="https://en.wikipedia.org/wiki/M%C3%B6ssbauer_spectroscopy">Wikipedia</a> has
-a nice periodic table of &lt;ossbauer active elements and Darby Dyer
+a nice periodic table of Mossbauer active elements and Darby Dyer
 keeps <a class="reference external" href="http://serc.carleton.edu/research_education/geochemsheets/techniques/mossbauer.html">a lovely page about Mossbauer</a>.</dd>
 <dt><strong>Ionic radii</strong></dt>
 <dd><ul class="first simple" id="bibtex-bibliography-hephaestus-1">
@@ -500,6 +512,9 @@ printout from EXAFS Materials that is found at many beamlines.
 <span id="fig-hephstandardsplot"></span><a class="reference external image-reference" href="_images/Hephaestus_standards_plot.png"><img alt="_images/Hephaestus_standards_plot.png" src="_images/Hephaestus_standards_plot.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.11 </span><span class="caption-text">An anotated standards plot for manganese oxalate.</span></p>
 </div>
+<p>The plotting range can be controlled using the
+<font color="#636A24">♦Hephaestus→standards_emin</font> and
+<font color="#636A24">♦Hephaestus→standards_emax</font> parameters.</p>
 </div>
 <div class="section" id="f-and-f">
 <h2>13.9. F' and F&quot;<a class="headerlink" href="#f-and-f" title="Permalink to this headline">¶</a></h2>
@@ -519,6 +534,10 @@ with other elements. You can also select to plot either f', f&quot;, or both.</p
 <span id="fig-hephf1f2plot"></span><a class="reference external image-reference" href="_images/Hephaestus_f1f2_plot.png"><img alt="_images/Hephaestus_f1f2_plot.png" src="_images/Hephaestus_f1f2_plot.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 13.13 </span><span class="caption-text">An f' and f&quot; plot for vanadium.</span></p>
 </div>
+<p>The plotting range can be controlled using the
+<font color="#636A24">♦Hephaestus→f1f2_emin</font> and
+<font color="#636A24">♦Hephaestus→f1f2_emax</font> parameters.  The energy grid of
+the calculation is set using <font color="#636A24">♦Hephaestus→f1f2_grid</font>.</p>
 </div>
 <div class="section" id="preferences">
 <h2>13.10. Preferences<a class="headerlink" href="#preferences" title="Permalink to this headline">¶</a></h2>
@@ -694,14 +713,14 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 </li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.24</b></p>
+<p>Current version: <b>0.9.25</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -709,6 +728,11 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
+</ul>
+<p>
+<h3>Translations</h3>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://www.moleng.kyoto-u.ac.jp/~moleng_04/asakura/ja/others/aug/index.html">日本語 (Japanese)</a>
 </ul>
 <p>
 
@@ -742,7 +766,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" style="margin-right: 10px">
           <a href="examples/aucl.html" title="12.2. Linear combination analysis"
              >previous</a></li>
-        <li class="nav-item nav-item-0"><a href="index.html">Athena 0.9.24 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Athena 0.9.25 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>1. Forward &mdash; Artemis 0.9.24 documentation</title>
+    <title>1. Forward &mdash; Artemis 0.9.25 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.24',
+        VERSION:     '0.9.25',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/wheat.ico"/>
-    <link rel="top" title="Artemis 0.9.24 documentation" href="index.html" />
+    <link rel="top" title="Artemis 0.9.25 documentation" href="index.html" />
     <link rel="next" title="2. Starting Artemis" href="startup/index.html" />
     <link rel="prev" title="Artemis: EXAFS Data Analysis using Feff with Larch or Ifeffit" href="index.html" />
 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="index.html" title="Artemis: EXAFS Data Analysis using Feff with Larch or Ifeffit"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Artemis 0.9.25 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -68,9 +68,9 @@ problem possible</li>
 <div class="admonition-todo admonition" id="index-0">
 <p class="first admonition-title">Todo</p>
 <ol class="last arabic simple">
-<li><a class="reference external" href="#id1">Data citations</a></li>
-<li>Finish <a class="reference external" href="examples/fes2.html">FeS2 section</a></li>
 <li>Write <a class="reference external" href="examples/methyltin.html">methyltin section</a></li>
+<li>Write an example section using the Hg-DNA problem, DOI:
+10.1016/j.radphyschem.2009.05.024</li>
 <li>Write <a class="reference external" href="extended/constraints.html">constraints and restraints section</a></li>
 <li>Document histograms</li>
 </ol>
@@ -102,7 +102,8 @@ like this: <font size=-1 color="#8C4112">ARTEMIS</font></li>
 then click on <span class="guilabel">k1</span></li>
 <li>A click of the left mouse button is often indicated with this icon:
 <img alt="leftclick" title="Left mouse button" src="./_static/leftclick.png" hspace="3"></a>.  A click of the right mouse button is indicated
-by this icon: <img alt="rightclick" title="Right mouse button" src="./_static/rightclick.png" hspace="3"></a>.</li>
+by this icon: <img alt="rightclick" title="Right mouse button" src="./_static/rightclick.png" hspace="3"></a>.  A drag-and-drop action is
+indicated by this icon: <img alt="drag" title="Drag and drop" src="./_static/drag.png" hspace="3"></a>.</li>
 </ul>
 <div class="admonition caution">
 <p class="first admonition-title">Caution</p>
@@ -198,8 +199,33 @@ desktop image in some screen shots is by <a class="reference external" href="htt
 <a class="reference external" href="https://creativecommons.org/licenses/by-nc-nd/2.0/">Creative Commons attribution, non-commercial, no-derivatives</a> license.
 You should check out his macro photography.  It's amazing!</p>
 </div>
-<div class="section" id="id1">
-<h2>1.3. Data citations<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="data-citations">
+<h2>1.3. Data citations<a class="headerlink" href="#data-citations" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>The iron foil data shown in <a class="reference external" href="data.html">the Data Window section</a> and elsewhere were measured by me while I
+was commissioning NSLS beamline X11B in 2004.</li>
+<li>The gold foil and any other gold edge data are taken from
+measurements published as<ul id="bibtex-bibliography-forward-3">
+<li>Maggy&nbsp;F. Lengke, Bruce Ravel, Michael&nbsp;E. Fleet, Gregory Wanger, Robert&nbsp;A. Gordon, and Gordon Southam. Mechanisms of Gold Bioaccumulation by Filamentous Cyanobacteria from Gold(III)−Chloride Complex. <em>Environmental Science &amp; Technology</em>, 40(20):6304–6309, 2006. <a class="reference external" href="https://doi.org/10.1021/es061040r">doi:10.1021/es061040r</a>.</li>
+</ul>
+</li>
+<li>The cobalt foil data shown in <a class="reference external" href="plot/stack.html">the plotting chapter</a> were measured by me at NSLS beamline X23A2.</li>
+<li>The copper foil data shown in <a class="reference external" href="extended/empirical.html">the empirical standards section</a> were measured by Matt Newville, Yanjun
+Zhang, and me at NSLS beamline X11A way back in 1992.</li>
+<li>Tin edge data which appear in several places are from<ul id="bibtex-bibliography-forward-4">
+<li>Christopher&nbsp;A. Impellitteri, Otis Evans, and Bruce Ravel. Speciation of organotins in polyvinyl chloride pipe via X-ray absorption spectroscopy and in leachates using GC-PFPD after derivatisation. <em>J. Environ. Monit.</em>, 9:358–365, 2007. <a class="reference external" href="https://doi.org/10.1039/B617711E">doi:10.1039/B617711E</a>.</li>
+</ul>
+</li>
+<li>FeS<sub>2</sub> data were measured by Matt Newville at APS 13BM and
+are found among the data at <a class="reference external" href="https://github.com/bruceravel/XAS-Education/tree/master/Examples/FeS2">my XAS Education site</a>.</li>
+<li>Uranium L<sub>III</sub> data on uranyl are from<ul id="bibtex-bibliography-forward-5">
+<li>S.&nbsp;D. Kelly, K.&nbsp;M. Kemner, J.&nbsp;B. Fein, D.&nbsp;A. Fowle, M.&nbsp;I. Boyanov, B.&nbsp;A. Bunker, and N.&nbsp;Yee. X-ray absorption fine structure determination of pH-dependent U-bacterial cell wall interactions. <em>Geochimica et Cosmochimica Acta</em>, 66(22):3855 – 3871, 2002. <a class="reference external" href="https://doi.org/10.1016/S0016-7037(02)00947-X">doi:10.1016/S0016-7037(02)00947-X</a>.</li>
+</ul>
+</li>
+<li>The parabibromobenzene data shown in <a class="reference external" href="extended/fivesix.html">the section on higher order
+scattering paths</a> were measured by me at
+NSLS beamline X23A2 using a sample prepared by Alessandra Leri.</li>
+</ul>
 </div>
 <div class="section" id="installing-athena-on-your-computer">
 <h2>1.4. Installing ATHENA on your computer<a class="headerlink" href="#installing-athena-on-your-computer" title="Permalink to this headline">¶</a></h2>
@@ -315,7 +341,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1 current"><a class="current reference internal" href="">1. Forward</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#layout-and-typesetting-conventions">1.1. Layout and typesetting conventions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#acknowledgments">1.2. Acknowledgments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id1">1.3. Data citations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-citations">1.3. Data citations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installing-athena-on-your-computer">1.4. Installing ATHENA on your computer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#building-this-document-from-source">1.5. Building this document from source</a></li>
 </ul>
@@ -336,14 +362,14 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="extended/index.html">15. Extended discussions</a></li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.24</b></p>
+<p>Current version: <b>0.9.25</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -387,7 +413,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="index.html" title="Artemis: EXAFS Data Analysis using Feff with Larch or Ifeffit"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Artemis 0.9.24 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Artemis 0.9.25 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

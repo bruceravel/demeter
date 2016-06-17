@@ -12,10 +12,10 @@ Converting raw data to mu(E)
 ----------------------------
 
 To import a data file, select :menuselection:`File --> Import data` or
-type :button:`Control`-:button:`o`. Alternately, you can drag one or more
-data files from your computer's file manager and drop them onto the
-group list. A file selection dialog opens. On my Linux computer, it
-looks like this:
+type :button:`Control`-:button:`o`. Alternately, you can
+:mark:`drag,..` drag one or more data files from your computer's file
+manager and drop them onto the group list. A file selection dialog
+opens. On my Linux computer, it looks like this:
 
 .. _fig-importfiledialog:
 .. figure:: ../../_images/import_filedialog.png

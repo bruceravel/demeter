@@ -964,11 +964,11 @@ sub OnMenuClick {
       return;
     };
     ($id == $BUG) and do {
-      Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/bugs.pod.html#OVERVIEW');
+      Wx::LaunchDefaultBrowser(q{http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html});
       return;
     };
     ($id == $QUESTION) and do {
-      Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/help.pod.html#Asking_questions_soliciting_help');
+      Wx::LaunchDefaultBrowser(q{http://bruceravel.github.io/demeter/documents/SinglePage/help.html});
       return;
     };
 
@@ -1545,7 +1545,7 @@ sub document {
   my ($app, $doc, $target) = @_;
   my $file;
   my $url = Demeter->co->default('artemis', 'doc_url');
-  my @path = ('Demeter', 'UI', 'Artemis', 'share', 'artug', 'html');
+  my @path = ('Demeter', 'share', 'documentation', 'Artemis');
   if (any {$doc eq $_} (qw(plot fit path feff))) {
     push @path, $doc;
     $file = 'index';
@@ -1705,7 +1705,7 @@ Demeter::UI::Artemis - EXAFS analysis using Feff and Ifeffit/Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.24.
+This documentation refers to Demeter version 0.9.25.
 
 =head1 SYNOPSIS
 

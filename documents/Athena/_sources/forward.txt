@@ -137,6 +137,10 @@ The following great software tools were used to create this document:
 - `The Sphinx Documentation Generator <http://sphinx-doc.org/>`_ and
   `reStructuredText <http://sphinx-doc.org/rest.html>`_
 
+- The `Sphinx nature theme
+  <http://www.sphinx-doc.org/en/stable/theming.html>`_, which I have
+  modified slightly.
+
 - The `Emacs <http://www.gnu.org/software/emacs/>`__ text editor along
   with `rst-mode
   <http://docutils.sourceforge.net/docs/user/emacs.html>`__ and the
@@ -148,10 +152,10 @@ The following great software tools were used to create this document:
 
 - The `sphinxcontrib-bibtex
   <https://sphinxcontrib-bibtex.readthedocs.org/en/latest/>`_
-  package, which is Sphinx extension for BibTeX style citations.
+  package, which is a Sphinx extension for BibTeX style citations.
 
 - The `sphinxtr <https://github.com/jterrace/sphinxtr>`_ package,
-  which is Sphinx extension for supporting a few LaTeX environments.
+  which is a Sphinx extension for supporting a few LaTeX environments.
   Currently, the ``subfig`` package is used for grouping figures, but
   the ``numfig`` package is not used for figure numbering.
   
@@ -181,8 +185,10 @@ http://www.artchive.com.
 
 The image used as the :demeter:`athena` program icon is from a
 :quoted:`Terracotta lekythos depicting Athena holding a spear and
-aphlaston.`. The image is licensed as Creative Commons
-Attribution-Share Alike 3.0 and can be found at `Wikimedia Commons
+aphlaston`. The image is licensed as `Creative Commons
+Attribution-Share Alike 3.0
+<http://creativecommons.org/licenses/by-sa/3.0>`_ and can be found at
+`Wikimedia Commons
 <http://commons.wikimedia.org/wiki/File:Brygos_Painter_lekythos_Athena_holding_spear_MET.jpg>`__.
 
 
@@ -242,10 +248,10 @@ Installing ATHENA on your computer
 **Linux, BSD, and other unixes**
     It is not especially hard to build :demeter:`athena`
     from source code. The 
-    procedure is explained in detail on this web page:
-    http://bruceravel.github.io/demeter/pods/installation.pod.html. An
-    excellent addendum to those instructions is at
-    https://gist.github.com/3959252.
+    procedure is `explained in detail here
+    <http://bruceravel.github.io/demeter/documents/SinglePage/packages.html>`_. An
+    excellent addendum to those instructions is `found here
+    <https://gist.github.com/3959252>`_.
 **Windows**
     Follow the links to `the Windows instructions on the Demeter
     homepage <http://bruceravel.github.io/demeter/#windows>`__ to download the
@@ -264,11 +270,11 @@ Building this document from source
 ----------------------------------
 
 The source files and all images files for this document can be
-downloaded using Git. To grab the source, you will need an `Git
+downloaded using Git. To grab the source, you will need a `Git
 client <http://git-scm.com/>`__ on your computer. This command checks a
 copy of the source out and downloads it onto your computer:
 
-::
+.. code-block:: bash
 
         git clone https://github.com/bruceravel/demeter.git
 
@@ -291,12 +297,18 @@ Building the html document
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Building the :demeter:`athena` document requires at least version 1.3
-of :program:`sphinx-build`.  Note that Ubuntu 15.04 comes with version
-1.2, so you will need to upgrade by doing
+of :program:`Sphinx`.  Note that Ubuntu 15.04 comes with version
+1.2, so you may need to upgrade by doing
 
-.. code:: bash
+.. code-block:: bash
 
    sudo pip install --upgrade sphinx
+
+You can check the version of :program:`Sphinx` with this command
+
+.. code-block:: bash
+
+   sphinx-build --version
 
 You will also need to install the following python packages
 
@@ -309,14 +321,14 @@ You will also need to install the following python packages
 
 These can be installed at the command line by
 
-.. code::
+.. code-block:: bash
 
    sudo pip install pybtex
    sudo pip install sphinxcontrib-bibtex
 
 To build the html document, do the following
 
-.. code:: bash
+.. code-block:: bash
 
    cd documentation/
    cd Athena/
@@ -327,6 +339,8 @@ html pages.  The html pages will be placed in :file:`_build/html/`.
 This folder is a self-contained package.  The :file:`html/` folder can
 be copied and placed somewhere else.  The web pages can be accessed
 with full functionality in any location.
+
+.. todo:: Provide the equivalent conda commands
 
 
 Building the LaTeX document

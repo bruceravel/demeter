@@ -1529,11 +1529,11 @@ sub OnMenuClick {
       return;
     };
     ($id == $BUG) and do {
-      Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/bugs.pod.html#OVERVIEW');
+      Wx::LaunchDefaultBrowser(q{http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html});
       return;
     };
     ($id == $QUESTION) and do {
-      Wx::LaunchDefaultBrowser('http://bruceravel.github.io/demeter/pods/help.pod.html#Asking_questions_soliciting_help');
+      Wx::LaunchDefaultBrowser(q{http://bruceravel.github.io/demeter/documents/SinglePage/help.html});
       return;
     };
 
@@ -2890,7 +2890,7 @@ sub show_epsilon {
 sub document {
   my ($app, $doc, $target) = @_;
   my $file;
-  my @path = ('Demeter', 'UI', 'Athena', 'share', 'aug', 'html');
+  my @path = ('Demeter', 'share', 'documentation', 'Athena');
   my $url = Demeter->co->default('athena', 'doc_url');
   if (any {$doc eq $_} (qw(analysis bkg examples import other output params plot process ui))) {
     push @path, $doc;
@@ -3055,7 +3055,7 @@ Demeter::UI::Athena - XAS data processing
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.24.
+This documentation refers to Demeter version 0.9.25.
 
 =head1 SYNOPSIS
 
