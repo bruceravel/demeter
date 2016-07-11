@@ -188,9 +188,11 @@ sub _read_config_file {
   ## need to distinguish between a relative filename and a fully
   ## resolved file.
 
-  carp("The Demeter configuration file ($file) does not exist\n\n"), return 0
+  #carp("The Demeter configuration file ($file) does not exist\n\n"),
+    return 0
     if (not -e $file);
-  carp("The Demeter configuration file ($file) cannot be opened\n\n"), return 0
+  #carp("The Demeter configuration file ($file) cannot be opened\n\n"),
+    return 0
     if (not -r $file);
 
   my $base = (split(/\./, basename($file)))[0];

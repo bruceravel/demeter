@@ -124,4 +124,6 @@ include artemis.demeter_conf       ## Artemis
 
 include hephaestus.demeter_conf    ## Hephaestus
 
+include metis.demeter_conf         ## Metis
+
 # include /home/bruce/codes/demeter/t/test.demeter.conf
