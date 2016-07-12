@@ -18,6 +18,7 @@ package Demeter::UI::Wx::Config;
 use strict;
 use warnings;
 use Carp;
+use File::Basename;
 use List::MoreUtils qw(firstidx uniq);
 use Text::Wrap;
 
@@ -238,6 +239,7 @@ sub tree_select {
       $self->set_boolean_widget($parent, $param),       last WIDGET if ($type eq 'boolean');
       $self->set_color_widget($parent, $param),         last WIDGET if ($type eq 'color');
       $self->set_font_widget($parent, $param),          last WIDGET if ($type eq 'font');
+      $self->set_file_widget($parent, $param),          last WIDGET if ($type eq 'file');
 
       ## fall back
       $self->set_stub;
@@ -277,6 +279,7 @@ sub apply {
   my $type = Demeter->co->Type($parent, $param);
  WIDGET: {
     $value = $self->{Set}->GetValue,           last WIDGET if ($type =~ m{(?:string|real|regex|absolute energy)});
+    $value = $self->{Set}->GetPath,            last WIDGET if ($type eq 'file');
     $value = $self->{Set}->GetStringSelection, last WIDGET if ($type eq 'list');
     $value = $self->{Set}->GetValue,           last WIDGET if ($type eq 'positive integer');
     $value = Demeter->onezero($self->{Set}->GetValue), last WIDGET if ($type eq 'boolean');
@@ -313,7 +316,9 @@ sub set_value {
 
     $self->{Set}->SetValue($value),                     last WIDGET if ($type eq 'positive integer');
 
-    $self->{Set}->SetValue(Demeter->onezero($value)),  last WIDGET if ($type eq 'boolean');
+    $self->{Set}->SetPath($value),                      last WIDGET if ($type eq 'file');
+
+    $self->{Set}->SetValue(Demeter->onezero($value)),   last WIDGET if ($type eq 'boolean');
 
     ($type eq 'color') and do {
       if ($value =~ m{\A\#}) {
@@ -447,6 +452,13 @@ sub set_font_widget {
 			   wxDEFAULT, wxNORMAL, wxNORMAL, 0,
 			   Demeter->co->default($parent, $param));
   $self->{Set} = Wx::FontPickerCtrl->new($self, -1, $font, [-1,-1], [200,-1]);
+  return $self->{Set};
+};
+
+sub set_file_widget {
+  my ($self, $parent, $param) = @_;
+  $self->{Set} = Wx::FilePickerCtrl->new($self, -1, Demeter->co->default($parent, $param), "Select a file for $param", "All files|*.*", [-1,-1], [200,-1]);
+  #$self->{Set}->SetPath();
   return $self->{Set};
 };
 

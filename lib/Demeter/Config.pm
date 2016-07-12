@@ -30,6 +30,7 @@ use Demeter::Constants qw($EPSILON2);
 use Demeter::StrTypes qw(FileName);
 use Demeter::IniReader;
 use Config::INI::Writer;
+use Cwd qw(abs_path);
 use File::Basename;
 use Regexp::Assemble;
 #use Demeter::Constants qw($NUMBER);
@@ -261,11 +262,17 @@ sub _read_config_file {
       $description = q{};
 
     } elsif ($line =~ m{^\s*($key_regex)\s*=\s*(.+)}) {
+      my $key = $1;
       $value = $2;
       $value =~ s{\s+$}{};
-      $hash{$1} = $value;
-      ($hash{demeter} = $value) if ($1 eq 'default');
-      if (($self->is_windows) and ($1 eq 'windows')) {
+      if (($value =~ m{__METIS_BASE__}) and ($INC{"Demeter/UI/Metis.pm"})) {
+	my $new = dirname($INC{"Demeter/UI/Metis.pm"});
+	$value =~ s{__METIS_BASE__}{$new};
+	$value = abs_path(File::Spec->canonpath($value));
+      }
+      $hash{$key} = $value;
+      ($hash{demeter} = $value) if ($key eq 'default');
+      if (($self->is_windows) and ($key eq 'windows')) {
 	my $relocated = $self->perl_base;       # make paths to executables (feff, gnuplot, etc)
 	$value =~ s{__PERL_BASE__}{$relocated}; # tolerant to relocation upon installation
 	$hash{default} = $value;
