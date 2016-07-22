@@ -86,7 +86,7 @@ has 'ini_file' => (is => 'ro', isa => FileName, default => $fname);
 
 my %ini;
 #tie %ini, 'Config::IniFiles', ();
-my %params_of;
+our %params_of;
 
 #my $one_has_been_created = 0;
 
@@ -436,6 +436,18 @@ sub offvalue {my $self=shift; $self->attribute("offvalue", @_)};
 sub minint   {my $self=shift; $self->attribute("minint",   @_)};
 sub maxint   {my $self=shift; $self->attribute("maxint",   @_)};
 sub restart  {my $self=shift; $self->attribute("restart",  @_)};
+
+sub set_options {
+  my ($self, $group, $param, $value, $sort) = @_;
+  my $string;
+  if ($sort) {
+    $string = join(" ", sort {$a cmp $b} @$value);
+  } else {
+    $string = join(" ", @$value);
+  };
+  $params_of{join(':',$group,$param)}->{options} = $string;
+  return $self;
+};
 
 sub describe_param {
   my ($self, $group, $param, $width) = @_;

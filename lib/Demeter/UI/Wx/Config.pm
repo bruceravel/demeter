@@ -87,6 +87,7 @@ sub new {
   $self->{Value} = Wx::Button->new( $self, -1, q{});
   $self->{grid} -> Add($self->{Value}, $this);
   EVT_BUTTON( $self, $self->{Value}, sub{my($self, $event) = @_; set_value($self, $event, 'default')} );
+  $self->{default_color} = $self->{Value}->GetBackgroundColour;
 
 #   $this = Wx::GBPosition->new(2, 2);
 #   $label = Wx::StaticText->new( $self, -1, q{      });
@@ -380,6 +381,8 @@ sub report {
 
 sub set_string_widget {
   my ($self, $parent, $param, $type) = @_;
+  $self->{Value} -> SetBackgroundColour( $self->{default_color} );
+  $self->{Default} -> SetBackgroundColour( $self->{default_color} );
   my $this = Demeter->co->default($parent, $param);
   $self->{Set} = Wx::TextCtrl->new( $self, -1, $this, [-1, -1], [200, -1], wxTE_PROCESS_ENTER );
   EVT_TEXT_ENTER($self, $self->{Set}, sub{1});
@@ -391,6 +394,8 @@ sub set_string_widget {
 
 sub set_list_widget {
   my ($self, $parent, $param) = @_;
+  $self->{Value} -> SetBackgroundColour( $self->{default_color} );
+  $self->{Default} -> SetBackgroundColour( $self->{default_color} );
   my @choices  = split(" ", Demeter->co->options($parent, $param));
   $self->{Set} = Wx::Choice->new( $self, -1, [-1, -1], [-1, -1], \@choices );
   my $value    = Demeter->co->default($parent, $param);
@@ -400,6 +405,8 @@ sub set_list_widget {
 
 sub set_spin_widget {
   my ($self, $parent, $param) = @_;
+  $self->{Value} -> SetBackgroundColour( $self->{default_color} );
+  $self->{Default} -> SetBackgroundColour( $self->{default_color} );
   my $this = Demeter->co->default($parent, $param);
   $self->{Set} = Wx::SpinCtrl->new($self, -1, $this, wxDefaultPosition, [-1,-1]);
   $self->{Set} -> SetRange(Demeter->co->minint($parent, $param),
@@ -409,6 +416,8 @@ sub set_spin_widget {
 
 sub set_boolean_widget {
   my ($self, $parent, $param) = @_;
+  $self->{Value} -> SetBackgroundColour( $self->{default_color} );
+  $self->{Default} -> SetBackgroundColour( $self->{default_color} );
   my $this = Demeter->co->default($parent, $param);
   $self->{Set} = Wx::CheckBox->new($self, -1, $param, wxDefaultPosition, [-1,-1]);
   $self->{Set}->SetValue($this);
@@ -422,19 +431,19 @@ sub set_color_widget {
   my $this = Demeter->co->default($parent, $param);
   if ($this =~ m{\A\#}) {
     my $col = Wx::Colour->new($this);
-    $self->{Value} -> SetOwnBackgroundColour( $col );
+    $self->{Value} -> SetBackgroundColour( $col );
     $color = $col;
   } else {
-    $self->{Value} -> SetOwnBackgroundColour( $cdb->Find($this) );
+    $self->{Value} -> SetBackgroundColour( $cdb->Find($this) );
     $color = $cdb->Find($this);
   };
 
   $this = Demeter->co->demeter($parent, $param);
   if ($this =~ m{\A\#}) {
     my $col = Wx::Colour->new($this);
-    $self->{Default}->SetOwnBackgroundColour( $col );
+    $self->{Default}->SetBackgroundColour( $col );
   } else {
-    $self->{Default}->SetOwnBackgroundColour( $cdb->Find($this) );
+    $self->{Default}->SetBackgroundColour( $cdb->Find($this) );
   };
 
   $self->{Set} = Wx::ColourPickerCtrl->new( $self, -1, $color, [-1, -1],
@@ -448,6 +457,8 @@ sub set_color_widget {
 
 sub set_font_widget {
   my ($self, $parent, $param) = @_;
+  $self->{Value} -> SetBackgroundColour( $self->{default_color} );
+  $self->{Default} -> SetBackgroundColour( $self->{default_color} );
   my $font = Wx::Font->new(10,
 			   wxDEFAULT, wxNORMAL, wxNORMAL, 0,
 			   Demeter->co->default($parent, $param));
@@ -457,6 +468,8 @@ sub set_font_widget {
 
 sub set_file_widget {
   my ($self, $parent, $param) = @_;
+  $self->{Value} -> SetBackgroundColour( $self->{default_color} );
+  $self->{Default} -> SetBackgroundColour( $self->{default_color} );
   $self->{Set} = Wx::FilePickerCtrl->new($self, -1, Demeter->co->default($parent, $param), "Select a file for $param", "All files|*.*", [-1,-1], [200,-1]);
   #$self->{Set}->SetPath();
   return $self->{Set};
