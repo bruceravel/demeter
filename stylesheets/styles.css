@@ -242,7 +242,6 @@ header {
 toc {
     background-color: #171717;
     color: #FDFDFB;
-    width: 650px;
     float: top;
     position: fixed;
     border: 1px solid #000;
@@ -257,7 +256,7 @@ toc {
     -webkit-font-smoothing: antialiased;
     z-index:2;
 }
-
+/*     width: 800px; */
 
 
 p.header p.toc {
