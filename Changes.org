@@ -33,6 +33,8 @@
    - Control for enabling 5- and 6-legged paths in Feff tab
    - Don't consider skip parameters when checking for unique parameter
      names
+   - Fixed the incorrectly implemented data-collision Fit sanity check
+     (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-July/008639.html][Isabelle Kieffer]])
 
 *** Hephaestus
    - Configurable plotting range in standards tool

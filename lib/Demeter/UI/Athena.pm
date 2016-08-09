@@ -133,6 +133,8 @@ sub OnInit {
   #print DateTime->now,  "  Making side bar ...\n";
   $app -> side_bar($hbox);
 
+  Wx::ToolTip::Enable(0);
+
   my $accelerator = Wx::AcceleratorTable->new(
    					      [wxACCEL_CTRL, 107, $FOCUS_UP],
    					      [wxACCEL_CTRL, 106, $FOCUS_DOWN],

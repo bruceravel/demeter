@@ -8,7 +8,7 @@ use File::Spec;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON EVT_TEXT EVT_TEXT_ENTER EVT_TREE_ITEM_RIGHT_CLICK EVT_MENU);
+use Wx::Event qw(EVT_BUTTON EVT_TEXT EVT_TEXT_ENTER EVT_TREE_ITEM_RIGHT_CLICK EVT_MENU); # EVT_TREE_ITEM_GETTOOLTIP);
 use Demeter::UI::Athena::XDIAddParameter;
 #use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Artemis::ShowText;
@@ -87,10 +87,9 @@ sub new {
     $definedboxsizer -> Add($this->{tree}, 1, wxALL|wxGROW, 5);
     $this->{root} = $this->{tree}->AddRoot('Root');
     EVT_TREE_ITEM_RIGHT_CLICK($this, $this->{tree}, sub{OnRightClick(@_)});
-
+    #EVT_TREE_ITEM_GETTOOLTIP($this, $this->{tree}, sub{1;});
     $this->{tree}->SetFont( Wx::Font->new( $size - 1, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
-
-
+    
     my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
     $this->{expand}   = Wx::Button->new($this, -1, "Expand all");
     $this->{collapse} = Wx::Button->new($this, -1, "Collapse all");
@@ -390,6 +389,12 @@ sub DoContextMenu {
 
 
 1;
+
+package Wx::TreeCrtl;
+
+sub GetToolTip {
+  1;
+};
 
 
 =head1 NAME

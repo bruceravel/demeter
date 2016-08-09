@@ -487,6 +487,7 @@ sub any {
   foreach my $t (@{$self->types}) {
     my $list = $self->$t;
     foreach my $o (@$list) {
+      #Demeter->pjoin($group, $o, $o->name, $o->group) if ($o->group eq $group);
       return $o if ($o->group eq $group);
     };
   };
@@ -494,7 +495,7 @@ sub any {
 };
 
 
-=for LiteratureReference 
+=for LiteratureReference
   And when she buries a man, that action concerns me: all mankind is
   of one author, and is one volume; when one man dies, one chapter is
   not torn out of the book, but translated into a better language; and
