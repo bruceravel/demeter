@@ -6,8 +6,6 @@
 The Atoms and Feff Window
 =========================
 
-.. todo:: Reorganize content so that table of contents makes sense.
-
 
 When you import crystal data from an :file:`atoms.inp` or CIF file,
 three things happen:
@@ -119,5 +117,5 @@ later section <../feff/aggregate.html>`__
    pathlike.rst
    console.rst
    aggregate.rst
-
+   standalone.rst
 
