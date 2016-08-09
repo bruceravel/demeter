@@ -58,6 +58,7 @@ sub make_text {
   $attr{stats} = Wx::TextAttr->new(Wx::Colour->new('#000000'), Wx::Colour->new($color), Wx::Font->new( @font ) );
 
   my $was;
+  $text =~ s{\r}{}g;
   foreach my $line (split(/\n/, $text)) {
     $was = $location -> GetInsertionPoint;
     # my $is = $location -> GetInsertionPoint;
