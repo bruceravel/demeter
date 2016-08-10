@@ -26,3 +26,5 @@ Demeter: Miscellaneous documents
    installation.rst
    demeter_nonroot.rst
    mingw.rst
+   debian.rst
+

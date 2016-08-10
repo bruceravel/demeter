@@ -39,6 +39,7 @@ documentation/_images/athena_mac.png
 documentation/_images/athena_main.png
 documentation/_images/athena_withdata.png
 documentation/_images/athenaselection.png
+documentation/_images/atoms_standalone.png
 documentation/_images/bkg_badkw.png
 documentation/_images/bkg_badkw_clamp0.png
 documentation/_images/bkg_ednorm.png
@@ -168,7 +169,12 @@ documentation/_images/feff6.png
 documentation/_images/feff_atoms_partical_occupancy.png
 documentation/_images/fefflist.png
 documentation/_images/fes2-1stshell.png
+documentation/_images/fes2-defss3.png
+documentation/_images/fes2-fes2fourshellfit_SS.png
+documentation/_images/fes2-fes2fourshellfit_SS_result.png
+documentation/_images/fes2-finalfit.png
 documentation/_images/fes2-firstshellfit.png
+documentation/_images/fes2-fourshellfit.png
 documentation/_images/fes2-importatoms.png
 documentation/_images/fes2-importdata.png
 documentation/_images/fes2-mspaths1.png
@@ -474,6 +480,7 @@ documentation/_images/wheat.ico
 documentation/_images/wheat.png
 documentation/_static/bend.png
 documentation/_static/demeter.css
+documentation/_static/drag.png
 documentation/_static/keys.css
 documentation/_static/leftclick.png
 documentation/_static/lightning.png
@@ -513,6 +520,7 @@ documentation/Artemis/feff/feff.rst
 documentation/Artemis/feff/index.rst
 documentation/Artemis/feff/pathlike.rst
 documentation/Artemis/feff/paths.rst
+documentation/Artemis/feff/standalone.rst
 documentation/Artemis/feff/xtal.rst
 documentation/Artemis/fit/happiness.rst
 documentation/Artemis/fit/index.rst
@@ -541,6 +549,7 @@ documentation/Artemis/startup/index.rst
 documentation/Artemis/startup/main.rst
 documentation/Artemis/startup/plot.rst
 documentation/Athena/_static/program.css
+documentation/Athena/_templates/translations.html
 documentation/Athena/analysis/diff.rst
 documentation/Athena/analysis/index.rst
 documentation/Athena/analysis/lcf.rst
@@ -646,6 +655,7 @@ documentation/DPG/highlevel/index.rst
 documentation/DPG/highlevel/methods.rst
 documentation/DPG/highlevel/mode.rst
 documentation/DPG/highlevel/plot.rst
+documentation/DPG/highlevel/templates.rst
 documentation/DPG/index.rst
 documentation/DPG/intro.rst
 documentation/DPG/lgcv.rst
@@ -1166,9 +1176,12 @@ lib/Demeter/Plot/Style.pm
 lib/Demeter/Plugins/10bmmultichannel.demeter_conf
 lib/Demeter/Plugins/10BMMultiChannel.pm
 lib/Demeter/Plugins/B18.pm
+lib/Demeter/Plugins/Beamlines/BL8.pm
 lib/Demeter/Plugins/Beamlines/MX.pm
 lib/Demeter/Plugins/Beamlines/X11A.pm
 lib/Demeter/Plugins/Beamlines/XDAC.pm
+lib/Demeter/Plugins/bl8ar.demeter_conf
+lib/Demeter/Plugins/BL8Ar.pm
 lib/Demeter/Plugins/BM23.pm
 lib/Demeter/Plugins/CMC.pm
 lib/Demeter/Plugins/DUBBLE.pm
