@@ -86,10 +86,12 @@ sub new {
 				      wxTR_HIDE_ROOT|wxTR_SINGLE|wxTR_HAS_BUTTONS);
     $definedboxsizer -> Add($this->{tree}, 1, wxALL|wxGROW, 5);
     $this->{root} = $this->{tree}->AddRoot('Root');
-    EVT_TREE_ITEM_RIGHT_CLICK($this, $this->{tree}, sub{OnRightClick(@_)});
+    if (not Demeter->is_windows) {
+      EVT_TREE_ITEM_RIGHT_CLICK($this, $this->{tree}, sub{OnRightClick(@_)});
+    };
     #EVT_TREE_ITEM_GETTOOLTIP($this, $this->{tree}, sub{1;});
     $this->{tree}->SetFont( Wx::Font->new( $size - 1, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
-    
+
     my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
     $this->{expand}   = Wx::Button->new($this, -1, "Expand all");
     $this->{collapse} = Wx::Button->new($this, -1, "Collapse all");
@@ -101,6 +103,7 @@ sub new {
     EVT_BUTTON($this, $this->{expand},   sub{$this->{tree}->ExpandAll});
     EVT_BUTTON($this, $this->{collapse}, sub{$this->{tree}->CollapseAll});
     EVT_BUTTON($this, $this->{validate}, sub{ValidateAll(@_)});
+    $this->{validate}->Enable(0) if Demeter->is_windows;
 
     ## comments
     my $commentsbox      = Wx::StaticBox->new($this, -1, 'Comments', wxDefaultPosition, wxDefaultSize);
@@ -221,7 +224,7 @@ sub ValidateAll {
     $xdi = $data->xdi;
   } else {
     $xdi = $this->{spare_xdi};	# use the spare Xray::XDI object
-    $xdi->xdifile->_set_extra_version($data->xdi->extra_version);
+    #$xdi->xdifile->_set_extra_version($data->xdi->extra_version);
   };
 
   my $root = $this->{tree}->GetRootItem;
