@@ -166,7 +166,7 @@ sub push_values {
     };
     $this->{tree}->Expand($leaf);
   };
-  $this->{xdi}->SetValue($data->xdi_attribute('xdi_version'));
+  $this->{xdi}->SetValue($data->xdi_attribute('xdi_version') || $Xray::XDI::VERSION || '1.0');
   $this->{apps}->SetValue($data->xdi_attribute('extra_version'));
   $this->{comments}  ->SetValue($data->xdi_attribute('comments'));
 
