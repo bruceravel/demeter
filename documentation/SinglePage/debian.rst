@@ -126,6 +126,8 @@ Non perl resources
 
 Some more dependency package names:
 
+#. ifeffit (the one Carlo made many moons ago should be just fine and
+   should be available for debian +_ ubuntu + ...)
 #. gnuplot5
 #. gnuplot5-qt  (or gnuplot5-x11  or gnuplot5-wxt)
 #. gnuplot5-data

@@ -42,7 +42,7 @@ sub cursor {
     Demeter->dispose("cursor(crosshair=true)");
     ($x, $y) = (Demeter->fetch_scalar("cursor_x"), Demeter->fetch_scalar("cursor_y"));
 
-  } elsif ((Demeter->mo->template_plot eq 'gnuplot') and (Demeter->co->default('gnuplot', 'terminal') ne 'qt')) {
+  } elsif (Demeter->mo->template_plot eq 'gnuplot') { #and (Demeter->co->default('gnuplot', 'terminal') ne 'qt')) {
 
     # my $recent;
     # if (wxTheClipboard->Open) {

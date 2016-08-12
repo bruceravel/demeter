@@ -5,7 +5,7 @@
 #+OPTIONS: toc:2
 
 * 0.9 series
-** 0.9.25   17 June      2016
+** 0.9.25   11 August    2016
 *** Athena
    - Menus of groups names not updating correctly in data summation
      tool. (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2015-November/012833.html][Matteo Busi]])
