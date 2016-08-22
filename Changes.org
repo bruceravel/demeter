@@ -40,6 +40,7 @@
    - Configurable plotting range in standards tool
    - Compute transmitted fraction in formulas tool
    - Add newly named element data Nh, Mc, Ts, & Og
+   - Added a buffer for displaying ifeffit/larch and plot commands
 
 *** Atoms
    - Fixed a bug parsing input data for keywords that take numeric

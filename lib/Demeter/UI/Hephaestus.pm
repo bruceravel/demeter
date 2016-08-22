@@ -20,6 +20,7 @@ use File::Spec;
 
 use Demeter qw(:hephaestus);
 use Demeter::UI::Hephaestus::Common qw(hversion);
+use Demeter::UI::Artemis::Buffer;
 
 use Wx qw( :everything );
 use base 'Wx::Frame';
@@ -57,7 +58,7 @@ my %label_of = (Absorption   => ' Absorption ',
 	       );
 my $icon_dimension = 30;
 
-use vars qw($periodic_table);
+use vars qw($periodic_table $buffer);
 
 my @utilities = qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder Standards F1F2 Config); # Help);
 #my @utilities = qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder Standards F1F2 Config Help);
@@ -139,6 +140,14 @@ sub new {
 			       );
   $self -> SetSize($framesize);
 
+  $self->{Buffer} = Demeter::UI::Artemis::Buffer->new($self);
+  $self->{Buffer}->SetTitle("Hephaestus [".Demeter->backend_name." \& Plot Buffer]");
+  $buffer = $self->{Buffer};
+  Demeter->set_mode(callback     => \&ifeffit_buffer,
+		    plotcallback => (Demeter->mo->template_plot eq 'pgplot') ? \&ifeffit_buffer : \&plot_buffer,
+		    feedback     => \&feedback,
+		   );
+  Wx::ToolTip::Enable(0);
 
   $self -> SetSizerAndFit($vbox);
   $vbox -> Fit($tb);
@@ -165,6 +174,37 @@ sub do_the_size_dance {
   $top -> SetSize($size[0], $size[1]+1);
   $top -> SetSize($size[0], $size[1]);
 };
+
+
+sub ifeffit_buffer {
+  my ($text) = @_;
+  foreach my $line (split(/\n/, $text)) {
+    my ($was, $is) = $buffer->insert('ifeffit', $line);
+    my $color = ($line =~ m{\A\#}) ? 'comment' : 'normal';
+    $color = 'endblock' if ($line =~ m{\A\#end});
+    $buffer->color('ifeffit', $was, $is, $color);
+    $buffer->insert('ifeffit', $/)
+  };
+};
+sub plot_buffer {
+  my ($text) = @_;
+  foreach my $line (split(/\n/, $text)) {
+    my ($was, $is) = $buffer->insert('plot', $line);
+    my $color = ($line =~ m{\A\#}) ? 'comment'
+      : (Demeter->mo->template_plot eq 'singlefile') ? 'singlefile'
+	:'normal';
+    $buffer->color('plot', $was, $is, $color);
+    $buffer->insert('plot', $/)
+  };
+};
+sub feedback {
+  my ($text) = @_;
+  my ($was, $is) = $buffer->insert('ifeffit', $text);
+  my $color = ($text =~ m{\A\s*\*}) ? 'warning' : 'feedback';
+  $color = 'warning' if $text =~ m{(?<!except )(?:Name|UnboundLocal)Error:};
+  $buffer->color('ifeffit', $was, $is, $color);
+};
+
 
 sub make_page {
   my ($self, $event) = @_;
@@ -235,6 +275,7 @@ const my $PLOT_GIF  => Wx::NewId();
 const my $PLOT_JPG  => Wx::NewId();
 const my $PLOT_PDF  => Wx::NewId();
 const my $PLOT_XKCD => Wx::NewId();
+const my $SHOW_BUFFER => Wx::NewId();
 
 
 sub identify_self {
@@ -303,7 +344,9 @@ sub OnInit {
   $help->Append( $DOCUMENT,  "Docu&ment\tCtrl+m" );
   $help->Append( $BUG,       "Report a bug",    "How to report a bug in Athena" );
   $help->Append( $QUESTION,  "Ask a question",  "How to ask a question about Athena" );
-  $file->AppendSeparator;
+  $help->AppendSeparator;
+  $help->Append( $SHOW_BUFFER, "Show command buffer",    'Show the '.Demeter->backend_name.' and plotting commands buffer' );
+  $help->AppendSeparator;
   $help->Append( wxID_ABOUT, "&About Hephaestus" );
 
   $bar->Append( $file, "H&ephaestus" );
@@ -325,6 +368,8 @@ sub OnInit {
   #EVT_MENU( $frame, $DOCUMENT, sub{shift->{book}->SetSelection(10)});
   EVT_MENU( $frame, $DOCUMENT, \&document);
   EVT_MENU( $frame, $BUG,      sub{Wx::LaunchDefaultBrowser(q{http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html})});
+  EVT_MENU( $frame, $SHOW_BUFFER, sub{ shift->{Buffer}->Show(1)});
+
   EVT_MENU( $frame, $QUESTION, sub{Wx::LaunchDefaultBrowser(q{http://bruceravel.github.io/demeter/documents/SinglePage/help.html})});
   EVT_MENU( $frame, wxID_ABOUT, \&on_about );
   EVT_MENU( $frame, wxID_EXIT, sub{Demeter->stop_larch_server; shift->Close} );
