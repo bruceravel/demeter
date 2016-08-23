@@ -34,7 +34,7 @@ $standards -> ini(q{});
 
 use Demeter::UI::Wx::PeriodicTable;
 use Demeter::UI::Wx::SpecialCharacters qw($MU);
-use Demeter::UI::Artemis::ShowText;
+#use Demeter::UI::Common::ShowText;
 
 my $ionic_radii = decode_json(Demeter->slurp(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base,
 								 'Hephaestus', 'data', "ionic_radii.dem")));

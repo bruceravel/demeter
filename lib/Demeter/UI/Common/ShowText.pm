@@ -1,4 +1,4 @@
-package Demeter::UI::Artemis::ShowText;
+package Demeter::UI::Common::ShowText;
 
 =for Copyright
  .
@@ -103,7 +103,7 @@ sub OnLeftDclick {
   };
   return if not $object;
   my $str = sprintf("YAML of %s object <%s> (%s)", $kind, $object->name, $object->group);
-  Demeter::UI::Artemis::ShowText->new($Demeter::UI::Artemis::frames{main},
+  Demeter::UI::Common::ShowText->new($Demeter::UI::Artemis::frames{main},
 				      $object->serialization,
 				      $str)
       -> Show;
@@ -137,7 +137,7 @@ sub ShouldPreventAppExit {
 
 =head1 NAME
 
-Demeter::UI::Artemis::ShowText - A text display dialog for Artemis
+Demeter::UI::Common::ShowText - A text display dialog for Demeter GUIs
 
 =head1 VERSION
 

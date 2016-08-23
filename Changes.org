@@ -66,6 +66,7 @@
    - Fixed a perl 5.22 issue with Atoms potential list creation
    - Preserve Scan.start_time metadatum of first group when making a
      merge
+   - Move several shared GUI modules into Demeter/UI/Common
 
 *** Windows
    - Add Win32::Unicode::File to dependency list

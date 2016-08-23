@@ -1338,7 +1338,7 @@ sub parameter_table {
   };
   $text .= sprintf("\n\nAverage = %9.5f  Standard deviation = %9.5f\n", $stat->mean, $stat->standard_deviation)
     if $stat->count > 1;
-  my $dialog = Demeter::UI::Artemis::ShowText
+  my $dialog = Demeter::UI::Common::ShowText
     -> new($app->{main}, $text, "$description, $how groups")
       -> Show;
 
@@ -1371,7 +1371,7 @@ sub edgestep_error {
   $data->sentinal(sub{$app->{main}->status(sprintf("Sample #%d of %d", $_[0]+1, $_[1]+1), 'wait|nobuffer')});
   my ($mean, $stddev, $report) = $data->edgestep_error(1);
 
-  my $dialog = Demeter::UI::Artemis::ShowText
+  my $dialog = Demeter::UI::Common::ShowText
     -> new($app->{main}, $report, "Edge step error calculation")
       -> Show if Demeter->co->default('edgestep', 'fullreport');
 

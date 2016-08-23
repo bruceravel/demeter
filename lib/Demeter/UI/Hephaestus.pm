@@ -20,7 +20,7 @@ use File::Spec;
 
 use Demeter qw(:hephaestus);
 use Demeter::UI::Hephaestus::Common qw(hversion);
-use Demeter::UI::Artemis::Buffer;
+use Demeter::UI::Common::Buffer;
 
 use Wx qw( :everything );
 use base 'Wx::Frame';
@@ -140,7 +140,7 @@ sub new {
 			       );
   $self -> SetSize($framesize);
 
-  $self->{Buffer} = Demeter::UI::Artemis::Buffer->new($self);
+  $self->{Buffer} = Demeter::UI::Common::Buffer->new($self);
   $self->{Buffer}->SetTitle("Hephaestus [".Demeter->backend_name." \& Plot Buffer]");
   $buffer = $self->{Buffer};
   Demeter->set_mode(callback     => \&ifeffit_buffer,
@@ -342,8 +342,8 @@ sub OnInit {
   my $help = Wx::Menu->new;
   $help->Append( $CONFIG,    "&Configure\tCtrl+c" );
   $help->Append( $DOCUMENT,  "Docu&ment\tCtrl+m" );
-  $help->Append( $BUG,       "Report a bug",    "How to report a bug in Athena" );
-  $help->Append( $QUESTION,  "Ask a question",  "How to ask a question about Athena" );
+  $help->Append( $BUG,       "Report a bug",    "How to report a bug in Hephaestus" );
+  $help->Append( $QUESTION,  "Ask a question",  "How to ask a question about Hephaestus" );
   $help->AppendSeparator;
   $help->Append( $SHOW_BUFFER, "Show command buffer",    'Show the '.Demeter->backend_name.' and plotting commands buffer' );
   $help->AppendSeparator;

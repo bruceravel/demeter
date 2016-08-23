@@ -1,4 +1,4 @@
-package  Demeter::UI::Artemis::Buffer;
+package  Demeter::UI::Common::Buffer;
 
 =for Copyright
  .
@@ -33,7 +33,7 @@ $aleft->SetAlignment(wxTEXT_ALIGNMENT_LEFT);
 
 sub new {
   my ($class, $parent) = @_;
-  my $this = $class->SUPER::new($parent, -1, "Artemis [Ifeffit \& Plot Buffer]",
+  my $this = $class->SUPER::new($parent, -1, "[Ifeffit \& Plot Buffer]",
 				wxDefaultPosition, [500,800],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxRESIZE_BORDER);
   $this -> SetBackgroundColour( $wxBGC );
@@ -178,7 +178,7 @@ sub on_close {
 
 =head1 NAME
 
-Demeter::UI::Artemis::Buffer - A command and plot command buffer for Artemis
+Demeter::UI::Common::Buffer - A command and plot command buffer for Demeter GUIs
 
 =head1 VERSION
 

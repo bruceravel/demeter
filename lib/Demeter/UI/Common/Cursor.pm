@@ -1,4 +1,4 @@
-package Demeter::UI::Athena::Cursor;
+package Demeter::UI::Common::Cursor;
 
 use strict;
 use warnings;
@@ -167,7 +167,7 @@ sub qt_cursor {
 
 =head1 NAME
 
-Demeter::UI::Athena::Cursor - interact with a plotting cursor
+Demeter::UI::Common::Cursor - interact with a plotting cursor
 
 =head1 VERSION
 

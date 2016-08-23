@@ -33,7 +33,7 @@ $standards -> ini(q{});
 
 use Demeter::UI::Wx::PeriodicTable;
 use Demeter::UI::Wx::SpecialCharacters qw($MU);
-use Demeter::UI::Artemis::ShowText;
+use Demeter::UI::Common::ShowText;
 use Demeter::UI::Hephaestus::Common qw(enable_element);
 
 sub new {
@@ -188,7 +188,7 @@ sub about {
   my $choice  = $parent->{data}->GetStringSelection;
   my $save = $Text::Wrap::columns;
   $Text::Wrap::columns = 60;
-  my $dialog = Demeter::UI::Artemis::ShowText
+  my $dialog = Demeter::UI::Common::ShowText
     -> new($parent, $standards->report($choice), "About $choice")
       -> Show;
   $Text::Wrap::columns = $save;

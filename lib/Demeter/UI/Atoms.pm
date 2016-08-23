@@ -272,7 +272,7 @@ sub on_about {
   # my $text = sprintf("Feff executable: %s\n\n", Demeter->co->default(qw(feff executable)));
   # $text   .= sprintf("Default feff.inp style: %s\n", Demeter->co->default(qw(atoms feff_version)));
   # $text   .= sprintf("Default ipot style: %s\n", Demeter->co->default(qw(atoms ipot_style)));
-  # Demeter::UI::Artemis::ShowText->new($frames{main}, $text, 'Overview of Feff configuration') -> Show
+  # Demeter::UI::Common::ShowText->new($frames{main}, $text, 'Overview of Feff configuration') -> Show
 };
 
 sub noop {

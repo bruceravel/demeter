@@ -2,7 +2,7 @@ package Demeter::UI::Atoms::Paths;
 
 use Demeter::StrTypes qw( Element );
 use Demeter::UI::Artemis::DND::PathDrag;
-use Demeter::UI::Artemis::ShowText;
+use Demeter::UI::Common::ShowText;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 use Const::Fast;
@@ -169,7 +169,7 @@ sub show_geometry {
   $pd =~ s{\A\s+\d+}{};
   $pd =~ s{index,}{};
   my $text = "The path\n\t" . $sp->intrplist . "\nis calculated using these atom positions:\n\n" . $pd;
-  my $dialog = Demeter::UI::Artemis::ShowText->new($parent, $text, $sp->intrplist)
+  my $dialog = Demeter::UI::Common::ShowText->new($parent, $text, $sp->intrplist)
     -> Show;
 };
 
@@ -304,7 +304,7 @@ sub rank {
 
   $self->{parent}->status("Path rank comparison ... done!");
   undef $busy;
-  my $dialog = Demeter::UI::Artemis::ShowText->new($self->{parent}, $text, 'Path rankings') -> Show;
+  my $dialog = Demeter::UI::Common::ShowText->new($self->{parent}, $text, 'Path rankings') -> Show;
 };
 
 

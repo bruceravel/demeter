@@ -33,11 +33,11 @@ use Demeter::UI::Athena::Replot;
 use Demeter::UI::Athena::GroupList;
 use Demeter::UI::Athena::FileDropTarget;
 
-use Demeter::UI::Artemis::Buffer;
-use Demeter::UI::Artemis::ShowText;
-use Demeter::UI::Athena::Cursor;
-use Demeter::UI::Athena::Status;
 use Demeter::UI::Artemis::DND::PlotListDrag;
+use Demeter::UI::Athena::Status;
+use Demeter::UI::Common::Buffer;
+use Demeter::UI::Common::Cursor;
+use Demeter::UI::Common::ShowText;
 
 use vars qw($buffer $plotbuffer);
 
@@ -167,7 +167,7 @@ sub OnInit {
   ## -------- a few more top-level widget-y things
   $app->{main}->{Status} = Demeter::UI::Athena::Status->new($app->{main});
   $app->{main}->{Status}->SetTitle("Athena [Status Buffer]");
-  $app->{Buffer} = Demeter::UI::Artemis::Buffer->new($app->{main});
+  $app->{Buffer} = Demeter::UI::Common::Buffer->new($app->{main});
   $app->{Buffer}->SetTitle("Athena [".Demeter->backend_name." \& Plot Buffer]");
 
   Demeter->set_mode(callback     => \&ifeffit_buffer,
@@ -587,7 +587,7 @@ sub menubar {
   $debugmenu->Append($STYLE_YAML,   "plot style objects yaml",   "Show yaml dialog for plot style objects" );
   $debugmenu->Append($INDIC_YAML,   "Indicator objects yaml",    "Show yaml dialog for Indicator objects" );
   $debugmenu->AppendSeparator;
-  $debugmenu->Append($XDI_SERIALIZATION, "XDI serialization",    "Show serialization of the Xray::XDI object" );
+  #$debugmenu->Append($XDI_SERIALIZATION, "XDI serialization",    "Show serialization of the Xray::XDI object" );
   $debugmenu->Append($LCF_YAML,     "LCF object yaml",           "Show yaml dialog for LCF object" );
   $debugmenu->Append($PCA_YAML,     "PCA object yaml",           "Show yaml dialog for PCA object" );
   $debugmenu->Append($PEAK_YAML,    "PeakFit object yaml",       "Show yaml dialog for PeakFit object" );
@@ -984,14 +984,14 @@ sub OnMenuClick {
     };
     ($id == $DATA_ABOUT) and do {
       last SWITCH if $app->is_empty;
-      my $dialog = Demeter::UI::Artemis::ShowText
+      my $dialog = Demeter::UI::Common::ShowText
 	-> new($app->{main}, $app->current_data->about, 'About current group')
 	  -> Show;
       last SWITCH;
     };
     ($id == $DATA_YAML) and do {
       last SWITCH if $app->is_empty;
-      my $dialog = Demeter::UI::Artemis::ShowText
+      my $dialog = Demeter::UI::Common::ShowText
 	-> new($app->{main}, $app->current_data->serialization, 'Structure of Data object')
 	  -> Show;
       last SWITCH;
@@ -999,7 +999,7 @@ sub OnMenuClick {
     ($id == $DATA_TEXT) and do {
       last SWITCH if $app->is_empty;
       if (-e $app->current_data->file) {
-	my $dialog = Demeter::UI::Artemis::ShowText
+	my $dialog = Demeter::UI::Common::ShowText
 	  -> new($app->{main}, Demeter->slurp($app->current_data->file), 'Text of data file')
 	    -> Show;
       } else {
@@ -1182,7 +1182,7 @@ sub OnMenuClick {
       $app->{main}->{PlotK}->pull_single_values;
       $app->{main}->{PlotR}->pull_marked_values;
       $app->{main}->{PlotQ}->pull_marked_values;
-      my $dialog = Demeter::UI::Artemis::ShowText
+      my $dialog = Demeter::UI::Common::ShowText
 	-> new($app->{main}, Demeter->po->serialization, 'YAML of Plot object')
 	  -> Show;
       last SWITCH;
@@ -1191,7 +1191,7 @@ sub OnMenuClick {
     ($id == $XDI_SERIALIZATION) and do {
       my $data = $app->current_data;
       if (ref($data->xdi) =~ m{XDI}) {
-	my $dialog = Demeter::UI::Artemis::ShowText
+	my $dialog = Demeter::UI::Common::ShowText
 	  -> new($app->{main}, $data->xdi->serialization, 'XDI serialization')
 	    -> Show;
       } else {
@@ -1200,19 +1200,19 @@ sub OnMenuClick {
       last SWITCH;
     };
     ($id == $LCF_YAML) and do {
-      my $dialog = Demeter::UI::Artemis::ShowText
+      my $dialog = Demeter::UI::Common::ShowText
 	-> new($app->{main}, $app->{main}->{LCF}->{LCF}->serialization, 'YAML of Plot object')
 	  -> Show;
       last SWITCH;
     };
     ($id == $PCA_YAML) and do {
-      my $dialog = Demeter::UI::Artemis::ShowText
+      my $dialog = Demeter::UI::Common::ShowText
 	-> new($app->{main}, $app->{main}->{PCA}->{PCA}->serialization, 'YAML of Plot object')
 	  -> Show;
       last SWITCH;
     };
     ($id == $PEAK_YAML) and do {
-      my $dialog = Demeter::UI::Artemis::ShowText
+      my $dialog = Demeter::UI::Common::ShowText
 	-> new($app->{main}, $app->{main}->{PeakFit}->{PEAK}->serialization, 'YAML of Plot object')
 	  -> Show;
       last SWITCH;
@@ -1222,7 +1222,7 @@ sub OnMenuClick {
       foreach my $i (0 .. $app->{main}->{Style}->{list}->GetCount-1) {
 	$text .= $app->{main}->{Style}->{list}->GetClientData($i)->serialization;
       };
-      my $dialog = Demeter::UI::Artemis::ShowText
+      my $dialog = Demeter::UI::Common::ShowText
 	-> new($app->{main}, $text, 'YAML of Style objects')
 	  -> Show;
       last SWITCH;
@@ -1232,7 +1232,7 @@ sub OnMenuClick {
       foreach my $i (1 .. $Demeter::UI::Athena::Plot::Indicators::nind) {
 	$text .= $app->{main}->{Indicators}->{'group'.$i}->serialization if (ref($app->{main}->{Indicators}->{'group'.$i}) =~ m{Indicator});
       };
-      my $dialog = Demeter::UI::Artemis::ShowText
+      my $dialog = Demeter::UI::Common::ShowText
 	-> new($app->{main}, $text, 'YAML of Indicator objects')
 	  -> Show;
       last SWITCH;
@@ -1240,15 +1240,15 @@ sub OnMenuClick {
 
     ($id == $PERL_MODULES) and do {
       my $text   = Demeter->module_environment . Demeter -> wx_environment;
-      my $dialog = Demeter::UI::Artemis::ShowText->new($app->{main}, $text, 'Perl module versions') -> Show;
+      my $dialog = Demeter::UI::Common::ShowText->new($app->{main}, $text, 'Perl module versions') -> Show;
       last SWITCH;
     };
     ($id == $MODE_STATUS) and do {
-      my $dialog = Demeter::UI::Artemis::ShowText->new($app->{main}, Demeter->mo->report('all'), 'Overview of this instance of Demeter') -> Show;
+      my $dialog = Demeter::UI::Common::ShowText->new($app->{main}, Demeter->mo->report('all'), 'Overview of this instance of Demeter') -> Show;
       last SWITCH;
     };
     ($id == $CONDITIONAL) and do {
-      my $dialog = Demeter::UI::Artemis::ShowText->new($app->{main}, Demeter->conditional_features, 'Conditionally loaded Demeter features') -> Show;
+      my $dialog = Demeter::UI::Common::ShowText->new($app->{main}, Demeter->conditional_features, 'Conditionally loaded Demeter features') -> Show;
       last SWITCH;
     };
 
@@ -2668,7 +2668,7 @@ sub find_wl {
     next if (($how eq 'marked') and not $clb->IsChecked($i));
     $text .= sprintf($format, '"'.$clb->GetIndexedData($i)->name.'"', $clb->GetIndexedData($i)->find_white_line);
   };
-  my $dialog = Demeter::UI::Artemis::ShowText
+  my $dialog = Demeter::UI::Common::ShowText
     -> new($app->{main}, $text, "White line positions")
       -> Show;
   $app->{main}->status("Found white line positions");
@@ -2883,7 +2883,7 @@ sub show_epsilon {
     $text .= sprintf("%-25s : %9.3e  %9.3e\n", $d->name, $d->epsk, $d->epsr);
   };
   undef $busy;
-  my $dialog = Demeter::UI::Artemis::ShowText
+  my $dialog = Demeter::UI::Common::ShowText
     -> new($app->{main}, $text, 'Measurement uncertainties')
       -> Show;
 };

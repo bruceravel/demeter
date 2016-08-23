@@ -57,7 +57,7 @@ use Wx::Event qw(EVT_CLOSE                  EVT_ICONIZE                 EVT_GRID
 
 use Demeter::UI::Artemis::Close;
 use Demeter::UI::Artemis::GDS::Restraint;
-use Demeter::UI::Artemis::ShowText;
+use Demeter::UI::Common::ShowText;
 use Demeter::StrTypes qw( GDS );
 use Demeter::UI::Wx::Colours;
 use Demeter::UI::Wx::SpecialCharacters qw($PLUSMN $PLUSMN2);
@@ -925,7 +925,7 @@ sub find {
 
   ## -------- report back
   $parent->status("$this is not used in this project"), return if ($count == 0);
-  Demeter::UI::Artemis::ShowText->new($Demeter::UI::Artemis::frames{main}, $text, "Found $this") -> Show;
+  Demeter::UI::Common::ShowText->new($Demeter::UI::Artemis::frames{main}, $text, "Found $this") -> Show;
   $parent->{grid}->ClearSelection;
 };
 

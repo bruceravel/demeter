@@ -11,7 +11,7 @@ use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON EVT_TEXT EVT_TEXT_ENTER EVT_TREE_ITEM_RIGHT_CLICK EVT_MENU); # EVT_TREE_ITEM_GETTOOLTIP);
 use Demeter::UI::Athena::XDIAddParameter;
 #use Demeter::UI::Wx::SpecialCharacters qw(:all);
-use Demeter::UI::Artemis::ShowText;
+use Demeter::UI::Common::ShowText;
 use Demeter::UI::Wx::ColourDatabase;
 my $cdb = Demeter::UI::Wx::ColourDatabase->new;
 
@@ -253,7 +253,7 @@ sub ValidateAll {
   };
 
   if ($text) {
-    my $dialog = Demeter::UI::Artemis::ShowText->new($this, $text, 'Validation of metadata') -> Show;
+    my $dialog = Demeter::UI::Common::ShowText->new($this, $text, 'Validation of metadata') -> Show;
   } else {
     $::app->{main}->status("All metadata are fine", 'normal');
   };
@@ -283,7 +283,7 @@ sub rrmetadata {
       $text .= sprintf("%27s:  %s\n", $item, $status);
     };
   };
-  my $dialog = Demeter::UI::Artemis::ShowText->new($this, $text, ucfirst($which).' metadata') -> Show;
+  my $dialog = Demeter::UI::Common::ShowText->new($this, $text, ucfirst($which).' metadata') -> Show;
 };
 
 # const my $EDIT   => Wx::NewId();

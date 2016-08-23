@@ -3,6 +3,7 @@ package Demeter::UI::Artemis::Import;
 #use Demeter; # qw(:plotwith=gnuplot);
 use Demeter::UI::Artemis::Project;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
+use Demeter::UI::Common::Prj;
 
 ## -------- convenience parameters
 #use Const::Fast;
@@ -77,7 +78,7 @@ sub prjrecord {
   };
   ##
   my $selection = 0;
-  $rframes->{prj} =  Demeter::UI::Artemis::Prj->new($rframes->{main}, $file, 'single', $choice);
+  $rframes->{prj} =  Demeter::UI::Common::Prj->new($rframes->{main}, $file, 'single', $choice);
   my $result = $rframes->{prj} -> ShowModal;
 
   if (
