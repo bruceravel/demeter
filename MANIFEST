@@ -701,6 +701,7 @@ documentation/SinglePage/_static/program.css
 documentation/SinglePage/bugs.rst
 documentation/SinglePage/conf.py
 documentation/SinglePage/contribute.rst
+documentation/SinglePage/debian.rst
 documentation/SinglePage/demeter_nonroot.rst
 documentation/SinglePage/faq.rst
 documentation/SinglePage/help.rst
@@ -1832,7 +1833,6 @@ lib/Demeter/templates/test/test/test.tmpl
 lib/Demeter/ThreeBody.pm
 lib/Demeter/Tools.pm
 lib/Demeter/UI/Artemis.pm
-lib/Demeter/UI/Artemis/Buffer.pm
 lib/Demeter/UI/Artemis/Close.pm
 lib/Demeter/UI/Artemis/Config.pm
 lib/Demeter/UI/Artemis/Data.pm
@@ -1879,13 +1879,11 @@ lib/Demeter/UI/Artemis/Plot/Indicators.pm
 lib/Demeter/UI/Artemis/Plot/Limits.pm
 lib/Demeter/UI/Artemis/Plot/Stack.pm
 lib/Demeter/UI/Artemis/Plot/VPaths.pm
-lib/Demeter/UI/Artemis/Prj.pm
 lib/Demeter/UI/Artemis/Project.pm
 lib/Demeter/UI/Artemis/share/artemis_icon.ico
 lib/Demeter/UI/Artemis/share/artemis_icon.png
 lib/Demeter/UI/Artemis/share/GPL.dem
 lib/Demeter/UI/Artemis/share/temple-logo.jpg
-lib/Demeter/UI/Artemis/ShowText.pm
 lib/Demeter/UI/Artemis/Status.pm
 lib/Demeter/UI/Athena.pm
 lib/Demeter/UI/Athena/Align.pm
@@ -1896,7 +1894,6 @@ lib/Demeter/UI/Athena/ColumnSelection/Preprocess.pm
 lib/Demeter/UI/Athena/ColumnSelection/Rebin.pm
 lib/Demeter/UI/Athena/ColumnSelection/Reference.pm
 lib/Demeter/UI/Athena/ConvoluteNoise.pm
-lib/Demeter/UI/Athena/Cursor.pm
 lib/Demeter/UI/Athena/Deconvolute.pm
 lib/Demeter/UI/Athena/DeglitchTruncate.pm
 lib/Demeter/UI/Athena/Difference.pm
@@ -1994,6 +1991,10 @@ lib/Demeter/UI/Atoms/Paths.pm
 lib/Demeter/UI/Atoms/SS.pm
 lib/Demeter/UI/Atoms/Status.pm
 lib/Demeter/UI/Atoms/Xtal.pm
+lib/Demeter/UI/Common/Buffer.pm
+lib/Demeter/UI/Common/Cursor.pm
+lib/Demeter/UI/Common/Prj.pm
+lib/Demeter/UI/Common/ShowText.pm
 lib/Demeter/UI/Hephaestus.pm
 lib/Demeter/UI/Hephaestus/Absorption.pm
 lib/Demeter/UI/Hephaestus/Common.pm
@@ -2487,6 +2488,8 @@ lib/Xray/Scattering/None.pm
 lib/Xray/Scattering/WaasKirf.pm
 LICENSE
 MANIFEST			This list of files
+META.json
+META.yml
 notes/Atoms/A2n_atoms.inp
 notes/Atoms/C2c_atoms.inp
 notes/Atoms/cluster_problem
