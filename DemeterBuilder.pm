@@ -516,7 +516,7 @@ package Module::Build::Platform::Windows;
     IF NOT EXIST %DOTDIR% MD %DOTDIR%
     SET DEMETER_BASE=%~dp0
     SET DEMETER_BASE=%DEMETER_BASE:\\perl\\site\\bin\\=%
-    SET IFEFFIT_DIR=%DEMETER_BASE:\\c\\share\\ifeffit\\=%
+    SET IFEFFIT_DIR=%DEMETER_BASE%\\c\\share\\ifeffit\\
     SET PATH=C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;%DEMETER_BASE%\\c\\bin;%DEMETER_BASE%\\perl\\site\\bin;%DEMETER_BASE%\\perl\\bin;%DEMETER_BASE%\\c\\bin\\gnuplot\\bin
     if "%OS%" == "Windows_NT" goto WinNT
     perl $opts{otherargs}
