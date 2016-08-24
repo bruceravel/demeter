@@ -175,7 +175,7 @@ sub Document {
   my $tempfile = File::Spec->catfile(Demeter->stash_folder, Demeter->randomstring(8).'.txt');
   $parser->parse_from_file (File::Spec->catfile($podroot, $module).'.pm', $tempfile);
 
-  my $dialog = Demeter::UI::Artemis::ShowText
+  my $dialog = Demeter::UI::Common::ShowText
     -> new($app->{main}, Demeter->slurp($tempfile), "Documentation for $plugin");
   my ($w, $h) = $dialog->GetSizeWH;
   $dialog->SetSize(1.5*$w, $h);

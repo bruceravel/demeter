@@ -302,7 +302,7 @@ sub OnPlotMenu {
       my $thisfit = $self->{list}->GetIndexedData($self->{_position});
       my $yaml   = $thisfit->serialization;
       my $title = sprintf "YAML of Plot object (%s) [%s]", $thisfit->group, $thisfit->name;
-      my $dialog = Demeter::UI::Artemis::ShowText->new($::app->{main}, $yaml, $title) -> Show;
+      my $dialog = Demeter::UI::Common::ShowText->new($::app->{main}, $yaml, $title) -> Show;
       last SWITCH;
     };
   };

@@ -317,7 +317,7 @@ sub stop {
 sub explain_patterns {
   my ($this) = @_;
   my $text   = Demeter->dd->template("report", "file_patterns");
-  my $dialog = Demeter::UI::Artemis::ShowText->new($::app->{main}, $text, 'Data watcher patterns') -> Show;
+  my $dialog = Demeter::UI::Common::ShowText->new($::app->{main}, $text, 'Data watcher patterns') -> Show;
 };
 
 

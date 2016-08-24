@@ -27,11 +27,12 @@ use Demeter qw(:artemis);
 use Demeter::UI::Atoms;
 use Demeter::UI::Artemis::Import;
 use Demeter::UI::Artemis::Project;
-use Demeter::UI::Artemis::ShowText;
+use Demeter::UI::Common::Buffer;
+use Demeter::UI::Common::Cursor;
+use Demeter::UI::Common::ShowText;
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Wx::Colours;
-use Demeter::UI::Athena::Cursor;
 use Demeter::UI::Artemis::DataDropTarget;
 use Demeter::UI::Artemis::FeffDropTarget;
 
@@ -145,10 +146,15 @@ sub OnInit {
   Demeter -> po -> space('R');
 
   ## -------- import all of Artemis' various parts
-  foreach my $m (qw(GDS Plot History Journal Log Buffer Status Config Data Prj)) {
+  foreach my $m (qw(GDS Plot History Journal Log Status Config Data)) {
     next if $INC{"Demeter/UI/Artemis/$m.pm"};
     ##print "Demeter/UI/Artemis/$m.pm\n";
     require "Demeter/UI/Artemis/$m.pm";
+  };
+  foreach my $m (qw(Buffer Prj)) {
+    next if $INC{"Demeter/UI/Common/$m.pm"};
+    ##print "Demeter/UI/Common/$m.pm\n";
+    require "Demeter/UI/Common/$m.pm";
   };
 
   ## -------- create a new frame and set icon
@@ -234,7 +240,7 @@ sub OnInit {
   my $debugmenu = Wx::Menu->new;
   $debugmenu->Append($FIT_YAML,     "Show YAML for current Fit object",  "Show YAML dialog for current Fit object",  wxITEM_NORMAL );
   $debugmenu->Append($PLOT_YAML,    "Show YAML for Plot object",  "Show YAML dialog for Plot object",  wxITEM_NORMAL );
-  $debugmenu->Append($MODE_YAML,    "Show YAML for Mode object",  "Show YAML dialog for Plot object",  wxITEM_NORMAL );
+  #$debugmenu->Append($MODE_YAML,    "Show YAML for Mode object",  "Show YAML dialog for Plot object",  wxITEM_NORMAL );
   $debugmenu->Append($MODE_STATUS,  "Show mode status",           "Show mode status dialog",  wxITEM_NORMAL );
   $debugmenu->Append($PERL_MODULES, "Show perl modules",          "Show perl module versions", wxITEM_NORMAL );
   #$debugmenu->Append($CRASH,        "Crash Artemis",              "Force a crash of Artemis to test autosave file", wxITEM_NORMAL );
@@ -285,8 +291,8 @@ sub OnInit {
   $helpmenu->Append($DOCUMENT_PLOT, "Documentation: Plot window" );
   $helpmenu->Append($DOCUMENT_FEFF, "Documentation: Atoms and Feff" );
   $helpmenu->Append($DOCUMENT_FIT,  "Documentation: Running a fit" );
-  $helpmenu->Append($BUG,      "Report a bug",    "How to report a bug in Athena" );
-  $helpmenu->Append($QUESTION, "Ask a question",  "How to ask a question about Athena" );
+  $helpmenu->Append($BUG,      "Report a bug",    "How to report a bug in Artemis" );
+  $helpmenu->Append($QUESTION, "Ask a question",  "How to ask a question about Artemis" );
   $helpmenu->AppendSeparator;
   $helpmenu->Append(wxID_ABOUT, "&About Artemis" );
 
@@ -445,12 +451,16 @@ sub OnInit {
   #$frames{main} -> SetSize(Wx::Size->new(Wx::SystemSettings::GetMetric(wxSYS_SCREEN_X), $h));
   $frames{main} -> SetSize(Wx::Size->new(Wx::SystemSettings::GetMetric(wxSYS_SCREEN_X), -1));
 
-  foreach my $part (qw(GDS Plot Log History Journal Buffer Status Config)) {
+  foreach my $part (qw(GDS Plot Log History Journal Status Config)) {
     my $pp = "Demeter::UI::Artemis::".$part;
     $app->{$part}   = $pp->new($frames{main});
     $frames{$part}  = $app->{$part};
     $frames{$part} -> SetIcon($icon);
   };
+  $app->{Buffer}   = Demeter::UI::Common::Buffer->new($frames{main});
+  $frames{Buffer}  = $app->{Buffer};
+  $frames{Buffer} -> SetIcon($icon);
+  $app->{Buffer}->SetTitle("Artemis [".Demeter->backend_name." \& Plot Buffer]");
 
   $frames{main} -> Show( 1 );
   $toolbar->ToggleTool($frames{main}->{plot_toggle}->GetId,1);
@@ -1063,22 +1073,22 @@ sub OnMenuClick {
     ## -------- debug submenu
     ($id == $FIT_YAML) and do {
       my $yaml   = $frames{main}->{currentfit}->serialization;
-      my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $yaml, 'YAML of current Fit object') -> Show;
+      my $dialog = Demeter::UI::Common::ShowText->new($frames{main}, $yaml, 'YAML of current Fit object') -> Show;
       last SWITCH;
     };
     ($id == $PLOT_YAML) and do {
       $frames{Plot}->fetch_parameters('plot');
       my $yaml   = Demeter->po->serialization;
-      my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $yaml, 'YAML of Plot object') -> Show;
+      my $dialog = Demeter::UI::Common::ShowText->new($frames{main}, $yaml, 'YAML of Plot object') -> Show;
       last SWITCH;
     };
     ($id == $PERL_MODULES) and do {
       my $text   = Demeter->module_environment . Demeter -> wx_environment;
-      my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $text, 'Perl module versions') -> Show;
+      my $dialog = Demeter::UI::Common::ShowText->new($frames{main}, $text, 'Perl module versions') -> Show;
       last SWITCH;
     };
     ($id == $MODE_STATUS) and do {
-      my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, Demeter->mo->report('all'), 'Overview of this instance of Demeter') -> Show;
+      my $dialog = Demeter::UI::Common::ShowText->new($frames{main}, Demeter->mo->report('all'), 'Overview of this instance of Demeter') -> Show;
       last SWITCH;
     };
     #($id == $CRASH) and do {
@@ -1728,7 +1738,7 @@ See the Artemis Users' Guide.
 =head1 CONFIGURATION
 
 Many aspects of Artemis and its UI are configurable using the
-configuration tool built into Athena.
+configuration tool built into Artemis.
 
 =head1 DEPENDENCIES
 

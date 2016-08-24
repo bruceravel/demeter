@@ -30,6 +30,7 @@ use Demeter::Constants qw($EPSILON2);
 use Demeter::StrTypes qw(FileName);
 use Demeter::IniReader;
 use Config::INI::Writer;
+use Cwd qw(abs_path);
 use File::Basename;
 use Regexp::Assemble;
 #use Demeter::Constants qw($NUMBER);
@@ -85,7 +86,7 @@ has 'ini_file' => (is => 'ro', isa => FileName, default => $fname);
 
 my %ini;
 #tie %ini, 'Config::IniFiles', ();
-my %params_of;
+our %params_of;
 
 #my $one_has_been_created = 0;
 
@@ -188,9 +189,11 @@ sub _read_config_file {
   ## need to distinguish between a relative filename and a fully
   ## resolved file.
 
-  carp("The Demeter configuration file ($file) does not exist\n\n"), return 0
+  #carp("The Demeter configuration file ($file) does not exist\n\n"),
+    return 0
     if (not -e $file);
-  carp("The Demeter configuration file ($file) cannot be opened\n\n"), return 0
+  #carp("The Demeter configuration file ($file) cannot be opened\n\n"),
+    return 0
     if (not -r $file);
 
   my $base = (split(/\./, basename($file)))[0];
@@ -259,11 +262,17 @@ sub _read_config_file {
       $description = q{};
 
     } elsif ($line =~ m{^\s*($key_regex)\s*=\s*(.+)}) {
+      my $key = $1;
       $value = $2;
       $value =~ s{\s+$}{};
-      $hash{$1} = $value;
-      ($hash{demeter} = $value) if ($1 eq 'default');
-      if (($self->is_windows) and ($1 eq 'windows')) {
+      if (($value =~ m{__METIS_BASE__}) and ($INC{"Demeter/UI/Metis.pm"})) {
+	my $new = dirname($INC{"Demeter/UI/Metis.pm"});
+	$value =~ s{__METIS_BASE__}{$new};
+	$value = abs_path(File::Spec->canonpath($value));
+      }
+      $hash{$key} = $value;
+      ($hash{demeter} = $value) if ($key eq 'default');
+      if (($self->is_windows) and ($key eq 'windows')) {
 	my $relocated = $self->perl_base;       # make paths to executables (feff, gnuplot, etc)
 	$value =~ s{__PERL_BASE__}{$relocated}; # tolerant to relocation upon installation
 	$hash{default} = $value;
@@ -427,6 +436,18 @@ sub offvalue {my $self=shift; $self->attribute("offvalue", @_)};
 sub minint   {my $self=shift; $self->attribute("minint",   @_)};
 sub maxint   {my $self=shift; $self->attribute("maxint",   @_)};
 sub restart  {my $self=shift; $self->attribute("restart",  @_)};
+
+sub set_options {
+  my ($self, $group, $param, $value, $sort) = @_;
+  my $string;
+  if ($sort) {
+    $string = join(" ", sort {$a cmp $b} @$value);
+  } else {
+    $string = join(" ", @$value);
+  };
+  $params_of{join(':',$group,$param)}->{options} = $string;
+  return $self;
+};
 
 sub describe_param {
   my ($self, $group, $param, $width) = @_;

@@ -20,7 +20,7 @@ use Demeter::StrTypes qw( IfeffitFunction IfeffitProgramVar );
 
 use Carp;
 use File::Spec;
-use List::MoreUtils qw(any);
+use List::MoreUtils qw(any true);
 use Graph;
 use Regexp::Assemble;
 use Demeter::Constants qw($NUMBER $NULLFILE);
@@ -646,7 +646,7 @@ sub S_data_collision {
   my @data = @{ $self->data };
   foreach my $d (@data) {
     next if not $d->fit_include;
-    if ($d->collided) {
+    if ((true {$_->group eq $d->group} @data) > 1) {
       ++$found;
       $d->add_trouble('collision');
     };

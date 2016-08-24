@@ -52,6 +52,7 @@ sub new {
   $self->{base} = $base;
   $self->{notebook} = $nb;
   $self->{feffobject} = $feffobject || Demeter::Feff->new();
+  $self->{feffobject}->screen(0);
   $self->{component}  = $component;
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
 
@@ -76,7 +77,7 @@ sub new {
   eval "use Demeter::UI::Atoms::Status" if not $component;
 
 
-  @utilities = ($component) ? qw(Atoms Feff Paths SS Console) : qw(Atoms Feff Paths Console Document Configure);
+  @utilities = ($component) ? qw(Atoms Feff Paths SS Console) : qw(Atoms Feff Paths Console Configure);
 
   my $imagelist = Wx::ImageList->new( $icon_dimension, $icon_dimension );
   foreach my $utility (@utilities) {
@@ -271,7 +272,7 @@ sub on_about {
   # my $text = sprintf("Feff executable: %s\n\n", Demeter->co->default(qw(feff executable)));
   # $text   .= sprintf("Default feff.inp style: %s\n", Demeter->co->default(qw(atoms feff_version)));
   # $text   .= sprintf("Default ipot style: %s\n", Demeter->co->default(qw(atoms ipot_style)));
-  # Demeter::UI::Artemis::ShowText->new($frames{main}, $text, 'Overview of Feff configuration') -> Show
+  # Demeter::UI::Common::ShowText->new($frames{main}, $text, 'Overview of Feff configuration') -> Show
 };
 
 sub noop {
@@ -331,12 +332,12 @@ sub OnInit {
   $file->Append( $FEFF,    "Feff\tCtrl+2"      );
   $file->Append( $PATHS,   "Paths\tCtrl+3"     );
   $file->Append( $CONSOLE, "Console\tCtrl+4"   );
-  $file->Append( $DOC,     "Document\tCtrl+5"  );
-  $file->Append( $CONFIG,  "Configure\tCtrl+6" );
+  $file->Append( $CONFIG,  "Configure\tCtrl+5" );
   $file->AppendSeparator;
   $file->Append( wxID_EXIT, "E&xit\tCtrl+q"    );
 
   my $help = Wx::Menu->new;
+  $help->Append($DOC,        "Atoms document",  "Display the Atoms pages from the Artemis document" );
   $help->Append($BUG,        "Report a bug",    "How to report a bug in Athena" );
   $help->Append($QUESTION,   "Ask a question",  "How to ask a question about Athena" );
   $help->Append( wxID_ABOUT, "&About Atoms"    );
@@ -350,6 +351,7 @@ sub OnInit {
   EVT_MENU( $frame, $CONSOLE,  sub{ $frame->make_page('Console');   $frame->{notebook}->ChangeSelection(3); });
   EVT_MENU( $frame, $DOC,      sub{ $frame->make_page('Document');  $frame->{notebook}->ChangeSelection(4); });
   EVT_MENU( $frame, $CONFIG,   sub{ $frame->make_page('Configure'); $frame->{notebook}->ChangeSelection(5); });
+  EVT_MENU( $frame, $DOC,      sub{Wx::LaunchDefaultBrowser(q{http://bruceravel.github.io/demeter/documents/Artemis/feff/index.html})});
   EVT_MENU( $frame, $BUG,      sub{Wx::LaunchDefaultBrowser(q{http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html})});
   EVT_MENU( $frame, $QUESTION, sub{Wx::LaunchDefaultBrowser(q{http://bruceravel.github.io/demeter/documents/SinglePage/help.html})});
   EVT_MENU( $frame, wxID_ABOUT, \&on_about );

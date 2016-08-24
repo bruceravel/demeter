@@ -94,8 +94,8 @@ sub fix {
     $ar->po->set(e_mu=>1, e_norm=>0, e_pre=>1, e_post=>1);
     $ar->po->start_plot;
     $ar->plot('E');
-    my $message = Wx::MessageDialog->new($::app->{main}, "Plot of I0 is being displayed", "I0 plot displayed", wxOK);
-    $message->ShowModal;
+    eval 'my $message = Wx::MessageDialog->new($::app->{main}, "Plot of I0 is being displayed", "I0 plot displayed", wxOK);
+    $message->ShowModal;';
     #print $ar->bkg_step, $/;
   };
   $self->step_size($ar->bkg_step);

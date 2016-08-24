@@ -35,7 +35,7 @@ use Demeter::UI::Artemis::Data::AddParameter;
 use Demeter::UI::Artemis::Data::Quickfs;
 use Demeter::UI::Artemis::Data::BondValence;
 use Demeter::UI::Artemis::DND::PathDrag;
-use Demeter::UI::Artemis::ShowText;
+use Demeter::UI::Common::ShowText;
 use Demeter::UI::Wx::CheckListBook;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
@@ -1144,7 +1144,7 @@ sub OnMenuClick {
       my $pathobject = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection)->{path};
       my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
       $pathobject->_update("fft");
-      my $dialog = Demeter::UI::Artemis::ShowText->new($datapage, $pathobject->paragraph, $pathobject->label.', evaluated')
+      my $dialog = Demeter::UI::Common::ShowText->new($datapage, $pathobject->paragraph, $pathobject->label.', evaluated')
 	-> Show;
       last SWITCH;
     };
@@ -1153,7 +1153,7 @@ sub OnMenuClick {
       $datapage->fetch_parameters;
       my $dataobject = $datapage->{data};
       my $yaml = $dataobject->serialization;
-      my $dialog = Demeter::UI::Artemis::ShowText->new($datapage, $yaml, 'YAML of ' . $dataobject->name)
+      my $dialog = Demeter::UI::Common::ShowText->new($datapage, $yaml, 'YAML of ' . $dataobject->name)
 	-> Show;
       last SWITCH;
     };
@@ -1164,7 +1164,7 @@ sub OnMenuClick {
       $pathobject->_update("fft");
       my $text = "# Path index = " . $pathobject->Index . $/;
       $text .= $pathobject->serialization;
-      my $dialog = Demeter::UI::Artemis::ShowText->new($datapage, $text, 'YAML of '.$pathobject->label)
+      my $dialog = Demeter::UI::Common::ShowText->new($datapage, $text, 'YAML of '.$pathobject->label)
 	-> Show;
       last SWITCH;
     };

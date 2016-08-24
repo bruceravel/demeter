@@ -41,7 +41,7 @@ sub is {
 	  foreach my $item (@list) {
 	    next if ($item =~ m{\#});
 	    next if ($item =~ m{\(});
-	    $data->xdi->set_item('Column', $col, $item);
+	    $data->xdi->set_item('Column', $col, lc($item));
 	    ++$col;
 	  };
 	  last FILE;

@@ -13,7 +13,9 @@ BEGIN {
     my @now = localtime(time);
     printf STDOUT "Started at %d-%2.2d-%2.2dT%2.2d:%2.2d:%2.2d$/", $now[5]+1900, $now[4]+1, reverse(@now[0..3]);
     print  STDOUT Win32::GetOSName(), "\t", Win32::GetOSVersion, $/, $/;
-    print  STDOUT "PATH is:$/\t$ENV{PATH}$/$/";
+    print  STDOUT "PATH is:$/\t$ENV{PATH}$/";
+    print  STDOUT "DEMETER_BASE is:$/\t$ENV{DEMETER_BASE}$/";
+    print  STDOUT "IFEFFIT_DIR is:$/\t$ENV{IFEFFIT_DIR}$/$/";
     print  STDOUT "perl version: $^V$/";
     my $backend = $ENV{DEMETER_BACKEND} || 'ifeffit';
     print  STDOUT "backend: $backend$/$/";

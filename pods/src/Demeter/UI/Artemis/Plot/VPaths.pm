@@ -144,7 +144,7 @@ sub OnMenu {
     ($id == $VPATH_YAML) and do {
       my $vp = $listbox->GetClientData($sel);
       my $yaml = $vp->serialization;
-      my $dialog = Demeter::UI::Artemis::ShowText->new($self, $yaml, 'YAML of ' . $vp->name)
+      my $dialog = Demeter::UI::Common::ShowText->new($self, $yaml, 'YAML of ' . $vp->name)
 	-> Show;
       last SWITCH;
     };

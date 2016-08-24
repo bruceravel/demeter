@@ -5,7 +5,7 @@ use warnings;
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::ColumnSelection;
-use Demeter::UI::Artemis::Prj;
+use Demeter::UI::Common::Prj;
 use Demeter::UI::Wx::PeriodicTableDialog;
 use Demeter::UI::Wx::VerbDialog;
 #use Xray::XDI;
@@ -819,7 +819,7 @@ sub constrain {
 sub _prj {
   my ($app, $file, $orig, $first, $plugin) = @_;
 
-  $app->{main}->{prj} =  Demeter::UI::Artemis::Prj->new($app->{main}, $file, 'multiple');
+  $app->{main}->{prj} =  Demeter::UI::Common::Prj->new($app->{main}, $file, 'multiple');
   $app->{main}->{prj}->{import}->SetFocus;
   my $result = $app->{main}->{prj} -> ShowModal;
 
@@ -913,7 +913,6 @@ sub _prj {
   if ($use_funnorm and not Demeter->co->default('athena', 'show_funnorm')) {
     Demeter->co->set_default('athena', 'show_funnorm', 1);
     $app->{main}->status("This project has groups using functional normalization -- energy-dependent normalization control enabled", "alert");
-    #Wx::MessageDialog->new($Demeter::UI::Artemis::frames{main}, $funnorm_message, "Notice", wxOK|wxICON_INFORMATION) -> ShowModal;
   };
   return 1;
 };
