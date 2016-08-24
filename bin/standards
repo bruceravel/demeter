@@ -11,8 +11,6 @@
 
 
 BEGIN {
-  ## munge the PATH env. var. under Windows, also add useful debugging
-  ## info to the log file
   my $target = q{};
   foreach my $a (@ARGV) {
     ($target = $a) if ($a =~ m{athena|latex|screen|web});
