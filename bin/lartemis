@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 BEGIN {
   # turn off Unity feature of the Mac-like global menu bar, which
   # interacts really poorly with Wx.  See

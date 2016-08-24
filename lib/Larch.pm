@@ -7,10 +7,11 @@ use Demeter::Here;
 use File::Spec;
 use Time::HiRes qw(usleep);
 use YAML::Tiny;
-
+use Proc::ProcessTable;
+use English;
 
 ######################################################################
-## ----- configure and start the Larch server
+## ----- load the configuration file 
 ######################################################################
 #my $ini = File::Spec->catfile(Demeter->dot_folder, "larch_server.yaml");
 my $ini = File::Spec->catfile(Demeter::Here::here, 'share', 'ini', 'larch_server.ini'); # if (not -e $ini);
@@ -18,6 +19,59 @@ my $rhash;
 eval {local $SIG{__DIE__} = sub {}; $rhash = YAML::Tiny::LoadFile($ini)};
 #print join("|", %$rhash), $/;
 
+
+######################################################################
+## ----- check if there is already a  Larch server running
+#        for this user
+######################################################################
+my $table = new Proc::ProcessTable;
+
+# MSWIN doesn't have effective uids
+my $uid = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? $UID : $EUID;
+
+my $larch_port = undef;
+my @larch_used_ports;
+
+foreach my $process (@{$table->table}) {
+  # look out for python processes
+  next unless ($process->{fname} =~ /python/);
+
+  # is this a larch daemon process?
+  if (index($process->{cmndline}, "larch ") != -1 && index($process->{cmndline}, " -r ") != -1 && index($process->{cmndline}, " -p ") != -1) {
+    $process->{cmndline} =~ / -p (\d+)/;
+    my $port = $1;
+
+    # are we owning this process??
+    if (((($^O eq 'MSWin32') or ($^O eq 'cygwin')) and $process->{uid} eq $uid) or $process->{euid} eq $uid) {
+      $larch_port = $port;
+      last;
+    } else {
+      push @larch_used_ports, $port;
+    }
+  }
+}
+
+if (defined($larch_port)) {
+  # we have already a larch server running
+  $rhash->{port} = $larch_port; 
+} else {
+  # no larch server running yet: look out for a new port number
+  my $port = 4966;
+  while (1) {
+    if (grep {$_ eq $port} @larch_used_ports) {
+      $port++;
+    }
+    else {
+      last;
+    }
+  }
+  $rhash->{port} = $port;
+}
+
+
+######################################################################
+## ----- configure and start the Larch server
+######################################################################
 $rhash->{server}  ||= 'localhost';
 $rhash->{port}    ||= 4966;
 $rhash->{proxy}     = sprintf("http://%s:%d", $rhash->{server}, $rhash->{port});
@@ -25,9 +79,16 @@ $rhash->{timeout} ||= 3;
 $rhash->{quiet}   ||= 0;
 $rhash->{exe}       = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? $rhash->{windows} : 'larch_server';
 
-my $command = $rhash->{quiet} ? $rhash->{exe}." -q start" : $rhash->{exe}." start";
-my $ok = system $command;
+#my $command = $rhash->{quiet} ? $rhash->{exe}." -q start" : $rhash->{exe}." start";
 
+unless (defined($larch_port)) {
+  my $command = $rhash->{exe};
+  $command .= $rhash->{quiet} ? " -q " : " ";
+  $command .= "-p ".$rhash->{port}. " ";
+  $command .= "start";
+
+  my $ok = system $command;
+}
 
 ######################################################################
 ## ----- contact the Larch server, trying repeatedly until contact is
