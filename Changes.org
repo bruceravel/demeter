@@ -73,6 +73,8 @@
    - use latest Strawberry Perl in installer
    - add Xray::XDI to package
    - recognize Windows 10 (thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-June/008605.html][Jeff Catalano]])
+   - fix a problem finding fefftab and cldata files
+   - include new documentation
 
 *** Documentation
    - Begin using new, sphinx-based documentation
