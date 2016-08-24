@@ -47,12 +47,17 @@ BEGIN {
   # } else {			# ifeffit or any misspelling
   #   eval "use Ifeffit qw(ifeffit);"
   # };
-  $ENV{DEMETER_BACKEND} = 'larch';
-  eval "use Larch";
-  if ($@) {
+  if (not $ENV{DEMETER_FORCE_IFEFFIT}) {
+    $ENV{DEMETER_BACKEND} = 'larch';
+    eval "use Larch";
+    if ($@) {
+      $ENV{DEMETER_BACKEND} = 'ifeffit';
+      eval "use Ifeffit qw(ifeffit);"
+    };
+  } else {
     $ENV{DEMETER_BACKEND} = 'ifeffit';
     eval "use Ifeffit qw(ifeffit);"
-  };
+  }
   if ($@) {
     print $@;
     die $/;
