@@ -18,7 +18,7 @@ package Demeter;  # http://xkcd.com/844/
 require v5.10;
 
 use version;
-our $VERSION = version->new('0.9.25');
+our $VERSION = version->new('0.9.26');
 print("Demeter version ", $VERSION, $/ x 2) if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 
 ############################
@@ -41,10 +41,16 @@ use Carp;
 ##  other persistent environments which use those functions to load
 ##  code at runtime."
 BEGIN {
-  $ENV{DEMETER_BACKEND} ||= 'ifeffit';
-  if (lc($ENV{DEMETER_BACKEND}) eq 'larch') {
-    eval "use Larch";
-  } else {			# ifeffit or any misspelling
+  # $ENV{DEMETER_BACKEND} ||= 'ifeffit';
+  # if (lc($ENV{DEMETER_BACKEND}) eq 'larch') {
+  #   eval "use Larch";
+  # } else {			# ifeffit or any misspelling
+  #   eval "use Ifeffit qw(ifeffit);"
+  # };
+  $ENV{DEMETER_BACKEND} = 'larch';
+  eval "use Larch";
+  if ($@) {
+    $ENV{DEMETER_BACKEND} = 'ifeffit';
     eval "use Ifeffit qw(ifeffit);"
   };
   if ($@) {
