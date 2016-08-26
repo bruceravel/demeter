@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4.7. The stand-alone Atoms application &mdash; Artemis 0.9.25 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.25',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Artemis 0.9.25 documentation" href="../index.html" />
+    <link rel="up" title="4. The Atoms and Feff Window" href="index.html" />
+    <link rel="next" title="5. The Path page" href="../path/index.html" />
+    <link rel="prev" title="4.6. Aggregate Feff calculation" href="aggregate.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../path/index.html" title="5. The Path page"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="aggregate.html" title="4.6. Aggregate Feff calculation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.25 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">4. The Atoms and Feff Window</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-stand-alone-atoms-application">
+<h1>4.7. The stand-alone Atoms application<a class="headerlink" href="#the-stand-alone-atoms-application" title="Permalink to this headline">¶</a></h1>
+<p><font size=-1 color="#8C4112">ATOMS</font> can be run as a stand-alone application separate from
+<font size=-1 color="#8C4112">ARTEMIS</font>.  On Windows, there is a menu in the Start Menu
+labeled &quot;Demeter with Strawberry Perl&quot;.  In that menu is an item
+labeled &quot;Stand-alone Atoms&quot;.  Selecting that will start the
+<font size=-1 color="#8C4112">ATOMS</font> application.  By default, no desktop icon is made for
+the stand-alone version of <font size=-1 color="#8C4112">ATOMS</font>, but you can drag-and-drop
+a shortcut from the Start Menu to the desktop.</p>
+<p><font size=-1 color="#8C4112">ATOMS</font> can be launched from the command line on any
+platform.  This command will read from a named CIF file and write the
+output <font size=-1 color="#8C4112">FEFF</font> file to <code class="file docutils literal"><span class="pre">myfeff.inp</span></code>.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>datoms myxtal.cif -o myfeff.inp
+</pre></div>
+</div>
+<p>You can launch the stand-alone GUI application with</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>datoms --wx
+</pre></div>
+</div>
+<div class="figure align-center" id="id1">
+<span id="fig-standaloneatoms"></span><a class="reference external image-reference" href="../_images/atoms_standalone.png"><img alt="../_images/atoms_standalone.png" src="../_images/atoms_standalone.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 4.14 </span><span class="caption-text">The stand-alone <font size=-1 color="#8C4112">ATOMS</font> application.</span></p>
+</div>
+<p>As a stand-alone application, <font size=-1 color="#8C4112">ATOMS</font> is very similar in
+appearance and functionality to the <font size=-1 color="#8C4112">ATOMS</font> window in
+<font size=-1 color="#8C4112">ARTEMIS</font>.  There are a few small differences:</p>
+<ol class="arabic simple">
+<li>There is a <span class="guilabel">Configuration</span> tab which contains a tool very
+similar to <font size=-1 color="#8C4112">ARTEMIS</font>'s <a class="reference external" href="../prefs.html">configuration tool</a>.</li>
+<li>The <span class="guilabel">Path-like</span> tab is absent.  Without a fitting
+project on which to drag-and-drop the path-like objects, the
+content of that tab is not so useful</li>
+<li>The stand-alone app has its own menu bar.</li>
+</ol>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Artemis_logo.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../startup/index.html">2. Starting Artemis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">3. The Data window</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">4. The Atoms and Feff Window</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="xtal.html">4.1. Crystal data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feff.html">4.2. The Feff tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paths.html">4.3. The Paths tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pathlike.html">4.4. The Path-like tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="console.html">4.5. The Console tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aggregate.html">4.6. Aggregate Feff calculation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">4.7. The stand-alone Atoms application</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../path/index.html">5. The Path page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">6. The GDS window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">7. Running a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot/index.html">8. Plotting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logjournal.html">9. The Log and Journal windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">10. The History window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitor.html">11. Monitoring things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prefs.html">12. Managing preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">13. Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms/index.html">14. Crystallography for EXAFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extended/index.html">15. Extended discussions</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.25</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/feff/standalone.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../path/index.html" title="5. The Path page"
+             >next</a></li>
+        <li class="right" >
+          <a href="aggregate.html" title="4.6. Aggregate Feff calculation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.25 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >4. The Atoms and Feff Window</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

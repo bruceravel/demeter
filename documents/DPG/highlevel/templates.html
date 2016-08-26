@@ -1,0 +1,373 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4.2. Demeter&#39;s templating system &mdash; Demeter Programming Guide 0.9.25 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.25',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/wheat.ico"/>
+    <link rel="top" title="Demeter Programming Guide 0.9.25 documentation" href="../index.html" />
+    <link rel="up" title="4. High level actions of the object model" href="index.html" />
+    <link rel="next" title="4.3. Mode object" href="mode.html" />
+    <link rel="prev" title="4.1. Command disposal and command templates" href="dispose.html" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="mode.html" title="4.3. Mode object"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="dispose.html" title="4.1. Command disposal and command templates"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.25 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">4. High level actions of the object model</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="demeter-s-templating-system">
+<h1>4.2. Demeter's templating system<a class="headerlink" href="#demeter-s-templating-system" title="Permalink to this headline">¶</a></h1>
+<p><font size=-1 color="#8C4112">DEMETER</font> uses <a class="reference external" href="https://metacpan.org/pod/Text::Template">Text::Template</a> to construct all text
+destined for <font size=-1 color="#8C4112">IFEFFIT</font> or <font size=-1 color="#8C4112">LARCH</font> as well as for
+<font size=-1 color="#8C4112">ATOMS</font> and <font size=-1 color="#8C4112">FEFF</font> input files and the plotting
+backends.  The use of templating system add a bit of complexity to
+<font size=-1 color="#8C4112">DEMETER</font> in the sense that the actual content of
+<font size=-1 color="#8C4112">IFEFFIT</font> or <font size=-1 color="#8C4112">LARCH</font> commands (or input files) is
+generated quite far away from the location in the code where that text
+is used.  However, the use of a templating system adds a lot to
+<font size=-1 color="#8C4112">DEMETER</font>.  Output can be highly customized or directed to a
+different target altogether.  For example, it is already possible in
+version 0.2 to generate content for a <code class="file docutils literal"><span class="pre">feffit.inp</span></code> file rather
+than for an <font size=-1 color="#8C4112">IFEFFIT</font> or <font size=-1 color="#8C4112">LARCH</font> script.  In the
+future, templates will make it easy for <font size=-1 color="#8C4112">DEMETER</font> to target
+multiple plotting backends, write out functional <font size=-1 color="#8C4112">DEMETER</font>
+scripts, use other <font size=-1 color="#8C4112">FEFF</font> versions, and so on.</p>
+<p><a class="reference external" href="https://metacpan.org/pod/Text::Template">Text::Template</a> is
+wonderful – it hits a real sweet spot between simple and powerful.
+A template in this system is plain text with snippets of perl code
+interspersed.  Here is an example:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="c1"># -*- ifm -*-</span>
+  <span class="c1"># Forward transform template</span>
+  <span class="c1">#   {$D} returns the ifeffit group name</span>
+  <span class="c1">#   {$D-&gt;get(&quot;parameter&quot;)} returns the value of that parameter</span>
+<span class="p">}</span>
+<span class="n">fftf</span><span class="p">({</span><span class="nv">$D</span><span class="o">-&gt;</span><span class="n">group</span><span class="p">}</span><span class="o">.</span><span class="n">chi</span><span class="p">,</span>
+     <span class="n">k</span>        <span class="o">=</span> <span class="p">{</span><span class="nv">$D</span><span class="p">}</span><span class="o">.</span><span class="n">k</span><span class="p">,</span>
+     <span class="n">kmin</span>     <span class="o">=</span> <span class="p">{</span><span class="nv">$D</span><span class="o">-&gt;</span><span class="n">fft_kmin</span><span class="p">},</span>
+     <span class="n">kmax</span>     <span class="o">=</span> <span class="p">{</span><span class="nv">$D</span><span class="o">-&gt;</span><span class="n">fft_kmax</span><span class="p">},</span>
+     <span class="n">dk</span>       <span class="o">=</span> <span class="p">{</span><span class="nv">$D</span><span class="o">-&gt;</span><span class="n">fft_dk</span><span class="p">},</span>
+     <span class="n">kwindow</span>  <span class="o">=</span> <span class="p">{</span><span class="nv">$D</span><span class="o">-&gt;</span><span class="n">fft_kwindow</span><span class="p">},</span>
+     <span class="n">kweight</span>  <span class="o">=</span> <span class="p">{</span><span class="nv">$D</span><span class="o">-&gt;</span><span class="n">get_kweight</span><span class="p">},</span>
+     <span class="n">rmax_out</span> <span class="o">=</span> <span class="p">{</span><span class="nv">$D</span><span class="o">-&gt;</span><span class="n">rmax_out</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>This is the template for generating a forward Fourier transform
+command using the <code class="docutils literal"><span class="pre">iff_columns</span></code> template set.  Anything contained in
+curly brackets is interpreted as perl, everything else is plain text
+that gets passed through the templating system unaltered.</p>
+<p>The way that this template gets used is like so:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set_mode</span><span class="p">(</span><span class="n">template_process</span> <span class="o">=&gt;</span> <span class="s">&quot;iff_columns&quot;</span><span class="p">);</span>
+<span class="nv">$string</span> <span class="o">=</span> <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">template</span><span class="p">(</span><span class="s">&quot;process&quot;</span><span class="p">,</span> <span class="s">&quot;fft&quot;</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">dispose</span><span class="p">(</span><span class="nv">$string</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The first line chooses the template set.  The second line fills in the
+<code class="docutils literal"><span class="pre">fft</span></code> template from the <em>process</em> template group|/TEMPLATE GROUPS
+using the parameters of the Data objects contained in <code class="docutils literal"><span class="pre">$data</span></code>.  The
+<code class="docutils literal"><span class="pre">template</span></code> method returns a string containing the appropriate
+<font size=-1 color="#8C4112">IFEFFIT</font> or <font size=-1 color="#8C4112">LARCH</font> commands.  This string is
+<a class="reference external" href="dispose.html">disposed</a> in the last line.</p>
+<p><font size=-1 color="#8C4112">DEMETER</font> uses certain conventions to push particular data into a
+template.  You can see two of those conventions in this example.
+<code class="docutils literal"><span class="pre">$D</span></code>, when used inside of curly braces, refers to the Data object of
+the referent.  <code class="docutils literal"><span class="pre">$P</span></code> refers to the current Plot object, which is
+defined as the <code class="docutils literal"><span class="pre">plot</span></code> mode parameter.</p>
+<p>Within the curly braces, <font size=-1 color="#8C4112">DEMETER</font> syntax is used and
+<font size=-1 color="#8C4112">DEMETER</font> methods are used to get data out of
+<font size=-1 color="#8C4112">DEMETER</font> objects.  Some templates contain more complicated
+blocks of code, such as loops or control structures.  Most
+curly-brackets perl blocks are simply object accesses, such as in the
+example above.</p>
+<p>Here is a complete list of the special scalars for accessing
+<font size=-1 color="#8C4112">DEMETER</font> objects in templates.</p>
+<p><code class="docutils literal"><span class="pre">$S</span></code></p>
+<blockquote>
+<div>This refers to the object that invoked the <code class="docutils literal"><span class="pre">template</span></code> method.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">$D</span></code></p>
+<blockquote>
+<div>This refers to the Data object associated with the object that invoked
+the <code class="docutils literal"><span class="pre">template</span></code> method.  For a Data object, <code class="docutils literal"><span class="pre">$S</span></code> and <code class="docutils literal"><span class="pre">$D</span></code> point at
+the same object.  For a Path, SSPath, or VPath object, however, <code class="docutils literal"><span class="pre">$D</span></code>
+points at the Data object to which that Path object belongs.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">$P</span></code></p>
+<blockquote>
+<div>This refers to the default Plot object.  This is the same object that
+gets returned by <code class="docutils literal"><span class="pre">po</span></code> method of the base class.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">$C</span></code></p>
+<blockquote>
+<div><p>This refers to the Config object containing all the data from the
+configuration subsystem.  Note that you should use the <code class="docutils literal"><span class="pre">default</span></code> (or
+possibly <code class="docutils literal"><span class="pre">demeter</span></code>) method to access system configuration parameters.</p>
+<p>The other use of <code class="docutils literal"><span class="pre">$C</span></code> is to access user-defined parameters.  The
+merge templates for example make extensive use of this to set, for
+example, the boundaries of the merge range and the space in which the
+merge takes place.  See Demeter::Config for details on setting
+user-defined Config parameters.  For user-defined parameters, you
+should use the <code class="docutils literal"><span class="pre">get</span></code> method.</p>
+</div></blockquote>
+<p><code class="docutils literal"><span class="pre">$F</span></code></p>
+<blockquote>
+<div>This refers to the current Fit object.  Normally, the <code class="docutils literal"><span class="pre">fit</span></code> or
+<code class="docutils literal"><span class="pre">sum</span></code> method of the Demeter::Fit class will set the default for
+you.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">$DS</span></code></p>
+<blockquote>
+<div>This refers to the data object chosen as the data standard, as
+<a class="reference external" href="dispose.html">explained here</a>.
+Data processing methods such as <code class="docutils literal"><span class="pre">align</span></code> will set the data standard so
+that <code class="docutils literal"><span class="pre">$DS</span></code> evaluates correctly in templates.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">$T</span></code></p>
+<blockquote>
+<div>This refers to the active Feff object and is mostly used to generate
+<code class="file docutils literal"><span class="pre">feff.inp</span></code> files.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">$A</span></code></p>
+<blockquote>
+<div>This refers to the Atoms object from which a <code class="file docutils literal"><span class="pre">feff.inp</span></code> is
+being generated.</div></blockquote>
+<p>There is one final mechanism for moving data into a template.  This
+method is quite similar to user-defined Config attributes, but may be
+more convenient.  You can supply an additional argument to the
+<code class="docutils literal"><span class="pre">template</span></code> method which is an anonymous hash.  An example would be
+the <code class="docutils literal"><span class="pre">save_xmu</span></code> template from the <em>process</em> tamplate group.  It is
+called like so in <code class="docutils literal"><span class="pre">save_xmu</span></code> in <code class="docutils literal"><span class="pre">Demeter::Data::Mu</span></code>:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="k">my</span> <span class="nv">$string</span> <span class="o">=</span> <span class="nv">$self</span><span class="o">-&gt;</span><span class="n">template</span><span class="p">(</span><span class="s">&quot;process&quot;</span><span class="p">,</span> <span class="s">&quot;save_xmu&quot;</span><span class="p">,</span>
+                             <span class="p">{</span><span class="n">filename</span> <span class="o">=&gt;</span> <span class="nv">$filename</span><span class="p">,</span>
+                             <span class="n">titles</span>   <span class="o">=&gt;</span> <span class="s">&quot;dem_data_*&quot;</span><span class="p">});</span>
+</pre></div>
+</div>
+<p>The corresponding template looks like this:</p>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="n">write_data</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="s">&quot;{$filename}&quot;</span><span class="p">,</span> <span class="nv">$</span><span class="p">{</span><span class="nv">$titles</span><span class="p">},</span> <span class="nv">$</span><span class="p">{</span><span class="nv">$D</span><span class="o">-&gt;</span><span class="n">group</span><span class="p">}</span><span class="n">_title_</span><span class="o">*</span><span class="p">,</span>
+           <span class="p">{</span><span class="nv">$D</span><span class="o">-&gt;</span><span class="n">group</span><span class="p">}</span><span class="o">.</span><span class="n">energy</span><span class="p">,</span> <span class="p">{</span><span class="nv">$D</span><span class="o">-&gt;</span><span class="n">group</span><span class="p">}</span><span class="o">.</span><span class="n">xmu</span><span class="p">,</span> <span class="p">{</span><span class="nv">$D</span><span class="o">-&gt;</span><span class="n">group</span><span class="p">}</span><span class="o">.</span><span class="n">bkg</span><span class="p">,</span> <span class="p">{</span><span class="nv">$D</span><span class="o">-&gt;</span><span class="n">group</span><span class="p">}</span><span class="o">.</span><span class="n">pre_edge</span><span class="p">,</span>
+           <span class="p">{</span><span class="nv">$D</span><span class="o">-&gt;</span><span class="n">group</span><span class="p">}</span><span class="o">.</span><span class="n">post_edge</span><span class="p">,</span> <span class="p">{</span><span class="nv">$D</span><span class="o">-&gt;</span><span class="n">group</span><span class="p">}</span><span class="o">.</span><span class="n">der</span><span class="p">,</span> <span class="p">{</span><span class="nv">$D</span><span class="o">-&gt;</span><span class="n">group</span><span class="p">}</span><span class="o">.</span><span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here the filename and titles glob are passed in the anonymous hash and
+accessed in the template via their hash keys inside of curly brackets.</p>
+<div class="section" id="template-groups">
+<h2>4.2.1. Template Groups<a class="headerlink" href="#template-groups" title="Permalink to this headline">¶</a></h2>
+<p><font size=-1 color="#8C4112">DEMETER</font> has a lot of templates and they are grouped according to
+general function as a way fo imposing some order on their large
+numbers.  The (currently) five template groups are:</p>
+<p><em>analysis</em></p>
+<blockquote>
+<div>These templates are used for analysis chores that do not involve
+Feff. Things such as linear combination fitting and difference
+spectra go into this template group.</div></blockquote>
+<p><em>atoms</em></p>
+<blockquote>
+<div>These templates are used by the Atoms object to structure its output
+files.  Although in the future I hope to use OpenBabel to direct lists
+of atomic coordinates to differnt output targets, you could put a
+template in this group to make, say, an alchemy file.</div></blockquote>
+<p><em>feff</em></p>
+<blockquote>
+<div>These templates are used to structure <em>feff.inp</em> files made using
+Feff objects as part of <font size=-1 color="#8C4112">DEMETER</font>'s rewrite of
+<font size=-1 color="#8C4112">FEFF</font> fucntionality.</div></blockquote>
+<p><em>plot</em></p>
+<blockquote>
+<div>These templates are used to generate plotting commands from Data or
+Path objects.</div></blockquote>
+<p><em>process</em></p>
+<blockquote>
+<div>All the rest of the templates go into this group.  Everything involved
+in reading, writing, or processing data goes in this template group.</div></blockquote>
+</div>
+<div class="section" id="template-sets">
+<h2>4.2.2. Template Sets<a class="headerlink" href="#template-sets" title="Permalink to this headline">¶</a></h2>
+<p>Within the different template groups, you may find multiple template
+sets.</p>
+<p><em>feff</em></p>
+<blockquote>
+<div>The <em>feff</em> template group has sets for “feff6”,
+“feff7”, and “feff8”.  The feff template set is
+chosen by setting the <code class="docutils literal"><span class="pre">template_feff</span></code> mode</div></blockquote>
+<p><em>plot</em></p>
+<blockquote>
+<div>The plotting template sets are “pgplot”, “gnuplot”,
+and “demeter”.  The first two generate commands for the
+currently available plotting backends.  The last is intended for use
+with the <font size=-1 color="#8C4112">DEMETER</font> fitting and processing template set.  In
+the future new sets may be written for different plotting backends
+(for example, Grace would be a target that would work very well
+within <font size=-1 color="#8C4112">DEMETER</font>).  The plot template set is chosen by
+setting the <code class="docutils literal"><span class="pre">template_plot</span></code> mode.</div></blockquote>
+<p><em>fit</em> and <em>process</em></p>
+<blockquote>
+<div>Template sets exist for <font size=-1 color="#8C4112">IFEFFIT</font>, <font size=-1 color="#8C4112">LARCH</font>,
+<font size=-1 color="#8C4112">FEFFIT</font>, and <font size=-1 color="#8C4112">DEMETER</font>.  There are two version of
+the <font size=-1 color="#8C4112">IFEFFIT</font> template set called “ifeffit” and
+“iff_columns”.  The first set uses a fairly terse style while
+the second one tries to align <font size=-1 color="#8C4112">IFEFFIT</font> command arguments
+into columns aligned at the equals sign wherever possible.  The
+second one may be a bit more human readable.  The fit and process
+template sets are chosen by setting the <code class="docutils literal"><span class="pre">template_fit</span></code> and
+<code class="docutils literal"><span class="pre">template_process</span></code> modes.</div></blockquote>
+<p><font size=-1 color="#8C4112">ATOMS</font> does not use template sets and currently there are
+only <font size=-1 color="#8C4112">IFEFFIT</font> and <font size=-1 color="#8C4112">LARCH</font> sets for the <em>analysis</em>
+group.</p>
+</div>
+<div class="section" id="diagnostics">
+<h2>4.2.3. Diagnostics<a class="headerlink" href="#diagnostics" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">Unknown</span> <span class="pre">Demeter</span> <span class="pre">template</span> <span class="pre">file:</span> <span class="pre">group</span> <span class="pre">$group;</span> <span class="pre">type</span> <span class="pre">$file;</span> <span class="pre">$tmpl</span></code></p>
+<blockquote>
+<div>You specified a combination of template group and template file that
+does not exist.</div></blockquote>
+<hr class="docutils" />
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p>New template sets:</p>
+<ul class="last simple">
+<li>More plotting backends?  Matplotlib?  thers?</li>
+</ul>
+</div>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/Isis-Sothis-Demeter_sm.jpg" alt="Logo"/>
+            </a></p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data/index.html">2. The basics of data processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">4. High level actions of the object model</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="dispose.html">4.1. Command disposal and command templates</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">4.2. Demeter's templating system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mode.html">4.3. Mode object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html">4.4. Plot object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html">4.5. Config object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="methods.html">4.6. Other high level object methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atoms.html">6. Atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gds.html">9. Guess/Def/Set Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fit/index.html">10. Fitting EXAFS data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../perl.html">11. Using perl to structure a fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lgcv.html">12. Local guess parameters and the characteristic value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathlike/index.html">13. Path-like objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">14. User interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.25</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/highlevel/templates.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="mode.html" title="4.3. Mode object"
+             >next</a></li>
+        <li class="right" >
+          <a href="dispose.html" title="4.1. Command disposal and command templates"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.25 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >4. High level actions of the object model</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

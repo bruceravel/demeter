@@ -1,0 +1,321 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Notes towards making Debian packages for Demeter &mdash; Miscellaneous Demeter 0.9.25 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9.25',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/wheat.ico"/>
+    <link rel="top" title="Miscellaneous Demeter 0.9.25 documentation" href="index.html" />
+    <link rel="prev" title="Building Demeter and Ifeffit on Windows with MinGW and Strawberry Perl" href="mingw.html" />
+
+    <link rel="stylesheet" type="text/css" href="_static/demeter.css" />
+    <link rel="stylesheet" type="text/css" href="_static/keys.css" />
+    <link rel="stylesheet" type="text/css" href="_static/program.css" />
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="mingw.html" title="Building Demeter and Ifeffit on Windows with MinGW and Strawberry Perl"
+             accesskey="P">previous</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter 0.9.25 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="notes-towards-making-debian-packages-for-demeter">
+<h1>Notes towards making Debian packages for Demeter<a class="headerlink" href="#notes-towards-making-debian-packages-for-demeter" title="Permalink to this headline">¶</a></h1>
+<dl class="docutils">
+<dt>Links:</dt>
+<dd><ul class="first last simple">
+<li><a class="reference external" href="https://debian-administration.org/article/78/Building_Debian_packages_of_Perl_modules">https://debian-administration.org/article/78/Building_Debian_packages_of_Perl_modules</a></li>
+<li><a class="reference external" href="https://jeremiahfoster.com/debian/debs-from-cpan.html">https://jeremiahfoster.com/debian/debs-from-cpan.html</a></li>
+</ul>
+</dd>
+</dl>
+<p>The following lists are requirements for building and running
+<font size=-1 color="#8C4112">DEMETER</font>.  These notes were assembled on an Ubuntu machine.
+YMMV with respect to Debian or another Debian-based system.</p>
+<p>Once all this stuff is in place, building <font size=-1 color="#8C4112">DEMETER</font> should be
+as simple as the standard perl incantation:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>perl Build.PL
+./Build
+./Build install
+</pre></div>
+</div>
+<div class="section" id="required-packages">
+<h2>Required packages<a class="headerlink" href="#required-packages" title="Permalink to this headline">¶</a></h2>
+<p>This list is culled from the <code class="file docutils literal"><span class="pre">Build.PL</span></code> file and from an
+analysis of modules loaded by a script using <a class="reference external" href="https://metacpan.org/pod/App::FatPacker::Trace">App::FatPacker::Trace</a></p>
+<div class="section" id="perl-resources">
+<h3>Perl resources<a class="headerlink" href="#perl-resources" title="Permalink to this headline">¶</a></h3>
+<p>All of these packages already exist in Ubuntu.  These are
+<font size=-1 color="#8C4112">DEMETER</font>'s dependencies.</p>
+<ol class="arabic simple">
+<li>perl</li>
+<li>perl-base</li>
+<li>perl-modules</li>
+<li>libperl5.22</li>
+<li>libarchive-zip-perl</li>
+<li>libautodie-perl</li>
+<li>libb-hooks-endofscope-perl</li>
+<li>libcapture-tiny-perl</li>
+<li>libchemistry-elements-perl</li>
+<li>libclass-accessor-perl</li>
+<li>libcommon-sense-perl</li>
+<li>libconfig-ini-perl</li>
+<li>libconst-fast-perl</li>
+<li>libdata-alias-perl</li>
+<li>libdata-dump-perl</li>
+<li>libdata-optlist-perl</li>
+<li>libdatetime-perl</li>
+<li>libdevel-globaldestruction-perl</li>
+<li>libdigest-sha-perl</li>
+<li>libexporter-tiny-perl</li>
+<li>libfile-copy-recursive-perl</li>
+<li>libfile-countlines-perl</li>
+<li>libfile-find-rule-perl</li>
+<li>libfile-touch-perl</li>
+<li>libfile-which-perl</li>
+<li>libgraph-perl</li>
+<li>libgraphics-gnuplotif-perl</li>
+<li>libheap-perl</li>
+<li>libjson-perl</li>
+<li>libjson-xs-perl</li>
+<li>liblist-moreutils-perl</li>
+<li>libmath-combinatorics-perl</li>
+<li>libmath-derivative-perl</li>
+<li>libmath-random-perl</li>
+<li>libmath-round-perl</li>
+<li>libmath-spline-perl</li>
+<li>libmixin-linewise-perl</li>
+<li>libmodule-implementation-perl</li>
+<li>libmodule-runtime-perl</li>
+<li>libmoo-perl</li>
+<li>libmoose-perl</li>
+<li>libmoosex-aliases-perl</li>
+<li>libmoosex-types-perl</li>
+<li>libmro-compat-perl</li>
+<li>libnamespace-autoclean-perl</li>
+<li>libnamespace-clean-perl</li>
+<li>libnumber-compare-perl</li>
+<li>libpackage-stash-perl</li>
+<li>libpackage-stash-xs-perl</li>
+<li>libparams-util-perl</li>
+<li>libparams-validate-perl</li>
+<li>libpdl-stats-perl</li>
+<li>libperlio-utf8-strict-perl</li>
+<li>libpod-pom-perl</li>
+<li>libregexp-assemble-perl</li>
+<li>libregexp-common-perl</li>
+<li>libscalar-list-utils-perl</li>
+<li>libspreadsheet-writeexcel-perl</li>
+<li>libstatistics-descriptive-perl</li>
+<li>libsub-exporter-perl</li>
+<li>libsub-exporter-progressive-perl</li>
+<li>libsub-identify-perl</li>
+<li>libsub-install-perl</li>
+<li>libsub-name-perl</li>
+<li>libterm-readline-gnu-perl</li>
+<li>libterm-sk-perl</li>
+<li>libterm-twiddle-perl</li>
+<li>libtext-glob-perl</li>
+<li>libtext-template-perl</li>
+<li>libtext-unidecode-perl</li>
+<li>libtree-simple-perl</li>
+<li>libtry-tiny-perl</li>
+<li>libtype-tiny-perl</li>
+<li>libtypes-serialiser-perl</li>
+<li>libvariable-magic-perl</li>
+<li>libwant-perl</li>
+<li>libwx-perl</li>
+<li>libxmlrpc-lite-perl</li>
+<li>libyaml-tiny-perl</li>
+<li>pdl</li>
+</ol>
+</div>
+<div class="section" id="non-perl-resources">
+<h3>Non perl resources<a class="headerlink" href="#non-perl-resources" title="Permalink to this headline">¶</a></h3>
+<p>Some more dependency package names:</p>
+<ol class="arabic simple">
+<li>ifeffit (the one Carlo made many moons ago should be just fine and
+should be available for debian +_ ubuntu + ...)</li>
+<li>gnuplot5</li>
+<li>gnuplot5-qt  (or gnuplot5-x11  or gnuplot5-wxt)</li>
+<li>gnuplot5-data</li>
+</ol>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">things needed to compile up ifeffit or use the ifeffit that
+got made years ago, also pgplot (there is a pgplot5 ubuntu package)</p>
+</div>
+</div>
+</div>
+<div class="section" id="build-requires">
+<h2>Build requires<a class="headerlink" href="#build-requires" title="Permalink to this headline">¶</a></h2>
+<p>The following packages are required to <em>build</em> <font size=-1 color="#8C4112">DEMETER</font>, but
+are not required to be installed on a computer <em>running</em>
+<font size=-1 color="#8C4112">DEMETER</font>.</p>
+<ol class="arabic simple">
+<li>libfile-copy-recursive-perl</li>
+<li>libfile-slurper-perl</li>
+<li>libcapture-tiny-perl</li>
+<li>libextutils-cbuilder-perl</li>
+</ol>
+<p>Building the document with sphinx.  Note that sphinx <strong>must</strong> be
+version 1.3.  If the packaged version is 1.2, then the
+<font size=-1 color="#8C4112">DEMETER</font> document will not get made correctly.</p>
+<ol class="arabic simple">
+<li>sphinx-doc</li>
+<li>sphinx-common</li>
+<li>pybtex</li>
+</ol>
+<p>other sphinx resources can be installed using <strong class="program">pip</strong>,
+available in the “python-pip” package:</p>
+<ol class="arabic simple">
+<li>sphinxcontrib-bibtex</li>
+</ol>
+<p><a class="reference external" href="http://bruceravel.github.io/demeter/documents/Athena/forward.html#building-this-document-from-source">More document building details here</a></p>
+<p>Note that the documentation will be built and installed to
+<code class="file docutils literal"><span class="pre">&lt;install_dir&gt;/Demeter/share/documentation/Athena/</span></code> where
+<code class="file docutils literal"><span class="pre">&lt;install_dir&gt;</span></code> is whatever is returned when you run this:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>perl -e <span class="s1">&#39;use File::Basename; use Demeter; print dirname($INC{&quot;Demeter.pm&quot;}), $/&#39;</span>
+</pre></div>
+</div>
+<p>There are four documentation folders: <code class="file docutils literal"><span class="pre">Athena</span></code>, <code class="file docutils literal"><span class="pre">Artemis</span></code>,
+<code class="file docutils literal"><span class="pre">DPG</span></code>, and <code class="file docutils literal"><span class="pre">SingleFile</span></code>.</p>
+</div>
+<div class="section" id="missing-in-ubuntu">
+<h2>Missing in Ubuntu<a class="headerlink" href="#missing-in-ubuntu" title="Permalink to this headline">¶</a></h2>
+<p>These are modules used by <font size=-1 color="#8C4112">DEMETER</font> that are not packaged
+for Ubuntu.  These packages would have to be made and provided.</p>
+<ol class="arabic simple">
+<li><a class="reference external" href="https://metacpan.org/pod/MooseX::Types::LaxNum">MooseX::Types::LaxNum</a> (essential,
+cannot be worked around, cannot be replaced)</li>
+<li><a class="reference external" href="https://metacpan.org/pod/Encoding::FixLatin">Encoding::FixLatin</a>
+(required, but could work around)</li>
+<li><a class="reference external" href="https://metacpan.org/pod/HTML::Entities">HTML::Entities</a> (what
+uses this? may not be necessary)</li>
+<li><a class="reference external" href="https://metacpan.org/pod/Pod::ProjectDocs">Pod::ProjectDocs</a>
+(only required for building)</li>
+<li><a class="reference external" href="https://metacpan.org/pod/File::Monitor::Lite">File::Monitor::Lite</a> (only needed by a
+feature of <font size=-1 color="#8C4112">ATHENA</font> that is currently disabled)</li>
+</ol>
+
+<br>
+
+<br>
+<hr class="docutils" />
+<p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
+copyright © 2016 Bruce Ravel</p>
+<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
+consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/Isis-Sothis-Demeter_sm.jpg" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Notes towards making Debian packages for Demeter</a><ul>
+<li><a class="reference internal" href="#required-packages">Required packages</a><ul>
+<li><a class="reference internal" href="#perl-resources">Perl resources</a></li>
+<li><a class="reference internal" href="#non-perl-resources">Non perl resources</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#build-requires">Build requires</a></li>
+<li><a class="reference internal" href="#missing-in-ubuntu">Missing in Ubuntu</a></li>
+</ul>
+</li>
+</ul>
+<h3>Helpful Links</h3>
+<p>Current version: <b>0.9.25</b></p>
+
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
+  <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
+</ul>
+<ul>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Athena/index.html">Athena manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/Artemis/index.html">Artemis manual</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/bugs.html">Bug reporting hints</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/documents/SinglePage/help.html">How to ask a good question</a>
+</ul>
+<p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/debian.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="mingw.html" title="Building Demeter and Ifeffit on Windows with MinGW and Strawberry Perl"
+             >previous</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter 0.9.25 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

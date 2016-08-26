@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4. High level actions of the object model &mdash; Demeter Programming Guide 0.9.24 documentation</title>
+    <title>4. High level actions of the object model &mdash; Demeter Programming Guide 0.9.25 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.24',
+        VERSION:     '0.9.25',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Demeter Programming Guide 0.9.24 documentation" href="../index.html" />
+    <link rel="top" title="Demeter Programming Guide 0.9.25 documentation" href="../index.html" />
     <link rel="next" title="4.1. Command disposal and command templates" href="dispose.html" />
     <link rel="prev" title="3.10. Processing dispersive XAS data" href="../mue/dispersive.html" />
 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../mue/dispersive.html" title="3.10. Processing dispersive XAS data"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.25 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -92,23 +92,29 @@ at that point in your program.</p>
 <li class="toctree-l2"><a class="reference internal" href="dispose.html#command-templates">4.1.3. Command templates</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="mode.html">4.2. Mode object</a></li>
-<li class="toctree-l1"><a class="reference internal" href="plot.html">4.3. Plot object</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="plot.html#plotting-in-energy">4.3.1. Plotting in energy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html#plotting-in-k">4.3.2. Plotting in k</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html#plotting-in-r">4.3.3. Plotting in R</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html#plotting-in-q">4.3.4. Plotting in q</a></li>
+<li class="toctree-l1"><a class="reference internal" href="templates.html">4.2. Demeter's templating system</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="templates.html#template-groups">4.2.1. Template Groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="templates.html#template-sets">4.2.2. Template Sets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="templates.html#diagnostics">4.2.3. Diagnostics</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="config.html">4.4. Config object</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="config.html#the-configuration-file-format">4.4.1. The configuration file format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="config.html#user-defined-configuration-files">4.4.2. User-defined configuration files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="config.html#using-and-resetting-configuration-parameters">4.4.3. Using and resetting configuration parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="config.html#the-config-object-and-the-templating-system">4.4.4. The Config object and the templating system</a></li>
-<li class="toctree-l2"><a class="reference internal" href="config.html#wxwidgets-and-the-configuration-system">4.4.5. WxWidgets and the configuration system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mode.html">4.3. Mode object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">4.4. Plot object</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#plotting-in-energy">4.4.1. Plotting in energy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#plotting-in-k">4.4.2. Plotting in k</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#plotting-in-r">4.4.3. Plotting in R</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#plotting-in-q">4.4.4. Plotting in q</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="methods.html">4.5. Other high level object methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">4.5. Config object</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="config.html#the-configuration-file-format">4.5.1. The configuration file format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#user-defined-configuration-files">4.5.2. User-defined configuration files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#using-and-resetting-configuration-parameters">4.5.3. Using and resetting configuration parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#the-config-object-and-the-templating-system">4.5.4. The Config object and the templating system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#wxwidgets-and-the-configuration-system">4.5.5. WxWidgets and the configuration system</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="methods.html">4.6. Other high level object methods</a></li>
 </ul>
 </div>
 
@@ -139,10 +145,11 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">4. High level actions of the object model</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="dispose.html">4.1. Command disposal and command templates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mode.html">4.2. Mode object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html">4.3. Plot object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="config.html">4.4. Config object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="methods.html">4.5. Other high level object methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="templates.html">4.2. Demeter's templating system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mode.html">4.3. Mode object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html">4.4. Plot object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html">4.5. Config object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="methods.html">4.6. Other high level object methods</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../xanes/index.html">5. Analysis of XANES data</a></li>
@@ -159,14 +166,14 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.24</b></p>
+<p>Current version: <b>0.9.25</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/bruceravel/demeter/">Demeter @ github</a>
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
-  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
+  <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -210,7 +217,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="../mue/dispersive.html" title="3.10. Processing dispersive XAS data"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.24 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.25 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

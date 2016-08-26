@@ -174,7 +174,8 @@ sub put_larch_scalar {
   return dispose("$param = $value");
 };
 
-1;
+$larch_is_go;
+
 
 __END__
 
