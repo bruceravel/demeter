@@ -240,6 +240,14 @@ will run successfully.  You may need to do:
   ./Build test
   ./Build install # (or sudo ./Build install)
 
+You can build and install the documentation by doing
+
+  ./Build manuals
+  ./Build install # (or sudo ./Build install)
+
+Building the documentation requires sphinx, pybtex, and
+sphinxcontrib-bibtex.
+
 END_MESSAGE
 ;
 

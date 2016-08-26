@@ -57,14 +57,24 @@ sub ACTION_build {
   $self->dispatch("compile_ifeffit_wrapper");
   $self->dispatch("test_for_gnuplot");
   $self->SUPER::ACTION_build;
-  $self->dispatch("build_documents");
   $self->dispatch("post_build");
 }
+
+
+sub ACTION_docs {
+  1; ## null op
+};
+
+sub ACTION_manuals {
+  my $self = shift;
+  $self->dispatch("build_documents");
+};
+
 
 sub ACTION_ghpages {
   my $self = shift;
   $self->dispatch("build_documents");
-  ## an action to copy things over to the ../demeter-gh-pages directory
+  $self->dispatch("docs_to_ghpages");
   $self->dispatch("doctree");
   $self->dispatch("org2html");
 };
@@ -248,22 +258,6 @@ sub ACTION_post_build {
 ################################################################################
 ### Manage documents
 
-######
-## need to manage moving images across for DPG and ARTUG
-######
-sub ACTION_build_dpg {
-  my $self = shift;
-  my $here = cwd;
-  chdir 'doc/dpg/';
-  #do 'build_dpg.PL';
-  mkdir 'html' if not -d 'html';
-  system(q(./configure));
-  system(q(./bin/build));
-  chdir $here;
-  rmtree(File::Spec->catfile($ghpages, 'dpg'), 1, 1);
-  move('doc/dpg/html', File::Spec->catfile($ghpages, 'dpg'));
-};
-
 
 sub ACTION_build_documents {
   my $sphinx = which('sphinx-build');
@@ -299,6 +293,17 @@ sub ACTION_build_documents {
   dircopy('documentation/SinglePage/_build/html', 'blib/lib/Demeter/share/documentation/SinglePage') or die "dircopy failed: $!";
 };
 
+
+sub ACTION_docs_to_ghpages {
+  print "copying Athena manual\n";
+  dircopy('documentation/Athena/_build/html',     File::Spec->catfile($ghpages, 'documents/Athena'))     or die "dircopy failed: $!";
+  print "copying Artemis manual\n";
+  dircopy('documentation/Artemis/_build/html',    File::Spec->catfile($ghpages, 'documents/Artemis'))    or die "dircopy failed: $!";
+  print "copying DPG\n";
+  dircopy('documentation/DPG/_build/html',        File::Spec->catfile($ghpages, 'documents/DPG'))        or die "dircopy failed: $!";
+  print "copying SinglePage documents\n";
+  dircopy('documentation/SinglePage/_build/html', File::Spec->catfile($ghpages, 'documents/SinglePage')) or die "dircopy failed: $!";
+};
 
 
 ################################################################################
