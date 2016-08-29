@@ -32,18 +32,14 @@ use File::Which qw(which);
 ######################################################################
 ## Configuration
 
-my %windows = (strawberry => 'C:\strawberry',                     # base of Strawberry perl
-	       #gnuwin     => 'C:\GnuWin32',                      # base of GnuWin32, readline, ncurses
-	       gnuwin     => 'C:\strawberry\lib',
-	       #mingw      => 'C:\MinGW',                         # base of the MinGW compiler suite
-	       mingw      => 'C:\strawberry\c\lib\gcc\i686-w64-mingw32\4.4.3',
-	       #pgplot     => 'C:\MinGW\lib\pgplot',              # install location of GRwin and PGPLOT
-	       pgplot     => 'C:\strawberry\c\lib\pgplot',
-	       #ifeffit    => 'C:\source\ifeffit-1.2.11d\src\lib', # install location of libifeffit.a
-	       ifeffit    => 'C:\strawberry\lib',
-	       #gnuplot    => 'C:\gnuplot\binaries',		  # install location of gnuplot.exe
-	       gnuplot    => 'C:\strawberry\c\bin',
-	       artug      => 'C:\strawberry\c\perl\site\lib\Demeter\share',
+my $WINPERL = File::Spec->catfile($ENV{APPDATA}, 'DemeterPerl');
+my %windows = (base    => $WINPERL,  # base of Demeter's perl
+	       gnuwin  => File::Spec->catfile($WINPERL, 'lib'),  
+	       mingw   => File::Spec->catfile($WINPERL, 'c', 'lib', 'i686-w64-mingw32', '4.7.3'), 
+	       pgplot  => File::Spec->catfile($WINPERL, 'c', 'lib', 'pgplot'),
+	       ifeffit => File::Spec->catfile($WINPERL, 'c', 'lib'),
+	       gnuplot => File::Spec->catfile($WINPERL, 'c', 'bin', 'gnuplot', 'bin'),
+	       artug   => File::Spec->catfile($WINPERL, 'perl', 'site', 'lib', 'Demeter', 'share'),
 	      );
 our $ghpages = '../demeter-gh-pages';
 
@@ -187,15 +183,14 @@ sub ACTION_compile_ifeffit_wrapper {
 		       q{-L}.$windows{gnuwin}.q{\lib"},
 		       q{-lcurses -lreadline},
 
-		       q{-L}.$windows{strawberry}.q{\perl\lib\CORE"},
-		       q{-L}.$windows{strawberry}.q{\c\lib"},
-		       q{-L}.$windows{strawberry}.q{\c\lib\gcc\i686-w64-mingw32\4.4.3"},
-
+		       q{-L}.$windows{base}.q{\perl\lib\CORE"},
+		       q{-L}.$windows{base}.q{\c\lib"},
+		       q{-L}.$windows{mingw}, 
 		       q{-L}.$windows{ifeffit},
 		       q{-lifeffit -lxafs},
 
 		       #q{-L"C:\MinGW\bin"},
-		       q{-L}.$windows{mingw}.q{\lib\gcc\mingw32\4.5.2"},
+		       q{-L}.$windows{mingw},
 		       q{-L}.$windows{mingw}.q{\lib"},
 		       q(-lgfortran -lmingw32 -lgcc_s -lmoldname -lmingwex -lmsvcrt -luser32 -lkernel32 -ladvapi32 -lshell32),
 
