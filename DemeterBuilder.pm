@@ -34,8 +34,8 @@ use File::Which qw(which);
 
 my $WINPERL = File::Spec->catfile($ENV{APPDATA}, 'DemeterPerl');
 my %windows = (base    => $WINPERL,  # base of Demeter's perl
-	       gnuwin  => File::Spec->catfile($WINPERL, 'lib'),  
-	       mingw   => File::Spec->catfile($WINPERL, 'c', 'lib', 'i686-w64-mingw32', '4.7.3'), 
+	       gnuwin  => File::Spec->catfile($WINPERL, 'lib'),
+	       mingw   => File::Spec->catfile($WINPERL, 'c', 'lib', 'i686-w64-mingw32', '4.7.3'),
 	       pgplot  => File::Spec->catfile($WINPERL, 'c', 'lib', 'pgplot'),
 	       ifeffit => File::Spec->catfile($WINPERL, 'c', 'lib'),
 	       gnuplot => File::Spec->catfile($WINPERL, 'c', 'bin', 'gnuplot', 'bin'),
@@ -169,43 +169,44 @@ sub ACTION_test_for_larchserver {
   print STDOUT "Looking for Python and Larch ---> ";
   my $pyexe  = '';
   my $larchexe = '';
-  my @dirlist = split /;/, $ENV{'PATH'};
   if (($^O eq 'MSWin32') or ($^O eq 'cygwin')) {
-      push @dirlist,  (File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda3'),
-		       File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda2'),
-		       File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda'),
-		       File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda3'),
-		       File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda2'),
-		       File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda'));
+    my @dirlist = split /;/, $ENV{'PATH'};
+    push @dirlist,  (File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda3'),
+		     File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda2'),
+		     File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda'),
+		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda3'),
+		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda2'),
+		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda'));
 
       foreach my $d (@dirlist) {
 	  my $pyexe_ =  File::Spec->catfile($d, 'python.exe');
 	  my $larch_ =  File::Spec->catfile($d, 'Scripts', 'larch_server');
-	  if ((-e $pyexe_) && (-e $larch_))  { 
+	  if ((-e $pyexe_) && (-e $larch_))  {
 	      $larchexe = $larch_,
 	      $pyexe = $pyexe_;
 	      last;
 	  }
       }
   } else {
-      push @dirlist,  (File::Spec->catfile($ENV{HOME}, 'anaconda3'),
-		       File::Spec->catfile($ENV{HOME}, 'anaconda2'),
-		       File::Spec->catfile($ENV{HOME}, 'anaconda'));
+    my @dirlist = split /:/, $ENV{'PATH'};
+    push @dirlist,  (File::Spec->catfile($ENV{HOME}, 'anaconda3', 'bin'),
+		     File::Spec->catfile($ENV{HOME}, 'anaconda2', 'bin'),
+		     File::Spec->catfile($ENV{HOME}, 'anaconda', 'bin'));
 
-      foreach my $d (@dirlist) {
-	  my $pyexe_ =  File::Spec->catfile($d, 'python');
-	  my $larch_ =  File::Spec->catfile($d, 'larch_server');
-	  if ((-e $pyexe_) && (-e $larch_))  { 
-	      $larchexe = $larch_,
-	      $pyexe = $pyexe_;
-	      last;
-	  }
+    foreach my $d (@dirlist) {
+      my $pyexe_ =  File::Spec->catfile($d, 'python');
+      my $larch_ =  File::Spec->catfile($d, 'larch_server');
+      if ((-e $pyexe_) && (-e $larch_))  {
+	$larchexe = $larch_,
+	  $pyexe = $pyexe_;
+	last;
       }
+    }
   }
-  if ($larchexe != '') { 
+  if ($larchexe eq '') {
       print "not found\n";
   } else {
-      print "found\n";
+      print "found  $pyexe  // $larchexe \n";
   }
   my $larch_server_ini_text = <<"END_OF_FILE";
 ---
@@ -246,7 +247,7 @@ sub ACTION_compile_ifeffit_wrapper {
 
 		       q{-L}.$windows{base}.q{\perl\lib\CORE"},
 		       q{-L}.$windows{base}.q{\c\lib"},
-		       q{-L}.$windows{mingw}, 
+		       q{-L}.$windows{mingw},
 		       q{-L}.$windows{ifeffit},
 		       q{-lifeffit -lxafs},
 
