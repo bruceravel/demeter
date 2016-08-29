@@ -52,6 +52,7 @@ sub ACTION_build {
   unlink File::Spec->catfile('lib', 'Demeter', 'configuration', 'gnuplot.demeter_conf');
   $self->dispatch("compile_ifeffit_wrapper");
   $self->dispatch("test_for_gnuplot");
+  $self->dispatch("test_for_larchserver");
   $self->SUPER::ACTION_build;
   $self->dispatch("post_build");
 }
@@ -161,6 +162,66 @@ sub ACTION_test_for_gnuplot {
 
   print STDOUT "$term terminal.\n";
 };
+
+sub ACTION_test_for_larchserver {
+  # search for Python exe and Larch server script, write larch_server.ini
+  my $inifile = File::Spec->catfile(cwd, 'lib', 'Demeter', 'share', 'ini', 'larch_server.ini');
+  print STDOUT "Looking for Python and Larch ---> ";
+  my $pyexe  = '';
+  my $larchexe = '';
+  my @dirlist = split /;/, $ENV{'PATH'};
+  if (($^O eq 'MSWin32') or ($^O eq 'cygwin')) {
+      push @dirlist,  (File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda3'),
+		       File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda2'),
+		       File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda'),
+		       File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda3'),
+		       File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda2'),
+		       File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda'));
+
+      foreach my $d (@dirlist) {
+	  my $pyexe_ =  File::Spec->catfile($d, 'python.exe');
+	  my $larch_ =  File::Spec->catfile($d, 'Scripts', 'larch_server');
+	  if ((-e $pyexe_) && (-e $larch_))  { 
+	      $larchexe = $larch_,
+	      $pyexe = $pyexe_;
+	      last;
+	  }
+      }
+  } else {
+      push @dirlist,  (File::Spec->catfile($ENV{HOME}, 'anaconda3'),
+		       File::Spec->catfile($ENV{HOME}, 'anaconda2'),
+		       File::Spec->catfile($ENV{HOME}, 'anaconda'));
+
+      foreach my $d (@dirlist) {
+	  my $pyexe_ =  File::Spec->catfile($d, 'python');
+	  my $larch_ =  File::Spec->catfile($d, 'larch_server');
+	  if ((-e $pyexe_) && (-e $larch_))  { 
+	      $larchexe = $larch_,
+	      $pyexe = $pyexe_;
+	      last;
+	  }
+      }
+  }
+  if ($larchexe != '') { 
+      print "not found\n";
+  } else {
+      print "found\n";
+  }
+  my $larch_server_ini_text = <<"END_OF_FILE";
+---
+server: 'localhost' # URL of larch_server or "localhost" is running locally
+port: 4966          # the port number the larch server is listening to
+timeout: 3          # the timeout in seconds before Demeter gives up trying to talk to the larch server
+quiet: 1            # 1 means to suppress larch_server screen messages, 0 means allow larch_server to print messages
+windows: $pyexe $larchexe
+END_OF_FILE
+
+  open(my $FOUT, '>', $inifile);
+  print $FOUT $larch_server_ini_text;
+  close $FOUT;
+  print "Wrote $inifile\n";
+};
+
 
 sub ACTION_compile_ifeffit_wrapper {
   my $self = shift;
