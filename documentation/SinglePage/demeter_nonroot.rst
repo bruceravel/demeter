@@ -23,6 +23,9 @@ prompt) by selecting text with your mouse and then middle clicking (the
 mouse-wheel on most modern mice) in the terminal where you wish to paste the
 selected text.
 
+Preparing your machine
+----------------------
+
 The first step is to install all the build and runtime dependencies that are
 available in the standard Ubuntu repositories, along with Perl's excellent
 local::lib system which will allow us to play around with the development
@@ -57,6 +60,9 @@ quit CPAN and return to the normal terminal prompt. Next, we'll take a clone of
 Demeter's git repository::
 
     $ git clone git://github.com/bruceravel/demeter.git
+
+Demeter's many dependencies
+---------------------------
 
 Now we attempt to build Demeter's dependencies. Firstly, change into the cloned
 directory and generate the script to install the dependencies::
@@ -163,6 +169,9 @@ dependencies have been installed correctly, re-run the generator script::
 
     $ perl ./Build.PL
 
+Dealing with failed dependencies
+--------------------------------
+
 This time you should get output which doesn't include any ``not installed``
 items. However, in my particular case for some reason Wx failed to install the
 first go round so I got this::
@@ -188,6 +197,21 @@ you don't see any ``not installed`` items above)::
 
     $ ./Build installdeps
 
+Depending on the state of your machine or the distribution you are
+using, you might still fail to successfully build :program:`wxperl` or
+some other package, `as discussed here
+<https://github.com/bruceravel/demeter/issues/36>`_.  If you use a
+distribution with a robust package manager and an extensive library of
+packages, it should be fine to satisfy the dependency using the
+system's package manager.  For example, on a debian-based
+distribution, you could meet the requirement for :program:`wxperl` by
+doing
+
+.. code-block:: bash
+
+   ~> sudo apt-get install libwx-perl
+
+
 Eventually you should get the following when running Build.PL::
 
     $ perl ./Build.PL
@@ -197,6 +221,14 @@ Eventually you should get the following when running Build.PL::
 
     Created MYMETA.yml and MYMETA.json
     Creating new 'Build' script for 'Demeter' version 'v0.9.13'
+
+The type of warning about files missing in the kit is not serious.  It
+usually just means that Bruce forgot to update the `MANIFEST file
+<https://github.com/bruceravel/demeter/blob/master/MANIFEST>`_.
+
+
+Ready to build Demeter!
+-----------------------
 
 At this point you're finally ready to build and install Demeter itself which
 is done as follows::
@@ -273,3 +305,39 @@ hook, line, and sinker)::
 
     $ rm -fr ~/demeter/
     $ rm -fr ~/perl5/
+
+
+Using Gnuplot with Demeter
+==========================
+
+At build time, Demeter tries to figure out which :program:`gnuplot`
+terminal to use by default.  It will query a :program:`gnuplot`
+session to see if either the wxt or qt terminal types is available.
+If not, it will fall back to the X11 terminal.
+
+That said, the X11 terminal is rather ugly.  Because `Debian/Ubuntu
+apparently dropped support for wxt
+<https://groups.google.com/forum/#!topic/comp.graphics.apps.gnuplot/kfYtd2pwrW0>`_
+you might want to recompile :program:`gnuplot` from source.  User
+Patrick Browne offers this recipe:
+
+.. code-block:: bash
+
+   ~> sudo apt-get install libwxgtk2.8-dev libgtk2.0-dev
+   ~> wget "http://downloads.sourceforge.net/project/gnuplot/gnuplot/5.0.4/gnuplot-5.0.4.tar.gz"
+   ~> tar xzf gnuplot-5.0.4.tar.gz  ## or whatever version number is current
+   ~> cd gnuplot-5.0.4
+   ~> env TERMLIBS="-lX11" ./configure
+   ~> make
+   ~> sudo make install
+
+After that, use the wxt terminal by setting it in either
+:demeter:`athena` or :demeter:`artemis`.
+
+In :demeter:`athena`: select :guilabel:`Preferences` from the main menu,
+then click open :guilabel:`gnuplot` and click on :guilabel:`terminal`.
+Replace "x11" by "wxt", click "Apply and Save".
+
+In :demeter:`artemis`: :menuselection:`File --> Edit preferences`,
+then click open :guilabel:`gnuplot` and click on :guilabel:`terminal`.
+Replace "x11" by "wxt", click "Apply and Save".
