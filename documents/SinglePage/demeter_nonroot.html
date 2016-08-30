@@ -69,6 +69,8 @@ you typing, you can fairly easily copy and paste examples (excluding the
 prompt) by selecting text with your mouse and then middle clicking (the
 mouse-wheel on most modern mice) in the terminal where you wish to paste the
 selected text.</p>
+<div class="section" id="preparing-your-machine">
+<h3>Preparing your machine<a class="headerlink" href="#preparing-your-machine" title="Permalink to this headline">¶</a></h3>
 <p>The first step is to install all the build and runtime dependencies that are
 available in the standard Ubuntu repositories, along with Perl's excellent
 local::lib system which will allow us to play around with the development
@@ -104,6 +106,9 @@ Demeter's git repository:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span>$ git clone git://github.com/bruceravel/demeter.git
 </pre></div>
 </div>
+</div>
+<div class="section" id="demeter-s-many-dependencies">
+<h3>Demeter's many dependencies<a class="headerlink" href="#demeter-s-many-dependencies" title="Permalink to this headline">¶</a></h3>
 <p>Now we attempt to build Demeter's dependencies. Firstly, change into the cloned
 directory and generate the script to install the dependencies:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span>$ cd demeter
@@ -207,6 +212,9 @@ dependencies have been installed correctly, re-run the generator script:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span>$ perl ./Build.PL
 </pre></div>
 </div>
+</div>
+<div class="section" id="dealing-with-failed-dependencies">
+<h3>Dealing with failed dependencies<a class="headerlink" href="#dealing-with-failed-dependencies" title="Permalink to this headline">¶</a></h3>
 <p>This time you should get output which doesn't include any <code class="docutils literal"><span class="pre">not</span> <span class="pre">installed</span></code>
 items. However, in my particular case for some reason Wx failed to install the
 first go round so I got this:</p>
@@ -232,6 +240,17 @@ you don't see any <code class="docutils literal"><span class="pre">not</span> <s
 <div class="highlight-python"><div class="highlight"><pre><span></span>$ ./Build installdeps
 </pre></div>
 </div>
+<p>Depending on the state of your machine or the distribution you are
+using, you might still fail to successfully build <strong class="program">wxperl</strong> or
+some other package, <a class="reference external" href="https://github.com/bruceravel/demeter/issues/36">as discussed here</a>.  If you use a
+distribution with a robust package manager and an extensive library of
+packages, it should be fine to satisfy the dependency using the
+system's package manager.  For example, on a debian-based
+distribution, you could meet the requirement for <strong class="program">wxperl</strong> by
+doing</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>~&gt; sudo apt-get install libwx-perl
+</pre></div>
+</div>
 <p>Eventually you should get the following when running Build.PL:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span>$ perl ./Build.PL
 WARNING: the following files are missing in your kit:
@@ -242,6 +261,11 @@ Created MYMETA.yml and MYMETA.json
 Creating new &#39;Build&#39; script for &#39;Demeter&#39; version &#39;v0.9.13&#39;
 </pre></div>
 </div>
+<p>The type of warning about files missing in the kit is not serious.  It
+usually just means that Bruce forgot to update the <a class="reference external" href="https://github.com/bruceravel/demeter/blob/master/MANIFEST">MANIFEST file</a>.</p>
+</div>
+<div class="section" id="ready-to-build-demeter">
+<h3>Ready to build Demeter!<a class="headerlink" href="#ready-to-build-demeter" title="Permalink to this headline">¶</a></h3>
 <p>At this point you're finally ready to build and install Demeter itself which
 is done as follows:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span>$ ./Build
@@ -273,6 +297,7 @@ $ denergy
 </pre></div>
 </div>
 <p>... and so on</p>
+</div>
 </div>
 <div class="section" id="updating-your-installation">
 <h2>Updating your installation<a class="headerlink" href="#updating-your-installation" title="Permalink to this headline">¶</a></h2>
@@ -313,6 +338,34 @@ hook, line, and sinker):</p>
 $ rm -fr ~/perl5/
 </pre></div>
 </div>
+</div>
+<div class="section" id="using-gnuplot-with-demeter">
+<h2>Using Gnuplot with Demeter<a class="headerlink" href="#using-gnuplot-with-demeter" title="Permalink to this headline">¶</a></h2>
+<p>At build time, Demeter tries to figure out which <strong class="program">gnuplot</strong>
+terminal to use by default.  It will query a <strong class="program">gnuplot</strong>
+session to see if either the wxt or qt terminal types is available.
+If not, it will fall back to the X11 terminal.</p>
+<p>That said, the X11 terminal is rather ugly.  Because <a class="reference external" href="https://groups.google.com/forum/#!topic/comp.graphics.apps.gnuplot/kfYtd2pwrW0">Debian/Ubuntu
+apparently dropped support for wxt</a>
+you might want to recompile <strong class="program">gnuplot</strong> from source.  User
+Patrick Browne offers this recipe:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>~&gt; sudo apt-get install libwxgtk2.8-dev libgtk2.0-dev
+~&gt; wget <span class="s2">&quot;http://downloads.sourceforge.net/project/gnuplot/gnuplot/5.0.4/gnuplot-5.0.4.tar.gz&quot;</span>
+~&gt; tar xzf gnuplot-5.0.4.tar.gz  <span class="c1">## or whatever version number is current</span>
+~&gt; <span class="nb">cd</span> gnuplot-5.0.4
+~&gt; env <span class="nv">TERMLIBS</span><span class="o">=</span><span class="s2">&quot;-lX11&quot;</span> ./configure
+~&gt; make
+~&gt; sudo make install
+</pre></div>
+</div>
+<p>After that, use the wxt terminal by setting it in either
+<font size=-1 color="#8C4112">ATHENA</font> or <font size=-1 color="#8C4112">ARTEMIS</font>.</p>
+<p>In <font size=-1 color="#8C4112">ATHENA</font>: select <span class="guilabel">Preferences</span> from the main menu,
+then click open <span class="guilabel">gnuplot</span> and click on <span class="guilabel">terminal</span>.
+Replace &quot;x11&quot; by &quot;wxt&quot;, click &quot;Apply and Save&quot;.</p>
+<p>In <font size=-1 color="#8C4112">ARTEMIS</font>: <span class="menuselection">File ‣ Edit preferences</span>,
+then click open <span class="guilabel">gnuplot</span> and click on <span class="guilabel">terminal</span>.
+Replace &quot;x11&quot; by &quot;wxt&quot;, click &quot;Apply and Save&quot;.</p>
 
 <br>
 
@@ -338,9 +391,16 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">David Hughes' guide to Demeter Installation on Ubuntu</a><ul>
-<li><a class="reference internal" href="#first-time-build">First time build</a></li>
+<li><a class="reference internal" href="#first-time-build">First time build</a><ul>
+<li><a class="reference internal" href="#preparing-your-machine">Preparing your machine</a></li>
+<li><a class="reference internal" href="#demeter-s-many-dependencies">Demeter's many dependencies</a></li>
+<li><a class="reference internal" href="#dealing-with-failed-dependencies">Dealing with failed dependencies</a></li>
+<li><a class="reference internal" href="#ready-to-build-demeter">Ready to build Demeter!</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#updating-your-installation">Updating your installation</a></li>
 <li><a class="reference internal" href="#removing-your-installation">Removing your installation</a></li>
+<li><a class="reference internal" href="#using-gnuplot-with-demeter">Using Gnuplot with Demeter</a></li>
 </ul>
 </li>
 </ul>
