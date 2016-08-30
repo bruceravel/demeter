@@ -32,18 +32,14 @@ use File::Which qw(which);
 ######################################################################
 ## Configuration
 
-my %windows = (strawberry => 'C:\strawberry',                     # base of Strawberry perl
-	       #gnuwin     => 'C:\GnuWin32',                      # base of GnuWin32, readline, ncurses
-	       gnuwin     => 'C:\strawberry\lib',
-	       #mingw      => 'C:\MinGW',                         # base of the MinGW compiler suite
-	       mingw      => 'C:\strawberry\c\lib\gcc\i686-w64-mingw32\4.4.3',
-	       #pgplot     => 'C:\MinGW\lib\pgplot',              # install location of GRwin and PGPLOT
-	       pgplot     => 'C:\strawberry\c\lib\pgplot',
-	       #ifeffit    => 'C:\source\ifeffit-1.2.11d\src\lib', # install location of libifeffit.a
-	       ifeffit    => 'C:\strawberry\lib',
-	       #gnuplot    => 'C:\gnuplot\binaries',		  # install location of gnuplot.exe
-	       gnuplot    => 'C:\strawberry\c\bin',
-	       artug      => 'C:\strawberry\c\perl\site\lib\Demeter\share',
+my $WINPERL = File::Spec->catfile($ENV{APPDATA}, 'DemeterPerl');
+my %windows = (base    => $WINPERL,  # base of Demeter's perl
+	       gnuwin  => File::Spec->catfile($WINPERL, 'lib'),
+	       mingw   => File::Spec->catfile($WINPERL, 'c', 'lib', 'i686-w64-mingw32', '4.7.3'),
+	       pgplot  => File::Spec->catfile($WINPERL, 'c', 'lib', 'pgplot'),
+	       ifeffit => File::Spec->catfile($WINPERL, 'c', 'lib'),
+	       gnuplot => File::Spec->catfile($WINPERL, 'c', 'bin', 'gnuplot', 'bin'),
+	       artug   => File::Spec->catfile($WINPERL, 'perl', 'site', 'lib', 'Demeter', 'share'),
 	      );
 our $ghpages = '../demeter-gh-pages';
 
@@ -56,6 +52,7 @@ sub ACTION_build {
   unlink File::Spec->catfile('lib', 'Demeter', 'configuration', 'gnuplot.demeter_conf');
   $self->dispatch("compile_ifeffit_wrapper");
   $self->dispatch("test_for_gnuplot");
+  $self->dispatch("test_for_larchserver");
   $self->SUPER::ACTION_build;
   $self->dispatch("post_build");
 }
@@ -166,6 +163,67 @@ sub ACTION_test_for_gnuplot {
   print STDOUT "$term terminal.\n";
 };
 
+sub ACTION_test_for_larchserver {
+  # search for Python exe and Larch server script, write larch_server.ini
+  my $inifile = File::Spec->catfile(cwd, 'lib', 'Demeter', 'share', 'ini', 'larch_server.ini');
+  print STDOUT "Looking for Python and Larch ---> ";
+  my $pyexe  = '';
+  my $larchexe = '';
+  if (($^O eq 'MSWin32') or ($^O eq 'cygwin')) {
+    my @dirlist = split /;/, $ENV{'PATH'};
+    push @dirlist,  (File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda3'),
+		     File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda2'),
+		     File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda'),
+		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda3'),
+		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda2'),
+		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda'));
+
+      foreach my $d (@dirlist) {
+	  my $pyexe_ =  File::Spec->catfile($d, 'python.exe');
+	  my $larch_ =  File::Spec->catfile($d, 'Scripts', 'larch_server');
+	  if ((-e $pyexe_) && (-e $larch_))  {
+	      $larchexe = $larch_,
+	      $pyexe = $pyexe_;
+	      last;
+	  }
+      }
+  } else {
+    my @dirlist = split /:/, $ENV{'PATH'};
+    push @dirlist,  (File::Spec->catfile($ENV{HOME}, 'anaconda3', 'bin'),
+		     File::Spec->catfile($ENV{HOME}, 'anaconda2', 'bin'),
+		     File::Spec->catfile($ENV{HOME}, 'anaconda', 'bin'));
+
+    foreach my $d (@dirlist) {
+      my $pyexe_ =  File::Spec->catfile($d, 'python');
+      my $larch_ =  File::Spec->catfile($d, 'larch_server');
+      if ((-e $pyexe_) && (-e $larch_))  {
+	$larchexe = $larch_,
+	  $pyexe = $pyexe_;
+	last;
+      }
+    }
+  }
+  if ($larchexe eq '') {
+      print "not found\n";
+  } else {
+      print "found  $pyexe  // $larchexe \n";
+  }
+  my $larch_server_ini_text = <<"END_OF_FILE";
+---
+server: 'localhost' # URL of larch_server or "localhost" is running locally
+port: 4966          # the port number the larch server is listening to
+timeout: 3          # the timeout in seconds before Demeter gives up trying to talk to the larch server
+quiet: 1            # 1 means to suppress larch_server screen messages, 0 means allow larch_server to print messages
+windows: $pyexe $larchexe
+END_OF_FILE
+
+  open(my $FOUT, '>', $inifile);
+  print $FOUT $larch_server_ini_text;
+  close $FOUT;
+  print "Wrote $inifile\n";
+};
+
+
 sub ACTION_compile_ifeffit_wrapper {
   my $self = shift;
 
@@ -187,15 +245,14 @@ sub ACTION_compile_ifeffit_wrapper {
 		       q{-L}.$windows{gnuwin}.q{\lib"},
 		       q{-lcurses -lreadline},
 
-		       q{-L}.$windows{strawberry}.q{\perl\lib\CORE"},
-		       q{-L}.$windows{strawberry}.q{\c\lib"},
-		       q{-L}.$windows{strawberry}.q{\c\lib\gcc\i686-w64-mingw32\4.4.3"},
-
+		       q{-L}.$windows{base}.q{\perl\lib\CORE"},
+		       q{-L}.$windows{base}.q{\c\lib"},
+		       q{-L}.$windows{mingw},
 		       q{-L}.$windows{ifeffit},
 		       q{-lifeffit -lxafs},
 
 		       #q{-L"C:\MinGW\bin"},
-		       q{-L}.$windows{mingw}.q{\lib\gcc\mingw32\4.5.2"},
+		       q{-L}.$windows{mingw},
 		       q{-L}.$windows{mingw}.q{\lib"},
 		       q(-lgfortran -lmingw32 -lgcc_s -lmoldname -lmingwex -lmsvcrt -luser32 -lkernel32 -ladvapi32 -lshell32),
 
