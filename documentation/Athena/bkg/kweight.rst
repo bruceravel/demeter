@@ -16,7 +16,7 @@ One of the shortcomings of the use of piece-wise splines to approximate
 the background function is that the ends of spline are somewhat
 ill-defined by virtue of not having more data preceding or following. At
 times, this can result in the end of the spline splaying up or down,
-away from the μ(E) data. This results in significant distortion to |chi| (k)
+away from the |mu| (E) data. This results in significant distortion to |chi| (k)
 data.
 
 :demeter:`ifeffit` provides a tool called *spline clamps*. These work
