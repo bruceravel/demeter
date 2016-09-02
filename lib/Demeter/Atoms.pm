@@ -1142,7 +1142,8 @@ override serialization => sub {
 		      shiftvec cif record titles ipot_style nitrogen argon krypton xenon helium gases_set
 		      xsec deltamu density mcmaster i0 selfamp selfsig netsig is_imported is_populated
 		      is_ipots_set is_expanded is_rhomb is_hex is_first is_second
-		      absorption_done mcmaster_done i0_done self_done nclus polarization ellipticity)) { #  sites cluster
+		      absorption_done mcmaster_done i0_done self_done nclus polarization ellipticity
+		      sites)) { #  sites cluster
     $cards{$key} = $self->$key;
   };
 

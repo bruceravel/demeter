@@ -47,6 +47,55 @@ packages, :quoted:`gnuplot-x11` or :quoted:`gnuplot-qt`.  Or you can
 grab the latest source code from http://gnuplot.info and install it
 from scratch.
 
+DEMETER's build system
+----------------------
+
+:demeter:`demeter` uses a tool called `Module::Build
+<https://metacpan.org/pod/Module::Build>`_ for its build system.  For
+many years, Module::Build was simply a part of the standard Perl
+installation.  As of Perl 5.22, Module::Build is `no longer part of
+the Perl standard distribution
+<http://www.dagolden.com/index.php/2140/paying-respect-to-modulebuild/>`_.
+This is a small inconvenience for people who are installing
+:demeter:`demeter` for the first time.  It means that you must take a
+step to prepare the build environment before actually beginning to
+build :demeter:`demeter`.
+
+If you do not have Module::Build on your system, you will see and
+error much like this:
+
+::
+
+    $ perl Build.PL
+    Base class package "Module::Build" is empty.
+       (Perhaps you need to 'use' the module which defines that package first,
+       or make that module available in @INC (@INC contains: /etc/perl /usr/local/lib/x86_64-linux-gnu/perl/5.22.1 /usr/local/share/perl/5.22.1 /usr/lib/x86_64-linux-gnu/perl5/5.22 /usr/share/perl5 /usr/lib/x86_64-linux-gnu/perl/5.22 /usr/share/perl/5.22 /usr/local/lib/site_perl /usr/lib/x86_64-linux-gnu/perl-base .).
+    at DemeterBuilder.pm line 6.
+    BEGIN failed--compilation aborted at DemeterBuilder.pm line 6.
+    Compilation failed in require at Build.PL line 29.
+    BEGIN failed--compilation aborted at Build.PL line 29.
+
+You have (at least) three options, any of which should work just fine:
+
+#. Use your system's package manager to install Module::Build.  On
+   Debian and Ubuntu systems, the package is called
+   ``libmodule-build-perl``.
+
+#. Use one of the standard tools to install Module::Build from
+   source.  For example, the command ``cpanm -S Module::Build`` will
+   download, test, and install it, prompting you for a sudo password
+   for the installation step.  Alternately, you can run the ``cpan``
+   program, then do ``install Module::Build`` at the cpan prompt.
+
+#. Follow the instructions `given here
+   <https://metacpan.org/pod/Module::Build::Cookbook#Bundling-Module::Build>`_
+   to build and install the copy of Module::Build that comes packaged
+   with :demeter:`demeter`.
+
+Once one of those is done, you should have no problem proceeding with
+the installation.
+
+
 Build DEMETER and its dependencies
 ----------------------------------
 

@@ -11,7 +11,9 @@
 *** Artemis
 
 *** Demeter
-    + Try to start Larch, if no success fall back to Ifeffit
+    + Try to start Larch, if no success fall back to Ifeffit.  Accept
+      a PR from Matt related to this.
+    + Update non-root installation instructions (Thanks to [[https://github.com/bruceravel/demeter/issues/36][Patrick Browne]])
 
 *** Windows
 

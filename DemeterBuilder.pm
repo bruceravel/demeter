@@ -32,7 +32,7 @@ use File::Which qw(which);
 ######################################################################
 ## Configuration
 
-my $WINPERL = File::Spec->catfile($ENV{APPDATA}, 'DemeterPerl');
+my $WINPERL = File::Spec->catfile($ENV{APPDATA}||'./', 'DemeterPerl');
 my %windows = (base    => $WINPERL,  # base of Demeter's perl
 	       gnuwin  => File::Spec->catfile($WINPERL, 'lib'),
 	       mingw   => File::Spec->catfile($WINPERL, 'c', 'lib', 'i686-w64-mingw32', '4.7.3'),

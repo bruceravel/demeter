@@ -9,9 +9,6 @@ bin/dfeffit
 bin/dhephaestus
 bin/dlsprj
 bin/intrp
-bin/lartemis
-bin/lathena
-bin/lhephaestus
 bin/prj2json
 bin/rdfit
 bin/standards
