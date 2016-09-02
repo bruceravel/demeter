@@ -87,6 +87,33 @@ a package for Gnuplot. On Ubuntu, the package is called
 packages, “gnuplot-x11” or “gnuplot-qt”.  Or you can
 grab the latest source code from <a class="reference external" href="http://gnuplot.info">http://gnuplot.info</a> and install it
 from scratch.</p>
+<div class="section" id="demeter-s-build-system">
+<h2>DEMETER's build system<a class="headerlink" href="#demeter-s-build-system" title="Permalink to this headline">¶</a></h2>
+<p><font size=-1 color="#8C4112">DEMETER</font> uses a tool called <a class="reference external" href="https://metacpan.org/pod/Module::Build">Module::Build</a> for its build system.  For
+many years, Module::Build was simply a part of the standard Perl
+installation.  As of Perl 5.22, Module::Build is <a class="reference external" href="http://www.dagolden.com/index.php/2140/paying-respect-to-modulebuild/">no longer part of
+the Perl standard distribution</a>.
+This is a small inconvenience for people who are installing
+<font size=-1 color="#8C4112">DEMETER</font> for the first time.  It means that you must take a
+step to prepare the build environment before actually beginning to
+build <font size=-1 color="#8C4112">DEMETER</font>.</p>
+<p>You have (at least) three options, any of which should work just fine:</p>
+<ol class="arabic simple">
+<li>Use your system's package manager to install Module::Build.  On
+Debian and Ubuntu systems, the package is called
+<code class="docutils literal"><span class="pre">libmodule-build-perl</span></code>.</li>
+<li>Use one of the standard tools to install Module::Build from
+source.  For example, the command <code class="docutils literal"><span class="pre">cpanm</span> <span class="pre">-S</span> <span class="pre">Module::Build</span></code> will
+download, test, and install it, prompting you for a sudo password
+for the installation step.  Alternately, you can run the <code class="docutils literal"><span class="pre">cpan</span></code>
+program, then do <code class="docutils literal"><span class="pre">install</span> <span class="pre">Module::Build</span></code> at the cpan prompt.</li>
+<li>Follow the instructions <a class="reference external" href="https://metacpan.org/pod/Module::Build::Cookbook#Bundling-Module::Build">given here</a>
+to build and install the copy of Module::Build that comes packaged
+with <font size=-1 color="#8C4112">DEMETER</font>.</li>
+</ol>
+<p>Once one of those is done, you should have no problem proceeding with
+the installation.</p>
+</div>
 <div class="section" id="build-demeter-and-its-dependencies">
 <h2>Build DEMETER and its dependencies<a class="headerlink" href="#build-demeter-and-its-dependencies" title="Permalink to this headline">¶</a></h2>
 <p><strong>Step 1: Install Ifeffit and PGPLOT</strong></p>
@@ -450,6 +477,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Installing Demeter from source code</a><ul>
+<li><a class="reference internal" href="#demeter-s-build-system">DEMETER's build system</a></li>
 <li><a class="reference internal" href="#build-demeter-and-its-dependencies">Build DEMETER and its dependencies</a></li>
 <li><a class="reference internal" href="#special-cases">Special cases</a><ul>
 <li><a class="reference internal" href="#a-demeter-program-fails-complaining-that-carp-clan-is-missing">A Demeter program fails, complaining that Carp::Clan is missing</a></li>

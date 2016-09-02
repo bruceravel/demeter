@@ -91,13 +91,13 @@ the control will be turned on automatically.
 
 .. caution:: Another word of caution about using this feature of
    :demeter:`athena`.  When you make a plot in energy, the function
-   that gets plotted is μ(E) and it's background, **not** the
-   corrected μ(E) and *it's* background.  However, |chi| (k), |chi|
+   that gets plotted is |mu| (E) and it's background, **not** the
+   corrected |mu| (E) and *it's* background.  However, |chi| (k), |chi|
    (R), and |chi| (q) are made from the corrected |mu| (E). It is
    possible, paticularly for especially noisy data, that the
-   background removal displayed for the raw μ(E) will be substantively
+   background removal displayed for the raw |mu| (E) will be substantively
    different from the background calculated for the corrected
-   μ(E). Thus it is possible that a plot in energy might look
+   |mu| (E). Thus it is possible that a plot in energy might look
    sensible, but the plot in k will be garbage. Or vice-versa. Again,
    use this feature of :demeter:`athena` with caution and
    foreknowledge.

@@ -26,6 +26,7 @@ $rhash->{quiet}   ||= 0;
 $rhash->{exe}       = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? $rhash->{windows} : 'larch_server';
 
 my $command = $rhash->{quiet} ? $rhash->{exe}." -q start" : $rhash->{exe}." start";
+print "Trying Larch server:\n#  $command\n";
 my $ok = system $command;
 
 
