@@ -97,6 +97,18 @@ This is a small inconvenience for people who are installing
 <font size=-1 color="#8C4112">DEMETER</font> for the first time.  It means that you must take a
 step to prepare the build environment before actually beginning to
 build <font size=-1 color="#8C4112">DEMETER</font>.</p>
+<p>If you do not have Module::Build on your system, you will see and
+error much like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>$ perl Build.PL
+Base class package &quot;Module::Build&quot; is empty.
+   (Perhaps you need to &#39;use&#39; the module which defines that package first,
+   or make that module available in @INC (@INC contains: /etc/perl /usr/local/lib/x86_64-linux-gnu/perl/5.22.1 /usr/local/share/perl/5.22.1 /usr/lib/x86_64-linux-gnu/perl5/5.22 /usr/share/perl5 /usr/lib/x86_64-linux-gnu/perl/5.22 /usr/share/perl/5.22 /usr/local/lib/site_perl /usr/lib/x86_64-linux-gnu/perl-base .).
+at DemeterBuilder.pm line 6.
+BEGIN failed--compilation aborted at DemeterBuilder.pm line 6.
+Compilation failed in require at Build.PL line 29.
+BEGIN failed--compilation aborted at Build.PL line 29.
+</pre></div>
+</div>
 <p>You have (at least) three options, any of which should work just fine:</p>
 <ol class="arabic simple">
 <li>Use your system's package manager to install Module::Build.  On
