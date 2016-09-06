@@ -113,8 +113,8 @@ calculation using tables of X-ray absorption coefficients, etc.
 
 =head1 COMMAND LINE SWITCHES
 
-By default, an input file for Feff6 is written.  This and aspects of
-the F<feff.inp> file can be overridden from the command line.
+By default, an input file for Feff6 is written.  This and some aspects
+of the F<feff.inp> file can be overridden from the command line.
 
 =over 4
 

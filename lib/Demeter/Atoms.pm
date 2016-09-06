@@ -217,7 +217,7 @@ has 'record' => (is => 'rw', isa => NonNeg,    default=> 0,
 				   warn "STAR::Parser is not available, so CIF files cannot be imported";
 				   return;
 				 };
-				 $self->read_cif if ($new and $self->cif);
+				 $self->read_cif if ($self->cif);
 			       });
 has 'titles' => (
 		 traits    => ['Array'],

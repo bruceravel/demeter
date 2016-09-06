@@ -98,6 +98,7 @@ sub read_cif {
   };
 
   ## load up and clean up the atom positions
+  $self->clear_sites;
   my @tag = $datablock->get_item_data(-item=>"_atom_site_label");
   my @el  = $datablock->get_item_data(-item=>"_atom_site_type_symbol");
   my @x	  = $datablock->get_item_data(-item=>"_atom_site_fract_x");
