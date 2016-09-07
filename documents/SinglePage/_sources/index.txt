@@ -33,4 +33,4 @@ Demeter: Miscellaneous documents
 .. toctree::
    :maxdepth: 1
 
-   webatoms.rst
+   wa.rst
