@@ -575,13 +575,13 @@ sub populate {
 generate one or more common positions and their occupancies sum to more than 1.
 
 The Feff input data is likely to contain obvious mistakes, such as multiple atoms at
-the same position or an unphiscially large value for the calculated specific gravity.
+the same position or an nonphysically large value for the calculated specific gravity.
 
 Some possible solutions to this problem include:
   * Use a shift vector appropriate to your space group
   * Removing dopant atoms from the crystal data
   * Removing symmetry-related sites from the crystal data
-  * Specifying the space group as \"P 1\" if your crystal data include positions
+  * Specifying the space group as \"P 1\" if your crystal data includes positions
      for a fully decorated unit cell
 
 "

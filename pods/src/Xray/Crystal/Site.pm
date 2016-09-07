@@ -131,10 +131,10 @@ sub populate {
   my $bravais = $cell->group->bravais;
 
 
-  my ($x, $y, $z, $utag) = $self->get(qw(x y z utag));
+  my ($e, $x, $y, $z, $utag) = $self->get(qw(element x y z utag));
   ## it would be nice to do this as a coercion up at the level of the
   ## attribute, but this certainly works...
-  $self->element(get_symbol($x)); # is this right?
+  $self->element(get_symbol($e));
   $self->x(_canonicalize_coordinate($x+$cell->shiftvec->[0]));
   $self->y(_canonicalize_coordinate($y+$cell->shiftvec->[1]));
   $self->z(_canonicalize_coordinate($z+$cell->shiftvec->[2]));

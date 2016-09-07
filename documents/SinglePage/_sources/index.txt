@@ -28,3 +28,9 @@ Demeter: Miscellaneous documents
    mingw.rst
    debian.rst
 
+**Other things**
+
+.. toctree::
+   :maxdepth: 1
+
+   webatoms.rst
