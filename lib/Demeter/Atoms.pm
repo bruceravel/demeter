@@ -320,7 +320,10 @@ sub out {
 
 sub clear {
   my ($self) = @_;
-  $self->$_(0)  foreach (qw(a b c rmax nitrogen argon xenon helium krypton gases_set));
+  $self->$_(0)  foreach (qw(a b c nitrogen argon xenon helium krypton gases_set));
+  $self->rmax( Demeter->co->default('atoms', 'rmax') );
+  $self->rpath(Demeter->co->default('atoms', 'rpath'));
+  $self->rscf( Demeter->co->default('atoms', 'rscf') );
   $self->$_(90) foreach (qw(alpha beta gamma));
   $self->space(q{});
   $self->edge(q{});
@@ -340,7 +343,6 @@ sub clear {
   $self->i0_done(0);
   $self->self_done(0);
 };
-
 sub read_inp {
   my ($self) = @_;
   my $reading_atoms_list = 0;
@@ -383,6 +385,16 @@ sub read_inp {
 
   };
   close $INP;
+  if (not $self->core) {
+    my $maxz = 0;
+    foreach my $site (@{$self->sites}) {
+      my @list = split(/\|/, $site);
+      if (get_Z($list[0]) > $maxz) {
+	$maxz = get_Z($list[0]);
+	$self->core($list[4]);
+      };
+    };
+  };
   $self->is_imported(1);
   return $self;
 };
@@ -595,20 +607,20 @@ sub build_cluster {
       ## ($ {$b->[3]}->{Host} <=> $ {$a->[3]}->{Host});	# hosts before dopants
   } @cluster;
   if ($#cluster > 499) {
-    warn("Your cluster has more than 500 atoms, which is the hard-wired limit for Feff6L.
+    carp(sprintf('Your cluster has more than 500 atoms, which is the hard-wired limit for Feff6L.
 Feff6L was run using only the first 500 atoms.
-You might want to reduce the value of the cluster size (Rmax).\n");
+You might want to reduce the value of the cluster size (Rmax = %.2f).\n', $self->rmax));
   };
-  if ($#cluster == 0) {
-    warn 'You have specified crystal data resulting in 0 scattering atoms.
+  if ($#cluster <= 0) {
+    carp sprintf('You have specified crystal data resulting in 0 scattering atoms.
 
 Possible reasons include:
 
   * One or more lattice constant is very large
-  * The cluster size (Rmax) is too small
+  * The cluster size (Rmax = %.2f) is too small
   * You have used cartesian coordinates for sites rather
     than fractional coordinates
-';
+', $self->rmax);
     return $self;
   };
   $self->set(cluster => \@cluster,

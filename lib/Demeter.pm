@@ -47,20 +47,24 @@ BEGIN {
   # } else {			# ifeffit or any misspelling
   #   eval "use Ifeffit qw(ifeffit);"
   # };
-  if (not $ENV{DEMETER_FORCE_IFEFFIT}) {
-    $ENV{DEMETER_BACKEND} = 'larch';
-    eval "use Larch";
-    if ($@) {
+  if ($ENV{DEMETER_NO_BACKEND}) {
+    $ENV{DEMETER_BACKEND} = 'none';
+  } else {
+    if (not $ENV{DEMETER_FORCE_IFEFFIT}) {
+      $ENV{DEMETER_BACKEND} = 'larch';
+      eval "use Larch";
+      if ($@) {
+	$ENV{DEMETER_BACKEND} = 'ifeffit';
+	eval "use Ifeffit qw(ifeffit);"
+      };
+    } else {
       $ENV{DEMETER_BACKEND} = 'ifeffit';
       eval "use Ifeffit qw(ifeffit);"
+    }
+    if ($@) {
+      print $@;
+      die $/;
     };
-  } else {
-    $ENV{DEMETER_BACKEND} = 'ifeffit';
-    eval "use Ifeffit qw(ifeffit);"
-  }
-  if ($@) {
-    print $@;
-    die $/;
   };
 }
 ############################
@@ -278,7 +282,6 @@ sub import {
   strict->import;
   warnings->import;
   #print join(" ", $class, caller), $/;
-
   my @load  = ();
   my @data  = (qw(Data XES Journal Data/Prj Data/JSON Data/Pixel Data/MultiChannel Data/BulkMerge));
   my @heph  = (qw(Data Data/Prj Data/JSON));

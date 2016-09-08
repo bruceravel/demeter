@@ -10,10 +10,20 @@
 
 *** Artemis
 
+*** Atoms
+    + WebAtoms, https://github.com/bruceravel/WebAtoms
+    + Lots of fixes for problems uncovered while working on WebAtoms
+
 *** Demeter
     + Try to start Larch, if no success fall back to Ifeffit.  Accept
       a PR from Matt related to this.
     + Update non-root installation instructions (Thanks to [[https://github.com/bruceravel/demeter/issues/36][Patrick Browne]])
+    + DEMETER_MODE and DEMETER_NO_BACKEND environment variables
+      recognized.  The first provides a way to set the Mode ui _very_
+      early in startup.  The second blocks using either Larch or
+      Ifeffit for an application that is entirely contained within
+      Demeter (WebAtoms, which does not plot, is an example).
+    + Recognize and use web import mode, i.e. ~use Demeter qw(:ui=web);~
 
 *** Windows
 

@@ -30,6 +30,7 @@ my $max_mru = 15;
 
 sub push_mru {
   my ($self, $group, $file, $record) = @_;
+  return $self if ($self->mo->ui eq 'web');
   if ($record) {
     $file = $file . " <$record>";
   };
