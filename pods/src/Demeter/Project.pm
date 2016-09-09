@@ -40,7 +40,9 @@ sub dot_folder {
   my $folder = ($self->is_windows)
     ? File::Spec->catfile($ENV{APPDATA}, "demeter")
       : File::Spec->catfile($ENV{HOME}, ".horae");
-  mkpath($folder) if (not -d $folder);
+  my $err = [];
+  mkpath($folder, {error => \$err}) if (not -d $folder);
+  return $folder if (@$err);
   my $mrufile = File::Spec->catfile($folder, "demeter.mru");
   if (not -e $mrufile) {
     open(my $MRU, ">".$mrufile);
@@ -53,19 +55,21 @@ sub dot_folder {
 };
 sub stash_folder {
   my ($self) = @_;
+  my $err = [];
   my $folder = ($self->is_windows)
     ? File::Spec->catfile($ENV{APPDATA}, "demeter", "stash")
       : File::Spec->catfile($ENV{HOME}, ".horae", "stash");
-  mkpath($folder) if (not -d $folder);
+  mkpath($folder, {error => \$err}) if (not -d $folder);
   return $folder;
 };
 sub project_folder {
   my ($self, $proj) = @_;
   return -1 if (not $proj);
+  my $err = [];
   my $folder = ($self->is_windows)
     ? File::Spec->catfile($ENV{APPDATA}, "demeter", "stash", $proj)
       : File::Spec->catfile($ENV{HOME}, ".horae", "stash", $proj);
-  mkpath($folder) if (not -d $folder);
+  mkpath($folder, {error => \$err}) if (not -d $folder);
   return $folder;
 };
 

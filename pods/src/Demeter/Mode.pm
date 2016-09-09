@@ -446,7 +446,7 @@ has 'feffdefault'	   => (is => 'rw', isa => 'Any', default => q{});
 has 'external_plot_object' => (is => 'rw', isa => 'Any');
 has 'plotting_initialized' => (is => 'rw', isa => 'Bool', default => 0);
 has 'identity'             => (is => 'rw', isa => 'Str',  default => 'Demeter',);
-has 'ui'                   => (is => 'rw', isa => 'Str',  default => 'none',);
+has 'ui'                   => (is => 'rw', isa => 'Str',  default => $ENV{DEMETER_MODE} || 'none',);
 has 'silently_ignore_unplottable' => (is => 'rw', isa => 'Bool', default => 0);
 has 'throwaway_group'      => (is => 'rw', isa => 'Str',  default => 'dem__eter',);
 
@@ -882,11 +882,21 @@ L<Graphics::GnuplotIF> object.
 
 =item C<ui>
 
-This is a string identifying the user interface backend.  At this
-time, its only use is to tell the Fit object to import the
-curses-based methods in L<Demeter::UI::Screen::Interview> and
-L<Demeter::UI::Screen::Progress> when it is set to C<screen>.  Future
-possibilities might include C<wx> or C<rpc>.
+This is a string identifying the user interface backend.
+
+When set to C<screen>, it tells triggers the import of curses-based
+methods in L<Demeter::UI::Screen::Interview> and
+L<Demeter::UI::Screen::Progress>.  Other options used at this time are
+C<wx> and C<web>.
+
+This is normally set at import, as in
+
+  use Demeter qw(:ui=screen);
+
+The default is either the value of C<$ENV{DEMETER_MODE}> or C<none>.
+Setting C<$ENV{DEMETER_MODE}> is done when the mode setting must be
+specified I<very> early in startup.  This is done, for example, in
+WebAtoms to set the ui to C<web>.
 
 =item C<silently_ignore_unplottable>
 

@@ -479,6 +479,7 @@ sub describe_param {
 
 sub write_ini {
   my ($self, $file) = @_;
+  return $self if ($self->mo->ui eq 'web');
   $file ||= $self->ini_file;
   #my $ini_ref = tied %ini;
   #$ini_ref -> WriteConfig($file);
@@ -488,6 +489,7 @@ sub write_ini {
 
 sub read_ini {
   my ($self, $group) = @_;
+  return $self if ($self->mo->ui eq 'web');
   my $inifile = $self->ini_file;
   if (not -e $inifile) {
     $self->write_ini($inifile);

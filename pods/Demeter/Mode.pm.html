@@ -237,11 +237,18 @@ attribute carried the refernece to that object.  For example, in the
 gnuplot backend, this contains a reference to the
 <a href="https://metacpan.org/pod/Graphics%3A%3AGnuplotIF">Graphics::GnuplotIF</a> object.</p></dd>
 	<dt><code>ui</code></dt>
-		<dd><p>This is a string identifying the user interface backend.  At this
-time, its only use is to tell the Fit object to import the
-curses-based methods in <a href="UI/Screen/Interview.pm.html">Demeter::UI::Screen::Interview</a> and
-<a href="UI/Screen/Progress.pm.html">Demeter::UI::Screen::Progress</a> when it is set to <code>screen</code>.  Future
-possibilities might include <code>wx</code> or <code>rpc</code>.</p></dd>
+		<dd><p>This is a string identifying the user interface backend.</p></dd>
+		<dd><p>When set to <code>screen</code>, it tells triggers the import of curses-based
+methods in <a href="UI/Screen/Interview.pm.html">Demeter::UI::Screen::Interview</a> and
+<a href="UI/Screen/Progress.pm.html">Demeter::UI::Screen::Progress</a>.  Other options used at this time are
+<code>wx</code> and <code>web</code>.</p></dd>
+		<dd><p>This is normally set at import, as in</p></dd>
+<dd><pre>  use Demeter qw(:ui=screen);
+
+</pre></dd>		<dd><p>The default is either the value of <code>$ENV{DEMETER_MODE}</code> or <code>none</code>.
+Setting <code>$ENV{DEMETER_MODE}</code> is done when the mode setting must be
+specified <i>very</i> early in startup.  This is done, for example, in
+WebAtoms to set the ui to <code>web</code>.</p></dd>
 	<dt><code>silently_ignore_unplottable</code></dt>
 		<dd><p>When true, this averts croaking in certain situations where an attempt
 is made to plot an object in a way that it cannot be plotted (for
