@@ -320,20 +320,24 @@ sub out {
 
 sub clear {
   my ($self) = @_;
-  $self->$_(0)  foreach (qw(a b c nitrogen argon xenon helium krypton gases_set));
+  $self->$_(0)  foreach (qw(a b c nitrogen argon xenon helium krypton gases_set rss eedge));
+  $self->$_(0)  foreach (qw(is_rhomb is_hex is_first is_second do_xanes));
+  $self->$_(1)  foreach (qw(do_scf iedge));
   $self->rmax( Demeter->co->default('atoms', 'rmax') );
   $self->rpath(Demeter->co->default('atoms', 'rpath'));
   $self->rscf( Demeter->co->default('atoms', 'rscf') );
   $self->$_(90) foreach (qw(alpha beta gamma));
   $self->space(q{});
   $self->edge(q{});
+  $self->core(q{});
+  $self->corel(q{});
   $self->clear_sites;
   $self->clear_cluster;
   $self->shiftvec([0,0,0]);
   $self->polarization([0,0,0]);
   $self->ellipticity([0,0,0]);
   $self->clear_titles;
-  $self->cell->clear;
+  $self->cell(Xray::Crystal::Cell->new);
   $self->is_imported(0);
   $self->is_populated(0);
   $self->is_ipots_set(0);
