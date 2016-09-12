@@ -307,6 +307,7 @@ sub _record {
 				 bkg_stan_lab bkg_flatten_was
 				 bkg_fnorm
 			      );
+    next if ($k =~ m{bkg_nnorm\d});
     ## clean up from old implementation(s) of XDI
     next if any { $k eq $_ } qw(
 				 xdi_mu_reference  xdi_ring_current  xdi_abscissa            xdi_start_time
