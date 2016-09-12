@@ -19,13 +19,13 @@ t___oss.ones  = ones(n___points)
 ##|
 flat_c0 = {$D->bkg_nc0} - {$D->bkg_int}
 flat_c1 = {$D->bkg_nc1} - {$D->bkg_slope}
-if {$D->group}.nnorm >= 2:
-   flat_c2 = {$D->group}.norm_c2
+if {$D->bkg_nnorm} >= 2:
+   flat_c2 = {$D->bkg_nc2}
 else:
    flat_c2 = 0
 #endif
-if {$D->group}.nnorm == 3:
-   flat_c3 = {$D->group}.norm_c3
+if {$D->bkg_nnorm} == 3:
+   flat_c3 = {$D->bkg_nc3}
 else:
    flat_c3 = 0
 #endif
