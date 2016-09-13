@@ -4,25 +4,12 @@
 
   $eshift = q{};
   $eshift = "+".$S->bkg_eshift if ($C->get("many_space") eq 'energy');
-
-  ## this is rather more complicated in order to deal with the additional energy column
-  ## for the chi(k) output files.  Basically, these three variables are empty strings unless
-  ## this is chi(k) data
-  $ecol   = q{};
-  $eline  = q{};
-  $elabel = q{};
-  if ($C->get("many_space") eq 'k') {
-     $ecol   = ' '.$S->group . '.chiee,';
-     $eline  = $S->group . '.chiee = ' . $D->bkg_e0 . ' + ' . $S->group . ".k**2 / 0.2624682917\n";
-     $elabel = ' energy';
-  };
-
   q{}
 }
 {$eline}set {$S->group}.xxx = {$S->group}.{$C->get("many_space")}{$eshift}
-write_data(file="{$C->get("many_file")}", $many_title_*, {$S->group}.xxx,{$ecol}
+write_data(file="{$C->get("many_file")}", $many_title_*, {$S->group}.xxx,
            {foreach $g (@list) {$OUT .= $g->group . '.' . $C->get("many_suffix") . ', '}}
-           label="{$C->get("many_space")}{$elabel}{foreach $g (@list) {($n=$g->name)=~ s{ +}{_}g; $OUT .= "  $n"}}")
+           label="{$C->get("many_space")}{foreach $g (@list) {($n=$g->name)=~ s{ +}{_}g; $OUT .= "  $n"}}")
 erase {$S->group}.xxx
 erase {$S->group}.chiee
 {

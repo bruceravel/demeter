@@ -1,0 +1,13 @@
+{
+  @list = @{ $C->get("many_list") };
+  if ($C->get("many_space") eq 'k') {
+     $ecol   = ' '.$S->group . '.chiee,';
+     $eline  = $S->group . '.chiee = ' . $D->bkg_e0 . ' + ' . $S->group . ".k**2 / 0.2624682917";
+     $elabel = ' energy';
+  };
+  q{}
+}
+{$eline}
+write_ascii("{$C->get("many_file")}", {$S->group}.{$C->get("many_space")},{$ecol} {foreach $g (@list) {$OUT .= $g->group . '.' . $C->get("many_suffix") . ', '}}
+            label="{$C->get("many_space")}{$elabel}{foreach $g (@list) {($n=$g->name)=~ s{[- ,/.]+}{_}g; $OUT .= "  $n"}}",
+	    header={$S->group}.myheader)

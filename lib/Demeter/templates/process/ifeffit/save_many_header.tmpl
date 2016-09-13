@@ -19,20 +19,30 @@
 	    chiq_im  => 'imaginary part of chi(q)',
 	    chiq_pha => 'phase of chi(q)',
 	   );
+  $abscissa = 'energy eV';
+  if ($C->get("many_which") =~ m{chiq}) {
+     $abscissa = 'q inverse Angstrom';
+  } elsif ($C->get("many_which") =~ m{chir}) {
+     $abscissa = 'R Angstrom';
+  } elsif ($C->get("many_which") =~ m{chi}) {
+     $abscissa = 'k inverse Angstrom';
+  };
   $i = 1;
+  if ($C->get("many_space") eq 'k') {
+     
+  }
   q{}
 }
 $many_title_{$i++} = "XDI/1.0 Demeter/{$S->version}"
 $many_title_{$i++} = 'Demeter.output_filetype: multicolumn {$trans{$C->get("many_which")}}'
 $many_title_{$i++} = 'Element.symbol: {$D->bkg_z}'
-$many_title_{$i++} = 'Element.edge: {$D->fft_edge}'
-$many_title_{$i++} = 'Column.1: k'
-$many_title_{$i++} = 'Column.2: energy'
+$many_title_{$i++} = 'Element.edge: {ucfirst($D->fft_edge)}'
+$many_title_{$i++} = 'Column.1: {$abscissa}'
 {
   foreach $g (@list) {
     $word = $g->name;
     $word =~ s{\s+}{_}g;
-    $OUT .= "\$many_title_" . $i . ' = "Column.' . ($i-3) . ': ' . $word . "\"\n";
+    $OUT .= "\$many_title_" . $i . ' = "Column.' . ($i-4) . ': ' . $word . "\"\n";
     $i++;
   }
 }

@@ -1,0 +1,21 @@
+{
+  @list = @{ $C->get("many_list") };
+  $i = 3;
+  if ($C->get("many_space") eq 'k') {
+     $ecol   = ' '.$S->group . '.chiee,';
+     $eline  = $S->group . '.chiee = ' . $D->bkg_e0 . ' + ' . $S->group . ".k**2 / 0.2624682917\n";
+     $elabel = ' energy';
+  };
+  q{}
+}
+{$eline}set {$S->group}.xxx = {$S->group}.{$C->get("many_space")}
+write_data(file="{$C->get("many_file")}", $many_title_*, {$S->group}.xxx,{$ecol}
+           {foreach $g (@list) {$OUT .= $g->group . '.' . $C->get("many_suffix") . ', '}}
+           label="{$C->get("many_space")}{$elabel}{foreach $g (@list) {($n=$g->name)=~ s{ +}{_}g; $OUT .= "  $n"}}")
+erase {$S->group}.xxx
+erase {$S->group}.chiee
+{
+  foreach $i (1..$#list+7) {
+    $OUT .= "erase \$many_title_" . $i++ . "\n";
+  }
+}

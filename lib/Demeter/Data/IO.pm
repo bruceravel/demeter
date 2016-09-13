@@ -260,8 +260,13 @@ sub _save_many_command {
 		     many_file   => $outfile,
 		     many_list   => \@groups,
 		    );
-  $command .= $self-> template("process", "save_many_header");
-  $command .= $self-> template("process", "save_many");
+  if ($space eq 'k') {		# files in k have 2 abscissa columns
+    $command .= $self-> template("process", "save_many_header_k");
+    $command .= $self-> template("process", "save_many_k");
+  } else {
+    $command .= $self-> template("process", "save_many_header");
+    $command .= $self-> template("process", "save_many");
+  };
   if ($which =~ m{\A(?:$e_regexp|chik(?:\d*))\z}) {
     $command .= $self->template("process", "erase_chikn");
   };
