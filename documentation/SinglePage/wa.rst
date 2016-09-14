@@ -2,30 +2,73 @@
    The Creative Commons Attribution-ShareAlike License
    http://creativecommons.org/licenses/by-sa/3.0/
 
+WebAtoms: Convert crystallographic data into a Feff input file ... on the web!
+==============================================================================
+
+:demeter:`WebAtoms` is a application which can be run locally or
+hosted on a web server and accessed through your browser.  It is
+`available at GitHub <https://github.com/bruceravel/WebAtoms>`_.
+
+**To access WebAtoms on the web**
+
+  Point your browser at any of these servers:
+
+  #. (point to Matt's server)
+
+  If you would like your installation included in this list, let Bruce
+  know by opening an `issue at the GitHub site
+  <https://github.com/bruceravel/WebAtoms/issues>`_.
+
+**To run WebAtoms locally**
+
+  #. Clone a copy from the GitHub site or `download the latest zip file
+     <https://github.com/bruceravel/WebAtoms/archive/master.zip>`_.
+
+  #. Assuming you have `perl installed
+     <https://www.perl.org/get.html>`_ on your computer, you will need
+     to install `the Dancer web framework <http://perldancer.org/>`_
+     and `Demeter <http://bruceravel.github.io/demeter/>`_.
+
+  #. Launch the application by doing ``perl bin/app.pl`` at the
+     command line.
+
+  #. Point your browser at http://localhost:3000
+
+**To deploy WebAtoms on your server**
+
+  #. Clone a copy from the GitHub site or `download the latest zip file
+     <https://github.com/bruceravel/WebAtoms/archive/master.zip>`_.
+
+  #. Assuming you have `perl installed
+     <https://www.perl.org/get.html>`_ on your computer, you will need
+     to install `the Dancer web framework <http://perldancer.org/>`_
+     and `Demeter <http://bruceravel.github.io/demeter/>`_.
+
+  #. Follow the `instructions for deploying a Dancer application
+     <https://metacpan.org/pod/Dancer2::Manual::Deployment>`_
+     appropriate to your web server.
+
+
+If you have any problems deploying :demeter:`WebAtoms` on particular
+servers or accessing it with particular browsers, please `open an
+issue at the GitHub site
+<https://github.com/bruceravel/WebAtoms/issues>`_.
+
+If you have any suggestions or corrections for this manual, `also open
+an issue at the GitHub site
+<https://github.com/bruceravel/WebAtoms/issues>`_.
+
 Using WebAtoms
-==============
-
-.. note:: This manual is incomplete.  Let me know what you'd like to
-	  see here.
-
-:demeter:`WebAtoms` is a web application which can be hosted locally
-or on a web server.  It is `available at GitHub
-<https://github.com/bruceravel/WebAtoms>`_ and information about
-running or hosting the web application can be `found here
-<https://metacpan.org/pod/Dancer2::Manual::Deployment>`_.
-
-:demeter:`WebAtoms` is built using `the Dancer web framework
-<http://perldancer.org/>`_ and `Demeter
-<http://bruceravel.github.io/demeter/>`_.
+--------------
 
 When run in your browser, :demeter:`WebAtoms` (like `Gaul
 <http://www.thelatinlibrary.com/caesar/gall1.shtml>`_) is in three
 parts.  Across the top of the window are a bunch of useful links,
-including the link in the upper left back to the empty application.
-On the left is a form to be filled in with crystallographic data.  On
-the right is the response area, which will (hopefully!) be filled with
-a :file:`feff.inp` file or some other useful crystallographic
-calculation.
+including the link in the upper left back to the empty
+:demeter:`WebAtoms` application.  On the left is a form to be filled
+in with crystallographic data.  On the right is the response area,
+which will (hopefully!) be filled with a :file:`feff.inp` file or some
+other useful crystallographic calculation.
 
 .. figure:: ../_images/webatoms.png
    :target: ../_images/webatoms.png
@@ -70,6 +113,8 @@ Entering crystallographic data
 There are several ways of importing crystallographic data in this
 application:
 
+#. Manually enter your crystal data into the form.
+
 #. You can import from a CIF or :file:`atoms.inp` file which resides
    locally on your computer.  To do this, click the :guilabel:`Browse`
    button to post a file selection dialog, then select a file from
@@ -81,19 +126,30 @@ application:
    file from web` button to fetch that file from the internet.
 
 #. Use the ``url?url=`` syntax in the URL for the :demeter:`WebAtoms`
-   application,
-   e.g. ``http://webatoms.server/url?url=http://www.crystallography.net/cod/1535967.cif``.
+   application, e.g.
+   ``http://webatoms.server/url?url=http://www.crystallography.net/cod/1535967.cif``.
    In this way, you can hook :demeter:`WebAtoms` up to other web or
    desktop applications.
 
-#. Manually enter your the crystal data into the form.
-
 .. todo:: 
-   #. Need to streamline file import this so that the second
-      button click is not necessary
-   #. Upload directly from a file,
-      i.e. ``http://webatoms.server/file?file=http://www.crystallography.net/cod/1535967.cif``
-      or some such
+   #. Need to streamline file import this so that the second button
+      click is not necessary
+   #. Upload directly from a file, i.e.
+      ``http://webatoms.server/file?file=http://www.crystallography.net/cod/1535967.cif``
+      or some such.  Although care should be taken, as this can
+      `expose files inappropriately
+      <https://blog.steve.fi/If_your_code_accepts_URIs_as_input__.html>`_
+      to the internet.
+   #. Say something sensible when a file is neither :file:`atoms.inp`
+      nor CIF.
+
+Note that one- or two-letter symbols are typically used to identify
+the element at each site.  However, full names (e.g. :quoted:`oxygen`)
+or Z numbers (e.g. :quoted:`9`) can be used as well.  Names must be
+spelled correctly according to British English spelling (which is odd,
+I suppose, but the tool used to recognize element names was written
+using British English |nd| so :quoted:`aluminium`, not
+:quoted:`aluminum` as we sensible Yanks say).
 
 
 Output options
@@ -122,6 +178,11 @@ there are other options:
   that sit near cell walls and corners
 * A diagnostic file with the state of the application
 
+Selection between :demeter:`feff6` and :demeter:`feff8` style files is
+made with the :guilabel:`ipot style` menu.  This menu offers each of
+`the three ipot styles
+<http://bruceravel.github.io/demeter/documents/Artemis/extended/ipots.html>`_
+for each of :demeter:`feff6` and :demeter:`feff8`.
 
 Issues with CIF files
 ---------------------
@@ -129,15 +190,17 @@ Issues with CIF files
 **Multi-record CIF files**
 
   A single CIF file can contain more than one crystal structures.
-  Currently :demeter:`WebAtoms` has no way to prompt you to choose which
-  record from a CIF file you want to import.  :demeter:`WebAtoms` will
-  always import the first record.
+  Currently :demeter:`WebAtoms` has no way to prompt you to choose
+  which record from a CIF file you want to import.
+  :demeter:`WebAtoms` will always import the first record.  `Here's an
+  example of a CIF file with 2
+  records. <https://raw.githubusercontent.com/bruceravel/demeter/master/examples/AuCl.cif>`_
 
 **Partial occupancy**
 
-  :demeter:`WebAtoms` simply refuses to import CIF files with partial
-  occupancy of crystallographic sites.  `Read this for more
-  information the topic of dopants
+  :demeter:`WebAtoms` cannot handle partial occupancy of
+  crystallographic sites.  `Read this for more information the topic
+  of dopants
   <http://bruceravel.github.io/demeter/documents/Artemis/extended/dopants.html>`_.
 
 **Imperfect parsing of CIF files**
@@ -152,8 +215,8 @@ Issues with CIF files
 **Imperfect recognition of CIF files**
 
   Currently a CIF file is recognized only if it's file name ends in
-  :file:`.cif`.  That's dumb and easily confused, but that's how it
-  works right now.
+  :file:`.cif`.  That's dumb and easy to foil, but that's how it works
+  right now.
 
 
 Troubleshooting
@@ -161,8 +224,8 @@ Troubleshooting
 
 **You have N unique potentials, but Feff only allows 7.**
 
-  This happens when you have a lengthy list of unique sites and are
-  using the ``tags`` or ``sites`` ipot style.  You can `find a
+  This usually happens when you have a lengthy list of unique sites
+  and are using the ``tags`` or ``sites`` ipot style.  You can `find a
   discussion of this ipot styles in the Artemis manual
   <http://bruceravel.github.io/demeter/documents/Artemis/extended/ipots.html>`_.
 
@@ -178,4 +241,38 @@ Troubleshooting
   The need for a `shift vector
   <http://bruceravel.github.io/demeter/documents/Artemis/atoms/space.html#multiple-origins-and-the-shift-keyword>`_
   is another possible culprit.
+
+**Your symbol could not be recognized as a space group symbol.**
+
+  `This section of the Artemis manual
+  <http://bruceravel.github.io/demeter/documents/Artemis/atoms/space.html>`_
+  has a complete list of symbols recognized by :demeter:`WebAtoms`.
+
+**Lattice constant was not a number / Lattice constant was negative**
+
+  Lattice constants must be positive numbers and must be written in a
+  way that are obviously interpretable as numbers.  Localization is
+  *not* respected |nd| the decimal symbol is a dot (``.``), **not** a
+  comma, momayyez, apostrophe, decimal separator key symbol, space, or
+  any other symbol.
+
+  Lattice angles must also be positive numbers.  So too the three
+  radius parameters.
+
+  Note that site coordinates can be negative, but must also be
+  obviously interpretable as numbers using a dot for the decimal
+  marker.
+
+**Symbol for site N is not a valid element symbol**
+
+  Element symbols for the sites must be the standard two-letter
+  symbols as found on any English-language periodic table (or
+  `Hephaestus
+  <http://bruceravel.github.io/demeter/documents/Athena/hephaestus.html>`_).
+  Full names (e.g. :quoted:`oxygen`) or Z numbers
+  (e.g. :quoted:`9`) can be used as well, however names must be
+  spelled correctly.
+
+  Note that site tags can be any string and need not be related to the
+  element symbol, although only the first 10 characters will be used.
 

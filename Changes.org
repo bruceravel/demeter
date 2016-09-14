@@ -7,6 +7,9 @@
 * 0.9 series
 ** 0.9.26   ?? Smarch    2017
 *** Athena
+    + [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-September/008818.html][fix XDI headers]] in "save marked groups" output files, also add
+      templates to provide for the special case in k of two abscissa
+      columns
 
 *** Artemis
 
@@ -24,9 +27,6 @@
       Ifeffit for an application that is entirely contained within
       Demeter (WebAtoms, which does not plot, is an example).
     + Recognize and use web import mode, i.e. ~use Demeter qw(:ui=web);~
-    + fix XDI headers in "save marked groups" output files, also add
-      templates to provide for the special case in k of two abscissa
-      columns
 
 *** Windows
 
