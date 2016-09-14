@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Using WebAtoms &mdash; Miscellaneous Demeter 0.9.25 documentation</title>
+    <title>WebAtoms: Convert crystallographic data into a Feff input file ... on the web! &mdash; Miscellaneous Demeter 0.9.25 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -48,25 +48,58 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="using-webatoms">
-<h1>Using WebAtoms<a class="headerlink" href="#using-webatoms" title="Permalink to this headline">¶</a></h1>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This manual is incomplete.  Let me know what you'd like to
-see here.</p>
-</div>
-<p><font size=-1 color="#8C4112">WEBATOMS</font> is a web application which can be hosted locally
-or on a web server.  It is <a class="reference external" href="https://github.com/bruceravel/WebAtoms">available at GitHub</a> and information about
-running or hosting the web application can be <a class="reference external" href="https://metacpan.org/pod/Dancer2::Manual::Deployment">found here</a>.</p>
-<p><font size=-1 color="#8C4112">WEBATOMS</font> is built using <a class="reference external" href="http://perldancer.org/">the Dancer web framework</a> and <a class="reference external" href="http://bruceravel.github.io/demeter/">Demeter</a>.</p>
+  <div class="section" id="webatoms-convert-crystallographic-data-into-a-feff-input-file-on-the-web">
+<h1>WebAtoms: Convert crystallographic data into a Feff input file ... on the web!<a class="headerlink" href="#webatoms-convert-crystallographic-data-into-a-feff-input-file-on-the-web" title="Permalink to this headline">¶</a></h1>
+<p><font size=-1 color="#8C4112">WEBATOMS</font> is a application which can be run locally or
+hosted on a web server and accessed through your browser.  It is
+<a class="reference external" href="https://github.com/bruceravel/WebAtoms">available at GitHub</a>.</p>
+<p><strong>To access WebAtoms on the web</strong></p>
+<blockquote>
+<div><p>Point your browser at any of these servers:</p>
+<ol class="arabic simple">
+<li>(point to Matt's server)</li>
+</ol>
+<p>If you would like your installation included in this list, let Bruce
+know by opening an <a class="reference external" href="https://github.com/bruceravel/WebAtoms/issues">issue at the GitHub site</a>.</p>
+</div></blockquote>
+<p><strong>To run WebAtoms locally</strong></p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Clone a copy from the GitHub site or <a class="reference external" href="https://github.com/bruceravel/WebAtoms/archive/master.zip">download the latest zip file</a>.</li>
+<li>Assuming you have <a class="reference external" href="https://www.perl.org/get.html">perl installed</a> on your computer, you will need
+to install <a class="reference external" href="http://perldancer.org/">the Dancer web framework</a>
+and <a class="reference external" href="http://bruceravel.github.io/demeter/">Demeter</a>.</li>
+<li>Launch the application by doing <code class="docutils literal"><span class="pre">perl</span> <span class="pre">bin/app.pl</span></code> at the
+command line.</li>
+<li>Point your browser at <a class="reference external" href="http://localhost:3000">http://localhost:3000</a></li>
+</ol>
+</div></blockquote>
+<p><strong>To deploy WebAtoms on your server</strong></p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Clone a copy from the GitHub site or <a class="reference external" href="https://github.com/bruceravel/WebAtoms/archive/master.zip">download the latest zip file</a>.</li>
+<li>Assuming you have <a class="reference external" href="https://www.perl.org/get.html">perl installed</a> on your computer, you will need
+to install <a class="reference external" href="http://perldancer.org/">the Dancer web framework</a>
+and <a class="reference external" href="http://bruceravel.github.io/demeter/">Demeter</a>.</li>
+<li>Follow the <a class="reference external" href="https://metacpan.org/pod/Dancer2::Manual::Deployment">instructions for deploying a Dancer application</a>
+appropriate to your web server.</li>
+</ol>
+</div></blockquote>
+<p>If you have any problems deploying <font size=-1 color="#8C4112">WEBATOMS</font> on particular
+servers or accessing it with particular browsers, please <a class="reference external" href="https://github.com/bruceravel/WebAtoms/issues">open an
+issue at the GitHub site</a>.</p>
+<p>If you have any suggestions or corrections for this manual, <a class="reference external" href="https://github.com/bruceravel/WebAtoms/issues">also open
+an issue at the GitHub site</a>.</p>
+<div class="section" id="using-webatoms">
+<h2>Using WebAtoms<a class="headerlink" href="#using-webatoms" title="Permalink to this headline">¶</a></h2>
 <p>When run in your browser, <font size=-1 color="#8C4112">WEBATOMS</font> (like <a class="reference external" href="http://www.thelatinlibrary.com/caesar/gall1.shtml">Gaul</a>) is in three
 parts.  Across the top of the window are a bunch of useful links,
-including the link in the upper left back to the empty application.
-On the left is a form to be filled in with crystallographic data.  On
-the right is the response area, which will (hopefully!) be filled with
-a <code class="file docutils literal"><span class="pre">feff.inp</span></code> file or some other useful crystallographic
-calculation.</p>
-<div class="figure align-center" id="id1">
+including the link in the upper left back to the empty
+<font size=-1 color="#8C4112">WEBATOMS</font> application.  On the left is a form to be filled
+in with crystallographic data.  On the right is the response area,
+which will (hopefully!) be filled with a <code class="file docutils literal"><span class="pre">feff.inp</span></code> file or some
+other useful crystallographic calculation.</p>
+<div class="figure align-center" id="id5">
 <a class="reference external image-reference" href="../_images/webatoms.png"><img alt="_images/webatoms.png" src="_images/webatoms.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text"><font size=-1 color="#8C4112">WEBATOMS</font>, running locally, after importing a CIF file for Ga<sub>2</sub>O<sub>3</sub></span></p>
 </div>
@@ -90,11 +123,13 @@ the response area on the right.</p>
 <p>To save the contents of the response area, click the <span class="guilabel">Save
 as</span> button.  You will be prompted for the name and location of the
 save file on your computer.</p>
+</div>
 <div class="section" id="entering-crystallographic-data">
 <h2>Entering crystallographic data<a class="headerlink" href="#entering-crystallographic-data" title="Permalink to this headline">¶</a></h2>
 <p>There are several ways of importing crystallographic data in this
 application:</p>
 <ol class="arabic simple">
+<li>Manually enter your crystal data into the form.</li>
 <li>You can import from a CIF or <code class="file docutils literal"><span class="pre">atoms.inp</span></code> file which resides
 locally on your computer.  To do this, click the <span class="guilabel">Browse</span>
 button to post a file selection dialog, then select a file from
@@ -104,22 +139,32 @@ button.</li>
 below the <span class="guilabel">Browse</span> button.  Click the <span class="guilabel">Import
 file from web</span> button to fetch that file from the internet.</li>
 <li>Use the <code class="docutils literal"><span class="pre">url?url=</span></code> syntax in the URL for the <font size=-1 color="#8C4112">WEBATOMS</font>
-application,
-e.g. <code class="docutils literal"><span class="pre">http://webatoms.server/url?url=http://www.crystallography.net/cod/1535967.cif</span></code>.
+application, e.g.
+<code class="docutils literal"><span class="pre">http://webatoms.server/url?url=http://www.crystallography.net/cod/1535967.cif</span></code>.
 In this way, you can hook <font size=-1 color="#8C4112">WEBATOMS</font> up to other web or
 desktop applications.</li>
-<li>Manually enter your the crystal data into the form.</li>
 </ol>
 <div class="admonition-todo admonition" id="index-0">
 <p class="first admonition-title">Todo</p>
 <ol class="last arabic simple">
-<li>Need to streamline file import this so that the second
-button click is not necessary</li>
-<li>Upload directly from a file,
-i.e. <code class="docutils literal"><span class="pre">http://webatoms.server/file?file=http://www.crystallography.net/cod/1535967.cif</span></code>
-or some such</li>
+<li>Need to streamline file import this so that the second button
+click is not necessary</li>
+<li>Upload directly from a file, i.e.
+<code class="docutils literal"><span class="pre">http://webatoms.server/file?file=http://www.crystallography.net/cod/1535967.cif</span></code>
+or some such.  Although care should be taken, as this can
+<a class="reference external" href="https://blog.steve.fi/If_your_code_accepts_URIs_as_input__.html">expose files inappropriately</a>
+to the internet.</li>
+<li>Say something sensible when a file is neither <code class="file docutils literal"><span class="pre">atoms.inp</span></code>
+nor CIF.</li>
 </ol>
 </div>
+<p>Note that one- or two-letter symbols are typically used to identify
+the element at each site.  However, full names (e.g. “oxygen”)
+or Z numbers (e.g. “9”) can be used as well.  Names must be
+spelled correctly according to British English spelling (which is odd,
+I suppose, but the tool used to recognize element names was written
+using British English – so “aluminium”, not
+“aluminum” as we sensible Yanks say).</p>
 </div>
 <div class="section" id="output-options">
 <h2>Output options<a class="headerlink" href="#output-options" title="Permalink to this headline">¶</a></h2>
@@ -144,20 +189,26 @@ expressed in Cartesian coordinates and includes all of the atoms
 that sit near cell walls and corners</li>
 <li>A diagnostic file with the state of the application</li>
 </ul>
+<p>Selection between <font size=-1 color="#8C4112">FEFF6</font> and <font size=-1 color="#8C4112">FEFF8</font> style files is
+made with the <span class="guilabel">ipot style</span> menu.  This menu offers each of
+<a class="reference external" href="http://bruceravel.github.io/demeter/documents/Artemis/extended/ipots.html">the three ipot styles</a>
+for each of <font size=-1 color="#8C4112">FEFF6</font> and <font size=-1 color="#8C4112">FEFF8</font>.</p>
 </div>
 <div class="section" id="issues-with-cif-files">
 <h2>Issues with CIF files<a class="headerlink" href="#issues-with-cif-files" title="Permalink to this headline">¶</a></h2>
 <p><strong>Multi-record CIF files</strong></p>
 <blockquote>
 <div>A single CIF file can contain more than one crystal structures.
-Currently <font size=-1 color="#8C4112">WEBATOMS</font> has no way to prompt you to choose which
-record from a CIF file you want to import.  <font size=-1 color="#8C4112">WEBATOMS</font> will
-always import the first record.</div></blockquote>
+Currently <font size=-1 color="#8C4112">WEBATOMS</font> has no way to prompt you to choose
+which record from a CIF file you want to import.
+<font size=-1 color="#8C4112">WEBATOMS</font> will always import the first record.  <a class="reference external" href="https://raw.githubusercontent.com/bruceravel/demeter/master/examples/AuCl.cif">Here's an
+example of a CIF file with 2
+records.</a></div></blockquote>
 <p><strong>Partial occupancy</strong></p>
 <blockquote>
-<div><font size=-1 color="#8C4112">WEBATOMS</font> simply refuses to import CIF files with partial
-occupancy of crystallographic sites.  <a class="reference external" href="http://bruceravel.github.io/demeter/documents/Artemis/extended/dopants.html">Read this for more
-information the topic of dopants</a>.</div></blockquote>
+<div><font size=-1 color="#8C4112">WEBATOMS</font> cannot handle partial occupancy of
+crystallographic sites.  <a class="reference external" href="http://bruceravel.github.io/demeter/documents/Artemis/extended/dopants.html">Read this for more information the topic
+of dopants</a>.</div></blockquote>
 <p><strong>Imperfect parsing of CIF files</strong></p>
 <blockquote>
 <div>It is certainly possible that you might come across a valid CIF file
@@ -169,15 +220,15 @@ can be found).</div></blockquote>
 <p><strong>Imperfect recognition of CIF files</strong></p>
 <blockquote>
 <div>Currently a CIF file is recognized only if it's file name ends in
-<code class="file docutils literal"><span class="pre">.cif</span></code>.  That's dumb and easily confused, but that's how it
-works right now.</div></blockquote>
+<code class="file docutils literal"><span class="pre">.cif</span></code>.  That's dumb and easy to foil, but that's how it works
+right now.</div></blockquote>
 </div>
 <div class="section" id="troubleshooting">
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>
 <p><strong>You have N unique potentials, but Feff only allows 7.</strong></p>
 <blockquote>
-<div>This happens when you have a lengthy list of unique sites and are
-using the <code class="docutils literal"><span class="pre">tags</span></code> or <code class="docutils literal"><span class="pre">sites</span></code> ipot style.  You can <a class="reference external" href="http://bruceravel.github.io/demeter/documents/Artemis/extended/ipots.html">find a
+<div>This usually happens when you have a lengthy list of unique sites
+and are using the <code class="docutils literal"><span class="pre">tags</span></code> or <code class="docutils literal"><span class="pre">sites</span></code> ipot style.  You can <a class="reference external" href="http://bruceravel.github.io/demeter/documents/Artemis/extended/ipots.html">find a
 discussion of this ipot styles in the Artemis manual</a>.</div></blockquote>
 <p><strong>Sites generate one or more common positions and their occupancies sum to more than 1.</strong></p>
 <blockquote>
@@ -188,6 +239,34 @@ occupancy.  You can <a class="reference external" href="http://bruceravel.github
 manual</a>.
 The need for a <a class="reference external" href="http://bruceravel.github.io/demeter/documents/Artemis/atoms/space.html#multiple-origins-and-the-shift-keyword">shift vector</a>
 is another possible culprit.</div></blockquote>
+<p><strong>Your symbol could not be recognized as a space group symbol.</strong></p>
+<blockquote>
+<div><a class="reference external" href="http://bruceravel.github.io/demeter/documents/Artemis/atoms/space.html">This section of the Artemis manual</a>
+has a complete list of symbols recognized by <font size=-1 color="#8C4112">WEBATOMS</font>.</div></blockquote>
+<p><strong>Lattice constant was not a number / Lattice constant was negative</strong></p>
+<blockquote>
+<div><p>Lattice constants must be positive numbers and must be written in a
+way that are obviously interpretable as numbers.  Localization is
+<em>not</em> respected – the decimal symbol is a dot (<code class="docutils literal"><span class="pre">.</span></code>), <strong>not</strong> a
+comma, momayyez, apostrophe, decimal separator key symbol, space, or
+any other symbol.</p>
+<p>Lattice angles must also be positive numbers.  So too the three
+radius parameters.</p>
+<p>Note that site coordinates can be negative, but must also be
+obviously interpretable as numbers using a dot for the decimal
+marker.</p>
+</div></blockquote>
+<p><strong>Symbol for site N is not a valid element symbol</strong></p>
+<blockquote>
+<div><p>Element symbols for the sites must be the standard two-letter
+symbols as found on any English-language periodic table (or
+<a class="reference external" href="http://bruceravel.github.io/demeter/documents/Athena/hephaestus.html">Hephaestus</a>).
+Full names (e.g. “oxygen”) or Z numbers
+(e.g. “9”) can be used as well, however names must be
+spelled correctly.</p>
+<p>Note that site tags can be any string and need not be related to the
+element symbol, although only the first 10 characters will be used.</p>
+</div></blockquote>
 
 <br>
 
@@ -212,7 +291,8 @@ consider <a class="reference external" href="http://creativecommons.org/support/
             </a></p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Using WebAtoms</a><ul>
+<li><a class="reference internal" href="#">WebAtoms: Convert crystallographic data into a Feff input file ... on the web!</a><ul>
+<li><a class="reference internal" href="#using-webatoms">Using WebAtoms</a></li>
 <li><a class="reference internal" href="#entering-crystallographic-data">Entering crystallographic data</a></li>
 <li><a class="reference internal" href="#output-options">Output options</a></li>
 <li><a class="reference internal" href="#issues-with-cif-files">Issues with CIF files</a></li>

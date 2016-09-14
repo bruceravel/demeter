@@ -1146,7 +1146,7 @@ sub spacegroup_file {
 sub is_polarization {
   my ($self, $token) = @_;
   return '' if (($self->polarization->[0]>$EPSILON4) or ($self->polarization->[1]>$EPSILON4) or ($self->polarization->[2]>$EPSILON4));
-  return $token || '*';
+  return $token || '';
 };
 
 
