@@ -145,7 +145,7 @@ application:
 
 Note that one- or two-letter symbols are typically used to identify
 the element at each site.  However, full names (e.g. :quoted:`oxygen`)
-or Z numbers (e.g. :quoted:`9`) can be used as well.  Names must be
+or Z numbers (e.g. :quoted:`8`) can be used as well.  Names must be
 spelled correctly according to British English spelling (which is odd,
 I suppose, but the tool used to recognize element names was written
 using British English |nd| so :quoted:`aluminium`, not
@@ -270,9 +270,24 @@ Troubleshooting
   `Hephaestus
   <http://bruceravel.github.io/demeter/documents/Athena/hephaestus.html>`_).
   Full names (e.g. :quoted:`oxygen`) or Z numbers
-  (e.g. :quoted:`9`) can be used as well, however names must be
+  (e.g. :quoted:`8`) can be used as well, however names must be
   spelled correctly.
 
   Note that site tags can be any string and need not be related to the
   element symbol, although only the first 10 characters will be used.
 
+
+Citing WebAtoms
+---------------
+
+Use
+
+.. bibliography:: singlefile.bib
+   :filter: title % "crystallography"
+   :list: bullet
+
+or
+
+.. bibliography:: singlefile.bib
+   :filter: title % "ATHENA"
+   :list: bullet
