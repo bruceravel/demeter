@@ -27,8 +27,8 @@ While this example certainly does not represent a typical research
 problem, it is an excellent introduction to the mechanics of using
 :demeter:`artemis` and it results in a very satisfying fit.
 
-You can find example EXAFS data crystallographic input data at `my XAS
-Education site
+You can find example EXAFS data and crystallographic input data at `my
+XAS Education site
 <https://github.com/bruceravel/XAS-Education/tree/master/Examples/FeS2>`_.
 Import the |mu| (E) data into :demeter:`athena`.  When you are content
 with the processing of the data, save an :demeter:`athena` project
@@ -52,7 +52,7 @@ selection dialog.
    :width: 50%
    :align: center
 
-   Import data into Artemis
+   Import data into :demeter:`artemis`
 
 The project file used here has several iron standards. Select
 FeS\ :sub:`2` from the list. That data set gets plotted when selected.
@@ -76,7 +76,7 @@ crystal structure.
    :width: 50%
    :align: center
 
-   Import crystal data into Artemis 
+   Import crystal data into :demeter:`artemis` 
 
 With the FeS\ :sub:`2` crystal data imported, run :demeter:`atoms` by
 :mark:`leftclick,..` clicking the :button:`Run Atoms,light` button on
@@ -148,7 +148,7 @@ the plot shown.
    :width: 50%
    :align: center
 
-   FeS2 data plotted with the first four single scattering paths
+   FeS\ :sub:`2` data plotted with the first four single scattering paths
 
 The first interesting thing to note is that the first peak in the data
 seems to be entirely explained by the path from the S atom at 2.257
