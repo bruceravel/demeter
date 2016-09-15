@@ -14,7 +14,7 @@
  PRINT     1      0     0     3
 
  RMAX      {$A->rpath}
- {$A->is_polarization}POLARIZATION  {join("   ", @{$A->polarization})}
+ {$A->is_polarization($prefix)}POLARIZATION  {join("   ", @{$A->polarization})}
 
  POTENTIALS
   * ipot   Z      tag

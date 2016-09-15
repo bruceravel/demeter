@@ -37,7 +37,7 @@
                *** for EXAFS: RPATH {$A->rpath} and uncomment the EXAFS card
  RPATH     \{\{rpath\}\}
  EXAFS     20
- {$A->is_polarization}POLARIZATION  {join("   ", @{$A->polarization})}
+ {$A->is_polarization($prefix)}POLARIZATION  {join("   ", @{$A->polarization})}
 
  POTENTIALS
  *   ipot   Z  element        l_scmt  l_fms   stoichiometry
