@@ -56,10 +56,455 @@
             
   <div class="section" id="example-2-methyltin">
 <h1>13.2. Example 2: Methyltin<a class="headerlink" href="#example-2-methyltin" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference external" href="https://speakerdeck.com/bruceravel/methyltin-an-artemis-example">Lecture notes</a></p>
-<p><img alt="soon" title="Coming soon!" src="../_static/soon.png" hspace="3"></a></p>
+<p>Some years ago, some colleagues from the U.S. Environmental Protection
+Agency came to me with an interesting problem about the fate and
+transport of organic tin compounds through sewage systems.  In the
+U.S. (and elsewhere), municipal water is carried into homes and office
+buildings with copper pipes and waste water is transported to the
+water treatment system in polyvinyl chloride (PVC) pipes.  By itself,
+PVC is a highly malleable plastic.  Like many plastics, it is made
+stiff by the addition of stiffening agents added to the plastic
+matrix.  In the case of PVC, organic tin compounds are used.</p>
+<p>The folks from the EPA were studying the accumulation of tin in
+municipal waste and trying to understand if there was a mechanism of
+transport involving leaching from PVC pipes.  We made a series of XAS
+measurements on various organic tin standards as well as direct
+measurement of PVC pipes produced by three different manufacturers.</p>
+<ul class="simple" id="bibtex-bibliography-examples/methyltin-0">
+<li>Christopher&nbsp;A. Impellitteri, Otis Evans, and Bruce Ravel. Speciation of organotins in polyvinyl chloride pipe via X-ray absorption spectroscopy and in leachates using GC-PFPD after derivatisation. <em>J. Environ. Monit.</em>, 9:358–365, 2007. <a class="reference external" href="https://doi.org/10.1039/B617711E">doi:10.1039/B617711E</a>.</li>
+</ul>
+<p>Two of the standard compounds we measured were methyltin chloride, as
+shown below.</p>
+<div class="figure compound align-center" id="_fig-methyltinchloride">
+<div style="width: 45%" class="subfigure align-center" id="id1">
+<span id="fig-dimethyltindichloride"></span><a class="reference external image-reference" href="../_images/dimethyltin_dichloride.png"><img alt="../_images/dimethyltin_dichloride.png" src="../_images/dimethyltin_dichloride.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.15 </span><span class="caption-text">Dimethyltin dichloride – one tin atom with two carbon ligands (in
+the form of methyl groups) and two chlorine ligands.</span></p>
+</div>
+<div style="width: 45%" class="subfigure align-center" id="id2">
+<span id="fig-monomethyltintrichloride"></span><a class="reference external image-reference" href="../_images/monomethyltin_trichloride.png"><img alt="../_images/monomethyltin_trichloride.png" src="../_images/monomethyltin_trichloride.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.16 </span><span class="caption-text">Monomethyltin trichloride – one tin atom with two carbon ligands
+and two chlorine ligands.</span></p>
+</div>
+</div><p id="_fig-methyltinchloride">These samples were prepared in solution.  This solution was packed
+into a simple transmission sample cell for liquids.  Transmission
+EXAFS were measured.  Here is the data:</p>
+<div class="figure compound align-center" id="_fig-mtindata">
+<div style="width: 30%" class="subfigure" id="id3">
+<span id="fig-mtinmu"></span><a class="reference external image-reference" href="../_images/mtin_mu.png"><img alt="../_images/mtin_mu.png" src="../_images/mtin_mu.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.17 </span><span class="caption-text">μ(E) data measured on the dimethyltin dichloride and
+monomethyltin trichloride.</span></p>
+</div>
+<div style="width: 30%" class="subfigure" id="id4">
+<a class="reference external image-reference" href="../_images/mtin_chik.png"><img alt="../_images/mtin_chik.png" src="../_images/mtin_chik.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.18 </span><span class="caption-text">χ(k) data measured on the dimethyltin dichloride and
+monomethyltin trichloride.</span></p>
+</div>
+<div style="width: 30%" class="subfigure" id="id5">
+<a class="reference external image-reference" href="../_images/mtin_chir.png"><img alt="../_images/mtin_chir.png" src="../_images/mtin_chir.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.19 </span><span class="caption-text">χ(R) data measured on the dimethyltin dichloride and
+monomethyltin trichloride.</span></p>
+</div>
+</div><p id="_fig-mtindata">These data are quite similar, but there is a distinct change in the
+χ(R) spectrum between the two.</p>
+<p>In this section, we will step through the corefinement of these two
+data steps, creating a constrained fitting model that uses the
+information content of both data sets to allows excellent measurement
+of a number of structural parameters.</p>
+<p>You can find example EXAFS data and a structure from which to build
+the <code class="file docutils literal"><span class="pre">feff.inp</span></code> file at <a class="reference external" href="https://github.com/bruceravel/XAS-Education/tree/master/Examples/methyltin">my XAS Education site</a>.
+Import the μ(E) data into <font size=-1 color="#8C4112">ATHENA</font>.  When you are content
+with the processing of the data, save an <font size=-1 color="#8C4112">ATHENA</font> project
+file and dive into this example.</p>
+<div class="section" id="import-data">
+<h2>13.2.1. Import data<a class="headerlink" href="#import-data" title="Permalink to this headline">¶</a></h2>
+<p>After starting <font size=-1 color="#8C4112">ARTEMIS</font>, <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> click on the
+<kbd class="light">Add</kbd> button at the top of the <span class="guilabel">Data sets</span>
+list in the Main window. This will open a file selection dialog.
+Click to find the <font size=-1 color="#8C4112">ATHENA</font> project file containing the data
+you want to analyze.  Opening that project file displays the project
+selection dialog.</p>
+<div class="figure align-center" id="id6">
+<span id="fig-methyltinimportdata"></span><a class="reference external image-reference" href="../_images/methyltin-importdata.png"><img alt="../_images/methyltin-importdata.png" src="../_images/methyltin-importdata.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.20 </span><span class="caption-text">Import data into <font size=-1 color="#8C4112">ARTEMIS</font></span></p>
+</div>
+<p>The project file used here has the data from both methyltin standards.
+Select “Dimethyl Tin” from the list.  That data set gets
+plotted when selected.</p>
+<p>Now <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> click the <kbd class="light">Import</kbd> button. That
+data set gets imported into <font size=-1 color="#8C4112">ARTEMIS</font>.  An entry for the
+dimethyl tin is created in the Data list, a window for interacting
+with the dimethyl tin data is created, and the dimethyl tin data are
+plotted as χ(k).</p>
+<p>The next step is to import some structural data that can be used to
+make the <font size=-1 color="#8C4112">FEFF</font> calculation.  Since this is a solution
+standard, there is obviously not an <code class="file docutils literal"><span class="pre">atoms.inp</span></code> file.  So we
+need to find another way to create the <code class="file docutils literal"><span class="pre">feff.inp</span></code> file.</p>
+<p>A bit of searching on Google eventually turned up the following
+structural information for dimethyltin dichloride in the form of a
+Protein Data Bank file.  PDB is a format that is usually used to store
+structural data for large macromolecules, but is also quite suitable
+to tiny molecules like our methyl tin sample.  This example has some
+chaff that is not of interest to us for our EXAFS analysis problem,
+but among the chaff is <strong>all</strong> the information we need.</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>COMPND    5261536
+HETATM    1  C1  LIG     1      -0.027   2.146   0.014  1.00  0.00
+HETATM    2 SN2  LIG     1       0.002  -0.004   0.002  1.00  0.00
+HETATM    3  C3  LIG     1       1.042  -0.716   1.744  1.00  0.00
+HETATM    4 CL4  LIG     1      -2.212  -0.821   0.019  1.00  0.00
+HETATM    5 CL5  LIG     1       1.107  -0.765  -1.940  1.00  0.00
+HETATM    6 1H1  LIG     1       0.996   2.523   0.006  1.00  0.00
+HETATM    7 2H1  LIG     1      -0.554   2.507  -0.869  1.00  0.00
+HETATM    8 3H1  LIG     1      -0.537   2.497   0.911  1.00  0.00
+HETATM    9 1H3  LIG     1       0.532  -0.365   2.641  1.00  0.00
+HETATM   10 2H3  LIG     1       1.057  -1.806   1.738  1.00  0.00
+HETATM   11 3H3  LIG     1       2.065  -0.339   1.736  1.00  0.00
+END
+</pre></div>
+</div>
+<p>Note that columns 6, 7, and 8 contain the Cartesian coordinates of the
+tin, chlorine, carbon, and hydrogen atoms that make up the dimethyltin
+dichloride molecule.  The third column identifies which atomic species
+lives at each of the sites.  Perfect!</p>
+<p>A bit of cutting and pasting into en empty template for a
+<code class="file docutils literal"><span class="pre">feff.inp</span></code> file, resulted in the following:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>TITLE dimethyltin dichloride
 
-<br clear="all">
+HOLE 1   1.0   *  Sn K edge  (29200.0 eV), second number is S0^2
+
+*         mphase,mpath,mfeff,mchi
+CONTROL   1      1     1     1
+PRINT     1      0     0     0
+
+RMAX        6.0
+
+*CRITERIA     curved   plane
+*DEBYE        temp     debye-temp
+NLEG         4
+
+POTENTIALS
+*    ipot   Z  element
+      0   50   Sn
+      1   17   Cl
+      2    6   C
+      3    1   H
+
+ATOMS
+*   x          y          z      ipot  tag              distance
+  -0.027   2.146   0.014  2
+   0.002  -0.004   0.002  0
+   1.042  -0.716   1.744  2
+  -2.212  -0.821   0.019  1
+   1.107  -0.765  -1.940  1
+   0.996   2.523   0.006  3
+  -0.554   2.507  -0.869  3
+  -0.537   2.497   0.911  3
+   0.532  -0.365   2.641  3
+   1.057  -1.806   1.738  3
+   2.065  -0.339   1.736  3
+</pre></div>
+</div>
+<p>This was saved to disk, then imported into <font size=-1 color="#8C4112">ARTEMIS</font> by
+<img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> left clicking on the line in the Data window that
+says <span class="guilabel">Import crystal data or a Feff calculation</span>, then
+selecting our <code class="file docutils literal"><span class="pre">feff.inp</span></code> file from the column selection dialog.</p>
+<div class="figure align-center" id="id7">
+<span id="fig-methyltinimportfeff"></span><a class="reference external image-reference" href="../_images/methyltin-importfeff.png"><img alt="../_images/methyltin-importfeff.png" src="../_images/methyltin-importfeff.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.21 </span><span class="caption-text">Importing information for making the <font size=-1 color="#8C4112">FEFF</font> calculation.</span></p>
+</div>
+<p>With the methyltin structural data imported, run <font size=-1 color="#8C4112">FEFF</font> by
+<img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> clicking the <kbd class="light">Run Feff</kbd> button
+to compute the scattering potentials and to run the pathfinder.</p>
+<p>Once the <font size=-1 color="#8C4112">FEFF</font> calculation is finished, the path
+intepretation list is shown in the Paths tab. This is the list of
+scattering paths, sorted by increasing path length. Select the first
+2 paths by <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> clicking on the path
+<span class="guilabel">0000</span>, then <kbd class="dark">Control</kbd>-<img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> clicking
+on path <span class="guilabel">0002</span>.  The selected paths will be highlighted.
+<img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> Click on one of the highlighted paths and,
+without letting go of the mouse button, <img alt="drag" title="Drag and drop" src="../_static/drag.png" hspace="3"></a> drag the paths
+over to the Data window and drop them onto the empty Path list.</p>
+<div class="figure align-center" id="id8">
+<span id="fig-methyltinpathsdnd"></span><a class="reference external image-reference" href="../_images/methyltin-pathsdnd.png"><img alt="../_images/methyltin-pathsdnd.png" src="../_images/methyltin-pathsdnd.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.22 </span><span class="caption-text"><img alt="drag" title="Drag and drop" src="../_static/drag.png" hspace="3"></a> Drag and drop paths onto a data set</span></p>
+</div>
+<p><img alt="drag" title="Drag and drop" src="../_static/drag.png" hspace="3"></a> Dropping the paths on the Path list will associate
+those paths with that data set. That is, that group of paths is now
+available to be used in the fitting model for understanding the
+methyltin data.</p>
+<p>Each path will get its own Path page. The Path page for a path is
+displayed when that path is clicked upon in the Path list. Shown below
+is the dimethyltin dichloride data with 2 paths.  The first path in
+the list, the one representing the contribution to the EXAFS from the
+C single scattering path nominally at 2.150 Å, is currently displayed.
+The second path represents the contribution to the EXAFS from the Cl
+single scattering path nominally at 2.360 Å.</p>
+<div class="figure align-center" id="id9">
+<span id="fig-methyltinpathsimported"></span><a class="reference external image-reference" href="../_images/methyltin-pathsimported.png"><img alt="../_images/methyltin-pathsimported.png" src="../_images/methyltin-pathsimported.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.23 </span><span class="caption-text">Paths associated with a data set</span></p>
+</div>
+</div>
+<div class="section" id="examine-the-scattering-paths">
+<h2>13.2.2. Examine the scattering paths<a class="headerlink" href="#examine-the-scattering-paths" title="Permalink to this headline">¶</a></h2>
+<p>The first chore is to understand how these two paths from the
+<font size=-1 color="#8C4112">FEFF</font> calculation relate to the data.  To this end, we need
+to populate the Plotting list with data and paths and make some plots.</p>
+<p>Mark single scattring paths for the C and Cl by <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a>
+clicking on their check buttons.  Transfer those two paths to the
+Plotting list by selecting <span class="menuselection">Actions ‣ Transfer
+marked</span>.</p>
+<p>With the Plotting list poluated as shown below, <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a>
+click on the <kbd class="light">R</kbd> plot button in the Plot window to make
+the plot shown.</p>
+<div class="figure align-center" id="id10">
+<span id="fig-methyltinsspaths"></span><a class="reference external image-reference" href="../_images/methyltin-sspaths.png"><img alt="../_images/methyltin-sspaths.png" src="../_images/methyltin-sspaths.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.24 </span><span class="caption-text">Methyltin data plotted with the first four single scattering paths</span></p>
+</div>
+<p>These two paths reasonably might represent the peak in the dimethyltin
+dichloride data, although it is not clear how the lower part of that
+peak will be represented by these two paths.  It is instructive also
+to look at the data as the real part of the Fourier transform.  To do
+so, <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> click the <span class="guilabel">Real</span> radiobutton under
+<span class="guilabel">Plot</span>χ<span class="guilabel">(R)</span> in the Plotting window.  This
+will display the following plot:</p>
+<div class="figure align-center" id="id11">
+<span id="fig-methyltinsspathschir"></span><a class="reference external image-reference" href="../_images/methyltin-sspaths_chir.png"><img alt="../_images/methyltin-sspaths_chir.png" src="../_images/methyltin-sspaths_chir.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.25 </span><span class="caption-text">The data and two paths, plotted as Re[χ(R)].</span></p>
+</div>
+<p>Viewed this way, it is clear that this <font size=-1 color="#8C4112">FEFF</font> calculation is
+likely to do a good job fitting these data.  The missing spectral
+weight at low R could likely be recovered by a ΔR shift of the
+the C scatterer to lower R.</p>
+</div>
+<div class="section" id="fit-to-the-dimethyltin-dichloride-data">
+<h2>13.2.3. Fit to the dimethyltin dichloride data<a class="headerlink" href="#fit-to-the-dimethyltin-dichloride-data" title="Permalink to this headline">¶</a></h2>
+<p>As in many fits, we will use a single parameter to represent the
+S<sup>2</sup><sub>0</sub> for each path.  This is reasonable as this is a
+parameter of the absorber and we are making only one <font size=-1 color="#8C4112">FEFF</font>
+calculation in this fit.  For the same reason, we will use a single
+E<sub>0</sub> parameter for each path.  We don't have any <em>a priori</em>
+knowledge of how the Sn-C and Sn-Cl bonds might be related.  As a
+result, we will float independent ΔR and σ<sup>2</sup> for
+the two ligands.  This results in 6 fitting parameters.</p>
+<ol class="arabic simple">
+<li>Make sure both the C and Cl paths are included in the fit.  That
+is, each should have its <span class="guilabel">Include path</span> button checked.</li>
+<li>Set the values of R<sub>min</sub> and R<sub>max</sub> to cover just the
+first peak.  1 Å to 2.4 Å is a good choice.</li>
+<li>We need parameters to represent S<sup>2</sup><sub>0</sub> and E<sub>0</sub>.  The parameters <code class="docutils literal"><span class="pre">amp</span></code> and <code class="docutils literal"><span class="pre">enot</span></code> are defined in the GDS
+window and given sensible initial <span class="guess">guess</span> values.</li>
+<li>We need ΔR and σ<sup>2</sup> for each ligand type.
+The ΔR parameters are called <code class="docutils literal"><span class="pre">drc</span></code> and <code class="docutils literal"><span class="pre">drcl</span></code>.  The
+σ<sup>2</sup> are called <code class="docutils literal"><span class="pre">ssc</span></code> and <code class="docutils literal"><span class="pre">sscl</span></code>.</li>
+</ol>
+<div class="figure align-center" id="id12">
+<span id="fig-dimethyltinmodel"></span><a class="reference external image-reference" href="../_images/methyltin-dmt-model.png"><img alt="../_images/methyltin-dmt-model.png" src="../_images/methyltin-dmt-model.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.26 </span><span class="caption-text">Six parameters are defined and used as path parameters.</span></p>
+</div>
+<p>At this point we are ready to <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> click the big fit
+button.  Doing so yields the following:</p>
+<div class="figure align-center" id="id13">
+<span id="fig-dimethyltinfit"></span><a class="reference external image-reference" href="../_images/methyltin-dmt-fit.png"><img alt="../_images/methyltin-dmt-fit.png" src="../_images/methyltin-dmt-fit.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.27 </span><span class="caption-text">Fit to the dimethyltin dichloride data using the simple,
+6-parameter fitting model.</span></p>
+</div>
+<p>Glancing at the plot window, this looks like a decent enough fit.
+Examining the log file, we find that the fit is fairly well
+interpretable.</p>
+<ol class="arabic simple">
+<li>The S<sup>2</sup><sub>0</sub> value is 1.27±0.28, which is rather
+larger than expected</li>
+<li>E<sub>0</sub> is 4.1±2.5 eV, a reasonable value which suggests
+that E<sub>0</sub> was chosen reasonably in <font size=-1 color="#8C4112">ATHENA</font>.</li>
+<li>As expected, ΔR for the C ligand is negative and fairly
+large at -0.057±0.036 Å.  The ΔR for the Cl ligand
+is positive, but consistent with zero, 0.020±0.024 Å.</li>
+<li>Both σ<sup>2</sup> values are of a reasonable size, 0.00291±0.00542 Å<sup>2</sup> for C and 0.00595±0.00366 Å<sup>2</sup> for Cl.</li>
+</ol>
+<p>Note, however, that the information content of this fit is being
+heavily strained.  With a k-range of 2 Å<sup>-1</sup> to 10.5 Å<sup>-1</sup> and an R-range of 1 Å to 2.4 Å, there are only about
+7.4 independent measurements in these data.  The six parameters
+floated in this fit are a significant burden on these data.</p>
+</div>
+<div class="section" id="the-benefit-of-multiple-k-weight-fitting">
+<h2>13.2.4. The benefit of multiple k-weight fitting<a class="headerlink" href="#the-benefit-of-multiple-k-weight-fitting" title="Permalink to this headline">¶</a></h2>
+<p>Before extending this fitting project to consider corefinement of the
+two methyltin data sets, let us pause and consider the merits of
+multiple k-weight fitting.</p>
+<p>The default in <font size=-1 color="#8C4112">ARTEMIS</font> is to perform the fit with
+k-weighting of 1, 2, <strong>and</strong> 3.  The implementation of this is quite
+simple.  The normal χ<sup>2</sup> fitting metric is evaluated for
+each value of k-weighting considered.  The sum of all these χ<sup>2</sup> evaluations is then minimized to produce the fit.  The
+advantage of doing this can be seen when considering the impact of the
+various path parameters on the EXAFS equation.</p>
+<p>A σ<sup>2</sup> parameter is always multiplied by k<sup>2</sup> in
+the EXAFS equation.  Thus the portion of the fitting metric evaluated
+at high k is much more sensitive to a poorly chosen value of σ<sup>2</sup> than the portion evaluated at low k.  Since a k-weighting of
+3 amplifies the value of the data (and theory) more and more as k
+increases, evaluating the fit with a k-weight of 3 will provide more
+sensitivity to σ<sup>2</sup> parameters.  The other amplitude
+parameter, S<sup>2</sup><sub>0</sub>, affects all regions of the k-range
+equally.</p>
+<p>Similarly, ΔR is multiplied by k in the EXAFS equation, thus
+the evaluation of the fitting metric at high k is much more sensitive
+to a poorly chosen value.  E<sub>0</sub>, on the other hand, has a much
+bigger impact on the evaluation of the fitting metric at <em>low</em> k.
+Thus a k-weight of 3 will provide greater sensitivity to ΔR in
+the fit while a k-weight of 1 will provide a greater sensitivity to E<sub>0</sub>.</p>
+<p>One might think, then, that a k-weight of 2 would be a good compromise
+between the demands of the various parameters.  Let's check that out.</p>
+<p>To perform a fit with just k-weight of 2, <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> unclick
+the <span class="guilabel">1</span> and <span class="guilabel">3</span> buttons as shown in
+<a class="reference internal" href="#fig-dimethyltinfitkw2"><span>Fig. 13.28</span></a>.</p>
+<div class="figure align-center" id="id14">
+<span id="fig-dimethyltinfitkw2"></span><a class="reference external image-reference" href="../_images/methyltin-fitkw2.png"><img alt="../_images/methyltin-fitkw2.png" src="../_images/methyltin-fitkw2.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.28 </span><span class="caption-text">Changing the fitting k-weight so that the fit is made only with
+k-weight equal to 2.</span></p>
+</div>
+<p>We <img alt="leftclick" title="Left mouse button" src="../_static/leftclick.png" hspace="3"></a> click the big fit button and a minute later we
+see this:</p>
+<div class="figure align-center" id="id15">
+<span id="fig-dimethyltinfitwithkw2"></span><a class="reference external image-reference" href="../_images/methyltin-fit-with-kw2.png"><img alt="../_images/methyltin-fit-with-kw2.png" src="../_images/methyltin-fit-with-kw2.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.29 </span><span class="caption-text">The result of the fit using k-weight of 2.</span></p>
+</div>
+<p>On the surface, this appears to be a comparable fit to the one made
+with multiple k-weighting.  The quality of the plot is similar, as is
+the value of R-factor.  Closer examination of the fitting parameters
+turns up a number of serious problems.</p>
+<ol class="arabic simple">
+<li>The value of S<sup>2</sup><sub>0</sub> is 3.26±1.38!  The result
+with multiple k-weight fitting was also greater than 1, but could
+possibly be explained as a problem of sample preparation or mean
+free path.  This value is just nonphysically enormous.</li>
+<li>To compensate for the large S<sup>2</sup><sub>0</sub>, the values for
+σ<sup>2</sup> are also unreasonably large, 0.05444±0.03785
+Å<sup>2</sup> for C and 0.01785±0.00562 Å<sup>2</sup> for Cl.</li>
+</ol>
+<p>The effect of these hard-to-understand values for S<sup>2</sup><sub>0</sub> and σ<sup>2</sup> can be seen in <a class="reference internal" href="#fig-mtinfitkw2"><span>Fig. 13.31</span></a>.  Both contributions are very broad, as expected
+given their large values for σ<sup>2</sup>.  This is in contrast
+to the contributions from the multiple k-weight fit shown in
+<a class="reference internal" href="#fig-mtinfitmkw"><span>Fig. 13.30</span></a>, where they are of a width that
+seems more reasonable for tightly bound ligands.</p>
+<div class="figure compound align-center" id="_fig-mtin_fit_kw">
+<div style="width: 45%" class="subfigure align-center" id="id16">
+<span id="fig-mtinfitmkw"></span><a class="reference external image-reference" href="../_images/mtin_fit_mkw.png"><img alt="../_images/mtin_fit_mkw.png" src="../_images/mtin_fit_mkw.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.30 </span><span class="caption-text">The C and Cl contributions to the multiple k-weight fit.</span></p>
+</div>
+<div style="width: 45%" class="subfigure align-center" id="id17">
+<span id="fig-mtinfitkw2"></span><a class="reference external image-reference" href="../_images/mtin_fit_kw2.png"><img alt="../_images/mtin_fit_kw2.png" src="../_images/mtin_fit_kw2.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.31 </span><span class="caption-text">The C and Cl contributions to the fit using k-weight of 2.</span></p>
+</div>
+</div><p id="_fig-mtin_fit_kw">In this situation, where the number of <span class="guess">guess</span> parameters is
+such a large fraction of the total information content of the data,
+the use of multiple k-weight fitting is essential.  The added
+sensitivity to the various regions of k-space afforded by the
+evaluation of the fitting metric with different k-weight values helps
+reduce the very high correlations between the S<sup>2</sup><sub>0</sub>
+and σ<sup>2</sup> parameters, resulting in a much more defensible
+fit.</p>
+</div>
+<div class="section" id="corefining-multiple-data-sets">
+<h2>13.2.5. Corefining multiple data sets<a class="headerlink" href="#corefining-multiple-data-sets" title="Permalink to this headline">¶</a></h2>
+<p>The solution to the problem of the number of <span class="guess">guess</span> parameters
+being so close to the number of independent points is to expand the
+bandwidth of the data.  This is often done by extending the fitting
+model to include higher coordination shells, then importing and
+parameterizing additional <font size=-1 color="#8C4112">FEFF</font> paths to account for the
+structure at higher R.  In this case, that will not work.  These data
+have very little structure beyond about 2.5 Å.  In this case, what
+we have fit so far is all there is to the data.</p>
+<p>Another way of increasing the information content is to corefine
+multiple data sets.  Adding a second data can double the information
+content of the fitting model.  If the fitting model can be made to
+accommodate the new data set without doubling the number of
+<span class="guess">guess</span> parameters, the model should be more robust.</p>
+<p>In this case, we will double the information content by adding the
+monomethyltin trichloride to the project – both methyltin data sets
+were measured over the same k-range and consist of a single peak
+in R.  If we assume that the sate of the Sn atom is the same in both
+materials and we take care to align the data well in
+<font size=-1 color="#8C4112">ATHENA</font>, then we will not need to introduce new parameters
+for S<sup>2</sup><sub>0</sub> or E<sub>0</sub>.</p>
+<p>If we further assume that the nature of the Sn-C and Sn-Cl bonds are
+very similar in the two forms of methyltin, then we can reuse the
+ΔR and σ<sup>2</sup> parameters for the C and Cl
+scatterers.</p>
+<p>Thus we can double the information content of the fit while adding <em>no
+new parameters</em>!</p>
+<p>To start, use the file selection dialog to again open the
+<font size=-1 color="#8C4112">ATHENA</font> project file containing the methyltin data.  Select
+the monomethyltin data.  This will import the second data set, add it
+to the <span class="guilabel">Data sets</span> list in the main window, and create a
+Data window for monomethyltin.  All of this is shown in
+<a class="reference internal" href="#fig-methyltinmdsimport"><span>Fig. 13.32</span></a>.</p>
+<div class="figure align-center" id="id18">
+<span id="fig-methyltinmdsimport"></span><a class="reference external image-reference" href="../_images/methyltin-mds-import.png"><img alt="../_images/methyltin-mds-import.png" src="../_images/methyltin-mds-import.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.32 </span><span class="caption-text">Importing the monomethyltin trichloride data into the fitting project.</span></p>
+</div>
+<p>Re-open the window containing the <font size=-1 color="#8C4112">FEFF</font> calculation, then
+<img alt="drag" title="Drag and drop" src="../_static/drag.png" hspace="3"></a> drag and drop the same two paths onto the
+monomethyltin window.</p>
+<div class="figure align-center" id="id19">
+<span id="fig-methyltineditn"></span><a class="reference external image-reference" href="../_images/methyltin-edit-N.png"><img alt="../_images/methyltin-edit-N.png" src="../_images/methyltin-edit-N.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.33 </span><span class="caption-text">Reuse the <span class="guess">guess</span> parameters from before, but change the
+coordination numbers for C and Cl to 1 and 3, respectively.</span></p>
+</div>
+<p>Edit the path parameters so that the paths in the new monomethyltin
+window use the same parameters for S<sup>2</sup><sub>0</sub>, E<sub>0</sub>,
+ΔR, and σ<sup>2</sup> as were used for the dimethyltin.</p>
+<p>To account for the different numbers of C and Cl ligands, the N path
+parameters must be changed to 1 for C in the dimethyltin data window
+and 3 for the Cl.</p>
+<p>Make sure the R-range is set sensibly.  You are now ready to hit the
+big fit button.</p>
+<div class="figure compound align-center" id="_fig-mtin_mdsfit">
+<div style="width: 45%" class="subfigure align-center" id="id20">
+<span id="fig-mtinmdsfitm"></span><a class="reference external image-reference" href="../_images/mtin_mdsfit.png"><img alt="../_images/mtin_mdsfit.png" src="../_images/mtin_mdsfit.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.34 </span><span class="caption-text">The data and fitted paths for the multiple data set fit to the
+dimethyltin and monomethyltin data.</span></p>
+</div>
+<div style="width: 45%" class="subfigure align-center" id="id21">
+<span id="fig-mtinmdslog"></span><a class="reference external image-reference" href="../_images/mtin_mds_log.png"><img alt="../_images/mtin_mdslog.png" src="../_images/mtin_mdslog.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.35 </span><span class="caption-text">The log file from the multiple data set fit to the
+dimethyltin and monomethyltin data.</span></p>
+</div>
+</div><p id="_fig-mtin_mdsfit">This is a decent fit.  The <span class="guess">guess</span> parameters are mostly
+reasonable, although the S<sup>2</sup><sub>0</sub> parameter is still
+somewhat large.  E<sub>0</sub>, ΔR, and σ<sup>2</sup> values
+are all defensible.  The uncertainties on most of the parameters are
+smaller than in earlier fits.  Most importantly, we are not stressing
+the information content of the data so severely by fitting 6
+parameters.</p>
+<p>My having more unused information available, we can explore other
+possibilities in these data that would not have been possible in the
+single data set fit.  For example, we could examine the impact of the
+H single scattering paths on the fit or we could try lifting the
+constrains on the ΔR and σ<sup>2</sup> parameters of the
+two ligand types.</p>
+</div>
+<div class="section" id="further-exploration">
+<h2>13.2.6. Further exploration<a class="headerlink" href="#further-exploration" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Could the Fourier transform range be longer?  Look at the <a class="reference external" href="../data.html#special-plots">k123
+plot</a> for each data set.</li>
+<li>Could the fitting range be longer?  Well, there is not much signal
+beyond the first shell above the noise level.  Simply expanding the
+R-range to make N<sub>idp</sub> larger without actually including
+signal is cheating.</li>
+<li>Is the assumption about the bonds in the two samples valid?  How
+would you go about testing that assumption?</li>
+<li>Trimethyltin monochloride would have been a useful measurement....</li>
+<li>The ΔRs for both Sn-C and the Sn-Cl are somewhat large.
+The fit might be improved by adjusting the original
+<code class="file docutils literal"><span class="pre">feff.inp</span></code>, re-running <font size=-1 color="#8C4112">FEFF</font>, and re-doing the fit.</li>
+<li>The structure used in the <font size=-1 color="#8C4112">FEFF</font> calculation is unbounded
+from the outside, which might effect the construction of muffin
+tins.  Packing water molecules around the DMT molecule might help.</li>
+<li>Is the dimethyltin feff calculation really transferable to
+monomethyltin?  You could test this by finding or creating a
+structure for monomethyltin trichloride and running <font size=-1 color="#8C4112">FEFF</font>
+on that.</li>
+</ol>
 
 <br>
 
@@ -70,6 +515,7 @@ copyright © 2016 Bruce Ravel</p>
 <p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
 <p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
 consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+</div>
 </div>
 
 
