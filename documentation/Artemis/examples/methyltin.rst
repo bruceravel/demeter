@@ -376,16 +376,279 @@ interpretable.
 #. The S\ :sup:`2`\ :sub:`0` value is 1.27 |pm| 0.28, which is rather
    larger than expected
 
-#. E\ :sub:`0`
+#. E\ :sub:`0` is 4.1 |pm| 2.5 eV, a reasonable value which suggests
+   that E\ :sub:`0` was chosen reasonably in :demeter:`athena`.
 
-Finish summarizing fit to this point.
+#. As expected, |Delta|\ R for the C ligand is negative and fairly
+   large at -0.057 |pm| 0.036 |AA|.  The |Delta|\ R for the Cl ligand
+   is positive, but consistent with zero, 0.020 |pm| 0.024 |AA|.
 
-Step back and do the fit with a single k-weighting.  Discuss why the
-results are so bad.
+#. Both |sigma|\ :sup:`2` values are of a reasonable size, 0.00291
+   |pm| 0.00542 |AA|\ :sup:`2` for C and 0.00595 |pm| 0.00366 |AA|\
+   :sup:`2` for Cl.
 
-Import second data set, discuss constraints allowing us to double
-information while keeping these 6 parameters.
+Note, however, that the information content of this fit is being
+heavily strained.  With a k-range of 2 |AA|\ :sup:`-1` to 10.5 |AA|\
+:sup:`-1` and an R-range of 1 |AA| to 2.4 |AA|, there are only about
+7.4 independent measurements in these data.  The six parameters
+floated in this fit are a significant burden on these data.
 
-Fit again.
+The benefit of multiple k-weight fitting
+----------------------------------------
 
-Incorporate material from post-mortem presentation file.
+Before extending this fitting project to consider corefinement of the
+two methyltin data sets, let us pause and consider the merits of
+multiple k-weight fitting.
+
+The default in :demeter:`artemis` is to perform the fit with
+k-weighting of 1, 2, **and** 3.  The implementation of this is quite
+simple.  The normal |chi|\ :sup:`2` fitting metric is evaluated for
+each value of k-weighting considered.  The sum of all these |chi|\
+:sup:`2` evaluations is then minimized to produce the fit.  The
+advantage of doing this can be seen when considering the impact of the
+various path parameters on the EXAFS equation.
+
+A |sigma|\ :sup:`2` parameter is always multiplied by k\ :sup:`2` in
+the EXAFS equation.  Thus the portion of the fitting metric evaluated
+at high k is much more sensitive to a poorly chosen value of |sigma|\
+:sup:`2` than the portion evaluated at low k.  Since a k-weighting of
+3 amplifies the value of the data (and theory) more and more as k
+increases, evaluating the fit with a k-weight of 3 will provide more
+sensitivity to |sigma|\ :sup:`2` parameters.  The other amplitude
+parameter, S\ :sup:`2`\ :sub:`0`, affects all regions of the k-range
+equally.
+
+Similarly, |Delta|\ R is multiplied by k in the EXAFS equation, thus
+the evaluation of the fitting metric at high k is much more sensitive
+to a poorly chosen value.  E\ :sub:`0`, on the other hand, has a much
+bigger impact on the evaluation of the fitting metric at *low* k.
+Thus a k-weight of 3 will provide greater sensitivity to |Delta|\ R in
+the fit while a k-weight of 1 will provide a greater sensitivity to E\
+:sub:`0`.
+
+One might think, then, that a k-weight of 2 would be a good compromise
+between the demands of the various parameters.  Let's check that out.
+
+To perform a fit with just k-weight of 2, :mark:`leftclick,..` unclick
+the :guilabel:`1` and :guilabel:`3` buttons as shown in
+:numref:`Fig. %s <fig-dimethyltinfitkw2>`.
+
+.. _fig-dimethyltinfitkw2:
+.. figure:: ../../_images/methyltin-fitkw2.png
+   :target: ../_images/methyltin-fitkw2.png
+   :align: center
+
+   Changing the fitting k-weight so that the fit is made only with
+   k-weight equal to 2.
+
+
+We :mark:`leftclick,..` click the big fit button and a minute later we
+see this:
+
+.. _fig-dimethyltinfitwithkw2:
+.. figure:: ../../_images/methyltin-fit-with-kw2.png
+   :target: ../_images/methyltin-fit-with-kw2.png
+   :width: 50%
+   :align: center
+
+   The result of the fit using k-weight of 2.
+
+
+On the surface, this appears to be a comparable fit to the one made
+with multiple k-weighting.  The quality of the plot is similar, as is
+the value of R-factor.  Closer examination of the fitting parameters
+turns up a number of serious problems.
+
+#. The value of S\ :sup:`2`\ :sub:`0` is 3.26 |pm| 1.38!  The result
+   with multiple k-weight fitting was also greater than 1, but could
+   possibly be explained as a problem of sample preparation or mean
+   free path.  This value is just nonphysically enormous.
+
+#. To compensate for the large S\ :sup:`2`\ :sub:`0`, the values for
+   |sigma|\ :sup:`2` are also unreasonably large, 0.05444 |pm| 0.03785
+   |AA|\ :sup:`2` for C and 0.01785 |pm| 0.00562 |AA|\ :sup:`2` for Cl.
+
+The effect of these hard-to-understand values for S\ :sup:`2`\
+:sub:`0` and |sigma|\ :sup:`2` can be seen in :numref:`Fig. %s
+<fig-mtinfitkw2>`.  Both contributions are very broad, as expected
+given their large values for |sigma|\ :sup:`2`.  This is in contrast
+to the contributions from the multiple k-weight fit shown in
+:numref:`Fig. %s <fig-mtinfitmkw>`, where they are of a width that
+seems more reasonable for tightly bound ligands.
+
+.. subfigstart::
+
+.. _fig-mtinfitmkw:
+.. figure::  ../../_images/mtin_fit_mkw.png
+   :target: ../_images/mtin_fit_mkw.png
+   :width: 100%
+   :align: center
+
+   The C and Cl contributions to the multiple k-weight fit.
+
+.. _fig-mtinfitkw2:
+.. figure::  ../../_images/mtin_fit_kw2.png
+   :target: ../_images/mtin_fit_kw2.png
+   :width: 100%
+   :align: center
+
+   The C and Cl contributions to the fit using k-weight of 2.
+
+.. subfigend::
+   :width: 0.45
+   :label: _fig-mtin_fit_kw
+
+
+In this situation, where the number of :guess:`guess` parameters is
+such a large fraction of the total information content of the data,
+the use of multiple k-weight fitting is essential.  The added
+sensitivity to the various regions of k-space afforded by the
+evaluation of the fitting metric with different k-weight values helps
+reduce the very high correlations between the S\ :sup:`2`\ :sub:`0`
+and |sigma|\ :sup:`2` parameters, resulting in a much more defensible
+fit.
+
+Corefining multiple data sets
+-----------------------------
+
+The solution to the problem of the number of :guess:`guess` parameters
+being so close to the number of independent points is to expand the
+bandwidth of the data.  This is often done by extending the fitting
+model to include higher coordination shells, then importing and
+parameterizing additional :demeter:`feff` paths to account for the
+structure at higher R.  In this case, that will not work.  These data
+have very little structure beyond about 2.5 |AA|.  In this case, what
+we have fit so far is all there is to the data.
+
+Another way of increasing the information content is to corefine
+multiple data sets.  Adding a second data can double the information
+content of the fitting model.  If the fitting model can be made to
+accommodate the new data set without doubling the number of
+:guess:`guess` parameters, the model should be more robust.
+
+In this case, we will double the information content by adding the
+monomethyltin trichloride to the project |nd| both methyltin data sets
+were measured over the same k-range and consist of a single peak
+in R.  If we assume that the sate of the Sn atom is the same in both
+materials and we take care to align the data well in
+:demeter:`athena`, then we will not need to introduce new parameters
+for S\ :sup:`2`\ :sub:`0` or E\ :sub:`0`.
+
+If we further assume that the nature of the Sn-C and Sn-Cl bonds are
+very similar in the two forms of methyltin, then we can reuse the
+|Delta|\ R and |sigma|\ :sup:`2` parameters for the C and Cl
+scatterers.
+
+Thus we can double the information content of the fit while adding *no
+new parameters*!
+
+To start, use the file selection dialog to again open the
+:demeter:`athena` project file containing the methyltin data.  Select
+the monomethyltin data.  This will import the second data set, add it
+to the :guilabel:`Data sets` list in the main window, and create a
+Data window for monomethyltin.  All of this is shown in
+:numref:`Fig. %s <fig-methyltinmdsimport>`.
+
+.. _fig-methyltinmdsimport:
+.. figure:: ../../_images/methyltin-mds-import.png
+   :target: ../_images/methyltin-mds-import.png
+   :width: 50%
+   :align: center
+
+   Importing the monomethyltin trichloride data into the fitting project.
+
+Re-open the window containing the :demeter:`feff` calculation, then
+:mark:`drag,..` drag and drop the same two paths onto the
+monomethyltin window.
+
+.. _fig-methyltineditn:
+.. figure:: ../../_images/methyltin-edit-N.png
+   :target: ../_images/methyltin-edit-N.png
+   :align: center
+
+   Reuse the :guess:`guess` parameters from before, but change the
+   coordination numbers for C and Cl to 1 and 3, respectively.
+
+Edit the path parameters so that the paths in the new monomethyltin
+window use the same parameters for S\ :sup:`2`\ :sub:`0`, E\ :sub:`0`,
+|Delta|\ R, and |sigma|\ :sup:`2` as were used for the dimethyltin.
+
+To account for the different numbers of C and Cl ligands, the N path
+parameters must be changed to 1 for C in the dimethyltin data window
+and 3 for the Cl.
+
+Make sure the R-range is set sensibly.  You are now ready to hit the
+big fit button.
+
+
+.. subfigstart::
+
+.. _fig-mtinmdsfitm:
+.. figure::  ../../_images/mtin_mdsfit.png
+   :target: ../_images/mtin_mdsfit.png
+   :width: 100%
+   :align: center
+
+   The data and fitted paths for the multiple data set fit to the
+   dimethyltin and monomethyltin data.
+
+.. _fig-mtinmdslog:
+.. figure::  ../../_images/mtin_mdslog.png
+   :target: ../_images/mtin_mds_log.png
+   :width: 100%
+   :align: center
+
+   The log file from the multiple data set fit to the
+   dimethyltin and monomethyltin data.
+
+.. subfigend::
+   :width: 0.45
+   :label: _fig-mtin_mdsfit
+
+
+This is a decent fit.  The :guess:`guess` parameters are mostly
+reasonable, although the S\ :sup:`2`\ :sub:`0` parameter is still
+somewhat large.  E\ :sub:`0`, |Delta|\ R, and |sigma|\ :sup:`2` values
+are all defensible.  The uncertainties on most of the parameters are
+smaller than in earlier fits.  Most importantly, we are not stressing
+the information content of the data so severely by fitting 6
+parameters.  
+
+My having more unused information available, we can explore other
+possibilities in these data that would not have been possible in the
+single data set fit.  For example, we could examine the impact of the
+H single scattering paths on the fit or we could try lifting the
+constrains on the |Delta|\ R and |sigma|\ :sup:`2` parameters of the
+two ligand types.
+
+
+
+Further exploration
+-------------------
+
+
+#. Could the Fourier transform range be longer?  Look at the `k123
+   plot <../data.html#special-plots>`_ for each data set.
+
+#. Could the fitting range be longer?  Well, there is not much signal
+   beyond the first shell above the noise level.  Simply expanding the
+   R-range to make N\ :sub:`idp` larger without actually including
+   signal is cheating.
+
+#. Is the assumption about the bonds in the two samples valid?  How
+   would you go about testing that assumption?
+
+#. Trimethyltin monochloride would have been a useful measurement....
+
+#. The |Delta|\ Rs for both Sn-C and the Sn-Cl are somewhat large.
+   The fit might be improved by adjusting the original
+   :file:`feff.inp`, re-running :demeter:`feff`, and re-doing the fit.
+
+#. The structure used in the :demeter:`feff` calculation is unbounded
+   from the outside, which might effect the construction of muffin
+   tins.  Packing water molecules around the DMT molecule might help.
+
+#. Is the dimethyltin feff calculation really transferable to
+   monomethyltin?  You could test this by finding or creating a
+   structure for monomethyltin trichloride and running :demeter:`feff`
+   on that.
