@@ -509,7 +509,7 @@ sub new {
 
   $this->{pathlist}->SetDropTarget( Demeter::UI::Artemis::Data::DropTarget->new( $this, $this->{pathlist} ) );
   my @kids = $this->{pathlist}->GetChildren;
-  EVT_LEFT_DOWN($kids[0], sub{OnDrag(@_,$this->{pathlist})});
+  #EVT_LEFT_DOWN($kids[0], sub{OnDrag(@_,$this->{pathlist})});
 
   $rightpane -> SetSizerAndFit($right);
   $rightpane -> SetSize(Wx::Size->new(-1, -1));

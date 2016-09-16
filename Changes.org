@@ -14,6 +14,9 @@
 *** Artemis
     + Actually use the user-supplied value of epsilon_k (Thanks to
       [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-August/008793.html][Victor Streltsov]])
+    + disable C-left on path list, which was used (I think) to clone
+      paths.  This is a loss for dnd a path to another data set, but I
+      suspect that is not much used.
 
 *** Atoms
     + WebAtoms, https://github.com/bruceravel/WebAtoms
