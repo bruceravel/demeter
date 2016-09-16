@@ -12,6 +12,8 @@
       columns
 
 *** Artemis
+    + Actually use the user-supplied value of epsilon_k (Thanks to
+      [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-August/008793.html][Victor Streltsov]])
 
 *** Atoms
     + WebAtoms, https://github.com/bruceravel/WebAtoms

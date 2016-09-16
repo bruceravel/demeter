@@ -439,7 +439,8 @@ sub new {
   my $extrabox    = Wx::BoxSizer->new( wxHORIZONTAL );
   $otherboxsizer -> Add($extrabox, 0, wxTOP|wxBOTTOM, 2);
 
-  $extrabox -> Add(Wx::StaticText->new($leftpane, -1, "$EPSILON(k)"), 0, wxALL, 5);
+  $this->{epsilon_label} = Wx::StaticText->new($leftpane, -1, "$EPSILON(k)");
+  $extrabox  -> Add($this->{epsilon_label}, 0, wxALL, 5);
   $this->{epsilon} = Wx::TextCtrl->new($leftpane, -1, 0, wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $extrabox  -> Add($this->{epsilon}, 0, wxALL, 0);
   $extrabox  -> Add(Wx::StaticText->new($leftpane, -1, q{}), 1, wxALL, 2);
@@ -475,6 +476,9 @@ sub new {
   $this->{epsilon} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->mouseover("epsilon", "A user specified value for the measurement uncertainty.  A value of 0 means to let " . Demeter->backend_name . " determine the uncertainty.");
   $this->mouseover("pcplot",  "Check here to make plots using phase corrected Fourier transforms.  Note that the fit is NOT made using phase corrected transforms.");
+
+  #$this->{epsilon_label}->Enable(0);
+  #$this->{epsilon}->Enable(0);
 
   $leftpane -> SetSizerAndFit($left);
 

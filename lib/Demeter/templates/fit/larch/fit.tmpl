@@ -10,13 +10,15 @@
   $kstring  .= sprintf("%.3f,", $D->fit_karb_value) if $D->fit_karb;
   $kstring ||= "kweight=1,";
   $kstring   = '[' . $kstring . ']';
+  $epsstring = q{};
+  $epsstring = " epsilon_k = " . $D->fit_epsilon . ", " if ($D->fit_epsilon > 0);
   q{}
 }
 ###__ append data set {$D->name} ({$D->group}) to the list of data groups
 del {$D->group}.epsilon_k, {$D->group}.epsilon_r
 trans_{$D->group} = feffit_transform(kmin={$D->fft_kmin}, kmax={$D->fft_kmax}, kw={$kstring}, dk={$D->fft_dk}, window='{$D->fft_kwindow}',
                                rmin={$D->bft_rmin}, rmax={$D->bft_rmax})
-dset_{$D->group} = feffit_dataset(data={$D->group},
+dset_{$D->group} = feffit_dataset(data={$D->group},{$epsstring}
                             pathlist=[{$F->indeces}],
 			    transform=trans_{$D->group})
 dsets.append(dset_{$D->group})
