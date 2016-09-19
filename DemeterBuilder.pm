@@ -167,46 +167,43 @@ sub ACTION_test_for_larchserver {
   # search for Python exe and Larch server script, write larch_server.ini
   my $inifile = File::Spec->catfile(cwd, 'lib', 'Demeter', 'share', 'ini', 'larch_server.ini');
   print STDOUT "Looking for Python and Larch ---> ";
-  my $pyexe  = '';
-  my $larchexe = '';
+  my $larchexec  = '';
   if (($^O eq 'MSWin32') or ($^O eq 'cygwin')) {
-    my @dirlist = split /;/, $ENV{'PATH'};
-    push @dirlist,  (File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda3'),
-		     File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda2'),
-		     File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda'),
-		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda3'),
-		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda2'),
-		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda'));
-
+      my @dirlist = split /;/, $ENV{'PATH'};
+      push @dirlist,  (File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda3'),
+		       File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda2'),
+		       File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda'),
+		       File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda3'),
+		       File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda2'),
+		       File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda'),
+		       'C:\Python27', 'C:\Python35');
       foreach my $d (@dirlist) {
 	  my $pyexe_ =  File::Spec->catfile($d, 'python.exe');
 	  my $larch_ =  File::Spec->catfile($d, 'Scripts', 'larch_server');
 	  if ((-e $pyexe_) && (-e $larch_))  {
-	      $larchexe = $larch_,
-	      $pyexe = $pyexe_;
+	      $larchexec = "$pyexe_ $larch_";
 	      last;
 	  }
       }
   } else {
-    my @dirlist = split /:/, $ENV{'PATH'};
-    push @dirlist,  (File::Spec->catfile($ENV{HOME}, 'anaconda3', 'bin'),
-		     File::Spec->catfile($ENV{HOME}, 'anaconda2', 'bin'),
-		     File::Spec->catfile($ENV{HOME}, 'anaconda', 'bin'));
+      my @dirlist = split /:/, $ENV{'PATH'};
+      push @dirlist,  (File::Spec->catfile($ENV{HOME}, 'anaconda3', 'bin'),
+		       File::Spec->catfile($ENV{HOME}, 'anaconda2', 'bin'),
+		       File::Spec->catfile($ENV{HOME}, 'anaconda', 'bin'));
 
-    foreach my $d (@dirlist) {
-      my $pyexe_ =  File::Spec->catfile($d, 'python');
-      my $larch_ =  File::Spec->catfile($d, 'larch_server');
-      if ((-e $pyexe_) && (-e $larch_))  {
-	$larchexe = $larch_,
-	  $pyexe = $pyexe_;
-	last;
+      foreach my $d (@dirlist) {
+	  my $pyexe_ =  File::Spec->catfile($d, 'python');
+	  my $larch_ =  File::Spec->catfile($d, 'larch_server');
+	  if ((-e $pyexe_) && (-e $larch_))  {
+	      $larchexec = "$pyexe_ $larch_";
+	      last;
+	  }
       }
-    }
   }
-  if ($larchexe eq '') {
+  if ($larchexec eq '') {
       print "not found\n";
   } else {
-      print "found  $pyexe  // $larchexe \n";
+      print "found  $larchexec \n";
   }
   my $larch_server_ini_text = <<"END_OF_FILE";
 ---
@@ -214,7 +211,7 @@ server: 'localhost' # URL of larch_server or "localhost" is running locally
 port: 4966          # the port number the larch server is listening to
 timeout: 3          # the timeout in seconds before Demeter gives up trying to talk to the larch server
 quiet: 1            # 1 means to suppress larch_server screen messages, 0 means allow larch_server to print messages
-windows: $pyexe $larchexe
+windows: $larchexec
 END_OF_FILE
 
   open(my $FOUT, '>', $inifile);
