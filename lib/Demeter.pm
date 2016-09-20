@@ -205,7 +205,7 @@ sub set_datagroup {
 ######################################################################
 ## conditional features
 use vars qw($Gnuplot_exists $STAR_Parser_exists $XDI_exists $PDL_exists $PSG_exists $FML_exists);
-if ($ENV{DEMETER_MODE} eq 'web') {
+if (defined($ENV{DEMETER_MODE}) and ($ENV{DEMETER_MODE} eq 'web')) {
   $Gnuplot_exists     = 0;
 } else {
   $Gnuplot_exists     = eval "require Graphics::GnuplotIF" || 0;
@@ -224,7 +224,7 @@ use vars qw($plot);
 $plot = Demeter::Plot -> new() if not $mode->plot;
 $plot -> toggle_echo(0);
 my $backend = $config->default('plot', 'plotwith');
-$backend = 'none' if ($ENV{DEMETER_MODE} eq 'web');
+$backend = 'none' if (defined($ENV{DEMETER_MODE}) and ($ENV{DEMETER_MODE} eq 'web'));
 if ($backend eq 'gnuplot') {
   if (Demeter->is_windows) {
     my $message = Demeter->check_exe('gnuplot');
