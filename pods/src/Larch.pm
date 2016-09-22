@@ -15,20 +15,55 @@ use YAML::Tiny;
 #my $ini = File::Spec->catfile(Demeter->dot_folder, "larch_server.yaml");
 my $ini = File::Spec->catfile(Demeter::Here::here, 'share', 'ini', 'larch_server.ini'); # if (not -e $ini);
 my $rhash;
+
+print "Trying Larch server: $ini\n";
+
+
 eval {local $SIG{__DIE__} = sub {}; $rhash = YAML::Tiny::LoadFile($ini)};
-#print join("|", %$rhash), $/;
+
+## print join("|", %$rhash), $/;
 
 $rhash->{server}  ||= 'localhost';
 $rhash->{port}    ||= 4966;
 $rhash->{proxy}     = sprintf("http://%s:%d", $rhash->{server}, $rhash->{port});
 $rhash->{timeout} ||= 3;
 $rhash->{quiet}   ||= 0;
+$rhash->{keepalive} ||= 7*24*60*60 ;
 $rhash->{exe}       = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? $rhash->{windows} : 'larch_server';
 
-my $command = $rhash->{quiet} ? $rhash->{exe}." -q start" : $rhash->{exe}." start";
-print "Trying Larch server:\n#  $command\n";
-my $ok = system $command;
+#####
+# test for running larch server
+# note: this tests only that a port is a larch server,
+#       *not* that it is in use for another purpose.
+#       I didn't see how to test that with XMLRPC::Lite
+sub test_larch_server {
+    my ($host, $port) = @_;
+    my $addr = sprintf("http://%s:%d", $host, $port);
+    my $server = XMLRPC::Lite -> proxy($addr);
+    eval{$server->get_rawdata('_sys.config.user_larchdir')};
+    return $@;
+};
 
+# find and return the next unused larch port,
+# given a host and starting port number.
+# this will avoid multiple clients using the same port
+sub get_next_larch_port {
+    my ($host, $port_start) = @_;
+    for (my $i=0; $i<250; $i++) {
+	my $port = $port_start + $i;
+	if (test_larch_server($host, $port)) {
+	    return $port;
+	}
+    }
+    return -1;
+}
+
+$rhash->{port}  = get_next_larch_port($rhash->{server}, $rhash->{port});
+$rhash->{proxy} = sprintf("http://%s:%d", $rhash->{server}, $rhash->{port});
+
+my $command = $rhash->{exe}." -p ". $rhash->{port}." start";
+print "Trying Larch server:  $command\n";
+my $ok = system $command;
 
 ######################################################################
 ## ----- contact the Larch server, trying repeatedly until contact is
@@ -39,12 +74,13 @@ our $client;
 $client = XMLRPC::Lite -> proxy($rhash->{proxy});
 our $rpcdata;
 
-use vars qw($larch_is_go);
+use vars qw($larch_is_go $port);
 $larch_is_go = 1;
+$port = $rhash->{port};
 
 eval {$client->larch(q{cd('} . cwd . q{')})};
 my $count = 0;
-while ($count < $rhash->{timeout}*5) {
+while ($count < $rhash->{timeout}*15) {
   $larch_is_go = 0 if $@;
   eval {$client->larch(q{cd('} . cwd . q{')})};
   if (not $rhash->{quiet}) {print $@, $/};
@@ -52,6 +88,12 @@ while ($count < $rhash->{timeout}*5) {
   ++$count;
   usleep(200000);
 };
+
+my $username = getpwuid($<);
+eval {$client->set_client_info('user', $username)};
+eval {$client->set_client_info('app', 'demeter')};
+eval {$client->set_client_info('pid', $$)};
+eval {$client->set_keepalive_time($rhash->{keepalive})};
 
 ######################################################################
 ## ----- send a string to the server

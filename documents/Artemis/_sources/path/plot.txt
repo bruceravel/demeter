@@ -17,19 +17,21 @@ list while holding down the :button:`Shift` key. Doing so marks all
 paths between the selected one and the one
 :button:`Shift`-:mark:`leftclick,..` clicked upon.
 
-:button:`Control`-:mark:`leftclick,..` clicking on the path list is
-also a special function used for two purposes. Doing a
-:button:`Control`-:mark:`leftclick,..` click starts a :mark:`drag,..`
-drag-and-drop with the path you click on. Dropping the path on another
-data window, copies If you drop the path on the same path list, that
-path to that Data set.  Dropping the path on the same path list is
-equivalent to cloning the dragged path, with the clone being appended
-to the end of the path list.
+.. 
+  :button:`Control`-:mark:`leftclick,..` clicking on the path list is
+  also a special function used for two purposes. Doing a
+  :button:`Control`-:mark:`leftclick,..` click starts a :mark:`drag,..`
+  drag-and-drop with the path you click on. Dropping the path on another
+  data window, copies If you drop the path on the same path list, that
+  path to that Data set.  
 
-.. caution:: Mistakenly :button:`Control`-:mark:`leftclick,..`
-   clicking rather than :button:`Shift`-:mark:`leftclick,..` clicking
-   will likely result in a path being cloned. This can be surprising
-   and confusing, so please take care and be mindful!
+  Dropping the path on the same path list is
+  equivalent to cloning the dragged path, with the clone being appended
+  to the end of the path list.
+  .. caution:: Mistakenly :button:`Control`-:mark:`leftclick,..`
+     clicking rather than :button:`Shift`-:mark:`leftclick,..` clicking
+     will likely result in a path being cloned. This can be surprising
+     and confusing, so please take care and be mindful!
 
 .. todo:: Write a page about tools for building MDS fits
 

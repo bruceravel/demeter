@@ -37,6 +37,7 @@ requires 'is_windows';
 
 sub dot_folder {
   my ($self) = @_;
+  return q{} if (defined($ENV{DEMETER_MODE}) and ($ENV{DEMETER_MODE} eq 'web'));
   my $folder = ($self->is_windows)
     ? File::Spec->catfile($ENV{APPDATA}, "demeter")
       : File::Spec->catfile($ENV{HOME}, ".horae");

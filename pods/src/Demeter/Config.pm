@@ -80,7 +80,7 @@ has 'is_configured' => (is => 'rw', isa => 'Bool', default => 0);
 my $where = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? "APPDATA" : "HOME";
 my $stem  = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? "demeter" : ".horae";
 #my $where = ($Demeter::mode->is_windows) ? "USERPROFILE" : "HOME";
-our $fname = File::Spec->catfile($ENV{$where}, $stem, "demeter.ini");
+our $fname = (defined($ENV{DEMETER_MODE}) and ($ENV{DEMETER_MODE} eq 'web')) ? q{} : File::Spec->catfile($ENV{$where}, $stem, "demeter.ini");
 has 'ini_file' => (is => 'ro', isa => FileName, default => $fname);
 
 

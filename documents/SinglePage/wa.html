@@ -57,7 +57,7 @@ hosted on a web server and accessed through your browser.  It is
 <blockquote>
 <div><p>Point your browser at any of these servers:</p>
 <ol class="arabic simple">
-<li>(point to Matt's server)</li>
+<li><a class="reference external" href="http://millenia.cars.aps.anl.gov/webatoms/">http://millenia.cars.aps.anl.gov/webatoms/</a></li>
 </ol>
 <p>If you would like your installation included in this list, let Bruce
 know by opening an <a class="reference external" href="https://github.com/bruceravel/WebAtoms/issues">issue at the GitHub site</a>.</p>
@@ -67,7 +67,8 @@ know by opening an <a class="reference external" href="https://github.com/brucer
 <div><ol class="arabic simple">
 <li>Clone a copy from the GitHub site or <a class="reference external" href="https://github.com/bruceravel/WebAtoms/archive/master.zip">download the latest zip file</a>.</li>
 <li>Assuming you have <a class="reference external" href="https://www.perl.org/get.html">perl installed</a> on your computer, you will need
-to install <a class="reference external" href="http://perldancer.org/">the Dancer web framework</a>
+to install <a class="reference external" href="http://perldancer.org/">the Dancer web framework</a>,
+<a class="reference external" href="https://metacpan.org/pod/distribution/YAML/lib/YAML.pod">perl's YAML tool</a>,
 and <a class="reference external" href="http://bruceravel.github.io/demeter/">Demeter</a>.</li>
 <li>Launch the application by doing <code class="docutils literal"><span class="pre">perl</span> <span class="pre">bin/app.pl</span></code> at the
 command line.</li>
@@ -79,11 +80,21 @@ command line.</li>
 <div><ol class="arabic simple">
 <li>Clone a copy from the GitHub site or <a class="reference external" href="https://github.com/bruceravel/WebAtoms/archive/master.zip">download the latest zip file</a>.</li>
 <li>Assuming you have <a class="reference external" href="https://www.perl.org/get.html">perl installed</a> on your computer, you will need
-to install <a class="reference external" href="http://perldancer.org/">the Dancer web framework</a>
+to install <a class="reference external" href="http://perldancer.org/">the Dancer web framework</a>,
+<a class="reference external" href="https://metacpan.org/pod/distribution/YAML/lib/YAML.pod">perl's YAML tool</a>,
 and <a class="reference external" href="http://bruceravel.github.io/demeter/">Demeter</a>.</li>
 <li>Follow the <a class="reference external" href="https://metacpan.org/pod/Dancer2::Manual::Deployment">instructions for deploying a Dancer application</a>
 appropriate to your web server.</li>
 </ol>
+</div></blockquote>
+<p><strong>Installing dependencies</strong></p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">cpanm</span> <span class="pre">-S</span> <span class="pre">Dancer</span></code> to download and install Dancer and its
+dependencies.  <code class="docutils literal"><span class="pre">cpanm</span> <span class="pre">-S</span> <span class="pre">YAML</span></code> to download and install YAML
+and its dependencies.  The <code class="docutils literal"><span class="pre">-S</span></code> flag uses <strong class="program">sudo</strong>
+to do the actual installation.</p>
+<p>For <font size=-1 color="#8C4112">DEMETER</font>, follow the instructions at <a class="reference external" href="http://bruceravel.github.io/demeter/">the Demeter
+homepage</a>.</p>
 </div></blockquote>
 <p>If you have any problems deploying <font size=-1 color="#8C4112">WEBATOMS</font> on particular
 servers or accessing it with particular browsers, please <a class="reference external" href="https://github.com/bruceravel/WebAtoms/issues">open an
@@ -99,7 +110,7 @@ including the link in the upper left back to the empty
 in with crystallographic data.  On the right is the response area,
 which will (hopefully!) be filled with a <code class="file docutils literal"><span class="pre">feff.inp</span></code> file or some
 other useful crystallographic calculation.</p>
-<div class="figure align-center" id="id5">
+<div class="figure align-center" id="id6">
 <a class="reference external image-reference" href="../_images/webatoms.png"><img alt="_images/webatoms.png" src="_images/webatoms.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text"><font size=-1 color="#8C4112">WEBATOMS</font>, running locally, after importing a CIF file for Ga<sub>2</sub>O<sub>3</sub></span></p>
 </div>
@@ -117,12 +128,12 @@ cluster written to the feff.inp file”.</p>
 setting into a setting that will be recognized by <font size=-1 color="#8C4112">WEBATOMS</font>'
 crystal engine.  This often causes confusion and is <a class="reference external" href="http://bruceravel.github.io/demeter/documents/Artemis/atoms/space.html#multiple-origins-and-the-shift-keyword">discussed here in
 some detail</a>.</p>
-<p>Once you are done entering crystal data, click the <span class="guilabel">Compute</span>
-button.  The corresponding <code class="file docutils literal"><span class="pre">feff.,inp</span></code> file will be displayed in
-the response area on the right.</p>
-<p>To save the contents of the response area, click the <span class="guilabel">Save
-as</span> button.  You will be prompted for the name and location of the
-save file on your computer.</p>
+<p>Once you are done entering crystal data, <img alt="leftclick" title="Left mouse button" src="./_static/leftclick.png" hspace="3"></a> click the
+<kbd class="light">Compute</kbd> button.  The corresponding <code class="file docutils literal"><span class="pre">feff.,inp</span></code>
+file will be displayed in the response area on the right.</p>
+<p>To save the contents of the response area, <img alt="leftclick" title="Left mouse button" src="./_static/leftclick.png" hspace="3"></a> click
+the <kbd class="light">Save as</kbd> button.  You will be prompted for the name
+and location of the save file on your computer.</p>
 </div>
 <div class="section" id="entering-crystallographic-data">
 <h2>Entering crystallographic data<a class="headerlink" href="#entering-crystallographic-data" title="Permalink to this headline">¶</a></h2>
@@ -131,18 +142,21 @@ application:</p>
 <ol class="arabic simple">
 <li>Manually enter your crystal data into the form.</li>
 <li>You can import from a CIF or <code class="file docutils literal"><span class="pre">atoms.inp</span></code> file which resides
-locally on your computer.  To do this, click the <span class="guilabel">Browse</span>
-button to post a file selection dialog, then select a file from
-your computer.  Then click the <span class="guilabel">Import local file</span>
-button.</li>
+locally on your computer.  To do this, <img alt="leftclick" title="Left mouse button" src="./_static/leftclick.png" hspace="3"></a> click the
+<kbd class="light">Browse</kbd> button to post a file selection dialog and
+select a file from your computer.  Then <img alt="leftclick" title="Left mouse button" src="./_static/leftclick.png" hspace="3"></a> click
+the <kbd class="light">Submit crystal data</kbd> button.  Your data will be
+imported and the result will be shown in the response area.</li>
 <li>Enter a URL to a CIF or <code class="file docutils literal"><span class="pre">atoms.inp</span></code> file in the text box
-below the <span class="guilabel">Browse</span> button.  Click the <span class="guilabel">Import
-file from web</span> button to fetch that file from the internet.</li>
+below the <kbd class="light">Browse</kbd> button.  Hit <kbd class="dark">Return</kbd>
+to fetch that file from the internet.  Your data will be
+imported and the result will be shown in the response area.</li>
 <li>Use the <code class="docutils literal"><span class="pre">url?url=</span></code> syntax in the URL for the <font size=-1 color="#8C4112">WEBATOMS</font>
 application, e.g.
 <code class="docutils literal"><span class="pre">http://webatoms.server/url?url=http://www.crystallography.net/cod/1535967.cif</span></code>.
-In this way, you can hook <font size=-1 color="#8C4112">WEBATOMS</font> up to other web or
-desktop applications.</li>
+Your data will be imported and the result will be shown in the
+response area.  In this way, you can hook <font size=-1 color="#8C4112">WEBATOMS</font> up to
+other web or desktop applications.</li>
 </ol>
 <div class="admonition-todo admonition" id="index-0">
 <p class="first admonition-title">Todo</p>
@@ -156,6 +170,7 @@ or some such.  Although care should be taken, as this can
 to the internet.</li>
 <li>Say something sensible when a file is neither <code class="file docutils literal"><span class="pre">atoms.inp</span></code>
 nor CIF.</li>
+<li>Lots more testing for error conditions.</li>
 </ol>
 </div>
 <p>Note that one- or two-letter symbols are typically used to identify
@@ -221,7 +236,8 @@ can be found).</div></blockquote>
 <blockquote>
 <div>Currently a CIF file is recognized only if it's file name ends in
 <code class="file docutils literal"><span class="pre">.cif</span></code>.  That's dumb and easy to foil, but that's how it works
-right now.</div></blockquote>
+right now.  Happily, <font size=-1 color="#8C4112">WEBATOMS</font> is more deft at recognizing
+<code class="file docutils literal"><span class="pre">atoms.inp</span></code> files.</div></blockquote>
 </div>
 <div class="section" id="troubleshooting">
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>
@@ -229,7 +245,7 @@ right now.</div></blockquote>
 <blockquote>
 <div>This usually happens when you have a lengthy list of unique sites
 and are using the <code class="docutils literal"><span class="pre">tags</span></code> or <code class="docutils literal"><span class="pre">sites</span></code> ipot style.  You can <a class="reference external" href="http://bruceravel.github.io/demeter/documents/Artemis/extended/ipots.html">find a
-discussion of this ipot styles in the Artemis manual</a>.</div></blockquote>
+discussion of ipot styles in the Artemis manual</a>.</div></blockquote>
 <p><strong>Sites generate one or more common positions and their occupancies sum to more than 1.</strong></p>
 <blockquote>
 <div>This is likely to happen when importing a CIF file with partial
@@ -247,14 +263,14 @@ has a complete list of symbols recognized by <font size=-1 color="#8C4112">WEBAT
 <blockquote>
 <div><p>Lattice constants must be positive numbers and must be written in a
 way that are obviously interpretable as numbers.  Localization is
-<em>not</em> respected – the decimal symbol is a dot (<code class="docutils literal"><span class="pre">.</span></code>), <strong>not</strong> a
+<em>not</em> respected – the decimal mark is a dot (<code class="docutils literal"><span class="pre">.</span></code>), <strong>not</strong> a
 comma, momayyez, apostrophe, decimal separator key symbol, space, or
 any other symbol.</p>
 <p>Lattice angles must also be positive numbers.  So too the three
 radius parameters.</p>
 <p>Note that site coordinates can be negative, but must also be
 obviously interpretable as numbers using a dot for the decimal
-marker.</p>
+mark.</p>
 </div></blockquote>
 <p><strong>Symbol for site N is not a valid element symbol</strong></p>
 <blockquote>
@@ -265,7 +281,8 @@ Full names (e.g. “oxygen”) or Z numbers
 (e.g. “8”) can be used as well, however names must be
 spelled correctly.</p>
 <p>Note that site tags can be any string and need not be related to the
-element symbol, although only the first 10 characters will be used.</p>
+element symbol, although only the first 10 characters will be used.
+Also, tags should not include white space.</p>
 </div></blockquote>
 </div>
 <div class="section" id="citing-webatoms">
