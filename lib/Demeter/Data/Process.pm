@@ -517,7 +517,7 @@ sub boxcar {
   splice(@z, 0, ($n-1)/2);
   @z = splice(@z, 0, $#z-($n-1)/2);
 
-  my $smoothed = $self->put(\@x, \@z, datatype=>'xmu', name=>$self->name.", boxcar size $n");
+  my $smoothed = $self->put(\@x, \@z, datatype=>'xmu', name=>$self->name.", boxcar size $n", bkg_eshift=>$self->bkg_eshift);
   $smoothed->e0($self);
   $smoothed->resolve_defaults;
   # flag for reprocessing
