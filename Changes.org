@@ -11,7 +11,8 @@
       templates to provide for the special case in k of two abscissa
       columns
     + Boxcar average smoothing failed to copy bkg_eshift to the new
-      group (Thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-September/008827.html][Ian Godrey]])
+      group (Thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-September/008827.html][Ian Godrey]]) Fixed same error in Gaussian filter
+      smoothing.
 
 *** Artemis
     + Actually use the user-supplied value of epsilon_k (Thanks to

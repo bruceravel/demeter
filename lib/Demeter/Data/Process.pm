@@ -563,7 +563,7 @@ sub gaussian_filter {
   #splice(@z, 0, ($n-1)/2);
   @z = splice(@z, 0, $#z);
 
-  my $smoothed = $self->put(\@x, \@z, datatype=>'xmu', name=>$self->name.", Gaussian filter $n, $sd");
+  my $smoothed = $self->put(\@x, \@z, datatype=>'xmu', name=>$self->name.", Gaussian filter $n, $sd", bkg_eshift=>$self->bkg_eshift);
   $smoothed->e0($self);
   $smoothed->resolve_defaults;
   # flag for reprocessing
