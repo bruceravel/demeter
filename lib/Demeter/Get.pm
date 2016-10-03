@@ -57,7 +57,7 @@ sub fetch_scalar {
   } elsif ($self->is_larch) {
     my $gp = $self->group || Demeter->mo->throwaway_group;
     if ($param =~ m{norm_c\d}) {
-      $param = $gp.'.'.$param;
+      $param = $gp.'.pre_edge_details.'.$param;
       return denull(Larch::get_larch_scalar($param));
     } elsif ($param =~ m{epsilon_([kr])}) {
       #if ($self->fit_group) {
@@ -80,7 +80,7 @@ sub fetch_scalar {
 
     ## normalization parameters
     } elsif ($param =~ m{pre_(?:offset|slope)}) {
-      $param = $gp.'.'.$param;
+      $param = $gp.'.pre_edge_details.'.$param;
       return denull(Larch::get_larch_scalar($param));
 
     ## auto-alignment parameter
