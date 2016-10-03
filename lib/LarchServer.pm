@@ -88,10 +88,10 @@ if (length $larch_exe > 16) {
   print STDOUT "Found Larch Server $larch_exe\n";
 
   # find next available port to run on
-  $larch_port  = get_next_larch_port('localhost', $port);
+  $larch_port  = get_next_larch_port('localhost', $larch_port);
   if ($larch_port > 1) {
     $larch_is_go = 1;
-    my $command = $larchexe." -p ". $larch_port." start";
+    my $command = $larch_exe." -p ". $larch_port." start";
     if (lc($^O) eq 'darwin') {$command = "$command &";}
 
     my $ok = system $command;

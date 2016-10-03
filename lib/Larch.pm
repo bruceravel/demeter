@@ -9,7 +9,7 @@ use Time::HiRes qw(usleep);
 use YAML::Tiny;
 use XMLRPC::Lite;
 
-use vars qw($larch_is_go $larch_port, $larch_exe);
+use vars qw($larch_is_go $larch_port $larch_exe);
 
 use LarchServer;
 
