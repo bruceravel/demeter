@@ -52,7 +52,7 @@ sub ACTION_build {
   unlink File::Spec->catfile('lib', 'Demeter', 'configuration', 'gnuplot.demeter_conf');
   $self->dispatch("compile_ifeffit_wrapper");
   $self->dispatch("test_for_gnuplot");
-  $self->dispatch("test_for_larchserver");
+  # $self->dispatch("test_for_larchserver");
   $self->SUPER::ACTION_build;
   $self->dispatch("post_build");
 }
@@ -163,6 +163,7 @@ sub ACTION_test_for_gnuplot {
   print STDOUT "$term terminal.\n";
 };
 
+## this is no longer needed -- Larch is tested for at runtime
 sub ACTION_test_for_larchserver {
   # search for Python exe and Larch server script, write larch_server.ini
   my $inifile = File::Spec->catfile(cwd, 'lib', 'Demeter', 'share', 'ini', 'larch_server.ini');
