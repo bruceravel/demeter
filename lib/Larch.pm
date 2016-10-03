@@ -9,22 +9,21 @@ use Time::HiRes qw(usleep);
 use YAML::Tiny;
 use XMLRPC::Lite;
 
-use vars qw($larch_is_go $port);
-
-our $client;
-our $rpcdata;
+use vars qw($larch_is_go $larch_port, $larch_exe);
 
 use LarchServer;
 
 $larch_is_go = $LarchServer::larch_is_go;
-$port = $LarchServer::larch_port;
+$larch_exe   = $LarchServer::larch_exe;
+$larch_port  = $LarchServer::larch_port;
 
-$client = 0;
+our $client = 0;
+our $rpcdata;
 
 my $rhash;
 
 $rhash->{server}  = 'localhost';
-$rhash->{port}    = $port;
+$rhash->{port}    = $larch_port;
 $rhash->{timeout} = 3;
 $rhash->{quiet}   = 0;
 $rhash->{keepalive} = 3*24*60*60 ;
@@ -35,7 +34,7 @@ $rhash->{keepalive} = 3*24*60*60 ;
 ##       established, eventually failing if contact cannot be made
 ######################################################################
 if ($larch_is_go) {
-  my $addr = sprintf("http://%s:%d", $rhash->{server}, $port);
+  my $addr = sprintf("http://%s:%d", $rhash->{server}, $larch_port);
   print STDOUT "Initializing Larch Client: $addr\n";
 
   $client = XMLRPC::Lite -> proxy($addr);
