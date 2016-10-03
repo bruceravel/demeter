@@ -609,7 +609,7 @@ sub set_mode {
       my $ini = File::Spec->catfile(Demeter::Here::here, 'share', 'ini', 'larch_server.ini');
       my $rhash;
       eval {local $SIG{__DIE__} = sub {}; $rhash = YAML::Tiny::LoadFile($ini)};
-      $rhash->{exe} = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? $rhash->{windows} : which('larch_server');
+      $rhash->{exe} = $Larch::larch_exe;
 
       print "
 Demeter says:
