@@ -13,7 +13,7 @@ hosted on a web server and accessed through your browser.  It is
 
   Point your browser at any of these servers:
 
-  #. (point to Matt's server)
+  #. http://millenia.cars.aps.anl.gov/webatoms/
 
   If you would like your installation included in this list, let Bruce
   know by opening an `issue at the GitHub site
@@ -26,7 +26,8 @@ hosted on a web server and accessed through your browser.  It is
 
   #. Assuming you have `perl installed
      <https://www.perl.org/get.html>`_ on your computer, you will need
-     to install `the Dancer web framework <http://perldancer.org/>`_
+     to install `the Dancer web framework <http://perldancer.org/>`_,
+     `perl's YAML tool <https://metacpan.org/pod/distribution/YAML/lib/YAML.pod>`_,
      and `Demeter <http://bruceravel.github.io/demeter/>`_.
 
   #. Launch the application by doing ``perl bin/app.pl`` at the
@@ -41,12 +42,23 @@ hosted on a web server and accessed through your browser.  It is
 
   #. Assuming you have `perl installed
      <https://www.perl.org/get.html>`_ on your computer, you will need
-     to install `the Dancer web framework <http://perldancer.org/>`_
+     to install `the Dancer web framework <http://perldancer.org/>`_,
+     `perl's YAML tool <https://metacpan.org/pod/distribution/YAML/lib/YAML.pod>`_,
      and `Demeter <http://bruceravel.github.io/demeter/>`_.
 
   #. Follow the `instructions for deploying a Dancer application
      <https://metacpan.org/pod/Dancer2::Manual::Deployment>`_
      appropriate to your web server.
+
+**Installing dependencies**
+
+  ``cpanm -S Dancer`` to download and install Dancer and its
+  dependencies.  ``cpanm -S YAML`` to download and install YAML
+  and its dependencies.  The ``-S`` flag uses :program:`sudo`
+  to do the actual installation.
+
+  For :demeter:`demeter`, follow the instructions at `the Demeter
+  homepage <http://bruceravel.github.io/demeter/>`_.
 
 
 If you have any problems deploying :demeter:`WebAtoms` on particular
@@ -98,13 +110,13 @@ crystal engine.  This often causes confusion and is `discussed here in
 some detail
 <http://bruceravel.github.io/demeter/documents/Artemis/atoms/space.html#multiple-origins-and-the-shift-keyword>`_.
 
-Once you are done entering crystal data, click the :guilabel:`Compute`
-button.  The corresponding :file:`feff.,inp` file will be displayed in
-the response area on the right.
+Once you are done entering crystal data, :mark:`leftclick,.` click the
+:button:`Compute,light` button.  The corresponding :file:`feff.,inp`
+file will be displayed in the response area on the right.
 
-To save the contents of the response area, click the :guilabel:`Save
-as` button.  You will be prompted for the name and location of the
-save file on your computer.
+To save the contents of the response area, :mark:`leftclick,.` click
+the :button:`Save as,light` button.  You will be prompted for the name
+and location of the save file on your computer.
 
 
 Entering crystallographic data
@@ -116,20 +128,23 @@ application:
 #. Manually enter your crystal data into the form.
 
 #. You can import from a CIF or :file:`atoms.inp` file which resides
-   locally on your computer.  To do this, click the :guilabel:`Browse`
-   button to post a file selection dialog, then select a file from
-   your computer.  Then click the :guilabel:`Import local file`
-   button.
+   locally on your computer.  To do this, :mark:`leftclick,.` click the
+   :button:`Browse,light` button to post a file selection dialog and
+   select a file from your computer.  Then :mark:`leftclick,.` click
+   the :button:`Submit crystal data,light` button.  Your data will be
+   imported and the result will be shown in the response area.
 
 #. Enter a URL to a CIF or :file:`atoms.inp` file in the text box
-   below the :guilabel:`Browse` button.  Click the :guilabel:`Import
-   file from web` button to fetch that file from the internet.
+   below the :button:`Browse,light` button.  Hit :button:`Return`
+   to fetch that file from the internet.  Your data will be
+   imported and the result will be shown in the response area.
 
 #. Use the ``url?url=`` syntax in the URL for the :demeter:`WebAtoms`
    application, e.g.
    ``http://webatoms.server/url?url=http://www.crystallography.net/cod/1535967.cif``.
-   In this way, you can hook :demeter:`WebAtoms` up to other web or
-   desktop applications.
+   Your data will be imported and the result will be shown in the
+   response area.  In this way, you can hook :demeter:`WebAtoms` up to
+   other web or desktop applications.
 
 .. todo:: 
    #. Need to streamline file import this so that the second button
@@ -142,6 +157,7 @@ application:
       to the internet.
    #. Say something sensible when a file is neither :file:`atoms.inp`
       nor CIF.
+   #. Lots more testing for error conditions.
 
 Note that one- or two-letter symbols are typically used to identify
 the element at each site.  However, full names (e.g. :quoted:`oxygen`)
@@ -152,8 +168,8 @@ using British English |nd| so :quoted:`aluminium`, not
 :quoted:`aluminum` as we sensible Yanks say).
 
 
-Output options
---------------
+Output options and saving files
+-------------------------------
 
 There are a number of kinds of output that can be generated by
 :demeter:`WebAtoms`.  While a :file:`feff.inp` is the most common,
@@ -183,6 +199,25 @@ made with the :guilabel:`ipot style` menu.  This menu offers each of
 `the three ipot styles
 <http://bruceravel.github.io/demeter/documents/Artemis/extended/ipots.html>`_
 for each of :demeter:`feff6` and :demeter:`feff8`.
+
+The results of the :demeter:`WebAtoms` calculation are displayed in
+the response area.  Clicking the :button:`Save as,light` button will
+write using the browser's standard mechanism for using or saving
+files.
+
+The :button:`Save as,light` button at the bottom of the response area
+uses javascript to write the contents of the response area to a file
+on the local machine.  No third-party scripts are used.  That is, the
+only javascript that is executed by the local computer is either
+embedded in the html file or `distributed with WebAtoms
+<https://github.com/bruceravel/WebAtoms/tree/master/public/javascripts>`_
+and served by the same server that is running :demeter:`WebAtoms`
+itself.  No javascript used by :demeter:`WebAtoms` comes from
+somewhere else on the Web.
+
+If saving from the response area is not working, it is possible that
+you have execution of javascript disabled in your browser.
+
 
 Issues with CIF files
 ---------------------
@@ -216,7 +251,8 @@ Issues with CIF files
 
   Currently a CIF file is recognized only if it's file name ends in
   :file:`.cif`.  That's dumb and easy to foil, but that's how it works
-  right now.
+  right now.  Happily, :demeter:`webatoms` is more deft at recognizing
+  :file:`atoms.inp` files.
 
 
 Troubleshooting
@@ -226,9 +262,8 @@ Troubleshooting
 
   This usually happens when you have a lengthy list of unique sites
   and are using the ``tags`` or ``sites`` ipot style.  You can `find a
-  discussion of this ipot styles in the Artemis manual
+  discussion of ipot styles in the Artemis manual
   <http://bruceravel.github.io/demeter/documents/Artemis/extended/ipots.html>`_.
-
 
 **Sites generate one or more common positions and their occupancies sum to more than 1.**
 
@@ -252,7 +287,7 @@ Troubleshooting
 
   Lattice constants must be positive numbers and must be written in a
   way that are obviously interpretable as numbers.  Localization is
-  *not* respected |nd| the decimal symbol is a dot (``.``), **not** a
+  *not* respected |nd| the decimal mark is a dot (``.``), **not** a
   comma, momayyez, apostrophe, decimal separator key symbol, space, or
   any other symbol.
 
@@ -261,7 +296,7 @@ Troubleshooting
 
   Note that site coordinates can be negative, but must also be
   obviously interpretable as numbers using a dot for the decimal
-  marker.
+  mark.
 
 **Symbol for site N is not a valid element symbol**
 
@@ -275,6 +310,7 @@ Troubleshooting
 
   Note that site tags can be any string and need not be related to the
   element symbol, although only the first 10 characters will be used.
+  Also, tags should not include white space.
 
 
 Citing WebAtoms
