@@ -7,93 +7,59 @@ use Demeter::Here;
 use File::Spec;
 use Time::HiRes qw(usleep);
 use YAML::Tiny;
+use XMLRPC::Lite;
 
+use vars qw($larch_is_go $port);
 
-######################################################################
-## ----- configure and start the Larch server
-######################################################################
-#my $ini = File::Spec->catfile(Demeter->dot_folder, "larch_server.yaml");
-my $ini = File::Spec->catfile(Demeter::Here::here, 'share', 'ini', 'larch_server.ini'); # if (not -e $ini);
+our $client;
+our $rpcdata;
+
+use LarchServer;
+
+$larch_is_go = $LarchServer::larch_is_go;
+$port = $LarchServer::larch_port;
+
+$client = 0;
+
 my $rhash;
 
-print "Trying Larch server: $ini\n";
+$rhash->{server}  = 'localhost';
+$rhash->{port}    = $port;
+$rhash->{timeout} = 3;
+$rhash->{quiet}   = 0;
+$rhash->{keepalive} = 3*24*60*60 ;
 
-
-eval {local $SIG{__DIE__} = sub {}; $rhash = YAML::Tiny::LoadFile($ini)};
-
-## print join("|", %$rhash), $/;
-
-$rhash->{server}  ||= 'localhost';
-$rhash->{port}    ||= 4966;
-$rhash->{proxy}     = sprintf("http://%s:%d", $rhash->{server}, $rhash->{port});
-$rhash->{timeout} ||= 3;
-$rhash->{quiet}   ||= 0;
-$rhash->{keepalive} ||= 7*24*60*60 ;
-$rhash->{exe}       = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? $rhash->{windows} : 'larch_server';
-
-#####
-# test for running larch server
-# note: this tests only that a port is a larch server,
-#       *not* that it is in use for another purpose.
-#       I didn't see how to test that with XMLRPC::Lite
-sub test_larch_server {
-    my ($host, $port) = @_;
-    my $addr = sprintf("http://%s:%d", $host, $port);
-    my $server = XMLRPC::Lite -> proxy($addr);
-    eval{$server->get_rawdata('_sys.config.user_larchdir')};
-    return $@;
-};
-
-# find and return the next unused larch port,
-# given a host and starting port number.
-# this will avoid multiple clients using the same port
-sub get_next_larch_port {
-    my ($host, $port_start) = @_;
-    for (my $i=0; $i<250; $i++) {
-	my $port = $port_start + $i;
-	if (test_larch_server($host, $port)) {
-	    return $port;
-	}
-    }
-    return -1;
-}
-
-$rhash->{port}  = get_next_larch_port($rhash->{server}, $rhash->{port});
-$rhash->{proxy} = sprintf("http://%s:%d", $rhash->{server}, $rhash->{port});
-
-my $command = $rhash->{exe}." -p ". $rhash->{port}." start";
-print "Trying Larch server:  $command\n";
-my $ok = system $command;
 
 ######################################################################
 ## ----- contact the Larch server, trying repeatedly until contact is
 ##       established, eventually failing if contact cannot be made
 ######################################################################
-use XMLRPC::Lite;
-our $client;
-$client = XMLRPC::Lite -> proxy($rhash->{proxy});
-our $rpcdata;
+if ($larch_is_go) {
+  my $addr = sprintf("http://%s:%d", $rhash->{server}, $port);
+  print STDOUT "Initializing Larch Client: $addr\n";
 
-use vars qw($larch_is_go $port);
-$larch_is_go = 1;
-$port = $rhash->{port};
+  $client = XMLRPC::Lite -> proxy($addr);
 
-eval {$client->larch(q{cd('} . cwd . q{')})};
-my $count = 0;
-while ($count < $rhash->{timeout}*15) {
-  $larch_is_go = 0 if $@;
-  eval {$client->larch(q{cd('} . cwd . q{')})};
-  if (not $rhash->{quiet}) {print $@, $/};
-  $larch_is_go = 1, last if not $@;
-  ++$count;
-  usleep(200000);
-};
+  my $count = 0;
+  while ($count < 100) {
+    eval{$client->get_rawdata('_sys.config.user_larchdir')};
+    last if not $@;
+    ++$count;
+    usleep(100000);
+  };
 
-my $username = getpwuid($<);
-eval {$client->set_client_info('user', $username)};
-eval {$client->set_client_info('app', 'demeter')};
-eval {$client->set_client_info('pid', $$)};
-eval {$client->set_keepalive_time($rhash->{keepalive})};
+  my $username = getpwuid($<);
+  $client->set_client_info('user', $username);
+  $client->set_client_info('app', 'demeter');
+  $client->set_client_info('pid', $$);
+  $client->set_keepalive_time($rhash->{keepalive});
+
+  $client->larch(q{cd('} . cwd . q{')});
+  return $client;
+}
+
+#####
+
 
 ######################################################################
 ## ----- send a string to the server
@@ -107,6 +73,11 @@ sub dispose {
 sub get_messages {
   $rpcdata = $client -> get_messages();
   return $rpcdata->result;
+};
+
+## shutdown the Larch server
+sub shutdown_server {
+  $client -> shutdown();
 };
 
 ######################################################################
@@ -176,7 +147,6 @@ sub put_larch_array {
 
 
 
-
 sub get_larch_scalar {
   my ($param) = @_;
   $rpcdata = $client -> get_data($param);
@@ -238,6 +208,10 @@ and sending command strings to Larch via an XML-RPC framework.
 =item C<dispose>
 
 Send a text string to the server for interpretation by Larch.
+
+=item C<shutdown_server>
+
+stop the Larch Server.
 
 =item C<get_larch_scalar>
 
