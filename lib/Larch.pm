@@ -26,7 +26,7 @@ $rhash->{server}  = 'localhost';
 $rhash->{port}    = $larch_port;
 $rhash->{timeout} = 3;
 $rhash->{quiet}   = 0;
-$rhash->{keepalive} = 3*24*60*60 ;
+$rhash->{keepalive} = 30*24*60*60 ;
 
 
 ######################################################################
