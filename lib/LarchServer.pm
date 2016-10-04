@@ -109,6 +109,11 @@ if (length $larch_exe > 16) {
 
 $larch_is_go;
 
+END {
+  my $command = "$larch_exe  -p  $larch_port stop";
+  if (lc($^O) eq 'darwin') {$command = "$command &";}
+  my $ok = system $command;
+}
 
 __END__
 
