@@ -28,7 +28,6 @@ $rhash->{timeout} = 3;
 $rhash->{quiet}   = 0;
 $rhash->{keepalive} = 30*24*60*60 ;
 
-
 ######################################################################
 ## ----- contact the Larch server, trying repeatedly until contact is
 ##       established, eventually failing if contact cannot be made
@@ -47,7 +46,7 @@ if ($larch_is_go) {
     usleep(100000);
   };
 
-  my $username = getpwuid($<);
+  my $username = getlogin || $ENV{USERNAME}  || 'Larch User';
   $client->set_client_info('user', $username);
   $client->set_client_info('app', 'demeter');
   $client->set_client_info('pid', $$);
@@ -56,9 +55,6 @@ if ($larch_is_go) {
   $client->larch(q{cd('} . cwd . q{')});
   return $client;
 }
-
-#####
-
 
 ######################################################################
 ## ----- send a string to the server
