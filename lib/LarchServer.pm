@@ -7,7 +7,6 @@ use Time::HiRes qw(usleep);
 
 use XMLRPC::Lite;
 
-
 use vars qw($larch_is_go $larch_port $larch_exe);
 $larch_is_go = 0;
 $larch_port = 4966;
@@ -58,7 +57,7 @@ sub find_larch {
 # test whether a host/port is a running larch server
 sub test_larch_server {
   my ($host, $tport) = @_;
-  usleep(250000);
+  usleep(50000);
   my $addr = sprintf("http://%s:%d", $host, $tport);
   my $server = XMLRPC::Lite -> proxy($addr);
   eval{$server->get_rawdata('_sys.config.user_larchdir')};
@@ -79,14 +78,11 @@ sub get_next_larch_port {
     return -1;
 }
 
-
 ## look for python + larch_server
 my $larch_exe = find_larch();
 
 ## If we found larch_server, start it
 if (length $larch_exe > 16) {
-  print STDOUT "Found Larch Server $larch_exe\n";
-
   # find next available port to run on
   $larch_port  = get_next_larch_port('localhost', $larch_port);
   if ($larch_port > 1) {
@@ -94,17 +90,19 @@ if (length $larch_exe > 16) {
     my $command = $larch_exe." -p ". $larch_port." start";
     if (lc($^O) eq 'darwin') {$command = "$command &";}
 
-    my $ok = system $command;
     print STDOUT "Starting Larch server:  $command\n";
-
+    my $ok = system $command;
     # wait until we can connnect to it...
-    usleep(500000);
-    for (my $i=0; $i<25; $i++) {
+    usleep(50000);
+    for (my $i=0; $i<50; $i++) {
       if (!test_larch_server('localhost', $larch_port)) {
 	last;
       }
     }
   }
+} else {
+  print STDOUT "Could not find Larch Server\n";
+  $larch_is_go = 0;
 }
 
 $larch_is_go;
