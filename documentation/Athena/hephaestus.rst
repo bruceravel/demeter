@@ -92,8 +92,8 @@ fluorescence lines associated with that edge in the
 The definition of the core-hole lifetime is discussed in the
 tabulation by Keski-Rahkonen and Krause.  In short, it is a measure of
 the width of the absorption edge.  High energy edges |nd| Sn for
-example |nd| are very broad and have large core-hole lifetimes
-(measured in energy), which low energy edges are much sharper.  The
+example |nd| are very broad and have large core-hole lifetimes (as
+measured in energy), while low energy edges are much sharper.  The
 numbers used by :demeter:`hephaestus` are the same as those used by
 :demeter:`feff` and are taken from that reference.
 
@@ -156,8 +156,9 @@ The rules for the selection of the filter elements are:
    :align: center
 
    A filter plot showing why manganese is a good choice for an iron
-   absorber |nd| it passes the fluorescence, which is below the Mn K edge, but
-   preferentially absorbes the elastically scattered radiation.
+   absorber |nd| it passes the fluorescence, which is below the Mn K
+   edge, but preferentially absorbs the elastically scattered
+   radiation.
 
 
 Beamline customization
