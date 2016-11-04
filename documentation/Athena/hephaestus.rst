@@ -89,6 +89,19 @@ core-hole lifetime expressed in approximate time units.
 fluorescence lines associated with that edge in the
 :guilabel:`Fluorescence lines` table.
 
+The definition of the core-hole lifetime is discussed in the
+tabulation by Keski-Rahkonen and Krause.  In short, it is a measure of
+the width of the absorption edge.  High energy edges |nd| Sn for
+example |nd| are very broad and have large core-hole lifetimes
+(measured in energy), which low energy edges are much sharper.  The
+numbers used by :demeter:`hephaestus` are the same as those used by
+:demeter:`feff` and are taken from that reference.
+
+    .. bibliography:: athena.bib
+       :filter: author % "Keski-Rahkonen"
+       :list: bullet
+
+
 The :guilabel:`Fluorescence lines` table shows the transitions and
 emission energies in eV of every line associated with the element
 selected from the periodic table.  Also shown is the approximate
