@@ -776,8 +776,8 @@ sub combi_select {
   foreach my $st (sort by_data @{ $this->{LCF}->standards }) {
     #next if not $this->{LCF}->option_exists($st->name);
     $this->{'standard'.$i}->SetStringSelection($st->name);
-    my $w = sprintf("%.3f", $this->{LCF}->weight($st));
-    my $e = sprintf("%.3f", $this->{LCF}->e0($st));
+    my $w = sprintf("%.3f", scalar($this->{LCF}->weight($st)));
+    my $e = sprintf("%.3f", scalar($this->{LCF}->e0($st)));
     $this->{'weight'.$i}  -> SetValue($w);
     $this->{'e0'.$i}      -> SetValue($e);
     $this->{'fite0'.$i}   -> SetValue($this->{LCF}->is_e0_floated($st));
