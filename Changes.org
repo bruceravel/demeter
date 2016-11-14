@@ -25,6 +25,10 @@
     + WebAtoms, https://github.com/bruceravel/WebAtoms
     + Lots of fixes for problems uncovered while working on WebAtoms
 
+*** Hephaestus
+    + Added P K, S K, Cl K, Ag L3, and Pb L3 standards contributed by
+      Lisa Bovenkamp-Langlois
+
 *** Demeter
     + Try to start Larch, if no success fall back to Ifeffit.  Accept
       a PR from Matt related to this.
