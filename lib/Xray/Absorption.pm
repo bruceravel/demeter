@@ -534,7 +534,7 @@ my %sieg2iup = ("ka1"        => "k-l3",
                 "ma"         => "m5-n6,7",
                 "mb"         => "m4-n6",
                 "mg"         => "m3-n5",
-                "mz"         => "m4,5-n6,7",
+                "mz"         => "m4,5-n2,3",
                );
 
 my %iup2sieg = ("k-l3"       => "ka1",
@@ -563,7 +563,7 @@ my %iup2sieg = ("k-l3"       => "ka1",
 		"m5-n6,7"    => "ma",
 		"m4-n6"      => "mb",
 		"m3-n5"      => "mg",
-		"m4,5-n6,7"  => "mz",
+		"m4,5-n2,3"  => "mz",
 	       );
 
 my %gr2lett = ("kalpha1"    => "ka1",
