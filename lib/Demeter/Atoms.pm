@@ -968,14 +968,18 @@ sub update_absorption {
 
 sub update_edge {
   my ($self) = @_;
-  return $self if $self->edge;
+  my $edge = $self->edge;
   my ($central, $xcenter, $ycenter, $zcenter) = $self -> cell -> central($self->core);
   ##print $self->core, $/;
   ##print $central, $/;
   ##print join(" ", $central->meta->get_attribute_list), $/;
   #Demeter->trace;
-  my $z = get_Z( $central->element );
-  ($z > 57) ? $self->edge('l3') : $self->edge('k');
+  if ($edge) {
+    $self->edge($edge);		# be sure to trigger assignment of eedge
+  } else {
+    my $z = get_Z( $central->element );
+    ($z > 57) ? $self->edge('l3') : $self->edge('k');
+  };
   return $self;
 };
 
