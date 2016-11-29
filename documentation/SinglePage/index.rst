@@ -22,6 +22,7 @@ Demeter: Miscellaneous documents
    :maxdepth: 1
 
    packages.rst
+   macinstallation.rst
    macports.rst
    installation.rst
    demeter_nonroot.rst
