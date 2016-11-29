@@ -63,36 +63,44 @@ sub get_next_larch_port {
   return $w[-1];
 };
 
+sub start_larch_server {
+  $larch_port = -1;
+  $larch_exe = find_larch();
+  if (length $larch_exe > 10) {
+    # find next available port to run on
+    # print STDOUT "Larch exe $larch_exe\n";
+    $larch_port = get_next_larch_port($larch_exe);
+    # print STDOUT "Larch port $larch_port\n";
+    if ($larch_port > 2000) {
+      my $command = $larch_exe." -p ". $larch_port." start";
+      print STDOUT "Starting Larch server: $command\n";
+      my $out = system $command;
+
+      # verify connnection to server
+      my $addr = sprintf("http://%s:%d", 'localhost', $larch_port);
+      my $conn = RPC::XML::Client->new($addr);
+      usleep(250000);
+      for (my $i=0; $i<20; $i++) {
+	if ($conn->simple_request('system.listMethods')) {
+	  my $m = $conn->simple_request('system.listMethods');
+	  last;
+	}
+	usleep(250000);
+      }
+    }
+  } else {
+    print STDOUT " Could not find Larch Server\n";
+  }
+  return $larch_port;
+};
 
 
 sub create_larch_connection {
-  $larch_port = -1;
-  $larch_exe = find_larch();
-  if (length $larch_exe < 10) {
-    print STDOUT " Could not find Larch Server\n";
-    $larch_is_go = 0;
-    return;
-  }
+  $larch_port = start_larch_server();
+  sleep(1);
 
-  # find next available port to run on
-  $larch_port = get_next_larch_port($larch_exe);
-
-  if ($larch_port > 2000) {
-    my $command = $larch_exe." -p ". $larch_port." start";
-    print STDOUT "Starting Larch server: $command\n";
-    my $out = system $command;
-
-    # verify connnection to server
-    my $addr = sprintf("http://%s:%d", 'localhost', $larch_port);
-    $larchconn = RPC::XML::Client->new($addr);
-    usleep(500000);
-    for (my $i=0; $i<10; $i++) {
-      if ($larchconn->simple_request('system.listMethods')) {
-	last;
-      }
-      usleep(500000);
-    }
-  }
+  my $addr = sprintf("http://127.0.0.1:%d", $larch_port);
+  $larchconn = RPC::XML::Client->new($addr);
   $larchconn->send_request("larch", "cd('".cwd."')");
   return $larchconn;
 };
@@ -251,6 +259,7 @@ END {
   my $ok = system "$larch_exe  -p  $larch_port stop";
 }
 
+print STDOUT "Larch is go $larch_is_go\n";
 1;
 
 __END__
