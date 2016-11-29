@@ -109,6 +109,7 @@ my $build = DemeterBuilder
 				'PDL::Stats'                => '0.5.5',
 
 				'XMLRPC::Lite'              => '0',
+				'RPC::XML::Client'          => '0',
 
 				(($^O eq 'MSWin32') or ($^O eq 'cygwin')) ?
 				('Win32::Shortcut' => '0', 'Win32::Unicode::File' => '0') : (),
