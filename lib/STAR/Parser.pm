@@ -285,6 +285,7 @@ sub _all_tokens {
         }
         while ( /\S/ ) {
             last if ( /^\s*#/ );
+            last if ( /^\s*_?eof/ );
 
             if ( /^\s*["']/s ) {
 

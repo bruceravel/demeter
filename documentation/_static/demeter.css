@@ -37,3 +37,8 @@ div.caution {
     background-color: #ffeaea;
     border: 1px solid #c00;
 }
+
+div.admonition-note {
+    background-color: #ffeaea;
+    border: 1px solid #c00;
+}

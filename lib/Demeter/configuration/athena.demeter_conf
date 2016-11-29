@@ -273,7 +273,7 @@ description
 
 variable=doc_url
 type=string
-default=http://bruceravel.github.io/demeter/documents/Athena/index.html
+default=http://bruceravel.github.io/demeter/documents/Athena/
 description
   The URL of the Athena document.
 
