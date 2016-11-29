@@ -15,6 +15,9 @@
       smoothing.
     + Fixed a spurious error message reporting results of an LCF
       fit. (Thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-October/008853.html][Fred Mosselmans]])
+    + When doing things with marked groups in diff spectrum tool, be
+      sure that standard is removed from the list of marked groups.
+      (Thanks to Sinead Rowe)
 
 *** Artemis
     + Actually use the user-supplied value of epsilon_k (Thanks to
