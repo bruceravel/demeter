@@ -118,6 +118,11 @@ To save the contents of the response area, :mark:`leftclick,.` click
 the :button:`Save as,light` button.  You will be prompted for the name
 and location of the save file on your computer.
 
+If you find any bugs while using :demeter:`WebAtoms` or you think that
+crystallographic data is being interpreted incorrectly, please `open
+an issue at the GitHub site
+<https://github.com/bruceravel/WebAtoms/issues>`_.
+
 
 Entering crystallographic data
 ------------------------------
@@ -139,14 +144,14 @@ application:
    to fetch that file from the internet.  Your data will be
    imported and the result will be shown in the response area.
 
-#. Use the ``url?url=`` syntax in the URL for the :demeter:`WebAtoms`
+#. Use the ``/?url=`` syntax in the URL for the :demeter:`WebAtoms`
    application, e.g.
-   ``http://webatoms.server/url?url=http://www.crystallography.net/cod/1535967.cif``.
+   ``http://webatoms.server/?url=http://www.crystallography.net/cod/1535967.cif``.
    Your data will be imported and the result will be shown in the
    response area.  In this way, you can hook :demeter:`WebAtoms` up to
    other web or desktop applications.
 
-.. todo:: 
+.. todo::
    #. Need to streamline file import this so that the second button
       click is not necessary
    #. Upload directly from a file, i.e.
@@ -185,14 +190,18 @@ there are other options:
 * A file detailing the space group of the crystal
 * A file with the same cluster of atoms as the :file:`feff.inp` file,
   but in the `XYZ format
-  <http://openbabel.org/docs/2.3.0/FileFormats/XYZ_cartesian_coordinates_format.html>`_
+  <http://openbabel.org/docs/2.3.0/FileFormats/XYZ_cartesian_coordinates_format.html>`_,
+  which may be useful for input into a ball-and-stick viewer
 * A file with the same cluster of atoms as the :file:`feff.inp` file,
   but in the `alchemy format
-  <http://paulbourke.net/dataformats/alc/alc3/>`_
+  <http://paulbourke.net/dataformats/alc/alc3/>`_, which may be useful
+  for input into a ball-and-stick viewer
 * An :quoted:`overfull` file, which has the fully decorated unit cell
   expressed in Cartesian coordinates and includes all of the atoms
-  that sit near cell walls and corners
-* A diagnostic file with the state of the application
+  that sit near cell walls and corners |nd| this is intended for
+  import into a ball-and-stick viewer
+* A diagnostic file with the state of the application |nd| probably
+  only useful for troubleshooting
 
 Selection between :demeter:`feff6` and :demeter:`feff8` style files is
 made with the :guilabel:`ipot style` menu.  This menu offers each of
@@ -207,13 +216,14 @@ files.
 
 The :button:`Save as,light` button at the bottom of the response area
 uses javascript to write the contents of the response area to a file
-on the local machine.  No third-party scripts are used.  That is, the
-only javascript that is executed by the local computer is either
-embedded in the html file or `distributed with WebAtoms
+on the local machine.  The only third-party script used is the
+ubiquitous `jQuery <https://jquery.com/>`_.  All other javascript that
+is executed by the local computer is either embedded in the html file
+or `distributed with WebAtoms
 <https://github.com/bruceravel/WebAtoms/tree/master/public/javascripts>`_
 and served by the same server that is running :demeter:`WebAtoms`
-itself.  No javascript used by :demeter:`WebAtoms` comes from
-somewhere else on the Web.
+itself.  Beyond jQuery, no other javascript used by
+:demeter:`WebAtoms` comes from somewhere else on the Web.
 
 If saving from the response area is not working, it is possible that
 you have execution of javascript disabled in your browser.
@@ -221,6 +231,12 @@ you have execution of javascript disabled in your browser.
 
 Issues with CIF files
 ---------------------
+
+If you find any bugs while using :demeter:`WebAtoms` or you think that
+crystallographic data is being interpreted incorrectly, please `open
+an issue at the GitHub site
+<https://github.com/bruceravel/WebAtoms/issues>`_.
+
 
 **Multi-record CIF files**
 
@@ -257,6 +273,11 @@ Issues with CIF files
 
 Troubleshooting
 ---------------
+
+If you find any bugs while using :demeter:`WebAtoms` or you think that
+crystallographic data is being interpreted incorrectly, please `open
+an issue at the GitHub site
+<https://github.com/bruceravel/WebAtoms/issues>`_.
 
 **You have N unique potentials, but Feff only allows 7.**
 

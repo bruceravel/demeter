@@ -13,6 +13,8 @@
     + Boxcar average smoothing failed to copy bkg_eshift to the new
       group (Thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-September/008827.html][Ian Godrey]]) Fixed same error in Gaussian filter
       smoothing.
+    + Fixed a spurious error message reporting results of an LCF
+      fit. (Thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-October/008853.html][Fred Mosselmans]])
 
 *** Artemis
     + Actually use the user-supplied value of epsilon_k (Thanks to
@@ -24,6 +26,10 @@
 *** Atoms
     + WebAtoms, https://github.com/bruceravel/WebAtoms
     + Lots of fixes for problems uncovered while working on WebAtoms
+
+*** Hephaestus
+    + Added P K, S K, Cl K, Ag L3, and Pb L3 standards contributed by
+      Lisa Bovenkamp-Langlois
 
 *** Demeter
     + Try to start Larch, if no success fall back to Ifeffit.  Accept

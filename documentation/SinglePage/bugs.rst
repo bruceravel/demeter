@@ -55,6 +55,12 @@ request to use the mailing list.  If you are vague, the likely
 response will be to ask you for more information.  If you send vague
 mail directly to me, you may be ignored outright.
 
+For another take on how and why to submit a good bug report, `check
+this out
+<https://www.lucidchart.com/blog/2016/10/18/how-to-write-an-effective-bug-report-that-actually-gets-resolved-and-why-everyone-should/>`_.
+(Please note that Christensen is not associated in any way with
+:demeter:`demeter` or :demeter:`ifeffit` nor should he be contacted
+with questions about :demeter:`demeter` or :demeter:`ifeffit`.)
 
 Capturing error messages
 ------------------------
