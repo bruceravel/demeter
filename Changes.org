@@ -41,6 +41,8 @@
       Ifeffit for an application that is entirely contained within
       Demeter (WebAtoms, which does not plot, is an example).
     + Recognize and use web import mode, i.e. ~use Demeter qw(:ui=web);~
+    + Attempt to teach STAR::Parser to deal with "_eof" in a CIF
+      file. (Thanks to Alessandro Longo)
 
 *** Windows
 
