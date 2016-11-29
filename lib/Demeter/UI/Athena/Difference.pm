@@ -299,6 +299,8 @@ sub marked {
   foreach my $i (0 .. $::app->{main}->{list}->GetCount-1) {
     next if (not $::app->{main}->{list}->IsChecked($i));
     my $data = $::app->{main}->{list}->GetIndexedData($i);
+    ## make sure that the Standard is not in the list of marked groups...
+    next if ($this->{standard}->GetClientData(scalar $this->{standard}->GetSelection)->group eq $data->group);
     $::app->{main}->status("Computing difference from ".$data->name);
     my $new = Demeter::Diff->new;
     $new->invert($save->invert);
