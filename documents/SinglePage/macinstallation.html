@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installing Demeter from packages: Windows, Mac, Linux &mdash; Miscellaneous Demeter 0.9.25 documentation</title>
+    <title>Installing Demeter on the Mac &mdash; Miscellaneous Demeter 0.9.25 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -25,8 +25,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/wheat.ico"/>
     <link rel="top" title="Miscellaneous Demeter 0.9.25 documentation" href="index.html" />
-    <link rel="next" title="Installing Demeter on the Mac" href="macinstallation.html" />
-    <link rel="prev" title="Frequently Asked Questions" href="faq.html" />
+    <link rel="next" title="Additional notes on installing the MacPorts package" href="macports.html" />
+    <link rel="prev" title="Installing Demeter from packages: Windows, Mac, Linux" href="packages.html" />
 
     <link rel="stylesheet" type="text/css" href="_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="_static/keys.css" />
@@ -38,10 +38,10 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="macinstallation.html" title="Installing Demeter on the Mac"
+          <a href="macports.html" title="Additional notes on installing the MacPorts package"
              accesskey="N">next</a></li>
         <li class="right" >
-          <a href="faq.html" title="Frequently Asked Questions"
+          <a href="packages.html" title="Installing Demeter from packages: Windows, Mac, Linux"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter 0.9.25 documentation</a> &raquo;</li> 
       </ul>
@@ -52,88 +52,97 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="installing-demeter-from-packages-windows-mac-linux">
-<h1>Installing Demeter from packages: Windows, Mac, Linux<a class="headerlink" href="#installing-demeter-from-packages-windows-mac-linux" title="Permalink to this headline">¶</a></h1>
-<p>If you run into problems, use <a class="reference external" href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">The Ifeffit mailing list</a>.  Be as
-explicit as possible about the nature of the problem and remember that
-saying “This is my problem and this what I've tried so far to
-fix it” is much more valuable than just “This is my problem.”.</p>
-<div class="section" id="windows">
-<h2>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h2>
-<p>Most people installing Demeter on a Windows machine will want to use
-the installer and updater packages.  The latest packages can be <a class="reference external" href="http://bruceravel.github.io/demeter#windows">found
-here</a>.</p>
-<p>Download, double click, answer a few questions.  It's that simple.</p>
-<p>There is <strong>not</strong> an automated updater for the software.  You must
-download the updater and install it yourself.</p>
-</div>
-<div class="section" id="macintosh-osx">
-<h2>Macintosh OSX<a class="headerlink" href="#macintosh-osx" title="Permalink to this headline">¶</a></h2>
-<p>Frank Schima and Joe Fowler have performed yeoman's duty by making
-Demeter and its tool chain available on <a class="reference external" href="http://www.macports.org/">MacPorts</a>.</p>
+  <div class="section" id="installing-demeter-on-the-mac">
+<h1>Installing Demeter on the Mac<a class="headerlink" href="#installing-demeter-on-the-mac" title="Permalink to this headline">¶</a></h1>
 <p>The Macintosh package uses <a class="reference external" href="http://www.macports.org/">MacPorts</a> and
-may lag a bit behind the <font size=-1 color="#8C4112">DEMETER</font> source code.</p>
+is currently at version 0.9.22.</p>
+<div class="admonition-note admonition">
+<p class="first admonition-title">Note</p>
+<p class="last">Bruce does not own a Mac and cannot support Mac installation
+problems.  You should use the <a class="reference external" href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">mailing list</a>.</p>
+</div>
+<div class="section" id="short-instructions">
+<h2>Short instructions<a class="headerlink" href="#short-instructions" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic">
 <li><p class="first"><strong>Carefully</strong> follow the steps to install Macports at
 <a class="reference external" href="http://www.macports.org/install.php">http://www.macports.org/install.php</a>.</p>
 </li>
 <li><p class="first">Open a new Terminal window and type the following:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span> sudo port install xorg-server demeter
-
-It will take a while depending on your computer and network speed.
+<div class="highlight-bash"><div class="highlight"><pre><span></span>sudo port install xorg-server demeter
 </pre></div>
 </div>
+<p>It will take a while depending on your computer and network speed.</p>
 </li>
 <li><p class="first">If this is your first time installing <code class="docutils literal"><span class="pre">xorg-server</span></code>, log out and
 log back in. This is needed to set the <code class="docutils literal"><span class="pre">DISPLAY</span></code> environment
 variable.</p>
 </li>
-<li><p class="first">If you have recently upgraded to a new version of the Mac
-operating system, you must re-install all of MacPorts for the new
-OS. There is no shortcut.</p>
+<li><p class="first">If you have recently upgraded to a new version of the Mac operating
+system, you must re-install all of MacPorts for the new OS.  There
+is no shortcut.</p>
 </li>
 </ol>
 <p>When installation of MacPorts is done, launch <font size=-1 color="#8C4112">ATHENA</font> by
 typing the following in Terminal:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">athena</span>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>athena
 </pre></div>
 </div>
-<dl class="docutils">
-<dt>..Note:: Make sure you are in a directory you have write permission to</dt>
-<dd>(like your home directory) because hidden files are created at
-launch time.</dd>
-</dl>
-<p>To update a previously installed version of Demeter to the latest,
-open a Terminal window and do</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>sudo port selfupdate &amp;&amp; sudo port upgrade demeter
+<p>Note: Make sure you are in a directory you have write permission to
+(like your home directory) because hidden files are created at launch
+time.</p>
+<p>To update a previously installed version of <font size=-1 color="#8C4112">DEMETER</font> to the
+latest, open a Terminal window and do</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>sudo port selfupdate <span class="o">&amp;&amp;</span> sudo port upgrade demeter
 </pre></div>
 </div>
 <p>If you are not using a system-wide MacPorts installation, running
 commands as sudo is not necessary.</p>
-<p><a class="reference external" href="mac.rst">Laila Al-Madhagi's hints for successfully installing on the Mac.</a></p>
 </div>
-<div class="section" id="windows-under-emulation-on-the-macintosh">
-<h2>Windows under emulation on the Macintosh<a class="headerlink" href="#windows-under-emulation-on-the-macintosh" title="Permalink to this headline">¶</a></h2>
-<p>The Windows installer can be used under emulation.</p>
-<p>While there is not yet a native Mac OS installer for Demeter, it can
-be run under Windows using the <a class="reference external" href="http://www.parallels.com/">Parallels virtual environment</a>. This has been tested using Windows XP
-in Parallels 6 running under Snow Leopard, but should also work under
-other configurations.  There are two
-special notes for installation:</p>
-<ol class="arabic simple">
-<li>Copy the .exe installer file to the Windows virtual disk, and
-launch the installer from there.</li>
-<li>When prompted, choose a location on the Windows virtual disk to
-install Strawberry Perl.</li>
-</ol>
-<p>Other than that, the software should be able to run normally. For
-example, you can write and read data files from your Mac OS X disk, if
-you so choose.</p>
+<div class="section" id="troubleshooting-problems-on-the-mac">
+<h2>Troubleshooting problems on the Mac<a class="headerlink" href="#troubleshooting-problems-on-the-mac" title="Permalink to this headline">¶</a></h2>
+<p><strong>General problems</strong></p>
+<blockquote>
+<div>Having trouble installing on your Mac computer? <a class="reference external" href="http://bruceravel.github.io/demeter/documents/SinglePage/macports.html">This might help</a>
+or you <a class="reference external" href="http://www.mail-archive.com/ifeffit&#64;millenia.cars.aps.anl.gov/">might find help searching through the mailing list archives</a>.</div></blockquote>
+<p><strong>Plot window not appearing</strong></p>
+<blockquote>
+<div>If installation has proceeded properly, but the plot window is not
+appearing, <a class="reference external" href="http://www.mail-archive.com/ifeffit&#64;millenia.cars.aps.anl.gov/msg05440.html">this might fix the problem</a>,
+however it is unlikely that deglitching or the pluck buttons will
+work with the aqua terminal.</div></blockquote>
+<p><strong>Failed to install libcxx</strong></p>
+<blockquote>
+<div><p>According to <a class="reference external" href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-November/008860.html">Wayne</a>
+<a class="reference external" href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-November/008890.html">Lukens</a>,
+macports sometimes does not install all of the dependencies for
+<font size=-1 color="#8C4112">DEMETER</font>.  You can solve this issue by loading the
+dependencies separately.  Do</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>sudo ports install libcxx
+</pre></div>
 </div>
-<div class="section" id="debian-based-or-other-linux-distributions">
-<h2>Debian-based or other Linux distributions<a class="headerlink" href="#debian-based-or-other-linux-distributions" title="Permalink to this headline">¶</a></h2>
-<p>There are no Linux packages yet available because no one has yet
-volunteered to do this work.</p>
+<p>After that, try installing <font size=-1 color="#8C4112">DEMETER</font> again.</p>
+<p>Also, <a class="reference external" href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-November/008863.html">Jean-Francois Gaillard</a>
+offers this hint: &quot;One thing that greatly improve the installation
+of dependencies was to increase the number of files that can be open
+at once. New versions of Mac OS X limit this nb to 256, if you
+increase it to - let’s say to 1024 - in your session it should
+help. To find out the max nb of files that you can open at once type
+in a terminal</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">ulimit</span> –a
+</pre></div>
+</div>
+<p>and to increase the number type</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">ulimit</span> –n1024
+</pre></div>
+</div>
+</div></blockquote>
+<p>Please report problems with the MacPorts package to the <a class="reference external" href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit
+mailing list</a>.</p>
+<div class="admonition-note admonition">
+<p class="first admonition-title">Note</p>
+<p class="last">Bruce does not own a Mac and cannot support Mac installation
+problems.  You should use the <a class="reference external" href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">mailing list</a>.</p>
+</div>
 
 <br>
 
@@ -158,11 +167,9 @@ consider <a class="reference external" href="http://creativecommons.org/support/
             </a></p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Installing Demeter from packages: Windows, Mac, Linux</a><ul>
-<li><a class="reference internal" href="#windows">Windows</a></li>
-<li><a class="reference internal" href="#macintosh-osx">Macintosh OSX</a></li>
-<li><a class="reference internal" href="#windows-under-emulation-on-the-macintosh">Windows under emulation on the Macintosh</a></li>
-<li><a class="reference internal" href="#debian-based-or-other-linux-distributions">Debian-based or other Linux distributions</a></li>
+<li><a class="reference internal" href="#">Installing Demeter on the Mac</a><ul>
+<li><a class="reference internal" href="#short-instructions">Short instructions</a></li>
+<li><a class="reference internal" href="#troubleshooting-problems-on-the-mac">Troubleshooting problems on the Mac</a></li>
 </ul>
 </li>
 </ul>
@@ -201,7 +208,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/packages.txt"
+      <li><a href="_sources/macinstallation.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -213,10 +220,10 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="macinstallation.html" title="Installing Demeter on the Mac"
+          <a href="macports.html" title="Additional notes on installing the MacPorts package"
              >next</a></li>
         <li class="right" >
-          <a href="faq.html" title="Frequently Asked Questions"
+          <a href="packages.html" title="Installing Demeter from packages: Windows, Mac, Linux"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter 0.9.25 documentation</a> &raquo;</li> 
       </ul>

@@ -132,6 +132,7 @@ suspect that is not much used.</li>
 <ul class="org-ul">
 <li>WebAtoms, <a href="https://github.com/bruceravel/WebAtoms">https://github.com/bruceravel/WebAtoms</a></li>
 <li>Lots of fixes for problems uncovered while working on WebAtoms</li>
+<li>Set DEMETER_NO_BACKEND = 1 when using CLI interface</li>
 </ul>
 </div>
 </div>
@@ -159,6 +160,8 @@ early in startup.  The second blocks using either Larch or
 Ifeffit for an application that is entirely contained within
 Demeter (WebAtoms, which does not plot, is an example).</li>
 <li>Recognize and use web import mode, i.e. <code>use Demeter qw(:ui=web);</code></li>
+<li>Attempt to teach STAR::Parser to deal with &ldquo;_eof&rdquo; in a CIF
+file. (Thanks to Alessandro Longo)</li>
 </ul>
 </div>
 </div>

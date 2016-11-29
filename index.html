@@ -132,56 +132,19 @@
 
 	<a name="mac"><p>&nbsp;</p></a>
 	<h1>Macintosh Installation</h1>
+
 	<p>
-	  The Macintosh package
-	  uses <a href="http://www.macports.org/">MacPorts</a> and is
-	  currently at version 0.9.22.
+	  Carefully follow
+	  <a href="documents/SinglePage/macinstallation.html">
+	    the Macintosh installation instructions</a>.
 	</p>
-	<ol>
-	  <li><strong>Carefully</strong> follow the steps to install Macports at
-	    <a href="http://www.macports.org/install.php">http://www.macports.org/install.php</a>.</li>
-	  <li>Open a new Terminal window and type the following: 
-	    <pre> sudo port install xorg-server demeter </pre> It will
-	    take a while depending on your computer and network speed.
-	  </li>
-	  <li>If this is your first time installing <code>xorg-server</code>, log
-	  out and log back in. This is needed to set the <code>DISPLAY</code>
-	    environment variable.</li>
-	  <li>If you have recently upgraded to a new version of the
-	    Mac operating system, you must
-	    re-install <strong>all</strong> of MacPorts for the new
-	    OS.  There is no shortcut.</li>
-	</ol>
+
 	<p>
-	  When installation of MacPorts is done, launch Athena by
-	  typing the following in Terminal:<pre> athena </pre></p><p>
-	  Note: Make sure you are in a directory you have write
-	  permission to (like your home directory) because hidden
-	  files are created at launch time.
+	  Several common problems are discussed in
+	  <a href="documents/SinglePage/_build/html/macinstallation.html#troubleshooting-problems-on-the-mac">
+	    the troubleshooting section</a>.
 	</p>
-	<p>
-	  To update a previously installed version of Demeter to the latest, open a Terminal window and do
-	  <pre>sudo port selfupdate && sudo port upgrade demeter</pre>
-	</p>
-	<p>
-	  If you are not using a system-wide MacPorts installation,
-	  running commands as <code>sudo</code> is not
-	  necessary.
-	</p>
-        <a name="machelp">&nbsp;</a>
-	<h2>Troubleshooting problems on the Mac</h2>
-	<p>
-	  Having trouble installing on your Mac
-	  computer? <a href="documents/SinglePage/macports.html">This might help</a> or
-	  <a href="http://www.mail-archive.com/ifeffit@millenia.cars.aps.anl.gov/">
-	    you might find help searching through the mailing list archives.</a>
-	</p>
-	<p>
-	  If installation has proceeded properly, but the plot window is not appearing,
-	  <a href="http://www.mail-archive.com/ifeffit@millenia.cars.aps.anl.gov/msg05440.html">this
-	    might help</a>, however it is unlikely that deglitching or
-	  the pluck buttons will work with the aqua terminal.
-	</p>
+
 	<p>
 	  Please report problems with the MacPorts package to
 	  <a title="The Ifeffit Mailing List is the best pace to ask questions about the software and about XAFS.  Please use the mailing list rather than contacting the author of Demeter directly."
