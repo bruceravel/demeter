@@ -26,6 +26,7 @@
 *** Atoms
     + WebAtoms, https://github.com/bruceravel/WebAtoms
     + Lots of fixes for problems uncovered while working on WebAtoms
+    + Set DEMETER_NO_BACKEND = 1 when using CLI interface
 
 *** Hephaestus
     + Added P K, S K, Cl K, Ag L3, and Pb L3 standards contributed by
