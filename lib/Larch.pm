@@ -196,7 +196,11 @@ sub put_larch_scalar {
 
 sub get_larch_array {
   my ($param) = @_;
-  return @{decode_data(get_data($param))};
+  my $tmp = decode_data(get_data($param));
+  if (defined $tmp) {
+    return @{$tmp};
+  }
+  return undef;
 };
 
 sub put_larch_array {
