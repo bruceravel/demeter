@@ -47,6 +47,9 @@
     + Recognize and use web import mode, i.e. ~use Demeter qw(:ui=web);~
     + Attempt to teach STAR::Parser to deal with "_eof" in a CIF
       file. (Thanks to Alessandro Longo)
+    + Fixed a few testing bugs, skip XDI tests, force use of Ifeffit
+      for testing.  The last two are not permanent.  In particular,
+      testing with Larch is very important.
 
 *** Windows
 
