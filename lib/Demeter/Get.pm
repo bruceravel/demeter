@@ -58,7 +58,7 @@ sub fetch_scalar {
     my $gp = $self->group || Demeter->mo->throwaway_group;
     if ($param =~ m{norm_c\d}) {
       $param = $gp.'.pre_edge_details.'.$param;
-      return denull(Larch::get_larch_scalar($param));
+
     } elsif ($param =~ m{epsilon_([kr])}) {
       #if ($self->fit_group) {
       #	my $n = $self->fit_data-1;
@@ -66,75 +66,70 @@ sub fetch_scalar {
       #	return Larch::get_larch_array($param);
       #} else {
       $param = join('.', $self->group, 'epsilon_'.$1);
-      return denull(Larch::get_larch_scalar($param));
+
       #};
     } elsif ($param =~ m{r_factor}) {
       $param = $gp.'.params.rfactor';
-      return denull(Larch::get_larch_scalar($param));
+
     } elsif ($param =~ m{(?<!demlcf\.)(chi_reduced|chi_square)}) { # NOT the ones from an LCF fit!
       $param = $gp.'.params.'.$1;
-      return denull(Larch::get_larch_scalar($param));
+
     } elsif ($param =~ m{\A(?:e0|edge_step|kmax_suggest)\z}) {
       $param = $gp.'.'.$param;
-      return denull(Larch::get_larch_scalar($param));
 
     ## normalization parameters
     } elsif ($param =~ m{pre_(?:offset|slope)}) {
       $param = $gp.'.pre_edge_details.'.$param;
-      return denull(Larch::get_larch_scalar($param));
 
     ## auto-alignment parameter
     } elsif ($param =~ m{delta_(aa__)_(esh|scale)}) {
       $param = $1.'.'.$2.'.stderr';
-      return denull(Larch::get_larch_scalar($param));
+
     } elsif ($param =~ m{(aa__)_(esh|scale)\b}) {
       $param = $1.'.'.$2.'.value';
-      return denull(Larch::get_larch_scalar($param));
+
     } elsif ($param =~ m{delta_(aa__)_(esh|scale)}) {
       $param = $1.'.'.$2.'.stderr';
-      return denull(Larch::get_larch_scalar($param));
 
     ## log ratio/phase difference parameters
     } elsif ($param =~ m{\A(lr_)__(pd[024])}) {
       $param = $1.'e.'.$2.'.value';
-      return denull(Larch::get_larch_scalar($param));
+
     } elsif ($param =~ m{\A(lr_)__(pd[13])}) {
       $param = $1.'o.'.$2.'.value';
-      return denull(Larch::get_larch_scalar($param));
+
     } elsif ($param =~ m{delta_(lr_)__(pd[024])}) {
       $param = $1.'e.'.$2.'.stderr';
-      return denull(Larch::get_larch_scalar($param));
+
     } elsif ($param =~ m{delta_(lr_)__(pd[13])}) {
       $param = $1.'o.'.$2.'.stderr';
-      return denull(Larch::get_larch_scalar($param));
 
-    ## exafs fitting parameters
+      ## exafs fitting parameters
     } elsif ($param =~ m{delta_(.+)}) {
       $param = join('.', 'gds', $1, 'stderr');
-      return denull(Larch::get_larch_scalar($param));
 
     } elsif ($param =~ m{\Ademlcf.+_(a|e|offset|slope)\z}) {
       $param .= '.value';
-      return denull(Larch::get_larch_scalar($param));
 
     } elsif ($param =~ m{\Adempeak\.\w+_\d\z}) {
       $param .= '.value';
-      return denull(Larch::get_larch_scalar($param));
 
     } elsif ($param =~ m{_p(\d+)\z}) {
       $param = 'dempcatt._p'.$1;
-      return denull(Larch::get_larch_scalar($param));
 
     } elsif ($param eq 'filter_top') {
       $param = "f1f2.$param";
-      return denull(Larch::get_larch_scalar($param));
 
     } elsif (Demeter->mo->fit) { # a fit is happenening, this is a Parameter, need its value
-      return denull(Larch::get_larch_scalar($param.'.value'));
-
-    } else {
-      return denull(Larch::get_larch_scalar($param));
-    };
+      $param = $param.'.value';
+    }
+    $param = Larch::get_larch_scalar($param);
+    if (not defined $param) {
+      $param = 0;
+    } elsif (ref($param) eq 'ARRAY') { # not 100% sure this is needed
+      $param = @{$param}[0];
+    }
+    return $param;
   };
 };
 

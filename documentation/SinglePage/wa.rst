@@ -151,7 +151,7 @@ application:
    response area.  In this way, you can hook :demeter:`WebAtoms` up to
    other web or desktop applications.
 
-.. todo:: 
+.. todo::
    #. Need to streamline file import this so that the second button
       click is not necessary
    #. Upload directly from a file, i.e.
