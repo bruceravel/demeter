@@ -59,7 +59,9 @@ sub find_larch {
 sub get_next_larch_port {
   # find next available port to run on
   my ($lexe) = @_;
-  my @w = split /\s/, `$lexe -n`;
+  my $s = `$lexe -n`;
+  $s =~ s/[^\d.]/ /g ;
+  my @w = split /\s+/, $s;
   return $w[-1];
 };
 
