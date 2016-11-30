@@ -265,7 +265,7 @@ END {
   my $ok = system "$larch_exe  -p  $larch_port stop";
 }
 
-print STDOUT "Larch is go $larch_is_go\n";
+# print STDOUT "Larch is go $larch_is_go\n";
 1;
 
 __END__
