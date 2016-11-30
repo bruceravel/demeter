@@ -59,7 +59,9 @@ sub find_larch {
 sub get_next_larch_port {
   # find next available port to run on
   my ($lexe) = @_;
-  my @w = split /\s/, `$lexe -n`;
+  my $s = `$lexe -n`;
+  $s =~ s/[^\d.]/ /g ;
+  my @w = split /\s+/, $s;
   return $w[-1];
 };
 
@@ -196,7 +198,11 @@ sub put_larch_scalar {
 
 sub get_larch_array {
   my ($param) = @_;
-  return @{decode_data(get_data($param))};
+  my $tmp = decode_data(get_data($param));
+  if (defined $tmp) {
+    return @{$tmp};
+  }
+  return undef;
 };
 
 sub put_larch_array {
@@ -259,7 +265,7 @@ END {
   my $ok = system "$larch_exe  -p  $larch_port stop";
 }
 
-print STDOUT "Larch is go $larch_is_go\n";
+# print STDOUT "Larch is go $larch_is_go\n";
 1;
 
 __END__
