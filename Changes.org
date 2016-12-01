@@ -18,6 +18,8 @@
     + When doing things with marked groups in diff spectrum tool, be
       sure that standard is removed from the list of marked groups.
       (Thanks to Sinead Rowe)
+    + Fix a problem processing keV data when using Larch (Thanks to
+      [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-November/008880.html][Juan de la Figuera]]) (See issue #42)
 
 *** Artemis
     + Actually use the user-supplied value of epsilon_k (Thanks to
