@@ -647,14 +647,16 @@ sub _group {
   $data -> po -> e_markers(1);
   $data -> _update('all');
 
-  my @signal = ($data->ln) ? $data->get_array('signal') : $data->get_array('i0');
-  my $which =  ($data->ln) ? "transmission" : "I0";
-  if (any {$_ == 0} @signal) {
-    my $md = Wx::MessageDialog->new($app->{main}, "The data in \"$file\" contain at least one zero value in the $which signal.  These data cannot be imported.", "Error!", wxOK|wxICON_ERROR|wxSTAY_ON_TOP);
-    my $response = $md -> ShowModal;
-    $data->dispense('process', 'erase', {items=>"\@group ".$data->group});
-    $data->DEMOLISH;
-    return;
+  if ($data->datatype ne 'chi') {
+    my @signal = ($data->ln) ? $data->get_array('signal') : $data->get_array('i0');
+    my $which =  ($data->ln) ? "transmission" : "I0";
+    if (any {$_ == 0} @signal) {
+      my $md = Wx::MessageDialog->new($app->{main}, "The data in \"$file\" contain at least one zero value in the $which signal.  These data cannot be imported.", "Error!", wxOK|wxICON_ERROR|wxSTAY_ON_TOP);
+      my $response = $md -> ShowModal;
+      $data->dispense('process', 'erase', {items=>"\@group ".$data->group});
+      $data->DEMOLISH;
+      return;
+    };
   };
 
   $app->{main}->{list}->AddData($data->name, $data);

@@ -12,10 +12,12 @@ use strict;
 use warnings;
 use Cwd;
 use Demeter::Here;
+use File::Which qw(which);
 use RPC::XML::Client;
 use Time::HiRes qw(usleep);
 
 use vars qw($larch_is_go $larchconn $larch_exe $larch_port);
+$larch_exe = q{};
 
 sub find_larch {
   # search for Python exe and larch_server script,
@@ -41,6 +43,12 @@ sub find_larch {
 		     File::Spec->catfile($ENV{HOME}, 'anaconda2', 'bin'),
 		     File::Spec->catfile($ENV{HOME}, 'anaconda', 'bin'));
 
+  }
+  my $pyexe_ = which($python_exe);
+  my $larch_ = which("larch_server");
+  if (defined($pyexe_) && (-e $pyexe_) && defined($larch_) && (-e $larch_))  {
+    $larch_exe = "$pyexe_ $larch_";
+    return $larch_exe;
   }
   foreach my $d (@dirlist) {
     my $pyexe_ =  File::Spec->catfile($d, $python_exe);
@@ -75,7 +83,7 @@ sub start_larch_server {
     # print STDOUT "Larch port $larch_port\n";
     if ($larch_port > 2000) {
       my $command = $larch_exe." -p ". $larch_port." start";
-      print STDOUT "Starting Larch server: $command\n";
+      print STDOUT "\nStarting Larch server: $command\n";
       my $out = system $command;
 
       # verify connnection to server
@@ -91,7 +99,7 @@ sub start_larch_server {
       }
     }
   } else {
-    print STDOUT " Could not find Larch Server\n";
+    print STDOUT "\nCould not find Larch Server";
   }
   return $larch_port;
 };
@@ -99,11 +107,13 @@ sub start_larch_server {
 
 sub create_larch_connection {
   $larch_port = start_larch_server();
+  return $larch_port if ($larch_port < 0);
   sleep(1);
 
   my $addr = sprintf("http://127.0.0.1:%d", $larch_port);
   $larchconn = RPC::XML::Client->new($addr);
   $larchconn->send_request("larch", "cd('".cwd."')");
+  $larch_is_go = 1;
   return $larchconn;
 };
 
@@ -199,9 +209,7 @@ sub put_larch_scalar {
 sub get_larch_array {
   my ($param) = @_;
   my $tmp = decode_data(get_data($param));
-  if (defined $tmp) {
-    return @{$tmp};
-  }
+  return @{$tmp} if defined $tmp;
   return undef;
 };
 
@@ -258,15 +266,12 @@ if (!$larchconn) {
   create_larch_connection();
 }
 
-$larch_is_go = ($larchconn) ? 1 : 0;
-
-
 END {
-  my $ok = system "$larch_exe  -p  $larch_port stop";
+  my $ok = system "$larch_exe -p $larch_port stop";
 }
 
-# print STDOUT "Larch is go $larch_is_go\n";
-1;
+
+$larch_is_go;
 
 __END__
 

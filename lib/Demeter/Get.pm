@@ -34,7 +34,8 @@ sub backend_id {
   if ($self->is_ifeffit) {
     return "Ifeffit " . Ifeffit::get_string('&build')
   } elsif ($self->is_larch) {
-    return "Larch " . Larch::get_larch_scalar('larch.__version__');
+    return $self->backend_name;
+    #return "Larch " . Larch::get_larch_scalar('larch.__version__');
   };
 };
 
@@ -43,7 +44,8 @@ sub backend_version {
   if ($self->is_ifeffit) {
     return (split(" ", Ifeffit::get_string('&build')))[0];
   } elsif ($self->is_larch) {
-    return Larch::get_larch_scalar('larch.__version__');
+    return 'X.xx';
+    #return Larch::get_larch_scalar('larch.__version__');
   };
 };
 
