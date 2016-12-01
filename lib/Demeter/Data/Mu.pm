@@ -223,15 +223,18 @@ sub put_data {
 
   ## resolve column tokens
   my $group = $self->group;
+  if (Demeter->is_larch) {
+    $energy_string =~ s{\$(\d+)}{sprintf("%s.data[%d, :]", $group, $1-1)}ge;
+  } else { 
+    $energy_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
+  };
   if ($self->datatype eq 'chi') {
     $chi_string    =~ s{\$(\d+)}{$group.$cols[$1]}g;
-    $energy_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
     $self->chi_string($chi_string);
   } else {
     $i0_string     =~ s{\$(\d+)}{$group.$cols[$1]}g;
     $signal_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
     $xmu_string    =~ s{\$(\d+)}{$group.$cols[$1]}g;
-    $energy_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
 
     $self->i0_string($i0_string);
     $self->signal_string($signal_string);
