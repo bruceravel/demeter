@@ -986,8 +986,8 @@ sub update_edge {
 
 sub handle_colon {
   my ($self) = @_;
+  my $g = $self->space;
   if ($self->is_first) {
-    my $g = $self->space;
     ## remove :1 from the space group symbol
     $g =~ s{:[12]}{};
     $self->space($g);
