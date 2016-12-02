@@ -507,6 +507,7 @@ sub populate {
   ### creating and populating cell
   return $self if not $self->space;
   $self -> cell -> space_group($self->space);
+  $self -> handle_colon;
   foreach my $key (qw(a b c alpha beta gamma)) {
     my $val = $self->$key;
     $self -> cell->$key($val) if $val;
@@ -979,6 +980,23 @@ sub update_edge {
   } else {
     my $z = get_Z( $central->element );
     ($z > 57) ? $self->edge('l3') : $self->edge('k');
+  };
+  return $self;
+};
+
+sub handle_colon {
+  my ($self) = @_;
+  if ($self->is_first) {
+    my $g = $self->space;
+    ## remove :1 from the space group symbol
+    $g =~ s{:[12]}{};
+    $self->space($g);
+    ## set the shift vector according to the entry in the space group database
+    $self->shiftvec($self->cell->group->shiftvec);
+  } elsif ($self->is_second) {
+    ## remove :2 from the space group symbol
+    $g =~ s{:[12]}{};
+    $self->space($g);
   };
   return $self;
 };
