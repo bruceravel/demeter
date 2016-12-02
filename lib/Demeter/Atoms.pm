@@ -416,7 +416,7 @@ sub parse_line {
   (my $rest = $line) =~ s{\A$key$SEPARATOR}{};
 
   if ($key =~ m{space(?:group)?}i) {
-    my $end = (length($rest) < 10) ? length($rest) : 10;
+    my $end = (length($rest) < 13) ? length($rest) : 13;
     my $sg = substr($rest, 0, $end);
     $self->space($sg);
     $self->alpha($self->cell->alpha);
