@@ -344,6 +344,14 @@
   - [ ] CIF errors are not handled gracefully (e.g. multiple occupancy)
 
 ** Atoms [7/10] [70%]
+  - [ ] Parsing an atoms.inp file for the space group is fragile.  It
+    currently grabs the 13 characters following the equals sign and
+    white space.  13 is the longest standard HM symbol with a modifier
+    -- an example is 'I 41/a m d :1' (see
+    http://www.crystallography.net/cod/cod/cif/7/20/60/7206075.cif as
+    an example).  However, if additional spaces are present or if
+    another keyword follows in fewer than 13 characters, the parser
+    /will/ do the wrong thing.
   - [X] Setting of Ba2Co9O14 (Chanapa Kongmark), also some problem with ZnFe2O4
   - [X] should be a way to insert tabulated shift vector, if it exists
   - [X] handle ": setting" notation: =:R=, =:H=, =:1=, =:2= [[http://research.cems.umn.edu/morse/code/svn/pscf/doc/man/sec.php?section%3DAppendix:%2520Space%2520Groups&][(for example)]]
