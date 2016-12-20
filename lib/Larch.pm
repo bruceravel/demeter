@@ -215,6 +215,7 @@ sub get_larch_array {
 
 sub put_larch_array {
   my ($param, $aref) = @_;
+  return q{} if ($#{$aref} < 1);
   my $value = '[' . join(',', @$aref) . ']';
   return dispose("$param = array($value, dtype=float64)");
 };
