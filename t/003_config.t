@@ -25,7 +25,7 @@ my $here  = dirname($0);
 
 my @plugins = qw(10bmmultichannel x23a2med x15b);
 my $plregex = join("|", @plugins);
-my $number_of_groups = 37;
+my $number_of_groups = 38;
 
 use Demeter qw(:none);
 

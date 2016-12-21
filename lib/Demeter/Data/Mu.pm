@@ -223,15 +223,18 @@ sub put_data {
 
   ## resolve column tokens
   my $group = $self->group;
+  if (Demeter->is_larch) {
+    $energy_string =~ s{\$(\d+)}{sprintf("%s.data[%d, :]", $group, $1-1)}ge;
+  } else { 
+    $energy_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
+  };
   if ($self->datatype eq 'chi') {
     $chi_string    =~ s{\$(\d+)}{$group.$cols[$1]}g;
-    $energy_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
     $self->chi_string($chi_string);
   } else {
     $i0_string     =~ s{\$(\d+)}{$group.$cols[$1]}g;
     $signal_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
     $xmu_string    =~ s{\$(\d+)}{$group.$cols[$1]}g;
-    $energy_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
 
     $self->i0_string($i0_string);
     $self->signal_string($signal_string);
@@ -323,7 +326,7 @@ sub normalize {
     $self->bkg_nc0(sprintf("%.14f", $self->fetch_scalar("norm_c0")));
     $self->bkg_nc1(sprintf("%.14f", $self->fetch_scalar("norm_c1")));
     $self->bkg_nc2(sprintf("%.14g", $self->fetch_scalar("norm_c2")));
-    $self->bkg_nc3(sprintf("%.14g", $self->fetch_scalar("norm_c3"))) if $self->is_larch;
+    $self->bkg_nc3(sprintf("%.14g", $self->fetch_scalar("norm_c3") || 0)) if $self->is_larch;
 
     if ($self->datatype eq 'xmudat') {
       $self->bkg_slope(0);
@@ -350,7 +353,7 @@ sub normalize {
     $self->bkg_nc0(sprintf("%.14f", $self->fetch_scalar("norm_c0")));
     $self->bkg_nc1(sprintf("%.14f", $self->fetch_scalar("norm_c1")));
     $self->bkg_nc2(sprintf("%.14g", $self->fetch_scalar("norm_c2")));
-    $self->bkg_nc3(sprintf("%.14g", $self->fetch_scalar("norm_c3"))) if $self->is_larch;
+    $self->bkg_nc3(sprintf("%.14g", $self->fetch_scalar("norm_c3") || 0)) if $self->is_larch;
     $self->dispense("process", "nderiv");
   } else { # we take a somewhat different path through these chores for pre-normalized data
     $self->initialize_e0;
@@ -552,7 +555,7 @@ sub autobk {
   $self->bkg_nc0(sprintf("%.14f", $self->fetch_scalar("norm_c0")));
   $self->bkg_nc1(sprintf("%.14f", $self->fetch_scalar("norm_c1")));
   $self->bkg_nc2(sprintf("%.14g", $self->fetch_scalar("norm_c2")));
-  $self->bkg_nc3(sprintf("%.14g", $self->fetch_scalar("norm_c3"))) if $self->is_larch;
+  $self->bkg_nc3(sprintf("%.14g", $self->fetch_scalar("norm_c3") || 0)) if $self->is_larch;
 
   ## note the largest value of the k array
   my @k = $self->get_array('k');

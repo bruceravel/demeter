@@ -57,6 +57,12 @@ sub ACTION_build {
   $self->dispatch("post_build");
 }
 
+sub ACTION_test {
+  my $self = shift;
+  $ENV{DEMETER_FORCE_IFEFFIT} = 1;
+  print "NOTE: Forcing use of Ifeffit in testing.\n";
+  $self->SUPER::ACTION_test;
+};
 
 sub ACTION_docs {
   1; ## null op

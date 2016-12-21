@@ -49,7 +49,7 @@ ok(abs(max(@y)-0.58562) < $epsilon, "nonuniform chi(k) data interpreted correctl
 my $prj = Demeter::Data::Prj->new(file=>File::Spec->catfile($here, 'cyanobacteria.prj'));
 my @data = $prj->records(9,10,11);
 $data[0] -> save_many('many.dat', 'xmu', @data);
-ok(count_lines('many.dat') == 338, 'save_many template works');
+ok(count_lines('many.dat') == 337, 'save_many template works');
 unlink 'many.dat';
 
 ## test dphase template

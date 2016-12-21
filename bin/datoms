@@ -32,6 +32,8 @@ BEGIN {
     print  STDOUT "perl version: $^V$/$/";
     print  STDOUT "\@INC:$/\t" . join("$/\t", @INC) . "$/";
   };
+  my $is_gui = grep {$_ =~ m{\A-{1,2}wx\z}} @ARGV;
+  $ENV{DEMETER_NO_BACKEND} = 1 if (not $is_gui);
 };
 
 use Demeter qw(:atoms);

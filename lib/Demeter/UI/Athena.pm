@@ -2894,6 +2894,7 @@ sub document {
   my $file;
   my @path = ('Demeter', 'share', 'documentation', 'Athena');
   my $url = Demeter->co->default('athena', 'doc_url');
+  $url =~ s{index\.html\z}{};
   if (any {$doc eq $_} (qw(analysis bkg examples import other output params plot process ui))) {
     push @path, $doc;
     $file = 'index';

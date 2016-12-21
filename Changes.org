@@ -15,6 +15,11 @@
       smoothing.
     + Fixed a spurious error message reporting results of an LCF
       fit. (Thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-October/008853.html][Fred Mosselmans]])
+    + When doing things with marked groups in diff spectrum tool, be
+      sure that standard is removed from the list of marked groups.
+      (Thanks to Sinead Rowe)
+    + Fix a problem processing keV data when using Larch (Thanks to
+      [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-November/008880.html][Juan de la Figuera]]) (See issue #42)
 
 *** Artemis
     + Actually use the user-supplied value of epsilon_k (Thanks to
@@ -26,6 +31,10 @@
 *** Atoms
     + WebAtoms, https://github.com/bruceravel/WebAtoms
     + Lots of fixes for problems uncovered while working on WebAtoms
+    + Set DEMETER_NO_BACKEND = 1 when using CLI interface
+    + Handle =:1= and =:2= symbol modifiers in a more robust manner --
+      remove the modifier and apply the tabulated shift vector in the
+      case of a =:1= group (Thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-December/008914.html][Marcus Fehse]])
 
 *** Hephaestus
     + Added P K, S K, Cl K, Ag L3, and Pb L3 standards contributed by
@@ -41,6 +50,11 @@
       Ifeffit for an application that is entirely contained within
       Demeter (WebAtoms, which does not plot, is an example).
     + Recognize and use web import mode, i.e. ~use Demeter qw(:ui=web);~
+    + Attempt to teach STAR::Parser to deal with "_eof" in a CIF
+      file. (Thanks to Alessandro Longo)
+    + Fixed a few testing bugs, skip XDI tests, force use of Ifeffit
+      for testing.  The last two are not permanent.  In particular,
+      testing with Larch is very important.
 
 *** Windows
 

@@ -902,8 +902,8 @@ sub seq_select {
   my $i = 0;
   foreach my $st (@{ $this->{LCF}->standards }) {
     $this->{'standard'.$i}->SetStringSelection($st->name);
-    my $w = sprintf("%.3f", $this->{LCF}->weight($st));
-    my $e = sprintf("%.3f", $this->{LCF}->e0($st));
+    my $w = sprintf("%.3f", scalar($this->{LCF}->weight($st)));
+    my $e = sprintf("%.3f", scalar($this->{LCF}->e0($st)));
     $this->{'weight'.$i}  -> SetValue($w);
     $this->{'e0'.$i}      -> SetValue($e);
     $this->{'fite0'.$i}   -> SetValue($this->{LCF}->is_e0_floated($st));
