@@ -3,10 +3,10 @@ package Larch;
 # require Exporter;
 # @ISA = qw(Exporter);
 # @EXPORT_OK = qw(dispose larch decode_data get_data get_messages
-# 		get_larch_scalar put_larch_scalar
-# 		get_larch_array put_larch_array
-# 		create_larch_connection shutdown_larch_connection
-# 		get_client_info set_client_info run_selftest);
+#		get_larch_scalar put_larch_scalar
+#		get_larch_array put_larch_array
+#		create_larch_connection shutdown_larch_connection
+#		get_client_info set_client_info run_selftest);
 
 use strict;
 use warnings;
@@ -45,17 +45,15 @@ sub find_larch {
 
   }
   my $pyexe_ = which($python_exe);
-  my $larch_ = which("larch_server");
-  if (defined($pyexe_) && (-e $pyexe_) && defined($larch_) && (-e $larch_))  {
-    $larch_exe = "$pyexe_ $larch_";
-    return $larch_exe;
+  my $larch_exe = which("larch_server");
+  if (defined($pyexe_) && (-e $pyexe_) && defined($larch_exe) && (-e $larch_exe))  {
+      return $larch_exe;
   }
   foreach my $d (@dirlist) {
     my $pyexe_ =  File::Spec->catfile($d, $python_exe);
-    my $larch_ =  File::Spec->catfile($d, $pyscript_dir, 'larch_server');
-    if ((-e $pyexe_) && (-e $larch_))  {
-      $larch_exe = "$pyexe_ $larch_";
-      last;
+    my $larch_exe =  File::Spec->catfile($d, $pyscript_dir, 'larch_server');
+    if ((-e $pyexe_) && (-e $larch_exe))  {
+	return $larch_exe;
     }
   }
   return $larch_exe;
@@ -66,10 +64,10 @@ sub find_larch {
 # this will avoid multiple clients using the same port
 sub get_next_larch_port {
   # find next available port to run on
-  my ($lexe) = @_;
-  my $s = `$lexe -n`;
-  $s =~ s/[^\d.]/ /g ;
-  my @w = split /\s+/, $s;
+  my ($larch_exe) = @_;
+  my $out = `$larch_exe -n`;
+  $out =~ s/[^\d.]/ /g ;
+  my @w = split /\s+/, $out;
   return $w[-1];
 };
 
@@ -270,6 +268,7 @@ if (!$larchconn) {
 END {
   my $ok = system "$larch_exe -p $larch_port stop";
 }
+
 
 $larch_is_go;
 
