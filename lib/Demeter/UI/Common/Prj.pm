@@ -40,6 +40,7 @@ sub new {
   if (Demeter->is_prj($file)) {
     $prj = Demeter::Data::Prj->new(file=>$file);
   } elsif (Demeter->is_json($file)) {
+    require "Demeter/Data/JSON.pm";
     $prj = Demeter::Data::JSON->new(file=>$file);
   } else {
     die "That wasn't either a prj file or a json file!  How did that happen?!?\n"

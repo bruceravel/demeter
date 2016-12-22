@@ -11,6 +11,7 @@
 ## initial guess.
 
 use Demeter qw(:ui=screen :plotwith=gnuplot);
+use Demeter::Data::Pixel;
 use File::Basename;
 
 my $stan = Demeter::Data->new(file=>'ESRF_ID24/gete/Ge4SbTe5_ref', bkg_nor2=>1000, bkg_kw=>3);

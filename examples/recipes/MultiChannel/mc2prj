@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
 use Demeter qw(:plotwith=gnuplot :ui=screen);
+use Demeter::Data::MultiChannel;
 use File::Basename;
 
 local $| = 1;

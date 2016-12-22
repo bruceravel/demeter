@@ -20,6 +20,7 @@
 use Test::More tests => 4;
 
 use Demeter qw(:data);
+use Demeter::Data::MultiChannel;
 my $demeter  = Demeter -> new;
 use Cwd;
 use File::Basename;

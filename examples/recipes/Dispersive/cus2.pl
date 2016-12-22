@@ -5,6 +5,7 @@
 ##
 
 use Demeter qw(:ui=screen :plotwith=gnuplot);
+use Demeter::Data::Pixel;
 use File::Basename;
 
 Demeter->set_mode(screen=>0);

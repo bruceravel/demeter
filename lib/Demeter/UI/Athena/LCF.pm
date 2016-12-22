@@ -1047,9 +1047,12 @@ sub reinstate {
   $this->{space}->SetSelection(1) if ($hash->{space} eq 'deriv');
   $this->OnSpace(q());
   ## fit range
-  my $e0  = $this->{LCF}->mo->fetch('Data', $hash->{datagroup})->bkg_e0 || 0;
-  $this->{xmin}->SetValue($hash->{xmin} - $e0);
-  $this->{xmax}->SetValue($hash->{xmax} - $e0);
+  my $e0  = 0;
+  if ($this->{LCF}->mo->fetch('Data', $hash->{datagroup})) {
+    $e0 = $this->{LCF}->mo->fetch('Data', $hash->{datagroup})->bkg_e0;
+  };
+  $this->{xmin}->SetValue($hash->{xmin} - $e0) if $hash->{xmin} != 0;
+  $this->{xmax}->SetValue($hash->{xmax} - $e0) if $hash->{xmax} != 0;
   ## artificial noise, info content, combi
   $this->{noise}->SetValue($hash->{noise});
   $this->{ninfo}->SetValue($hash->{ninfo});

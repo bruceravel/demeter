@@ -7,14 +7,16 @@
 use File::Basename;
 use File::Spec;
 use Demeter qw(:plotwith=gnuplot :ui=screen :data);
+use Demeter::Data::BulkMerge;
 
 #Demeter->set_mode(template_process=>"larch", screen=>0);
 
 ## get a list of files to include
 my $base = dirname($0);
+#my $datadir = '/home/bruce/TeX/XAS-Education/Examples/Cr2O3';
 my $datadir = File::Spec->catfile($base, 'data');
 opendir(my $D, $datadir) || die "can't opendir $datadir: $!";
-my @list = map {File::Spec->catfile($datadir, $_)} sort {$a cmp $b} grep { m{\.} && -f File::Spec->catfile($datadir, $_) } readdir $D;
+my @list = map {File::Spec->catfile($datadir, $_)} sort {$a cmp $b} grep { m{Cr2O3\.} && -f File::Spec->catfile($datadir, $_) } readdir $D;
 closedir $D;
 
 ## import the first file in the list

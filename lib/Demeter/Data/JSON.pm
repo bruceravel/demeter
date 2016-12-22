@@ -269,6 +269,7 @@ sub _record {
 				 bkg_switch bkg_switch2
 				 is_xmu is_chi is_xanes is_xmudat
 				 bkg_stan_lab bkg_flatten_was
+				 bkg_fnorm
 			      );
     ## clean up from old implementation(s) of XDI
     next if any { $k eq $_ } qw(

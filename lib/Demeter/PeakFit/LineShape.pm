@@ -26,7 +26,7 @@ with 'Demeter::Data::Arrays';
 use MooseX::Aliases;
 
 has '+plottable' => (default => 1);
-has '+data'    => (isa => Empty.'|Demeter::Data|Demeter::XES');
+has '+data'    => (isa => Empty.'|Demeter::Data');  # (isa => Empty.'|Demeter::Data|Demeter::XES');
 has '+name'    => (default => 'Lineshape' );
 has 'parent'   => (is => 'rw', isa => Empty.'|Demeter::PeakFit', default => q{},
 		   trigger => sub{ my ($self, $new) = @_; $self->data($new->data)});

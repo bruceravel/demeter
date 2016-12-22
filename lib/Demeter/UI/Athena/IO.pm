@@ -504,6 +504,7 @@ sub _data {
 	  :                                            'xmu';
   my $message = q{};
   if ($med) {
+    require "Demeter/Data/MultiChannel.pm";
     my $mc = Demeter::Data::MultiChannel->new(file=>$file, energy=>$data->energy);
     my $align = $yaml->{preproc_align};
     my $eshift = 0;

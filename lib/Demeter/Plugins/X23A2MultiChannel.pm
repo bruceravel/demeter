@@ -4,6 +4,7 @@ use File::Basename;
 
 use Moose;
 extends 'Demeter::Plugins::FileType';
+use Demeter::Data::MultiChannel;
 
 has '+is_binary'   => (default => 0);
 has '+description' => (default => 'the NSLS X23A2 multi-channel detector');

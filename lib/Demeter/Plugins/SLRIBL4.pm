@@ -2,6 +2,7 @@ package Demeter::Plugins::SLRIBL4;  # -*- cperl -*-
 
 use Moose;
 extends 'Demeter::Plugins::FileType';
+use Demeter::Data::Pixel;
 
 has '+is_binary'    => (default => 1);
 has '+description'  => (default => "SLRI beamline 4");

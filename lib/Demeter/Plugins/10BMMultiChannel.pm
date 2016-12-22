@@ -9,6 +9,7 @@ const my $INIFILE => '10bmmultichannel.demeter_conf';
 
 use Moose;
 extends 'Demeter::Plugins::FileType';
+use Demeter::Data::MultiChannel;
 
 has '+conffile'     => (default => File::Spec->catfile(Demeter->dot_folder, $INIFILE));
 
