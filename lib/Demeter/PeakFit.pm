@@ -38,7 +38,9 @@ if ($Demeter::mode->ui eq 'screen') {
 };
 
 use vars qw($Fityk_exists);
-$Fityk_exists       = eval "require fityk";
+$Fityk_exists = 1;
+eval "use fityk.pm";
+$Fityk_exists = 0 if $@;
 
 has '+plottable'      => (default => 1);
 has '+data'	      => (isa => Empty.'|Demeter::Data'); # (isa => Empty.'|Demeter::Data|Demeter::XES');

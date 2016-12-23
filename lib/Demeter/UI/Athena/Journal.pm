@@ -6,6 +6,8 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON EVT_TEXT);
 
+use Demeter::Journal;
+
 use vars qw($label $tag);
 $label = "Journal";
 $tag = 'Journal';

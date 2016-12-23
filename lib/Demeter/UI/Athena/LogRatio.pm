@@ -9,6 +9,7 @@ use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
 
+use Demeter::LogRatio;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 use vars qw($label);

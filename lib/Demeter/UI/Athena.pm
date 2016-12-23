@@ -200,6 +200,7 @@ sub OnInit {
   # $app->show_tip if Demeter->co->default('athena', 'tips');
   # unlink $tip_temp;
 
+  #print DateTime->now, "  Demeter is go! ...\n";
   1;
 };
 
@@ -1700,7 +1701,9 @@ sub main_window {
 				  $app->{main}->{return}->Show($app->{main}->{views}->GetSelection);
 				  $app->{hbox}->Layout; # the return button does not get shown
 				  $app->{main}->SetSizerAndFit($app->{hbox}); # the return button does not get shown
-				});                                           # on windows without this twiddle
+				                                              # on windows without this twiddle
+				  $app->{main}->status($app->{main}->{views}->GetPageText($app->{main}->{views}->GetSelection), "nobuffer");
+				});
   EVT_CHOICEBOOK_PAGE_CHANGING($app->{main}, $app->{main}->{views},
 			       sub{$app->view_changing(@_)});
 
@@ -2025,6 +2028,7 @@ sub get_view {
 
 sub make_page {
   my ($app, $view) = @_;
+  $app->{main}->status("Creating the $view page for the first time.");
   my $busy = Wx::BusyCursor->new();
   Demeter->register_plugins if (($view eq 'PluginRegistry') and not @{Demeter->mo->Plugins});
 
@@ -2037,6 +2041,7 @@ sub make_page {
   $app->{main}->{$view."_sizer"} -> Add($hh, 1, wxEXPAND|wxALL, 0);
   $app->{main}->{$view."_page"} -> SetSizerAndFit($app->{main}->{$view."_sizer"});
   undef $busy;
+  #$app->{main}->status("The $view page is ready.");
 };
 
 sub view_changing {
@@ -2061,7 +2066,7 @@ sub view_changing {
 
     if (($event->GetSelection != 0) and ($event->GetSelection < $nviews-$c)) {
       if (not $ngroups) {
-	$app->{main}->status(sprintf("You have no data imported in Athena, thus you cannot use the %s tool.", lc($string)));
+	$app->{main}->status(sprintf("You have no data imported into Athena, thus you cannot use the %s tool.", lc($string)));
 	$event -> Veto();
       };
     } else {

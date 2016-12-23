@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
-use Demeter qw(:analysis :ui=screen :plotwith=gnuplot);
+use Demeter qw(:data :ui=screen :plotwith=gnuplot);
+use Demeter::PCA;
 Demeter->set_mode(screen=>0);
 
 my $prj = Demeter::Data::Prj -> new(file=>'../../cyanobacteria.prj');

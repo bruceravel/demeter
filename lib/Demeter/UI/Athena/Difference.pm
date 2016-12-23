@@ -7,6 +7,8 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON EVT_TEXT EVT_TEXT_ENTER EVT_CHOICE EVT_CHECKBOX);
 use Wx::Perl::TextValidator;
+
+use Demeter::Diff;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 use File::Basename;

@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
-use Demeter qw(:analysis :ui=screen :plotwith=gnuplot);
+use Demeter qw(:data :ui=screen :plotwith=gnuplot);
+use Demeter::PeakFit;
 
 # my $data = Demeter::Data->new(file        => 'tipb.305',
 # 			      energy      => '$1',

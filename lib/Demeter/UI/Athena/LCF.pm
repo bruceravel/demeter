@@ -7,7 +7,9 @@ use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON EVT_CHECKBOX EVT_COMBOBOX EVT_RADIOBOX EVT_LIST_ITEM_SELECTED EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
 
+use Demeter::LCF;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
+
 use Cwd;
 use File::Basename;
 use File::Spec;

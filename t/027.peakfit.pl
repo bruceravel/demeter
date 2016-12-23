@@ -19,7 +19,8 @@
 
 use Test::More tests => 17;
 
-use Demeter qw(:analysis);
+use Demeter qw(:data);
+use Demeter::PeakFit;
 use File::Basename;
 use File::Spec;
 use Demeter::Constants qw($EPSILON2);
@@ -28,7 +29,7 @@ my $here  = dirname($0);
 
 
 SKIP: {
-  skip "No Fityk, skipping all PeakFit tests",17 if not $Demeter::Fityk_exists;
+  skip "No Fityk, skipping all PeakFit tests",17 if not $Demeter::PeakFit::Fityk_exists;
 
 my $this = Demeter::PeakFit -> new();
 my $OBJ  = 'PeakFit';

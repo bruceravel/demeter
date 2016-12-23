@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
-use Demeter qw(:ui=screen :plotwith=gnuplot);
+use Demeter qw(:data :ui=screen :plotwith=gnuplot);
+use Demeter::Diff;
 
 my $prj = Demeter::Data::Prj->new(file=>'diff.prj');
 my $stan = $prj->record(1);

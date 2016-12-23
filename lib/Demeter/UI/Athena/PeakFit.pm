@@ -20,6 +20,8 @@ use Scalar::Util qw(looks_like_number);
 use List::MoreUtils qw(any firstidx);
 use List::Util qw(max);
 
+use Demeter::PeakFit;
+#use Demeter::PeakFit::LineShape;
 use Demeter::UI::Wx::SpecialCharacters qw(:greek);
 use Demeter::UI::Wx::VerbDialog;
 

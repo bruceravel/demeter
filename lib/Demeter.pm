@@ -92,6 +92,10 @@ Xray::Absorption->load('elam');
 use Demeter::Here;
 use YAML::Tiny;
 
+#use PDL::Lite;
+use PDL::Stats::GLM;		# This is curious, loading this quells a complaint about
+                                # PDL::Graphics::PGPLOT at the end of loading a project file
+
 =for LiteratureReference
   Then, spent as they were from all their toil,
   they set out food, the bounty of Ceres, drenched
@@ -289,15 +293,14 @@ sub import {
   warnings->import;
   #print join(" ", $class, caller), $/;
   my @load  = ();
-  my @data  = (qw(Data Journal Data/Prj)); #  Data/JSON Data/MultiChannel Data/BulkMerge XES Data/Pixel
-  my @heph  = (qw(Data Data/Prj));         #  Data/JSON
+  my @data  = (qw(Data Data/Prj)); #  Journal Data/JSON Data/MultiChannel Data/BulkMerge XES Data/Pixel
+  my @heph  = (qw(Data Data/Prj)); #  Data/JSON
   my @fit   = (qw(Atoms Feff Feff/External ScatteringPath Path SSPath FPath FSPath VPath ThreeBody
 		  GDS Fit Fit/Feffit StructuralUnit Feff/Distributions));
   my @atoms = (qw(Data Atoms Feff ScatteringPath Path Feff/Aggregate));
-  my @anal  = (qw(LCF LogRatio Diff PeakFit PeakFit/LineShape));
+  my @anal  = (qw(LogRatio LCF Diff PeakFit PeakFit/LineShape PCA));
   my @xes   = (qw(XES));
   my @plot  = (qw(Plot/Indicator Plot/Style));
-  my $colonanalysis = 0;
   my $doplugins     = 0;
   my $none          = 0;
 
@@ -328,11 +331,9 @@ sub import {
     } elsif ($p eq ':analysis') {
       @load = (@data, @anal);
       $doplugins     = 1;
-      $colonanalysis = 1;	# verify PDL before loading PCA
     } elsif ($p eq ':athena') {
-      @load = (@data, @anal, @plot);
+      @load = (@data, @plot);
       $doplugins     = 0;       # delay registering plugins until after start-up
-      $colonanalysis = 1;	# verify PDL before loading PCA
     } elsif ($p eq ':artemis') {
       @load = (@heph, @fit, 'Plot/Indicator');
     } elsif ($p eq ':atoms') {
@@ -340,11 +341,9 @@ sub import {
     } elsif ($p eq ':all') {
       @load = (@data, @fit, @anal, @xes, @plot);
       $doplugins     = 1;
-      $colonanalysis = 1;
     } elsif ($p eq ':none') {
       @load = ();
       $doplugins     = 0;
-      $colonanalysis = 0;
       $none          = 1;
     };
   };
@@ -357,14 +356,6 @@ sub import {
     require "Demeter/$m.pm";
   };
 
-  if ($colonanalysis) {
-    $PDL_exists = eval "require PDL::Lite" || 0;
-    $PSG_exists = eval "require PDL::Stats::GLM" || 0;
-  };
-
-  if ($PDL_exists and $PSG_exists) {
-    require "Demeter/PCA.pm" if not exists $INC{"Demeter/PCA.pm"};
-  };
   $class -> register_plugins if $doplugins;
 };
 

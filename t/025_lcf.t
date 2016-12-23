@@ -19,7 +19,8 @@
 
 use Test::More tests => 14;
 
-use Demeter qw(:analysis);
+use Demeter qw(:data);
+use Demeter::LCF;
 use File::Basename;
 use File::Spec;
 
