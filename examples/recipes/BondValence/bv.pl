@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-use Demeter qw(:ui=screen :p=gnuplot);
+use Demeter qw(:data :ui=screen :p=gnuplot);
 use Xray::BondValence qw(bvparams bvdescribe);
 use Chemistry::Elements qw(get_name);
 use File::Path;

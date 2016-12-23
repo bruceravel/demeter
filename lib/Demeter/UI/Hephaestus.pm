@@ -395,6 +395,7 @@ sub OnInit {
 #  $frame->{line}->adjust_column_width;
 
   $frame -> Show( 1 );
+  print DateTime->now, "  Hephaestus is go! ...\n" if ($ENV{DEMETER_TIMING});
 };
 
 sub multiplex {

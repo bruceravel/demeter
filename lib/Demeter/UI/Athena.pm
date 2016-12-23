@@ -200,7 +200,7 @@ sub OnInit {
   # $app->show_tip if Demeter->co->default('athena', 'tips');
   # unlink $tip_temp;
 
-  #print DateTime->now, "  Demeter is go! ...\n";
+  print DateTime->now, "  Athena is go! ...\n" if ($ENV{DEMETER_TIMING});
   1;
 };
 

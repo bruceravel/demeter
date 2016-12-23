@@ -506,6 +506,7 @@ sub OnInit {
   Demeter->dispense('fit', 'prep_fit');
 
   $frames{main}->status("Welcome to Artemis $MDASH " . Demeter->identify . " $MDASH " . Demeter->backends);
+  print DateTime->now, "  Athena is go! ...\n" if ($ENV{DEMETER_TIMING});
   1;
 }
 

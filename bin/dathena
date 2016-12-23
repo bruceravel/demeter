@@ -21,8 +21,10 @@ BEGIN {
     print  STDOUT "backend: $backend$/$/";
     print  STDOUT "\@INC:$/\t" . join("$/\t", @INC) . "$/";
   };
-  #use DateTime;
-  #print DateTime->now, "  Demeter is just starting ...\n";
+  if ($ENV{DEMETER_TIMING}) {
+    eval "use DateTime";
+    print DateTime->now, "  Athena is just starting ...\n";
+  };
 };
 use Wx;
 #Wx::InitAllImageHandlers();
