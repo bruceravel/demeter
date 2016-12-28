@@ -33,7 +33,7 @@ use File::Which qw(which);
 ## Configuration
 
 my $WINPERL;
-if ($ENV{COMPUTERNAME} eq 'WPS-136083') {
+if (defined($ENV{COMPUTERNAME}) and ($ENV{COMPUTERNAME} eq 'WPS-136083')) {
   # the correct value for the build machine in my office
   $WINPERL = `C:\\Strawberry`;
 } else {
@@ -473,6 +473,7 @@ sub ACTION_bump {
   print "
 perl-reversion misses version numbers in
 	Build.PL
+and the conf.py files for the Sphinx documents.
 
 Don't forget to push and tag!
 "

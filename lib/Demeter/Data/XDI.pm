@@ -263,7 +263,7 @@ Demeter::Data::XDI - Import XDI objects into Demeter Data objects
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 This is compliant with L<Xray::XDI> 1.0.
 

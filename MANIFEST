@@ -2484,8 +2484,6 @@ lib/Xray/Scattering/None.pm
 lib/Xray/Scattering/WaasKirf.pm
 LICENSE
 MANIFEST			This list of files
-META.json
-META.yml
 notes/Atoms/A2n_atoms.inp
 notes/Atoms/C2c_atoms.inp
 notes/Atoms/cluster_problem

@@ -163,7 +163,7 @@ Demeter::UI::Athena::ConvoluteNoise - A convolution and artficial noise tool for
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 

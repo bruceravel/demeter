@@ -182,7 +182,7 @@ Demeter::UI::Common::Buffer - A command and plot command buffer for Demeter GUIs
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
