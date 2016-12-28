@@ -20,6 +20,9 @@ First steps
    http://strawberryperl.com/. The rest of this page presumes that you
    have installed perl into :file:`C:\\Strawberry`.
 
+   At the time of the most recent update of this document, the current
+   version of Strawberry perl is 5.24.0.1.
+
 #. You may want to install the GutHub Desktop application from
    https://desktop.github.com/
 
@@ -38,36 +41,46 @@ First steps
    installed.  When you upgrade :demeter:`demeter`, this step will
    only be required to update any new dependencies.
 
-The first time through, it took about 3 hours to compile up all the
+The first time through, it took over 2 hours to compile up all the
 dependencies on my fairly old Windows machine.  Three packages failed
-to install: ``Wx``, ``File::Monitor::Lite``,
-``Syntax::Highlight::Perl``.
+to install: ``Wx``, ``Win32::Unicode::File``, and ``File::Monitor::Lite``.
 
 ``Wx``
 
   This failed because one of the tests hung for some reason.  Clicking
   the red X button allowed the tests to continue, but caused one to
-  fail.  It was safe to do :command:`cpanm -f Wx` to force the
+  fail.  It was safe to do :command:`cpanm -f -n Wx` to force the
   installation despite the test failure.  Of course, I had to pay
   attention and dismiss the window from the hung test....
+
+``Win32::Unicode::File``
+
+  This failed a test having to do with printing `a Unicode character
+  <http://www.fileformat.info/info/unicode/char/2665/index.htm>`_ to
+  standard output.  I suspect this has something to do with the
+  terminal I was using on my Windows machine.  In any case, it is
+  benign in the context of how this module is used in Demeter.  Doing
+  :command:`cpanm -f -n Win32::Unicode::File` is safe.
 
 ``File::Monitor::Lite``
 
   Here, the failures have to do with a test failing to deal correctly
-  with slashes and backslashes.  Again doing :command:`cpanm -f
+  with slashes and backslashes.  Again doing :command:`cpanm -f -n
   File::Monitor::Lite` is safe.
 
-``Syntax::Highlight::Perl``
+.. 
+    ``Syntax::Highlight::Perl``
 
-  I'm not sure what caused this to fail, but it seems benign.  Doing
-  :command:`cpanm -f Syntax::Highlight::Perl` worked without any
-  failures in the testing phase.  The earlier failure seems to have
-  something to do with a problem unpacking the package downloaded by
-  :program:`cpanm`.
+    I'm not sure what caused this to fail, but it seems benign.  Doing
+    :command:`cpanm -f Syntax::Highlight::Perl` worked without any
+    failures in the testing phase.  The earlier failure seems to have
+    something to do with a problem unpacking the package downloaded by
+    :program:`cpanm`.
 
-Any other problems |nd| just do :command:`cpan -f <module>` and see what
-happens.  The worst case scenario is that you have to submit a bug
-report, thus making :demeter:`demeter` better.  Horrors!
+Any other problems |nd| just do :command:`cpan -f <module>` and see
+what happens.  The worst case scenario is that you have to `submit a
+bug report <https://github.com/bruceravel/demeter/issues>`_, thus
+making :demeter:`demeter` better.  Horrors!
 
 Using Gnuplot
 -------------
@@ -89,7 +102,7 @@ Preparing to compile Ifeffit
 First, need to establish a build environment from which
 Strawberry+Demeter can be bootstrapped.
 
-#. Would like to installed PDCurses and Readline from `GnuWin32
+#. Would like to have installed PDCurses and Readline from `GnuWin32
    <http://gnuwin32.sourceforge.net/packages.html>`_ into
    :file:`C:\\GnuWin32` (or somewhere), but I could not get these to
    work with my 64-bit build.  See below.
@@ -201,11 +214,14 @@ Build`` step.  If you have build :demeter:`demeter` for an earlier
 version of perl, you should do ``perl Build touch_wrapper`` to make
 sure the SWIG wrapper is rebuilt.
 
+If rebuilding after updating Strawberry, don't forget to do
+:command:`perl ./Build touch_wrapper`, which forces a rebuild of the
+wrapper.
 
 Building documentation
 ----------------------
 
-The document requires `Sphinx <http://sphinx-doc.org/>`_, which I did
+The documentation requires `Sphinx <http://sphinx-doc.org/>`_, which I did
 not bother to install on my computer.  I just built the document on a
 linux machine, zipped it up, and dropped it in place in
 :file:`C:\\Strawberry\\perl\\site\\lib\\Demeter\\share`.  With Sphinx, it

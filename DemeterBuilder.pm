@@ -32,7 +32,14 @@ use File::Which qw(which);
 ######################################################################
 ## Configuration
 
-my $WINPERL = File::Spec->catfile($ENV{APPDATA}||'./', 'DemeterPerl');
+my $WINPERL;
+if ($ENV{COMPUTERNAME} eq 'WPS-136083') {
+  # the correct value for the build machine in my office
+  $WINPERL = `C:\\Strawberry`;
+} else {
+  # the likeliest value on some other computer
+  $WINPERL = File::Spec->catfile($ENV{APPDATA}||'./', 'DemeterPerl');
+};
 my %windows = (base    => $WINPERL,  # base of Demeter's perl
 	       gnuwin  => File::Spec->catfile($WINPERL, 'lib'),
 	       mingw   => File::Spec->catfile($WINPERL, 'c', 'lib', 'i686-w64-mingw32', '4.7.3'),
