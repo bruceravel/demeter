@@ -253,21 +253,22 @@ sub ACTION_compile_ifeffit_wrapper {
       ($pgplot_location, $iffdir) = (q{}, q{});
 
       $linker_flags = [
-		       q{-L}.$windows{gnuwin}.q{\lib"},
-		       q{-lcurses -lreadline},
+		       q{-L"}.$windows{gnuwin}.q{\lib"},
+		       #q{-lcurses -lreadline},
+	               q{-lcurses -lreadline},
 
-		       q{-L}.$windows{base}.q{\perl\lib\CORE"},
-		       q{-L}.$windows{base}.q{\c\lib"},
-		       q{-L}.$windows{mingw},
-		       q{-L}.$windows{ifeffit},
+		       q{-L"}.$windows{base}.q{\perl\lib\CORE"},
+		       q{-L"}.$windows{base}.q{\c\lib"},
+		       q{-L"}.$windows{mingw}.q{"},
+		       q{-L"}.$windows{ifeffit}.q{"},
 		       q{-lifeffit -lxafs},
 
 		       #q{-L"C:\MinGW\bin"},
-		       q{-L}.$windows{mingw},
-		       q{-L}.$windows{mingw}.q{\lib"},
+		       q{-L"}.$windows{mingw}.q{"},
+		       q{-L"}.$windows{mingw}.q{\lib"},
 		       q(-lgfortran -lmingw32 -lgcc_s -lmoldname -lmingwex -lmsvcrt -luser32 -lkernel32 -ladvapi32 -lshell32),
 
-		       q{-L}.$windows{pgplot},
+		       q{-L"}.$windows{pgplot}.q{"},
 		       qw{-lcpgplot -lpgplot -lGrWin -lgdi32 -lgfortran},
 		      ];
       #    $compile_flags = $linker_flags;
