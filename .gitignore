@@ -21,6 +21,7 @@ lib/Xray/Crystal/share/space_groups.db
 
 lib/Demeter/configuration/plot.demeter_conf
 lib/Demeter/configuration/gnuplot.demeter_conf
+lib/Demeter/configuration/demeter_config.db
 
 src/*.dll
 src/*.so

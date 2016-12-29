@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 use Demeter qw(:ui=screen :plotwith=gnuplot);
+use Demeter::ThreeBody;
 
 # my $atoms = Demeter::Atoms->new(file=>'Pt.inp');
 # my $feff  = Demeter::Feff->new(atoms=>$atoms, workspace=>'./feff');

@@ -130,13 +130,12 @@ my $build = DemeterBuilder
 				## project docs
 				'Pod::ProjectDocs'        => '0',
 				'File::Slurper'           => '0',
-				'Capture::Tiny'           => '0',
 
 				## these are used to build the Ifeffit wrapper
                                 'ExtUtils::CBuilder'      => '0',
 			       },
 	 PL_files           => {
-				## demeter configuration converted to quick-loading JSON
+				## demeter configuration converted to a quick-loading JSON file (with .db so it gets installed by default)
 				'lib/Demeter/configuration/demeter_config.PL' => 'lib/Demeter/configuration/demeter_config.db',
 
 				## space group database
@@ -187,14 +186,17 @@ my $build = DemeterBuilder
 				'src/*.so',
 				'src/*.dylib',
 				'src/*.dll',
+				'lib/Demeter/configuration/demeter_config.db',
+				'lib/Demeter/configuration/plot.demeter_conf',
+				'lib/Demeter/configuration/gnuplot.demeter_conf',
 				'lib/Xray/Absorption/*.db',
 				'lib/Xray/Scattering/*.db',
 				'lib/Xray/Crystal/share/*.db',
-				'lib/Demeter/doc/dpg/bin/build',
-				'lib/Demeter/doc/dpg/etc/ttree.cfg',
-				'lib/Demeter/doc/dpg/html',
-				'lib/Demeter/doc/dpg/templates/lib/config/map',
-				'lib/Demeter/doc/dpg/templates/lib/config/version',
+				#'lib/Demeter/doc/dpg/bin/build',   # doc/ is deprecated
+				#'lib/Demeter/doc/dpg/etc/ttree.cfg',
+				#'lib/Demeter/doc/dpg/html',
+				#'lib/Demeter/doc/dpg/templates/lib/config/map',
+				#'lib/Demeter/doc/dpg/templates/lib/config/version',
 				't/feff',
 			       ],
 	 meta_merge     => {

@@ -41,7 +41,7 @@ use Demeter::UI::Wx::VerbDialog;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 local $Archive::Zip::UNICODE = 1;
-use Capture::Tiny ':all';
+#use Capture::Tiny ':all';
 use Cwd;
 use File::Basename;
 use File::Copy;
@@ -507,9 +507,6 @@ sub OnInit {
 
   $frames{main}->status("Welcome to Artemis $MDASH " . Demeter->identify . " $MDASH " . Demeter->backends);
   print DateTime->now, "  Athena is go! ...\n" if ($ENV{DEMETER_TIMING});
-  while (my ($key, $value) = each %INC) {
-    printf "%-30s -> %s\n", $key, $value;
-  };
   1;
 }
 

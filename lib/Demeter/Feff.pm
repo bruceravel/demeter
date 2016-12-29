@@ -33,7 +33,7 @@ if ($Demeter::mode->ui eq 'screen') {
 };
 use Demeter::Return;
 
-use Capture::Tiny qw(capture tee);
+#use Capture::Tiny qw(capture tee);
 use Carp;
 use Chemistry::Elements qw(get_symbol);
 use Compress::Zlib;

@@ -20,6 +20,8 @@
 use Test::More tests => 10;
 
 use Demeter qw(:fit);
+use Demeter::ThreeBody;
+
 use File::Basename;
 use File::Spec;
 my $here  = dirname($0);

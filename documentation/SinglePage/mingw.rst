@@ -19,8 +19,8 @@ First steps
 -----------
 
 #. Install the latest version of :program:`Strawberry Perl` from
-   http://strawberryperl.com/. The rest of this page presumes that you
-   have installed perl into :file:`C:\\Strawberry`.
+   http://strawberryperl.com/.  The rest of this page presumes that
+   you have installed perl into :file:`C:\\Strawberry`.
 
    At the time of the most recent update of this document, the current
    version of Strawberry perl is 5.24.0.1.
@@ -45,7 +45,8 @@ First steps
 
 The first time through, it took over 2 hours to compile up all the
 dependencies on my fairly old Windows machine.  Three packages failed
-to install: ``Wx``, ``Win32::Unicode::File``, and ``File::Monitor::Lite``.
+to install: ``Wx``, ``Win32::Unicode::File``, and
+``File::Monitor::Lite``.
 
 ``Wx``
 
@@ -156,8 +157,8 @@ Compiling Ifeffit to be placed in C:/strawberry
    (Note: this should be done in the MinGW window and **not** in the
    Windows command prompt.)
 
-#. Edit :file:`src/lib/sys.h`, changing the ``sysdir`` and ``pgdev`` lines
-   like so:
+#. Edit :file:`src/lib/sys.h`, changing the ``sysdir`` and ``pgdev``
+   lines like so:
 
    .. code-block:: fortran
 
@@ -236,9 +237,10 @@ wrapper.
 Building documentation
 ----------------------
 
-The documentation requires `Sphinx <http://sphinx-doc.org/>`_, which I did
-not bother to install on my computer.  I just built the document on a
-linux machine and zipped it up in a directory structure that looks like this:
+The documentation requires `Sphinx <http://sphinx-doc.org/>`_, which I
+did not bother to install on my computer.  I just built the document
+on a linux machine and zipped it up in a directory structure that
+looks like this:
 
 .. blockdiag::
 
@@ -258,7 +260,6 @@ This tree is then dropped in place in
 :file:`C:\\Strawberry\\perl\\site\\lib\\Demeter\\share`.
 
 
-
-
-With Sphinx, I imagine it would build and install normally.
-
+With Sphinx, I imagine it would build and install normally.  Building
+with also requires these packages: pybtex, sphinxcontrib-bibtex, and
+sphinxcontrib-blockdiag, which can be installed with pip.

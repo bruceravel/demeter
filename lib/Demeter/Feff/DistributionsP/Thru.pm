@@ -5,6 +5,7 @@ use MooseX::Aliases;
 use POSIX qw(acos);
 use Demeter::Constants qw($PI);
 use Demeter::NumTypes qw( Ipot );
+use Demeter::ThreeBody;
 
 use Chemistry::Elements qw (get_Z get_name get_symbol);
 

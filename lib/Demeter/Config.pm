@@ -117,7 +117,13 @@ sub BUILD {
   $self -> dot_folder;
   if (-e $self->config_json) {
     my $rlist = decode_json(Demeter->slurp($self->config_json));
-    $self->set(%$rlist);
+    %params_of = %$rlist;
+    foreach my $key (keys %params_of) {
+      my $k = lc $key;
+      my ($g, $p) = split(/:/, $k);
+      $ini{$g}{$p} = $params_of{lc $key}->{default} if $p;
+    };
+
   } else {
     $self -> read_config;
   };
@@ -166,7 +172,8 @@ sub get {
 
 sub groups {
   my ($self) = @_;
-  my @list = @{ $self->get('___groups') };
+  #my @list = @{ $self->get('___groups') };
+  my @list = keys(%ini);
   return sort @list;
 };
 
@@ -208,7 +215,7 @@ sub _read_config_file {
     if (not -r $file);
 
   my $base = (split(/\./, basename($file)))[0];
-  #$self -> Push(___groups => $base);
+  $self -> Push(___groups => $base);
   $self -> push_all_config_files(File::Spec->rel2abs($file));
 
   my $key_regex = Regexp::Assemble->new()->add(qw(type default minint maxint options windows
@@ -235,7 +242,7 @@ sub _read_config_file {
     } elsif ($line =~ m{^\s*section\s*=\s*(\w+)}) {
       $group = $1;
       $group =~ s{\s+$}{};
-      $self -> Push(___groups => $group);
+      #$self -> Push(___groups => $group);
       $description = q{};
 
     } elsif ($line =~ m{^\s*section_description}) {

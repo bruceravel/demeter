@@ -3,9 +3,10 @@ use Moose::Role;
 use MooseX::Aliases;
 
 use POSIX qw(acos);
-use Demeter::Constants qw($PI);
 
+use Demeter::Constants qw($PI);
 use Demeter::NumTypes qw( Ipot );
+use Demeter::ThreeBody;
 
 ## DS triangle histogram attributes
 has 'skip'      => (is => 'rw', isa => 'Int', default => 50,);

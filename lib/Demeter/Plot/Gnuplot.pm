@@ -23,7 +23,7 @@ extends 'Demeter::Plot';
 use Carp;
 use File::Spec;
 use Demeter::Constants qw($NUMBER);
-use Capture::Tiny qw(capture_merged);
+#use Capture::Tiny qw(capture_merged);
 
 has '+error_log' => (default => File::Spec->catfile($Demeter::mode->iwd,
 						    $Demeter::mode->external_plot_object->{__error_log}));
@@ -49,7 +49,8 @@ has '+partstyle' => (default => sub{ shift->co->default("gnuplot", "partstyle") 
 has '+pathstyle' => (default => sub{ shift->co->default("gnuplot", "pathstyle") || 'lines'});
 
 has '+version' => (default => sub {
-		     my $x = capture_merged {system 'gnuplot -V'};
+		     #my $x = capture_merged {system 'gnuplot -V'};
+		     my $x = `gnuplot -V`;
 		     if ($x =~ m{(\d+\.\d+)\s+(patchlevel\s+(\d+))?}) {
 		       if ($3) {
 			 return $1.'.'.$3;
