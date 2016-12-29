@@ -50,7 +50,8 @@ has '+pathstyle' => (default => sub{ shift->co->default("gnuplot", "pathstyle") 
 
 has '+version' => (default => sub {
 		     #my $x = capture_merged {system 'gnuplot -V'};
-		     my $x = `gnuplot -V`;
+		     my $prog = Demeter->co->default('gnuplot', 'program') || 'gnuplot';
+		     my $x = `$prog -V`;
 		     if ($x =~ m{(\d+\.\d+)\s+(patchlevel\s+(\d+))?}) {
 		       if ($3) {
 			 return $1.'.'.$3;
