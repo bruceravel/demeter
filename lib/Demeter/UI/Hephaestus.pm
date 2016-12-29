@@ -396,6 +396,7 @@ sub OnInit {
 
   $frame -> Show( 1 );
   print DateTime->now, "  Hephaestus is go! ...\n" if ($ENV{DEMETER_TIMING});
+  1;
 };
 
 sub multiplex {

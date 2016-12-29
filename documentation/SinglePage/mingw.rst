@@ -10,8 +10,10 @@ Building Demeter and Ifeffit on Windows with MinGW and Strawberry Perl
 This is my page of notes on how I built :demeter:`ifeffit` and
 :demeter:`demeter` to work with `Strawberry Perl
 <http://strawberryperl.com/>`_ and how I managed to build the
-:demeter:`demeter` with Strawberry Perl installer package.  It may not
-be completely coherent |nd| let me know if anything isn't clear.
+:demeter:`demeter` with Strawberry Perl installer package.  These are
+mostly notes to myself, so this may not be completely coherent |nd|
+`raise an issue <https://github.com/bruceravel/demeter/issues>`_ is
+anything is unclear.
 
 First steps
 -----------
@@ -118,7 +120,7 @@ Strawberry+Demeter can be bootstrapped.
 
 #. Set the ``PGPLOT_DIR`` variable to ``/c/mingw/lib/pgplot``, which
    is the location to which :program:`pgplot` was installed in
-   step 4.
+   step 3.
 
 #. In principle, ``PGPLOT_DEV`` should be set to ``/GW``, but that
    does not seem to get picked up by :demeter:`ifeffit`.  I have to
@@ -181,16 +183,24 @@ Compiling Ifeffit to be placed in C:/strawberry
 curses and readline
 -------------------
 
-I could not figure out how to find pre-compiled versions of curses and
-readline, nor could I figure out how to compile readline myself.  As a
-result, was unable to compile the command line version of
-:program:`ifeffit`, although the library compiled up just fine.  Thus
-the installer package does not currently have a copy of the command
-line :program:`ifeffit`.
+The readline library compiled for 64 bit Windows and usable with the
+mingw toolchain is `available here
+<https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/ray_linn/64bit-libraries/readline/>`_.
+Open the 7zip file and copy the various files in the :file:`bin`,
+:file:`include`, :file:`lib`, and :file:`share` folders into
+:file:`C:\\Strawberry\\c` (or wherever your :demeter:`demeter` root is
+located).
 
-As a result, you will likely need to do :command:`make -k` and
-:command:`make -k install` to skip over the problem building the
-command line :program:`ifeffit`.
+I could not find a pre-compiled curses library, nor could I figure out
+how to compile `PDCurses <https://github.com/wmcbrine/PDCurses>`_ on
+my Windows/mingw machine.  As a result, I was unable to compile the
+command line version of :program:`ifeffit`, although the library
+compiled up just fine.  Thus the installer package does not currently
+have a copy of the command line :program:`ifeffit`.
+
+Without a curses library, you will certainly need to do :command:`make
+-k` and :command:`make -k install` to skip over the problem building
+the command line :program:`ifeffit`.
 
 
 Compiling the SWIG wrapper
@@ -218,11 +228,37 @@ If rebuilding after updating Strawberry, don't forget to do
 :command:`perl ./Build touch_wrapper`, which forces a rebuild of the
 wrapper.
 
+.. note:: The block around lines 36-42 in :file:`DemeterBuilder.pm`
+   attempts to set the root of the :demeter:`demeter` installation
+   correctly.  (It is :file:`C:\\Strawberry\\c` on my build machine.)
+   Make sure it resolves to the correct location on your machine.
+
 Building documentation
 ----------------------
 
 The documentation requires `Sphinx <http://sphinx-doc.org/>`_, which I did
 not bother to install on my computer.  I just built the document on a
-linux machine, zipped it up, and dropped it in place in
-:file:`C:\\Strawberry\\perl\\site\\lib\\Demeter\\share`.  With Sphinx, it
-should build and install normally.
+linux machine and zipped it up in a directory structure that looks like this:
+
+.. blockdiag::
+
+   blockdiag {
+
+     node_width = 200;
+     default_fontsize = 14;
+
+     documentation -> Artemis, Athena, DPG, SinglePage;
+   }
+
+where each of :file:`Artemis`, :file:`Athena`, :file:`DPG`, and
+:file:`SinglePage` contains the contents of their respective
+:file:`_build/html` folders.
+
+This tree is then dropped in place in
+:file:`C:\\Strawberry\\perl\\site\\lib\\Demeter\\share`.
+
+
+
+
+With Sphinx, I imagine it would build and install normally.
+

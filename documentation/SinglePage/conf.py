@@ -51,8 +51,12 @@ extensions.extend([
     'singletext',
     'sphinx_clatex',
     'demeterdocs',
+    'sphinxcontrib.blockdiag',
     'sphinxcontrib.bibtex'
 ])
+
+# Fontpath for blockdiag (truetype font)
+blockdiag_fontpath = '/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf'
 
 # Turns on numbered figures for HTML output
 #number_figures = True

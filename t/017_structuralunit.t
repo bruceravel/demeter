@@ -20,6 +20,7 @@
 use Test::More tests => 12;
 
 use Demeter qw(:fit);
+use Demeter::StructuralUnit;
 
 my $this = Demeter::StructuralUnit -> new();
 my $OBJ  = 'StructuralUnit';

@@ -115,7 +115,7 @@ default=8.0
 units=Angstroms
 description
   This is the default value for Rmax in an atoms calculation.  Rmax is
-  the radial extent ofthe cluster used to compute the potentials.  See
+  the radial extent of the cluster used to compute the potentials.  See
   also rpath.
 
 variable=rpath

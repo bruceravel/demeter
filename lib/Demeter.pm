@@ -295,8 +295,8 @@ sub import {
   my @load  = ();
   my @data  = (qw(Data Data/Prj)); #  Journal Data/JSON Data/MultiChannel Data/BulkMerge XES Data/Pixel
   my @heph  = (qw(Data Data/Prj)); #  Data/JSON
-  my @fit   = (qw(Atoms Feff Feff/External ScatteringPath Path SSPath FPath FSPath VPath ThreeBody
-		  GDS Fit Fit/Feffit StructuralUnit Feff/Distributions));
+  my @fit   = (qw(Atoms Feff ScatteringPath Path SSPath FPath FSPath VPath ThreeBody GDS Fit));
+              #   Feff/External Feff/Distributions StructuralUnit Fit/Feffit
   my @atoms = (qw(Data Atoms Feff ScatteringPath Path Feff/Aggregate));
   my @anal  = (qw(LogRatio LCF Diff PeakFit PeakFit/LineShape PCA));
   my @xes   = (qw(XES));
@@ -335,7 +335,7 @@ sub import {
       @load = (@data, @plot);
       $doplugins     = 0;       # delay registering plugins until after start-up
     } elsif ($p eq ':artemis') {
-      @load = (@heph, @fit, 'Plot/Indicator');
+      @load = (@data, @fit, 'Plot/Indicator');
     } elsif ($p eq ':atoms') {
       @load = @atoms;
     } elsif ($p eq ':all') {

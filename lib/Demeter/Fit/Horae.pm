@@ -30,6 +30,7 @@ use Safe;
 use Scalar::Util qw(looks_like_number);
 
 use Demeter::Constants qw($NUMBER);
+use Demeter::Feff::External;
 
 sub apj2dpj {
   my ($self, $apj, $dpj, $rjournal) = @_;
@@ -106,14 +107,14 @@ sub apj2dpj {
 	if ($#list == 0) {
 	  my $args = <$DESC>;
 	  my $strings = <$DESC>;
-	  $current_data = $self->horae_data($unzip, \%map, $args, $strings);
+	  $current_data = horae_data($self, $unzip, \%map, $args, $strings);
 	  last SWITCH if not $current_data;
 	  $current_data->readfromfit(File::Spec->catfile($unzip, 'fits', $latest, $old_path.'.fit'));
 	  push @data, $current_data;
 	  $map{$old_path} = $current_data;
 	} elsif ($#list == 1) {
 	  my $args = <$DESC>;
-	  $current_feff = $self->horae_feff($unzip, \%map, $old_path, $args);
+	  $current_feff = horae_feff($self, $unzip, \%map, $old_path, $args);
 	  push @feff, $current_feff;
 	  if ($current_feff->feff_version == 8) {
 	    $trouble .= "The old-style project file $apj appears to use Feff8, which Demeter cannot yet handle.";
@@ -122,7 +123,7 @@ sub apj2dpj {
 	} elsif ($#list == 2) {
 	  my $args = <$DESC>;
 	  my $strings = <$DESC>;
-	  my $this = $self->horae_path($unzip, \%map, $old_path, $current_feff, $args, $strings);
+	  my $this = horae_path($self, $unzip, \%map, $old_path, $current_feff, $args, $strings);
 	  push @paths, $this if $this;
 	};
 	last SWITCH;

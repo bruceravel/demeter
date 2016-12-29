@@ -35,7 +35,7 @@ use File::Which qw(which);
 my $WINPERL;
 if (defined($ENV{COMPUTERNAME}) and ($ENV{COMPUTERNAME} eq 'WPS-136083')) {
   # the correct value for the build machine in my office
-  $WINPERL = `C:\\Strawberry`;
+  $WINPERL = 'C:\\Strawberry';
 } else {
   # the likeliest value on some other computer
   $WINPERL = File::Spec->catfile($ENV{APPDATA}||'./', 'DemeterPerl');

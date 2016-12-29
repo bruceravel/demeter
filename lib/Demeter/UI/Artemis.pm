@@ -507,6 +507,9 @@ sub OnInit {
 
   $frames{main}->status("Welcome to Artemis $MDASH " . Demeter->identify . " $MDASH " . Demeter->backends);
   print DateTime->now, "  Athena is go! ...\n" if ($ENV{DEMETER_TIMING});
+  while (my ($key, $value) = each %INC) {
+    printf "%-30s -> %s\n", $key, $value;
+  };
   1;
 }
 

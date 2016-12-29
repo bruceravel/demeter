@@ -136,6 +136,10 @@ my $build = DemeterBuilder
                                 'ExtUtils::CBuilder'      => '0',
 			       },
 	 PL_files           => {
+				## demeter configuration converted to quick-loading JSON
+				'lib/Demeter/configuration/demeter_config.PL' => 'lib/Demeter/configuration/demeter_config.db',
+
+				## space group database
 				'lib/Xray/Crystal/share/space_groups.db.PL' => 'lib/Xray/Crystal/share/space_groups.db',
 
                                 ## from Xray::Absorption

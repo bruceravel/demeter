@@ -32,6 +32,7 @@ use Demeter::IniReader;
 use Config::INI::Writer;
 use Cwd qw(abs_path);
 use File::Basename;
+use JSON qw(decode_json);
 use Regexp::Assemble;
 #use Demeter::Constants qw($NUMBER);
 use Scalar::Util qw(looks_like_number);
@@ -50,6 +51,11 @@ has 'config_file' => (is => 'ro', isa => FileName,
 						     "Demeter",
 						     "configuration",
 						     "config.demeter_conf"));
+has 'config_json' => (is => 'ro', isa => FileName,
+		      default => File::Spec->catfile(dirname($INC{"Demeter.pm"}),
+						     "Demeter",
+						     "configuration",
+						     "demeter_config.db"));
 
 has 'all_config_files' => (
 			     traits    => ['Array'],
@@ -109,7 +115,12 @@ sub BUILD {
   };
 
   $self -> dot_folder;
-  $self -> read_config;
+  if (-e $self->config_json) {
+    my $rlist = decode_json(Demeter->slurp($self->config_json));
+    $self->set(%$rlist);
+  } else {
+    $self -> read_config;
+  };
   $self -> read_ini;
   $self -> fix;
   $self -> write_ini;

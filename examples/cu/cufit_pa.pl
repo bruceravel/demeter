@@ -16,6 +16,7 @@
 =cut
 
 use Demeter qw(:ui=screen);
+use Demeter::Feff::External;
 
 use Package::Alias
   DD   => 'Demeter::Data',

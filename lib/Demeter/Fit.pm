@@ -25,7 +25,7 @@ extends 'Demeter';
 use MooseX::Aliases;
 
 with 'Demeter::Fit::Happiness';
-with 'Demeter::Fit::Horae';
+#with 'Demeter::Fit::Horae';
 with 'Demeter::Fit::Sanity';
 
 if ($Demeter::mode->ui eq 'screen') {

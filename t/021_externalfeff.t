@@ -1,7 +1,5 @@
 #!/usr/bin/perl
 
-## Test Plot::Indicator object functionality of Demeter under Moose
-
 =for Copyright
  .
  Copyright (c) 2008-2017 Bruce Ravel (http://bruceravel.github.io/home).
@@ -20,6 +18,7 @@
 use Test::More tests => 10;
 
 use Demeter qw(:fit);
+use Demeter::Feff::External;
 
 my $this = Demeter::Feff::External -> new();
 my $OBJ  = 'External';

@@ -17,6 +17,8 @@
 
 
 use Demeter qw(:fit :ui=screen);
+use Demeter::Feff::External;
+
 print "Sample fit to copper data using Demeter ", $Demeter::VERSION, $/;
 unlink "cufit.iff" if (-e "cufit.iff");
 

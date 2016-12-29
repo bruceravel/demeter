@@ -16,6 +16,7 @@
 =cut
 
 use Demeter qw(:ui=screen);
+use Demeter::Feff::External;
 
 print "Multiple data set fit to 10K and 150K copper data using Demeter ", $Demeter::VERSION, $/;
 

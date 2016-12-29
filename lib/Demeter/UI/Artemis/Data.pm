@@ -2689,6 +2689,7 @@ sub make_HistogramSS {
   my $read_file = 1;
 
   if ((not $spref->[9]) or ($feff->mo->fetch("Distributions", $spref->[9])->type ne 'ss')) {
+    eval "require Demeter::Feff::Distributions";
     $histogram = Demeter::Feff::Distributions->new(type=>'ss');
     $histogram -> set(rmin=>$spref->[4], rmax=>$spref->[5], bin=>$spref->[6], feff=>$feff, ipot=>$spref->[7],);
   } else {
@@ -2779,6 +2780,7 @@ sub make_HistogramNCL {
   my $book  = $this->{BOOK};
 
   my $feff = Demeter->mo->fetch("Feff", $spref->[2]);
+  eval "require Demeter::Feff::Distributions";
   my $histogram = Demeter::Feff::Distributions->new(type=>'ncl');
   $histogram -> set(r1=>$spref->[4], r2=>$spref->[5], r3=>$spref->[6], r4=>$spref->[7],
 		    rbin => $spref->[8], betabin => $spref->[9],
@@ -2832,6 +2834,7 @@ sub make_HistogramThru {
   my $book  = $this->{BOOK};
 
   my $feff = Demeter->mo->fetch("Feff", $spref->[2]);
+  eval "require Demeter::Feff::Distributions";
   my $histogram = Demeter::Feff::Distributions->new(type=>'thru');
   $histogram -> set(rmin=>$spref->[4], rmax=>$spref->[5],
 		    rbin => $spref->[6], betabin => $spref->[7],
