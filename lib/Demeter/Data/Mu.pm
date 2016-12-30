@@ -280,10 +280,8 @@ sub fix_chik {
   my ($self) = @_;
   my @k = $self->get_array('k');
   return $self if ( ($k[0] == 0) and (all { abs($k[$_] - $k[$_-1] - 0.05) < $EPSILON4 } (1 .. $#k)) );
-  #my $command = 
   $self->dispense("process", "fix_chik");
-  #print $command;
-  #$self->dispose($command);
+  #$self->disose("show ".$self->group.".k");
   return $self;
 };
 

@@ -147,11 +147,12 @@ sub fetch_string {
     return Ifeffit::get_string($param);
 
   } elsif ($self->is_larch) {
-    if ($param eq'column_label') {
+    if ($param eq 'column_label') {
       my $gp = ($self->attribute_exists('group') and $self->group) ? $self->group : Demeter->mo->throwaway_group;
       $param = $gp.'.column_labels';
+      $self->dispose("show $param");
       my $list = Larch::get_larch_scalar($param);
-      $list = eval($list) if ref($list) ne 'ARRAY';
+      $list = eval($list) if ($list and ref($list) ne 'ARRAY');
       return q{} if not $list;
       return join(" ", @$list);
     } else {
@@ -165,6 +166,11 @@ sub fetch_array {
   if ($self->is_ifeffit) {
     return Ifeffit::get_array($param);
   } elsif ($self->is_larch) {
+    #if ($param =~ m{pre\z}) {
+    #  $param .= '_edge';
+    #}elsif ($param =~ m{post\z}) {
+    #  $param .= '_edge';
+    #};
     return Larch::get_larch_array($param);
   };
 };

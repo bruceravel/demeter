@@ -175,6 +175,9 @@ sub calibrate {
   $self->bkg_e0($e0);
   $self->bkg_eshift($shift);
   $self->update_bkg(1);
+  $self->bkg_e0($e0);
+  $self->update_bkg(0);
+  $self->update_norm(0);
   return $e0;
 };
 

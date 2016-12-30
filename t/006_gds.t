@@ -17,6 +17,7 @@
 
 =cut
 
+
 use Test::More tests => 28;
 
 use Demeter qw(:fit);
@@ -33,16 +34,26 @@ ok(!$this->data,                  "$OBJ object has no associated Data object");
 ok( ref($this->mo) =~ 'Mode',     "$OBJ object can find the Mode object");
 ok( ref($this->co) =~ 'Config',   "$OBJ object can find the Config object");
 ok( ref($this->po) =~ 'Plot',     "$OBJ object can find the Plot object");
+my $which = (Demeter->is_larch) ? 'larch' : 'ifeffit';
 ok( ($this->mo->template_plot     =~ m{plot}   and
      $this->mo->template_feff     eq 'feff6'   and
-     $this->mo->template_process  eq 'ifeffit' and
-     $this->mo->template_fit      eq 'ifeffit' and
-     $this->mo->template_analysis eq 'ifeffit'),
-                                       "$OBJ object can find template sets");
+     $this->mo->template_process  eq $which and
+     $this->mo->template_fit      eq $which and
+     $this->mo->template_analysis eq $which),
+                                        "GDS object can find template sets");
 $this -> set(name=>'foo', gds=>'guess', mathexp=>5);
-ok( $this -> write_gds =~ m{\Aguess\s+foo\s+=\s+5},                 "write_gds works: simple");
+if (Demeter->is_ifeffit) {
+  ok( $this -> write_gds =~ m{\Aguess\s+foo\s+=\s+5},                 "write_gds works: simple (ifeffit)");
+} else {
+  ok( $this -> write_gds =~ m{\Agds.foo\s+=\s+param\(5.\s+vary=True\)}, "write_gds works: simple (larch)");
+};
 $this -> set(name=>'foo', gds=>'def', mathexp=>'sin(blarg)+a**5');
-ok( $this -> write_gds =~ m{\Adef\s+foo\s+=\s+sin\(blarg\)\+a\*\*5}, "write_gds works: mathexp");
+
+if (Demeter->is_ifeffit) {
+  ok( $this -> write_gds =~ m{\Adef\s+foo\s+=\s+sin\(blarg\)\+a\*\*5}, "write_gds works: mathexp (ifeffit)");
+} else {
+  ok( $this -> write_gds =~ m{\Agds.foo\s+=\s+param\(expr\s*=\s*'sin\(blarg\)\+a\*\*5'\)}, "write_gds works: mathexp (larch)");
+};
 
 $this -> annotate('Hi there!');
 ok( (($this->note eq 'Hi there!') and (not $this->autonote)),  'annotate works');

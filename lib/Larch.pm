@@ -16,6 +16,8 @@ use File::Which qw(which);
 use RPC::XML::Client;
 use Time::HiRes qw(usleep);
 
+use Proc::Background;
+
 use vars qw($larch_is_go $larchconn $larch_exe $larch_port);
 $larch_exe = q{};
 
@@ -73,6 +75,7 @@ sub get_next_larch_port {
   return $w[-1];
 };
 
+our $proc;
 sub start_larch_server {
   $larch_port = -1;
   $larch_exe = find_larch();
@@ -84,8 +87,7 @@ sub start_larch_server {
     if ($larch_port > 2000) {
       my $command = $larch_exe." -p ". $larch_port." start";
       print STDOUT "\nStarting Larch server: $command\n";
-      my $out = system $command;
-
+      $proc = system $command;
       # verify connnection to server
       my $addr = sprintf("http://%s:%d", 'localhost', $larch_port);
       my $conn = RPC::XML::Client->new($addr);
@@ -268,7 +270,8 @@ if (!$larchconn) {
 }
 
 END {
-  my $ok = system "$larch_exe -p $larch_port stop";
+  #my $action = ($ENV{DEMETER_LARCH_PERSIST}) ? 'status' : 'stop';
+  system "$larch_exe -p $larch_port stop";
 }
 
 $larch_is_go;

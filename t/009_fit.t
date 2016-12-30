@@ -38,11 +38,12 @@ ok( $this->data,                              "$OBJ object has an associated Dat
 ok( ref($this->mo) =~ 'Mode',                 "$OBJ object can find the Mode object");
 ok( ref($this->co) =~ 'Config',               "$OBJ object can find the Config object");
 ok( ref($this->po) =~ 'Plot',                 "$OBJ object can find the Plot object");
+my $which = (Demeter->is_larch) ? 'larch' : 'ifeffit';
 ok( ($this->mo->template_plot     =~ m{plot}   and
      $this->mo->template_feff     eq 'feff6'   and
-     $this->mo->template_process  eq 'ifeffit' and
-     $this->mo->template_fit      eq 'ifeffit' and
-     $this->mo->template_analysis eq 'ifeffit'),
+     $this->mo->template_process  eq $which and
+     $this->mo->template_fit      eq $which and
+     $this->mo->template_analysis eq $which),
                                                         "$OBJ object can find template sets");
 
 
@@ -77,7 +78,7 @@ ok( $#{ $this->paths } == 0,  'set paths array attribute');
 
 
 ## -------- run a fit
-$this -> set_mode(screen=>0, backend=>1);
+$this -> set_mode(screen=>1, backend=>1);
 $this->fit;
 
 

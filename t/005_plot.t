@@ -34,12 +34,13 @@ ok(!$this->data,                          "$OBJ object has no associated Data ob
 ok( ref($this->mo) =~ 'Mode',           "$OBJ object can find the Mode object");
 ok( ref($this->co) =~ 'Config', "$OBJ object can find the Config object");
 ok( ref($this->mo->plot) =~ 'Plot',     "$OBJ object can find the Plot object");
+my $which = (Demeter->is_larch) ? 'larch' : 'ifeffit';
 ok( ($this->mo->template_plot     =~ m{plot}   and
      $this->mo->template_feff     eq 'feff6'   and
-     $this->mo->template_process  eq 'ifeffit' and
-     $this->mo->template_fit      eq 'ifeffit' and
-     $this->mo->template_analysis eq 'ifeffit'),
-                                       "$OBJ object can find template sets");
+     $this->mo->template_process  eq $which and
+     $this->mo->template_fit      eq $which and
+     $this->mo->template_analysis eq $which),
+                                        "Plot object can find template sets");
 
 $this->increment;
 ##                                       pgplot                    gnuplot
@@ -75,6 +76,7 @@ SKIP: {
   ok( $this -> outfile("png", "/dev/null"),                             "pgplot outfile method (seems to) work");
 };
 
-$string = $this -> template("test", "test", {x=>5});
+$which = (Demeter->is_larch) ? "test_larch" : "test_ifeffit";
+$string = $this -> template("test", $which, {x=>5});
 ok( $string =~ $this->group,                                'simple template works');
 undef $this;

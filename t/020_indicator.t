@@ -17,7 +17,11 @@
 
 =cut
 
-use Test::More tests => 13;
+BEGIN {
+  $ENV{DEMETER_NO_BACKEND} = 1;
+}
+
+use Test::More tests => 12;
 
 use Demeter qw(:plot);
 
@@ -34,12 +38,13 @@ ok( !$this->data,                    "$OBJ object does not have an associated Da
 ok( ref($this->mo) =~ 'Mode',        "$OBJ object can find the Mode object");
 ok( ref($this->co) =~ 'Config',      "$OBJ object can find the Config object");
 ok( ref($this->po) =~ 'Plot',        "$OBJ object can find the Plot object");
-ok( ($this->mo->template_plot     =~ m{plot}   and
-     $this->mo->template_feff     eq 'feff6'   and
-     $this->mo->template_process  eq 'ifeffit' and
-     $this->mo->template_fit      eq 'ifeffit' and
-     $this->mo->template_analysis eq 'ifeffit'),
-                                     "$OBJ object can find template sets");
+# my $which = (Demeter->is_larch) ? 'larch' : 'ifeffit';
+# ok( ($this->mo->template_plot     =~ m{plot}   and
+#      $this->mo->template_feff     eq 'feff6'   and
+#      $this->mo->template_process  eq $which and
+#      $this->mo->template_fit      eq $which and
+#      $this->mo->template_analysis eq $which),
+#                                      "$OBJ object can find template sets");
 
 $this -> space('k');
 $this -> x(10);

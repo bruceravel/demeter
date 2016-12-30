@@ -15,6 +15,10 @@
 
 =cut
 
+BEGIN {
+  $ENV{DEMETER_NO_BACKEND} = 1;
+}
+
 use Storable;
 use Xray::Crystal;
 use Test::More tests => 1300;

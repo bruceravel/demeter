@@ -61,7 +61,8 @@ ok( Demeter::is_Element('Cu'),                             'known element (Cu) i
 ok(!Demeter::is_Element('Ci'),                             'unknown element (Ci) not recognized' );
 
 ## simple tests of templates and the Disposal role -- see object specific test files for further tests
-my $string = $demeter -> template("test", "test", {x=>5});
+my $which = (Demeter->is_larch) ? "test_larch" : "test_ifeffit";
+my $string = $demeter -> template("test", $which, {x=>5});
 ok( $string =~ $demeter->group,                            'simple template works');
 my $buffer;
 $demeter->set_mode(screen=>0, file=>q{}, buffer=>\$buffer);
@@ -69,8 +70,11 @@ $demeter->dispose($string);
 ok( $demeter->fetch_string('$str') eq $demeter->group,       'simple disposal to Ifeffit: string');
 ok( $demeter->fetch_scalar('a') == 5,                        'simple disposal to Ifeffit: scalar');
 ok( $demeter->fetch_array('t.x') == 5,                       'simple disposal to Ifeffit: array');
-$demeter->Reset;
-ok( $demeter->fetch_scalar('a') == 0,                        'simple disposal wrapper works');
+SKIP: {
+  skip "No reset function in Larch",1 if Demeter->is_larch;
+  $demeter->Reset;
+  ok( $demeter->fetch_scalar('a') == 0,                        'simple disposal wrapper works');
+}
 
 SKIP: {
   skip "This is windows, skipping gnuplot test",1 if $demeter->is_windows;

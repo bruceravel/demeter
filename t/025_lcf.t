@@ -24,7 +24,7 @@ use Demeter::LCF;
 use File::Basename;
 use File::Spec;
 
-use Demeter::Constants qw($EPSILON2 $EPSILON5);
+use Demeter::Constants qw($EPSILON2 $EPSILON3);
 use Const::Fast;
 
 my $here  = dirname($0);
@@ -41,11 +41,12 @@ ok( $this->name eq 'this',           "$OBJ object has a settable label");
 ok( ref($this->mo) =~ 'Mode',        "$OBJ object can find the Mode object");
 ok( ref($this->co) =~ 'Config',      "$OBJ object can find the Config object");
 ok( ref($this->po) =~ 'Plot',        "$OBJ object can find the Plot object");
+my $which = (Demeter->is_larch) ? 'larch' : 'ifeffit';
 ok( ($this->mo->template_plot     =~ m{plot}   and
      $this->mo->template_feff     eq 'feff6'   and
-     $this->mo->template_process  eq 'ifeffit' and
-     $this->mo->template_fit      eq 'ifeffit' and
-     $this->mo->template_analysis eq 'ifeffit'),
+     $this->mo->template_process  eq $which and
+     $this->mo->template_fit      eq $which and
+     $this->mo->template_analysis eq $which),
                                      "$OBJ object can find template sets");
 
 
@@ -66,7 +67,7 @@ $this->fit;
 
 ok( $this->data,                     "$OBJ object has an associated Data object");
 
-ok( abs($this->rfactor - 0.0047212) < $EPSILON5,  "R-factor (0.0047212)" );
+ok( abs($this->rfactor - 0.0047212) < $EPSILON3,  "R-factor (0.0047212) ".$this->rfactor );
 ok( $this->nvarys == 2,  "nvarys (2)" );
 my @list = @{ $this->standards };
 my ($w, $dw) = $this->weight($list[0]);

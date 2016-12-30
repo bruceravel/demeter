@@ -17,6 +17,10 @@
 
 =cut
 
+BEGIN {
+  $ENV{DEMETER_NO_BACKEND} = 1;
+}
+
 use Test::More tests => 4;
 
 use Demeter qw(:none);

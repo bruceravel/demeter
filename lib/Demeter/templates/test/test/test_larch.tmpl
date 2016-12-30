@@ -1,0 +1,8 @@
+{ # -*- ifm -*-
+  # template testing harness
+  # set a string scalar, a number scalar, and an array (1, 1, 1, 1, 1)
+}
+str = '{$S->group}'
+a = {$x}
+t = group(__name__='t')
+t.x = ones(5)

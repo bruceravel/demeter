@@ -22,3 +22,4 @@ pre_edge({$D->group}.energy+{$D->bkg_eshift}, {$D->group}.xmu, group={$D->group}
       $OUT .= sprintf("%s.prex = (%s.xmu-%s.pre_edge)\n", $D->group, $D->group, $D->group);
  }
 }
+{$D->group}.pre = {$D->group}.xmu - {$D->group}.pre_edge

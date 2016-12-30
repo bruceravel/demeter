@@ -16,7 +16,9 @@
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 =cut
-
+BEGIN {
+  $ENV{DEMETER_NO_BACKEND} = 1;
+}
 use Test::Simple tests => 580;
 
 use Demeter qw(:none);
