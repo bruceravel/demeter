@@ -136,30 +136,30 @@ sub larch {
 
 sub decode_data {
   my ($dat) = @_;
-  my %dat;
+  #my %dat;
   # print("DECODE: ", ref($dat), "\n");
   if (ref($dat) eq 'ARRAY') {
     return @$dat;
-  }  elsif (ref($dat) eq 'RPC::XML::nil') {
+  } elsif (ref($dat) eq 'RPC::XML::nil') {
     return undef;
   } elsif (ref($dat) eq 'RPC::XML::string') {
     return $$dat;
   } elsif (ref($dat) eq 'RPC::XML::double') {
     return $$dat;
   } elsif (ref($dat) eq 'RPC::XML::struct') {
-    my $class = %$dat{__class__};
-    # print "STRUCT CLass " , $class, "\n";
-    if ($$class eq "HASH"){
-      return decode_data($dat{value});
+    my $class = $dat->{__class__};
+    #print "STRUCT CLass " , $$class, "\n";
+    if ($$class eq "HASH") {
+      return %$dat;
     } elsif ($$class eq "Array"){
-      my $value = %$dat{value};
-      my $dtype = %$dat{__dtype__}->value;
-      my $shape = @{%$dat{__shape__}->value};
+      my $value = $dat->{value};
+      my $dtype = $dat->{__dtype__}->value;
+      my $shape = @{$dat->{__shape__}->value};
       return $value->value;
     } elsif (($$class eq "List") or
 	     ($$class eq "Tuple") or
 	     ($$class eq "Complex")) {
-      my $value = %$dat{value};
+      my $value = $dat->{value};
       # print "LIST/TUPLE ", $value, $value->value, "\n";
       return $value->value;
     } elsif (($$class eq "Dict") or
@@ -170,7 +170,7 @@ sub decode_data {
 	  $out{$key} =  decode_data($$dat{$key});
 	}
       }
-      return %out;
+      return \%out;
     } else {
       print "cannot decode data, unknown structure class: $$class \n";
     }
@@ -211,8 +211,11 @@ sub put_larch_scalar {
 sub get_larch_array {
   my ($param) = @_;
   my $tmp = decode_data(get_data($param));
-  return @{$tmp} if defined $tmp;
-  return undef;
+  if (defined $tmp) {
+    return @{$tmp} if ref($tmp) eq 'ARRAY';
+    return %{$tmp} if ref($tmp) eq 'HASH';
+  };
+  return ();
 };
 
 sub put_larch_array {

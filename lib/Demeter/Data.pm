@@ -664,8 +664,8 @@ sub determine_data_type {
       my $f = (split(" ", $self->fetch_string('column_label')))[0];
       @x = $self->fetch_array("deter___mine.$f");
     } else {
-      my @f = Larch::get_larch_array("deter___mine.column_labels");
-      @x = Larch::get_larch_array("deter___mine.".$f[0]);
+      #my @f = Larch::get_larch_array("deter___mine.column_labels");
+      @x = Larch::get_larch_array("deter___mine.data[0,:]"); #.$f[0]);
     };
     $self->dispense('process', 'erase', {items=>"\@group deter___mine\n"});
     if ($self->is_pixel) {
@@ -761,6 +761,7 @@ sub read_data {
     $self->determine_data_type;
     $type = $self->datatype;
   };
+  #print '>', $type, '<', $/;
   my $string = $self->_read_data_command($type);
   $self->dispose($string);
   $self->update_data(0);

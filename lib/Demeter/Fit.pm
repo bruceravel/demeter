@@ -410,7 +410,7 @@ sub fit {
   $self->dispose($prefit);
 
   foreach my $gds (@{ $self->gds }) {
-    $self->dispense("process", "erase", {items=>$gds->name});
+    $self->dispense("fit", "erase_gds", {items=>$gds->name});
   };
 
   $self->mo->fit($self);

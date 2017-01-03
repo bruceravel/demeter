@@ -79,7 +79,7 @@ sub S_sp_exist {
     next if not $p->include;
     next if not $p->data->fit_include;
     ## could be reading a feffNNNN.dat file directly
-    next if (($p->path !~ m{\A\s+\z}) and (not -e $p->file));
+    next if (($p->file !~ m{\A\s+\z}) and (not -e $p->file));
     if (ref($p->sp) !~ m{Path}) {
       ++$found;
       $p->add_trouble('spnotexist');

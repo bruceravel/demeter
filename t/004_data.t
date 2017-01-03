@@ -204,12 +204,15 @@ ok( ( ($k[0] == 0) and (all { abs($k[$_] - $k[$_-1] - 0.05) < 1e-4 } (1 .. $#k))
 ## -------- Data from arrays
 my @x = $data3->get_array('energy');
 my @y = $data3->get_array('xmu');
+#$data3->set_mode(screen=>1);
 my $fa = Demeter::Data->put(\@x, \@y, datatype=>'xmu');
+$data3->dispose("show ".$fa->group);
+$data3->dispose("show ".$fa->group.'.energy');
 $fa->_update('fft');
-ok( abs($fa->bkg_e0 - 7105.506) < $fuzz,                     'Data from arrays works (' . $fa->bkg_e0 . ')');
+ok( abs($fa->bkg_e0 - $e0) < $fuzz,                     'Data from arrays works (' . $fa->bkg_e0 . ')'); # see line 130
 
 my @z = $data3->get_array('not_an_array');
-ok( $#z == -1,                     'Non existent array');
+ok( $#z == -1,                 'Non existent array');
 
 # my $str1 = $data3->fetch_string($data3->group.'_title_01');
 # $data3->clear_ifeffit_titles;

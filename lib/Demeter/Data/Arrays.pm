@@ -68,6 +68,7 @@ sub put {
   };
   $data -> set(update_data=>0, update_columns=>0, update_norm=>1);
   $data -> set(update_norm=>0, update_bkg=>0, update_fft=>1) if ($data->datatype eq 'chi');
+  $data -> initialize_e0;
   return $data;
 };
 

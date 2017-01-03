@@ -78,13 +78,13 @@ ok( $#{ $this->paths } == 0,  'set paths array attribute');
 
 
 ## -------- run a fit
-$this -> set_mode(screen=>1, backend=>1);
+#$this->set_mode(screen=>1);
 $this->fit;
-
+#$this->dispose("show ".$this->group);
 
 # -------- test correlations methods
 ok( $this->correl(qw(amp ss)) > 0.9,          'grabbing a high correlation: C(amp,ss) > 0.9 : '.$this->correl(qw(amp ss)));
-ok( $this->correl(qw(amp enot)) < 0.2,        'grabbing a low correlation:  C(amp,e0) < 0.2 : '.$this->correl(qw(amp enot)));
+ok( (($this->correl(qw(amp enot)) > 1e-5) and ($this->correl(qw(amp enot)) < 0.2)),        'grabbing a low correlation:  C(amp,e0) < 0.2 : '.$this->correl(qw(amp enot)));
 my %all = $this->all_correl;
 ok( keys(%all) == 6,                          'can grab all correlations');
 $this->cormin(0.5);
