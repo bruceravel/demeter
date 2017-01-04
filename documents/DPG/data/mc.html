@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>2.5. Multichannel data files &mdash; Demeter Programming Guide 0.9.25 documentation</title>
+    <title>2.5. Multichannel data files &mdash; Demeter Programming Guide 0.9.26 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.25',
+        VERSION:     '0.9.26',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Demeter Programming Guide 0.9.25 documentation" href="../index.html" />
+    <link rel="top" title="Demeter Programming Guide 0.9.26 documentation" href="../index.html" />
     <link rel="up" title="2. The basics of data processing" href="index.html" />
     <link rel="next" title="2.6. Special data types" href="special.html" />
     <link rel="prev" title="2.4. Athena project files" href="athena.html" />
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="athena.html" title="2.4. Athena project files"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.25 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">2. The basics of data processing</a> &raquo;</li> 
       </ul>
     </div>  
@@ -87,8 +87,10 @@ energy for direct comparison.</p>
 11
 12
 13
-14</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
  <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+ <span class="k">use</span> <span class="nn">Demeter::Data::</span><span class="n">MultiChannel</span><span class="p">;</span>
 
  <span class="k">my</span> <span class="nv">$file</span> <span class="o">=</span> <span class="s">&#39;med_data.000&#39;</span>
  <span class="k">my</span> <span class="nv">$mc</span> <span class="o">=</span> <span class="nn">Demeter::Data::</span><span class="n">MultiChannel</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span>   <span class="o">=&gt;</span> <span class="nv">$file</span><span class="p">,</span> <span class="n">energy</span> <span class="o">=&gt;</span> <span class="s">&#39;$1&#39;</span><span class="p">,</span> <span class="p">);</span>
@@ -145,8 +147,10 @@ reference channel from a normal XAS data file. Here is an example:</p>
  8
  9
 10
-11</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
  <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+ <span class="k">use</span> <span class="nn">Demeter::Data::</span><span class="n">MultiChannel</span><span class="p">;</span>
 
  <span class="k">my</span> <span class="nv">$file</span> <span class="o">=</span> <span class="s">&#39;fe2o3.000&#39;</span>
  <span class="k">my</span> <span class="nv">$mc</span> <span class="o">=</span> <span class="nn">Demeter::Data::</span><span class="n">MultiChannel</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span>   <span class="o">=&gt;</span> <span class="nv">$file</span><span class="p">,</span> <span class="n">energy</span> <span class="o">=&gt;</span> <span class="s">&#39;$1&#39;</span><span class="p">,</span> <span class="p">);</span>
@@ -208,8 +212,10 @@ project file.</p>
 29
 30
 31
-32</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
+32
+33</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
  <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span> <span class="c1"># qw(:plotwith=gnuplot);</span>
+ <span class="k">use</span> <span class="nn">Demeter::Data::</span><span class="n">MultiChannel</span><span class="p">;</span>
  <span class="k">use</span> <span class="nn">File::</span><span class="n">Basename</span><span class="p">;</span>
 
  <span class="k">my</span> <span class="nv">$datafile</span> <span class="o">=</span> <span class="nb">shift</span><span class="p">(</span><span class="nv">@ARGV</span><span class="p">);</span>    <span class="c1"># take file name from command line</span>
@@ -298,7 +304,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.25</b></p>
+<p>Current version: <b>0.9.26</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
@@ -349,7 +355,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="athena.html" title="2.4. Athena project files"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.25 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="index.html" >2. The basics of data processing</a> &raquo;</li> 
       </ul>
     </div>

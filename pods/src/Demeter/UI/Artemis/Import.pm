@@ -554,7 +554,8 @@ sub _old {
   my $tempfit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
   my $dpj = File::Spec->catfile($tempfit->stash_folder, basename($file, '.apj').".dpj");
   my $journal = q{};
-  my $result = $tempfit -> apj2dpj($file, $dpj, \$journal);
+  eval "require Demeter::Fit::Horae"; # delay importing this until now, when it's needed
+  my $result = Demeter::Fit::Horae::apj2dpj($tempfit, $file, $dpj, \$journal);
   $tempfit   -> DEMOLISH;
 
   if (ref($result) !~ m{Fit}) {
@@ -609,6 +610,7 @@ sub _feffit {
 
   ## -------- want to skip autosave during the intermediate steps of the feffit import
   $Demeter::UI::Artemis::noautosave = 1;
+  eval "require Demeter::Fit::Feffit";
   my $inp = Demeter::Fit::Feffit->new(file=>$file);
   my $fit = $inp -> convert;
   my $mds = 0;
@@ -621,7 +623,8 @@ sub _feffit {
     ++$folders_seen{$p->folder};
   };
 
-  ## -------- import each as an External::Feff
+  ## -------- import each as a Demeter::Feff::External
+  eval "require Demeter::Feff::External";
   foreach my $f (keys %folders_seen) {
     my $inp = File::Spec->catfile($f, 'feff.inp');
     if (not -e $inp) {
@@ -731,7 +734,7 @@ Demeter::UI::Artemis::Import - Import various kinds of data into Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
@@ -820,7 +823,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
+Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

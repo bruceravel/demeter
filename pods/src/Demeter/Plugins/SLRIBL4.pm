@@ -2,6 +2,7 @@ package Demeter::Plugins::SLRIBL4;  # -*- cperl -*-
 
 use Moose;
 extends 'Demeter::Plugins::FileType';
+use Demeter::Data::Pixel;
 
 has '+is_binary'    => (default => 1);
 has '+description'  => (default => "SLRI beamline 4");
@@ -62,7 +63,7 @@ Demeter::Plugin::SLRIBL4 - filetype plugin for SLRI BL4 dispersive XAS data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 

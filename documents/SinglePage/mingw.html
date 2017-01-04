@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Building Demeter and Ifeffit on Windows with MinGW and Strawberry Perl &mdash; Miscellaneous Demeter 0.9.25 documentation</title>
+    <title>Building Demeter and Ifeffit on Windows with MinGW and Strawberry Perl &mdash; Miscellaneous Demeter 0.9.26 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.25',
+        VERSION:     '0.9.26',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/wheat.ico"/>
-    <link rel="top" title="Miscellaneous Demeter 0.9.25 documentation" href="index.html" />
+    <link rel="top" title="Miscellaneous Demeter 0.9.26 documentation" href="index.html" />
     <link rel="next" title="Notes towards making Debian packages for Demeter" href="debian.html" />
     <link rel="prev" title="David Hughes&#39; guide to Demeter Installation on Ubuntu" href="demeter_nonroot.html" />
 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="demeter_nonroot.html" title="David Hughes&#39; guide to Demeter Installation on Ubuntu"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter 0.9.25 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter 0.9.26 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -56,55 +56,65 @@
 <h1>Building Demeter and Ifeffit on Windows with MinGW and Strawberry Perl<a class="headerlink" href="#building-demeter-and-ifeffit-on-windows-with-mingw-and-strawberry-perl" title="Permalink to this headline">¶</a></h1>
 <p>This is my page of notes on how I built <font size=-1 color="#8C4112">IFEFFIT</font> and
 <font size=-1 color="#8C4112">DEMETER</font> to work with <a class="reference external" href="http://strawberryperl.com/">Strawberry Perl</a> and how I managed to build the
-<font size=-1 color="#8C4112">DEMETER</font> with Strawberry Perl installer package.  It may not
-be completely coherent – let me know if anything isn't clear.</p>
+<font size=-1 color="#8C4112">DEMETER</font> with Strawberry Perl installer package.  These are
+mostly notes to myself, so this may not be completely coherent –
+<a class="reference external" href="https://github.com/bruceravel/demeter/issues">raise an issue</a> is
+anything is unclear.</p>
 <div class="section" id="first-steps">
 <h2>First steps<a class="headerlink" href="#first-steps" title="Permalink to this headline">¶</a></h2>
-<ol class="arabic simple">
-<li>Install the latest version of <strong class="program">Strawberry Perl</strong> from
-<a class="reference external" href="http://strawberryperl.com/">http://strawberryperl.com/</a>. The rest of this page presumes that you
-have installed perl into <code class="file docutils literal"><span class="pre">C:\Strawberry</span></code>.</li>
-<li>You may want to install the GutHub Desktop application from
-<a class="reference external" href="https://desktop.github.com/">https://desktop.github.com/</a></li>
-<li>Clone a copy of <font size=-1 color="#8C4112">DEMETER</font> from
-<a class="reference external" href="https://github.com/bruceravel/demeter">https://github.com/bruceravel/demeter</a></li>
-<li><strong class="command">cd</strong> into the installation folder for <font size=-1 color="#8C4112">DEMETER</font>
+<ol class="arabic">
+<li><p class="first">Install the latest version of <strong class="program">Strawberry Perl</strong> from
+<a class="reference external" href="http://strawberryperl.com/">http://strawberryperl.com/</a>.  The rest of this page presumes that
+you have installed perl into <code class="file docutils literal"><span class="pre">C:\Strawberry</span></code>.</p>
+<p>At the time of the most recent update of this document, the current
+version of Strawberry perl is 5.24.0.1.</p>
+</li>
+<li><p class="first">You may want to install the GutHub Desktop application from
+<a class="reference external" href="https://desktop.github.com/">https://desktop.github.com/</a></p>
+</li>
+<li><p class="first">Clone a copy of <font size=-1 color="#8C4112">DEMETER</font> from
+<a class="reference external" href="https://github.com/bruceravel/demeter">https://github.com/bruceravel/demeter</a></p>
+</li>
+<li><p class="first"><strong class="command">cd</strong> into the installation folder for <font size=-1 color="#8C4112">DEMETER</font>
 and do <strong class="command">perl Build.pl</strong>.  If you just installed (or
 updated) <strong class="program">Strawberry Perl</strong> on your computer, you will be
 missing the mountain of dependencies that <font size=-1 color="#8C4112">DEMETER</font> uses,
-so ...</li>
-<li>At the command line, do <strong class="command">perl Build installdeps</strong> and wait.
+so ...</p>
+</li>
+<li><p class="first">At the command line, do <strong class="command">perl Build installdeps</strong> and wait.
 This will take quite a while – even hours on a slow computer.
 Happily, once all the dependencies are installed, they are
 installed.  When you upgrade <font size=-1 color="#8C4112">DEMETER</font>, this step will
-only be required to update any new dependencies.</li>
+only be required to update any new dependencies.</p>
+</li>
 </ol>
-<p>The first time through, it took about 3 hours to compile up all the
+<p>The first time through, it took over 2 hours to compile up all the
 dependencies on my fairly old Windows machine.  Three packages failed
-to install: <code class="docutils literal"><span class="pre">Wx</span></code>, <code class="docutils literal"><span class="pre">File::Monitor::Lite</span></code>,
-<code class="docutils literal"><span class="pre">Syntax::Highlight::Perl</span></code>.</p>
+to install: <code class="docutils literal"><span class="pre">Wx</span></code>, <code class="docutils literal"><span class="pre">Win32::Unicode::File</span></code>, and
+<code class="docutils literal"><span class="pre">File::Monitor::Lite</span></code>.</p>
 <p><code class="docutils literal"><span class="pre">Wx</span></code></p>
 <blockquote>
 <div>This failed because one of the tests hung for some reason.  Clicking
 the red X button allowed the tests to continue, but caused one to
-fail.  It was safe to do <strong class="command">cpanm -f Wx</strong> to force the
+fail.  It was safe to do <strong class="command">cpanm -f -n Wx</strong> to force the
 installation despite the test failure.  Of course, I had to pay
 attention and dismiss the window from the hung test....</div></blockquote>
+<p><code class="docutils literal"><span class="pre">Win32::Unicode::File</span></code></p>
+<blockquote>
+<div>This failed a test having to do with printing <a class="reference external" href="http://www.fileformat.info/info/unicode/char/2665/index.htm">a Unicode character</a> to
+standard output.  I suspect this has something to do with the
+terminal I was using on my Windows machine.  In any case, it is
+benign in the context of how this module is used in Demeter.  Doing
+<strong class="command">cpanm -f -n Win32::Unicode::File</strong> is safe.</div></blockquote>
 <p><code class="docutils literal"><span class="pre">File::Monitor::Lite</span></code></p>
 <blockquote>
 <div>Here, the failures have to do with a test failing to deal correctly
-with slashes and backslashes.  Again doing <strong class="command">cpanm -f
+with slashes and backslashes.  Again doing <strong class="command">cpanm -f -n
 File::Monitor::Lite</strong> is safe.</div></blockquote>
-<p><code class="docutils literal"><span class="pre">Syntax::Highlight::Perl</span></code></p>
-<blockquote>
-<div>I'm not sure what caused this to fail, but it seems benign.  Doing
-<strong class="command">cpanm -f Syntax::Highlight::Perl</strong> worked without any
-failures in the testing phase.  The earlier failure seems to have
-something to do with a problem unpacking the package downloaded by
-<strong class="program">cpanm</strong>.</div></blockquote>
-<p>Any other problems – just do <strong class="command">cpan -f &lt;module&gt;</strong> and see what
-happens.  The worst case scenario is that you have to submit a bug
-report, thus making <font size=-1 color="#8C4112">DEMETER</font> better.  Horrors!</p>
+<p>Any other problems – just do <strong class="command">cpan -f &lt;module&gt;</strong> and see
+what happens.  The worst case scenario is that you have to <a class="reference external" href="https://github.com/bruceravel/demeter/issues">submit a
+bug report</a>, thus
+making <font size=-1 color="#8C4112">DEMETER</font> better.  Horrors!</p>
 </div>
 <div class="section" id="using-gnuplot">
 <h2>Using Gnuplot<a class="headerlink" href="#using-gnuplot" title="Permalink to this headline">¶</a></h2>
@@ -121,7 +131,7 @@ terminal type, you can select any, but my preferred choice is wxt.</p>
 <p>First, need to establish a build environment from which
 Strawberry+Demeter can be bootstrapped.</p>
 <ol class="arabic simple">
-<li>Would like to installed PDCurses and Readline from <a class="reference external" href="http://gnuwin32.sourceforge.net/packages.html">GnuWin32</a> into
+<li>Would like to have installed PDCurses and Readline from <a class="reference external" href="http://gnuwin32.sourceforge.net/packages.html">GnuWin32</a> into
 <code class="file docutils literal"><span class="pre">C:\GnuWin32</span></code> (or somewhere), but I could not get these to
 work with my 64-bit build.  See below.</li>
 <li>It is no longer necessary to fetch a copy of gfortran from MinGW.
@@ -133,7 +143,7 @@ libraries available at
 installer).</li>
 <li>Set the <code class="docutils literal"><span class="pre">PGPLOT_DIR</span></code> variable to <code class="docutils literal"><span class="pre">/c/mingw/lib/pgplot</span></code>, which
 is the location to which <strong class="program">pgplot</strong> was installed in
-step 4.</li>
+step 3.</li>
 <li>In principle, <code class="docutils literal"><span class="pre">PGPLOT_DEV</span></code> should be set to <code class="docutils literal"><span class="pre">/GW</span></code>, but that
 does not seem to get picked up by <font size=-1 color="#8C4112">IFEFFIT</font>.  I have to
 do <strong class="command">$plot_device=/gw</strong> before plotting.</li>
@@ -164,8 +174,8 @@ do <strong class="command">$plot_device=/gw</strong> before plotting.</li>
 <p>(Note: this should be done in the MinGW window and <strong>not</strong> in the
 Windows command prompt.)</p>
 </li>
-<li><p class="first">Edit <code class="file docutils literal"><span class="pre">src/lib/sys.h</span></code>, changing the <code class="docutils literal"><span class="pre">sysdir</span></code> and <code class="docutils literal"><span class="pre">pgdev</span></code> lines
-like so:</p>
+<li><p class="first">Edit <code class="file docutils literal"><span class="pre">src/lib/sys.h</span></code>, changing the <code class="docutils literal"><span class="pre">sysdir</span></code> and <code class="docutils literal"><span class="pre">pgdev</span></code>
+lines like so:</p>
 <div class="highlight-fortran"><div class="highlight"><pre><span></span>c{sys.h  -*-fortran-*-
 c system and build specific stuff goes here
 c to be included in iff_config.f
@@ -187,15 +197,21 @@ command line <strong class="program">ifeffit</strong>.</p>
 </div>
 <div class="section" id="curses-and-readline">
 <h2>curses and readline<a class="headerlink" href="#curses-and-readline" title="Permalink to this headline">¶</a></h2>
-<p>I could not figure out how to find pre-compiled versions of curses and
-readline, nor could I figure out how to compile readline myself.  As a
-result, was unable to compile the command line version of
-<strong class="program">ifeffit</strong>, although the library compiled up just fine.  Thus
-the installer package does not currently have a copy of the command
-line <strong class="program">ifeffit</strong>.</p>
-<p>As a result, you will likely need to do <strong class="command">make -k</strong> and
-<strong class="command">make -k install</strong> to skip over the problem building the
-command line <strong class="program">ifeffit</strong>.</p>
+<p>The readline library compiled for 64 bit Windows and usable with the
+mingw toolchain is <a class="reference external" href="https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/ray_linn/64bit-libraries/readline/">available here</a>.
+Open the 7zip file and copy the various files in the <code class="file docutils literal"><span class="pre">bin</span></code>,
+<code class="file docutils literal"><span class="pre">include</span></code>, <code class="file docutils literal"><span class="pre">lib</span></code>, and <code class="file docutils literal"><span class="pre">share</span></code> folders into
+<code class="file docutils literal"><span class="pre">C:\Strawberry\c</span></code> (or wherever your <font size=-1 color="#8C4112">DEMETER</font> root is
+located).</p>
+<p>I could not find a pre-compiled curses library, nor could I figure out
+how to compile <a class="reference external" href="https://github.com/wmcbrine/PDCurses">PDCurses</a> on
+my Windows/mingw machine.  As a result, I was unable to compile the
+command line version of <strong class="program">ifeffit</strong>, although the library
+compiled up just fine.  Thus the installer package does not currently
+have a copy of the command line <strong class="program">ifeffit</strong>.</p>
+<p>Without a curses library, you will certainly need to do <strong class="command">make
+-k</strong> and <strong class="command">make -k install</strong> to skip over the problem building
+the command line <strong class="program">ifeffit</strong>.</p>
 </div>
 <div class="section" id="compiling-the-swig-wrapper">
 <h2>Compiling the SWIG wrapper<a class="headerlink" href="#compiling-the-swig-wrapper" title="Permalink to this headline">¶</a></h2>
@@ -214,14 +230,31 @@ for the <font size=-1 color="#8C4112">IFEFFIT</font> SWIG wrapper.</p>
 <span class="pre">Build</span></code> step.  If you have build <font size=-1 color="#8C4112">DEMETER</font> for an earlier
 version of perl, you should do <code class="docutils literal"><span class="pre">perl</span> <span class="pre">Build</span> <span class="pre">touch_wrapper</span></code> to make
 sure the SWIG wrapper is rebuilt.</p>
+<p>If rebuilding after updating Strawberry, don't forget to do
+<strong class="command">perl ./Build touch_wrapper</strong>, which forces a rebuild of the
+wrapper.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The block around lines 36-42 in <code class="file docutils literal"><span class="pre">DemeterBuilder.pm</span></code>
+attempts to set the root of the <font size=-1 color="#8C4112">DEMETER</font> installation
+correctly.  (It is <code class="file docutils literal"><span class="pre">C:\Strawberry\c</span></code> on my build machine.)
+Make sure it resolves to the correct location on your machine.</p>
+</div>
 </div>
 <div class="section" id="building-documentation">
 <h2>Building documentation<a class="headerlink" href="#building-documentation" title="Permalink to this headline">¶</a></h2>
-<p>The document requires <a class="reference external" href="http://sphinx-doc.org/">Sphinx</a>, which I did
-not bother to install on my computer.  I just built the document on a
-linux machine, zipped it up, and dropped it in place in
-<code class="file docutils literal"><span class="pre">C:\Strawberry\perl\site\lib\Demeter\share</span></code>.  With Sphinx, it
-should build and install normally.</p>
+<p>The documentation requires <a class="reference external" href="http://sphinx-doc.org/">Sphinx</a>, which I
+did not bother to install on my computer.  I just built the document
+on a linux machine and zipped it up in a directory structure that
+looks like this:</p>
+<div><img height="360" src="_images/blockdiag-4331455b84147c6dae19a3b4665baa8ebc53b8e1.png" width="592" /></div><p>where each of <code class="file docutils literal"><span class="pre">Artemis</span></code>, <code class="file docutils literal"><span class="pre">Athena</span></code>, <code class="file docutils literal"><span class="pre">DPG</span></code>, and
+<code class="file docutils literal"><span class="pre">SinglePage</span></code> contains the contents of their respective
+<code class="file docutils literal"><span class="pre">_build/html</span></code> folders.</p>
+<p>This tree is then dropped in place in
+<code class="file docutils literal"><span class="pre">C:\Strawberry\perl\site\lib\Demeter\share</span></code>.</p>
+<p>With Sphinx, I imagine it would build and install normally.  Building
+with also requires these packages: pybtex, sphinxcontrib-bibtex, and
+sphinxcontrib-blockdiag, which can be installed with pip.</p>
 
 <br>
 
@@ -258,7 +291,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 </li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.25</b></p>
+<p>Current version: <b>0.9.26</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
@@ -309,7 +342,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="demeter_nonroot.html" title="David Hughes&#39; guide to Demeter Installation on Ubuntu"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter 0.9.25 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter 0.9.26 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

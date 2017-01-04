@@ -41,7 +41,7 @@ use Demeter::UI::Wx::VerbDialog;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 local $Archive::Zip::UNICODE = 1;
-use Capture::Tiny ':all';
+#use Capture::Tiny ':all';
 use Cwd;
 use File::Basename;
 use File::Copy;
@@ -506,6 +506,7 @@ sub OnInit {
   Demeter->dispense('fit', 'prep_fit');
 
   $frames{main}->status("Welcome to Artemis $MDASH " . Demeter->identify . " $MDASH " . Demeter->backends);
+  print DateTime->now, "  Athena is go! ...\n" if ($ENV{DEMETER_TIMING});
   1;
 }
 
@@ -1715,7 +1716,7 @@ Demeter::UI::Artemis - EXAFS analysis using Feff and Ifeffit/Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
@@ -1760,7 +1761,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

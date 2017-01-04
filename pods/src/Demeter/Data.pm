@@ -2,7 +2,7 @@ package Demeter::Data;
 
 =for Copyright
  .
- Copyright (c) 2006-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .transmission
  This file is free software; you can redistribute it and/or
@@ -659,8 +659,14 @@ sub determine_data_type {
   ## figure out how to interpret these data -- need some error checking
   if ((not $self->is_col) and ($self->datatype ne "xmu") and ($self->datatype ne "chi") ) {
     $self->dispense('process', 'read_group', {file=>$file, group=>'deter___mine', type=>'raw'});
-    my $f = (split(" ", $self->fetch_string('column_label')))[0];
-    my @x = $self->fetch_array("deter___mine.$f");
+    my @x;
+    if (Demeter->is_ifeffit) {
+      my $f = (split(" ", $self->fetch_string('column_label')))[0];
+      @x = $self->fetch_array("deter___mine.$f");
+    } else {
+      #my @f = Larch::get_larch_array("deter___mine.column_labels");
+      @x = Larch::get_larch_array("deter___mine.data[0,:]"); #.$f[0]);
+    };
     $self->dispense('process', 'erase', {items=>"\@group deter___mine\n"});
     if ($self->is_pixel) {
       $self->datatype('xmu');
@@ -755,6 +761,7 @@ sub read_data {
     $self->determine_data_type;
     $type = $self->datatype;
   };
+  #print '>', $type, '<', $/;
   my $string = $self->_read_data_command($type);
   $self->dispose($string);
   $self->update_data(0);
@@ -1058,7 +1065,7 @@ Demeter::Data - Process and analyze EXAFS data with Ifeffit or Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 
 =head1 SYNOPSIS
@@ -1956,7 +1963,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

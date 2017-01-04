@@ -586,6 +586,14 @@ More standards!!
 <h3 id="orgheadline29"><span class="section-number-3">5.2</span> Atoms <code>[7/10]</code> <code>[70%]</code></h3>
 <div class="outline-text-3" id="text-5-2">
 <ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> Parsing an atoms.inp file for the space group is fragile.  It
+currently grabs the 13 characters following the equals sign and
+white space.  13 is the longest standard HM symbol with a modifier
+&#x2013; an example is &rsquo;I 41/a m d :1&rsquo; (see
+<a href="http://www.crystallography.net/cod/cod/cif/7/20/60/7206075.cif">http://www.crystallography.net/cod/cod/cif/7/20/60/7206075.cif</a> as
+an example).  However, if additional spaces are present or if
+another keyword follows in fewer than 13 characters, the parser
+<i>will</i> do the wrong thing.</li>
 <li class="on"><code>[X]</code> Setting of Ba2Co9O14 (Chanapa Kongmark), also some problem with ZnFe2O4</li>
 <li class="on"><code>[X]</code> should be a way to insert tabulated shift vector, if it exists</li>
 <li class="on"><code>[X]</code> handle &ldquo;: setting&rdquo; notation: <code>:R</code>, <code>:H</code>, <code>:1</code>, <code>:2</code> <a href="http://research.cems.umn.edu/morse/code/svn/pscf/doc/man/sec.php?section=Appendix:%20Space%20Groups&amp;">(for example)</a>

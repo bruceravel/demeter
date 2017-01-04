@@ -35,6 +35,7 @@ energy for direct comparison.
 
     #!/usr/bin/perl
     use Demeter;
+    use Demeter::Data::MultiChannel;
 
     my $file = 'med_data.000'
     my $mc = Demeter::Data::MultiChannel->new(file   => $file, energy => '$1', );
@@ -95,6 +96,7 @@ reference channel from a normal XAS data file. Here is an example:
 
     #!/usr/bin/perl
     use Demeter;
+    use Demeter::Data::MultiChannel;
 
     my $file = 'fe2o3.000'
     my $mc = Demeter::Data::MultiChannel->new(file   => $file, energy => '$1', );
@@ -136,6 +138,7 @@ project file.
 
     #!/usr/bin/perl
     use Demeter; # qw(:plotwith=gnuplot);
+    use Demeter::Data::MultiChannel;
     use File::Basename;
 
     my $datafile = shift(@ARGV);    # take file name from command line

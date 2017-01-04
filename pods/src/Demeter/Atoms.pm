@@ -2,7 +2,7 @@ package Demeter::Atoms;
 
 =for Copyright
  .
- Copyright (c) 2006-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -416,7 +416,7 @@ sub parse_line {
   (my $rest = $line) =~ s{\A$key$SEPARATOR}{};
 
   if ($key =~ m{space(?:group)?}i) {
-    my $end = (length($rest) < 10) ? length($rest) : 10;
+    my $end = (length($rest) < 13) ? length($rest) : 13;
     my $sg = substr($rest, 0, $end);
     $self->space($sg);
     $self->alpha($self->cell->alpha);
@@ -507,6 +507,7 @@ sub populate {
   ### creating and populating cell
   return $self if not $self->space;
   $self -> cell -> space_group($self->space);
+  $self -> handle_colon;
   foreach my $key (qw(a b c alpha beta gamma)) {
     my $val = $self->$key;
     $self -> cell->$key($val) if $val;
@@ -983,6 +984,23 @@ sub update_edge {
   return $self;
 };
 
+sub handle_colon {
+  my ($self) = @_;
+  my $g = $self->space;
+  if ($self->is_first) {
+    ## remove :1 from the space group symbol
+    $g =~ s{:[12]}{};
+    $self->space($g);
+    ## set the shift vector according to the entry in the space group database
+    $self->shiftvec($self->cell->group->shiftvec);
+  } elsif ($self->is_second) {
+    ## remove :2 from the space group symbol
+    $g =~ s{:[12]}{};
+    $self->space($g);
+  };
+  return $self;
+};
+
 sub Write {
   my ($self, $type) = @_;
   $type ||= "feff6";
@@ -1183,7 +1201,7 @@ Demeter::Atoms - Convert crystallographic data to atomic lists
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
@@ -1626,7 +1644,7 @@ L<http://bruceravel.github.io/demeter>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All
+Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All
 rights reserved.
 
 This module is free software; you can redistribute it and/or

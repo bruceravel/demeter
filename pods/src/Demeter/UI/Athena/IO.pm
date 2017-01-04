@@ -504,6 +504,7 @@ sub _data {
 	  :                                            'xmu';
   my $message = q{};
   if ($med) {
+    require "Demeter/Data/MultiChannel.pm";
     my $mc = Demeter::Data::MultiChannel->new(file=>$file, energy=>$data->energy);
     my $align = $yaml->{preproc_align};
     my $eshift = 0;
@@ -647,14 +648,16 @@ sub _group {
   $data -> po -> e_markers(1);
   $data -> _update('all');
 
-  my @signal = ($data->ln) ? $data->get_array('signal') : $data->get_array('i0');
-  my $which =  ($data->ln) ? "transmission" : "I0";
-  if (any {$_ == 0} @signal) {
-    my $md = Wx::MessageDialog->new($app->{main}, "The data in \"$file\" contain at least one zero value in the $which signal.  These data cannot be imported.", "Error!", wxOK|wxICON_ERROR|wxSTAY_ON_TOP);
-    my $response = $md -> ShowModal;
-    $data->dispense('process', 'erase', {items=>"\@group ".$data->group});
-    $data->DEMOLISH;
-    return;
+  if ($data->datatype ne 'chi') {
+    my @signal = ($data->ln) ? $data->get_array('signal') : $data->get_array('i0');
+    my $which =  ($data->ln) ? "transmission" : "I0";
+    if (any {$_ == 0} @signal) {
+      my $md = Wx::MessageDialog->new($app->{main}, "The data in \"$file\" contain at least one zero value in the $which signal.  These data cannot be imported.", "Error!", wxOK|wxICON_ERROR|wxSTAY_ON_TOP);
+      my $response = $md -> ShowModal;
+      $data->dispense('process', 'erase', {items=>"\@group ".$data->group});
+      $data->DEMOLISH;
+      return;
+    };
   };
 
   $app->{main}->{list}->AddData($data->name, $data);
@@ -1107,7 +1110,7 @@ Demeter::UI::Athena::IO - import/export functionality
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
@@ -1130,7 +1133,7 @@ Bruce Ravel, L<http://bruceravel.github.io/home>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

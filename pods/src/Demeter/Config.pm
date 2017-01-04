@@ -2,7 +2,7 @@ package Demeter::Config;
 
 =for Copyright
  .
- Copyright (c) 2006-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -32,6 +32,7 @@ use Demeter::IniReader;
 use Config::INI::Writer;
 use Cwd qw(abs_path);
 use File::Basename;
+use JSON qw(decode_json);
 use Regexp::Assemble;
 #use Demeter::Constants qw($NUMBER);
 use Scalar::Util qw(looks_like_number);
@@ -50,6 +51,11 @@ has 'config_file' => (is => 'ro', isa => FileName,
 						     "Demeter",
 						     "configuration",
 						     "config.demeter_conf"));
+has 'config_json' => (is => 'ro', isa => FileName,
+		      default => File::Spec->catfile(dirname($INC{"Demeter.pm"}),
+						     "Demeter",
+						     "configuration",
+						     "demeter_config.db"));
 
 has 'all_config_files' => (
 			     traits    => ['Array'],
@@ -109,7 +115,18 @@ sub BUILD {
   };
 
   $self -> dot_folder;
-  $self -> read_config;
+  if (-e $self->config_json) {
+    my $rlist = decode_json(Demeter->slurp($self->config_json));
+    %params_of = %$rlist;
+    foreach my $key (keys %params_of) {
+      my $k = lc $key;
+      my ($g, $p) = split(/:/, $k);
+      $ini{$g}{$p} = $params_of{lc $key}->{default} if $p;
+    };
+
+  } else {
+    $self -> read_config;
+  };
   $self -> read_ini;
   $self -> fix;
   $self -> write_ini;
@@ -155,7 +172,8 @@ sub get {
 
 sub groups {
   my ($self) = @_;
-  my @list = @{ $self->get('___groups') };
+  #my @list = @{ $self->get('___groups') };
+  my @list = keys(%ini);
   return sort @list;
 };
 
@@ -197,7 +215,7 @@ sub _read_config_file {
     if (not -r $file);
 
   my $base = (split(/\./, basename($file)))[0];
-  #$self -> Push(___groups => $base);
+  $self -> Push(___groups => $base);
   $self -> push_all_config_files(File::Spec->rel2abs($file));
 
   my $key_regex = Regexp::Assemble->new()->add(qw(type default minint maxint options windows
@@ -224,7 +242,7 @@ sub _read_config_file {
     } elsif ($line =~ m{^\s*section\s*=\s*(\w+)}) {
       $group = $1;
       $group =~ s{\s+$}{};
-      $self -> Push(___groups => $group);
+      #$self -> Push(___groups => $group);
       $description = q{};
 
     } elsif ($line =~ m{^\s*section_description}) {
@@ -599,7 +617,7 @@ Demeter::Config - Demeter's configuration system
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 DESCRIPTION
 
@@ -1037,7 +1055,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

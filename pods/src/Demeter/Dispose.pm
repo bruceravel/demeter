@@ -2,7 +2,7 @@ package Demeter::Dispose;
 
 =for Copyright
  .
- Copyright (c) 2006-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -116,7 +116,7 @@ sub dispose {
   my ($self, $command, $plotting) = @_;
   return if not $command;
 
-  $self->set_mode( echo=>q{} );
+  Demeter->set_mode( echo=>q{} );
   my $echo_buffer = q{};
 
   $command  =~ s{\+ *-}{-}g; # suppress "+-" in command strings math expressions
@@ -125,107 +125,107 @@ sub dispose {
   ($command .= "\n") if ($command !~ m{\n$});
 
   ## -------- spit everything to the screen, use ANSI colors if available and ui=screen
-  if ($self->get_mode("screen")) {
+  if (Demeter->get_mode("screen")) {
     local $| = 1;
     foreach my $thisline (split(/\n/, $command)) {
-      my ($start, $end) = ($self->mo->ui eq 'screen') ? $self->_ansify($thisline, 'comment') : (q{}, q{});
+      my ($start, $end) = (Demeter->mo->ui eq 'screen') ? $self->_ansify($thisline, 'comment') : (q{}, q{});
       print STDOUT $start, $thisline, $end, $/;
     };
   };
 
   ## -------- spit plot commands to the screen, use ANSI colors if available and ui=screen
-  if (($self->get_mode("plotscreen"))  and $plotting) {
+  if ((Demeter->get_mode("plotscreen"))  and $plotting) {
     local $| = 1;
     foreach my $thisline (split(/\n/, $command)) {
-      my ($start, $end) = ($self->mo->ui eq 'screen') ? $self->_ansify($thisline, 'comment') : (q{}, q{});
+      my ($start, $end) = (Demeter->mo->ui eq 'screen') ? $self->_ansify($thisline, 'comment') : (q{}, q{});
       print STDOUT $start, $thisline, $end, $/;
     };
   };
 
   ## -------- dump everything to a file
-  if ($self->get_mode("file")) {
+  if (Demeter->get_mode("file")) {
     local $| = 1;
-    open my $FH, ">".$self->get_mode("file");
+    open my $FH, ">".Demeter->get_mode("file");
     print $FH $command;
     close $FH;
   };
 
   ## -------- dump plot commands to a file
-  if (($self->get_mode("plotfile")) and $plotting) {
+  if ((Demeter->get_mode("plotfile")) and $plotting) {
     #if ($self->mo->template_plot eq 'gnuplot') {
     #  my $crstring = $self->po->copyright_text;	## insert the copyright statement in a plot made with gnuplot
     #  $command =~ s{(unset label)}{$1\n$crstring}g;
     #};
     local $| = 1;
-    open my $FH, ">".$self->get_mode("plotfile");
+    open my $FH, ">".Demeter->get_mode("plotfile");
     print $FH $command;
     close $FH;
   };
 
   ## -------- use a disposal callback
-  if ($self->get_mode("callback")) {
-    my $coderef = $self->get_mode("callback");
+  if (Demeter->get_mode("callback")) {
+    my $coderef = Demeter->get_mode("callback");
     if (not $plotting) {
       &$coderef($command);
-    } elsif ($plotting and not $self->get_mode("plotcallback")) {
+    } elsif ($plotting and not Demeter->get_mode("plotcallback")) {
       &$coderef($command);
     } else {
       1;
     };
   };
-  if ($plotting and $self->get_mode("plotcallback")) {
-    my $coderef = $self->get_mode("plotcallback");
+  if ($plotting and Demeter->get_mode("plotcallback")) {
+    my $coderef = Demeter->get_mode("plotcallback");
     &$coderef($command);
   };
 
   ## -------- concatinate to a scalar buffer
-  if (($self->get_mode("buffer")) and (ref($self->get_mode("buffer")) eq 'SCALAR')) {
+  if ((Demeter->get_mode("buffer")) and (ref(Demeter->get_mode("buffer")) eq 'SCALAR')) {
     if (not $plotting) {
-      ${ $self->get_mode("buffer") } .=  $command;
+      ${ Demeter->get_mode("buffer") } .=  $command;
     } elsif ($plotting and not $self->get_mode("plotbuffer")) {
-      ${ $self->get_mode("buffer") } .=  $command;
+      ${ Demeter->get_mode("buffer") } .=  $command;
     } else {
       1;
     };
   };
 
-  if ($plotting and $self->get_mode("plotbuffer") and (ref($self->get_mode("plotbuffer")) eq 'SCALAR')) {
-    ${ $self->get_mode("plotbuffer") } .=  $command;
+  if ($plotting and Demeter->get_mode("plotbuffer") and (ref(Demeter->get_mode("plotbuffer")) eq 'SCALAR')) {
+    ${ Demeter->get_mode("plotbuffer") } .=  $command;
   };
 
   ## -------- unknown buffer type
-  if (    ($self->get_mode("buffer"))
-	  and (ref($self->get_mode("buffer")) ne 'SCALAR')
-	  and (ref($self->get_mode("buffer")) ne 'ARRAY')  ) {
+  if (    (Demeter->get_mode("buffer"))
+	  and (ref(Demeter->get_mode("buffer")) ne 'SCALAR')
+	  and (ref(Demeter->get_mode("buffer")) ne 'ARRAY')  ) {
     carp("Demeter::Dispose: string mode value is not a scalar or array reference\n\n");
   };
 
-  if ($plotting and ($self->mo->template_plot eq 'gnuplot')) {
+  if ($plotting and (Demeter->mo->template_plot eq 'gnuplot')) {
     #my $crstring = $self->po->copyright_text; ## insert the copyright statement in a plot made with gnuplot
     #$command =~ s{(unset label)}{$1\n$crstring}g;
 
-    $self->mo->external_plot_object->gnuplot_cmd($command);
+    Demeter->mo->external_plot_object->gnuplot_cmd($command);
     # $self->mo->external_plot_object->gnuplot_pause(-1);
-    my $gather = $self->po->lastplot;
+    my $gather = Demeter->po->lastplot;
     $gather .= $command;
-    $self -> po -> lastplot($gather);
+    Demeter -> po -> lastplot($gather);
     return 0; ## need to short-circuit this so the gnuplot commands do not go to Ifeffit/Larch
   };
 
   ## -------- don't bother reprocessing unless an output channel that
   ##          requires looping over every line
   return 0 unless (
-		   ($self->get_mode("buffer") and (ref($self->get_mode("buffer")) eq 'ARRAY'))
-		   or $self->get_mode("ifeffit")
-		   or $self->get_mode("repscreen")
-		   or $self->get_mode("repfile")
+		   (Demeter->get_mode("buffer") and (ref(Demeter->get_mode("buffer")) eq 'ARRAY'))
+		   or Demeter->get_mode("ifeffit")
+		   or Demeter->get_mode("repscreen")
+		   or Demeter->get_mode("repfile")
 		  );
 
   my ($reprocessed, $eol) = (q{}, $ENDOFLINE);
   foreach my $thisline (split(/\n/, $command)) {
 
-    if (($self->get_mode("buffer")) and (ref($self->get_mode("buffer")) eq 'ARRAY')) {
-      push @{ $self->get_mode("buffer") },  $thisline;
+    if ((Demeter->get_mode("buffer")) and (ref(Demeter->get_mode("buffer")) eq 'ARRAY')) {
+      push @{ Demeter->get_mode("buffer") },  $thisline;
     };
 
     ## this next bit of insanity is an ifeffit optimization.  it is
@@ -249,29 +249,29 @@ sub dispose {
 
   local $SIG{ALRM} = sub { 1; } if not $SIG{ALRM}; # very cryptic!
   ## -------- send reprocessed command text to ifeffit
-  if ($self->get_mode("backend")) {
-    if ($self->is_larch) {
+  if (Demeter->get_mode("backend")) {
+    if (Demeter->is_larch) {
       Larch::dispose($command);
     } else {
-      if ($self->is_windows) {
+      if (Demeter->is_windows) {
 	Ifeffit::ifeffit($_) foreach (split(/$ENDOFLINE/, $reprocessed)); # WTF!
       } else {
 	Ifeffit::ifeffit($reprocessed);
       };
     };
-    $self -> po -> copyright_text if ($plotting and ($self->mo->template_plot eq 'pgplot')); ## insert the copyright statement in a plot made with pgplot
+    Demeter -> po -> copyright_text if ($plotting and (Demeter->mo->template_plot eq 'pgplot')); ## insert the copyright statement in a plot made with pgplot
 
     ## this mess parses Ifeffit's feedback and sends it either to the feedback code ref or to the screen
-    my $coderef = $self->get_mode("feedback");
-    if ($coderef or $self->get_mode("screen") or  $self->get_mode("plotscreen")) {
-      if ($self->is_larch) {
+    my $coderef = Demeter->get_mode("feedback");
+    if ($coderef or Demeter->get_mode("screen") or  Demeter->get_mode("plotscreen")) {
+      if (Demeter->is_larch) {
 	my $response = Larch::get_messages();
 	## send to feedback code ref
 	if ($coderef) {
 	  ($response) and &$coderef($response."\n");
 
 	## send to the screen with ANSI colorization
-	} elsif ($self->get_mode("screen") or ($self->get_mode("plotscreen") and $plotting)) {
+	} elsif (Demeter->get_mode("screen") or (Demeter->get_mode("plotscreen") and $plotting)) {
 	  $self->_ansify($response.$/, "feedback")
 	};
 
@@ -286,7 +286,7 @@ sub dispose {
 	      ($response) and &$coderef($response."\n");
 
 	      ## send to the screen with ANSI colorization
-	    } elsif ($self->get_mode("screen") or ($self->get_mode("plotscreen") and $plotting)) {
+	    } elsif (Demeter->get_mode("screen") or (Demeter->get_mode("plotscreen") and $plotting)) {
 	      $self->_ansify($response.$/, "feedback")
 	    };
 
@@ -297,15 +297,15 @@ sub dispose {
   };
 
   ## -------- send reprocessed command text to the screen
-  print STDOUT $reprocessed if $self->get_mode("repscreen");
+  print STDOUT $reprocessed if Demeter->get_mode("repscreen");
 
   ## -------- send reprocessed command text to a file
-  if ($self->get_mode("repfile")) {
-    open my $FH, ">".$self->get_mode("file");
+  if (Demeter->get_mode("repfile")) {
+    open my $FH, ">".Demeter->get_mode("file");
     print $FH $reprocessed;
     close $FH;
   };
-  $self->set_mode(echo=>$echo_buffer);
+  Demeter->set_mode(echo=>$echo_buffer);
 
   return 0;
 };
@@ -339,7 +339,7 @@ Demeter::Dispose - Process Ifeffit, Larch, and plotting command strings
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
@@ -642,7 +642,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

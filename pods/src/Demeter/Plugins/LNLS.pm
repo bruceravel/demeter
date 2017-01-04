@@ -103,7 +103,7 @@ Demeter::Plugin::LNLS - Import data from the XAS beamlines at LNLS
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
@@ -137,4 +137,4 @@ This module was written by Eric Breynaert and touched up by Bruce.
 
   Bruce Ravel, L<http://bruceravel.github.io/home>
   http://bruceravel.github.io/demeter
-  Athena copyright (c) 2001-2016
+  Athena copyright (c) 2001-2017

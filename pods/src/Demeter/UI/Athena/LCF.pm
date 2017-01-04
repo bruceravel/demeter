@@ -7,7 +7,9 @@ use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON EVT_CHECKBOX EVT_COMBOBOX EVT_RADIOBOX EVT_LIST_ITEM_SELECTED EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
 
+use Demeter::LCF;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
+
 use Cwd;
 use File::Basename;
 use File::Spec;
@@ -902,8 +904,8 @@ sub seq_select {
   my $i = 0;
   foreach my $st (@{ $this->{LCF}->standards }) {
     $this->{'standard'.$i}->SetStringSelection($st->name);
-    my $w = sprintf("%.3f", $this->{LCF}->weight($st));
-    my $e = sprintf("%.3f", $this->{LCF}->e0($st));
+    my $w = sprintf("%.3f", scalar($this->{LCF}->weight($st)));
+    my $e = sprintf("%.3f", scalar($this->{LCF}->e0($st)));
     $this->{'weight'.$i}  -> SetValue($w);
     $this->{'e0'.$i}      -> SetValue($e);
     $this->{'fite0'.$i}   -> SetValue($this->{LCF}->is_e0_floated($st));
@@ -1047,9 +1049,12 @@ sub reinstate {
   $this->{space}->SetSelection(1) if ($hash->{space} eq 'deriv');
   $this->OnSpace(q());
   ## fit range
-  my $e0  = $this->{LCF}->mo->fetch('Data', $hash->{datagroup})->bkg_e0 || 0;
-  $this->{xmin}->SetValue($hash->{xmin} - $e0);
-  $this->{xmax}->SetValue($hash->{xmax} - $e0);
+  my $e0  = 0;
+  if ($this->{LCF}->mo->fetch('Data', $hash->{datagroup})) {
+    $e0 = $this->{LCF}->mo->fetch('Data', $hash->{datagroup})->bkg_e0;
+  };
+  $this->{xmin}->SetValue($hash->{xmin} - $e0) if $hash->{xmin} != 0;
+  $this->{xmax}->SetValue($hash->{xmax} - $e0) if $hash->{xmax} != 0;
   ## artificial noise, info content, combi
   $this->{noise}->SetValue($hash->{noise});
   $this->{ninfo}->SetValue($hash->{ninfo});
@@ -1081,7 +1086,7 @@ Demeter::UI::Athena::LCF - A linear combination fitting tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
@@ -1117,7 +1122,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

@@ -2,7 +2,7 @@ package Demeter;  # http://xkcd.com/844/
 
 =for Copyright
  .
- Copyright (c) 2006-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -54,6 +54,7 @@ BEGIN {
       $ENV{DEMETER_BACKEND} = 'larch';
       eval "use Larch";
       if ($@) {
+	print STDOUT " -- falling back to Ifeffit\n";
 	$ENV{DEMETER_BACKEND} = 'ifeffit';
 	eval "use Ifeffit qw(ifeffit);"
       };
@@ -90,6 +91,10 @@ Xray::Absorption->load('elam');
 
 use Demeter::Here;
 use YAML::Tiny;
+
+#use PDL::Lite;
+use PDL::Stats::GLM;		# This is curious, loading this quells a complaint about
+                                # PDL::Graphics::PGPLOT at the end of loading a project file
 
 =for LiteratureReference
   Then, spent as they were from all their toil,
@@ -288,15 +293,14 @@ sub import {
   warnings->import;
   #print join(" ", $class, caller), $/;
   my @load  = ();
-  my @data  = (qw(Data XES Journal Data/Prj Data/JSON Data/Pixel Data/MultiChannel Data/BulkMerge));
-  my @heph  = (qw(Data Data/Prj Data/JSON));
-  my @fit   = (qw(Atoms Feff Feff/External ScatteringPath Path SSPath FPath FSPath VPath ThreeBody
-		  GDS Fit Fit/Feffit StructuralUnit Feff/Distributions));
+  my @data  = (qw(Data Data/Prj)); #  Journal Data/JSON Data/MultiChannel Data/BulkMerge XES Data/Pixel
+  my @heph  = (qw(Data Data/Prj)); #  Data/JSON
+  my @fit   = (qw(Atoms Feff ScatteringPath Path SSPath FPath FSPath VPath GDS Fit));
+              #   ThreeBody Feff/External Feff/Distributions StructuralUnit Fit/Feffit
   my @atoms = (qw(Data Atoms Feff ScatteringPath Path Feff/Aggregate));
-  my @anal  = (qw(LCF LogRatio Diff PeakFit PeakFit/LineShape));
+  my @anal  = (qw(LogRatio LCF Diff PeakFit PeakFit/LineShape PCA));
   my @xes   = (qw(XES));
   my @plot  = (qw(Plot/Indicator Plot/Style));
-  my $colonanalysis = 0;
   my $doplugins     = 0;
   my $none          = 0;
 
@@ -327,23 +331,19 @@ sub import {
     } elsif ($p eq ':analysis') {
       @load = (@data, @anal);
       $doplugins     = 1;
-      $colonanalysis = 1;	# verify PDL before loading PCA
     } elsif ($p eq ':athena') {
-      @load = (@data, @anal, @plot);
+      @load = (@data, @plot);
       $doplugins     = 0;       # delay registering plugins until after start-up
-      $colonanalysis = 1;	# verify PDL before loading PCA
     } elsif ($p eq ':artemis') {
-      @load = (@heph, @fit, 'Plot/Indicator');
+      @load = (@data, @fit, 'Plot/Indicator');
     } elsif ($p eq ':atoms') {
       @load = @atoms;
     } elsif ($p eq ':all') {
       @load = (@data, @fit, @anal, @xes, @plot);
       $doplugins     = 1;
-      $colonanalysis = 1;
     } elsif ($p eq ':none') {
       @load = ();
       $doplugins     = 0;
-      $colonanalysis = 0;
       $none          = 1;
     };
   };
@@ -356,14 +356,6 @@ sub import {
     require "Demeter/$m.pm";
   };
 
-  if ($colonanalysis) {
-    $PDL_exists = eval "require PDL::Lite" || 0;
-    $PSG_exists = eval "require PDL::Stats::GLM" || 0;
-  };
-
-  if ($PDL_exists and $PSG_exists) {
-    require "Demeter/PCA.pm" if not exists $INC{"Demeter/PCA.pm"};
-  };
   $class -> register_plugins if $doplugins;
 };
 
@@ -500,8 +492,8 @@ sub version {
 };
 sub copyright {
   my ($self) = @_;
-  #return "copyright " . chr(169) . " 2006-2016 Bruce Ravel";
-  return "copyright 2006-2016 Bruce Ravel";
+  #return "copyright " . chr(169) . " 2006-2017 Bruce Ravel";
+  return "copyright 2006-2017 Bruce Ravel";
 };
 sub hashes {
   my ($self) = @_;
@@ -614,7 +606,7 @@ sub set_mode {
       my $ini = File::Spec->catfile(Demeter::Here::here, 'share', 'ini', 'larch_server.ini');
       my $rhash;
       eval {local $SIG{__DIE__} = sub {}; $rhash = YAML::Tiny::LoadFile($ini)};
-      $rhash->{exe} = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? $rhash->{windows} : which('larch_server');
+      $rhash->{exe} = $Larch::larch_exe;
 
       print "
 Demeter says:
@@ -989,7 +981,7 @@ Demeter - A comprehensive XAS data analysis system using Feff and Ifeffit or Lar
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25
+This documentation refers to Demeter version 0.9.26
 
 =head1 SYNOPSIS
 
@@ -1487,7 +1479,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

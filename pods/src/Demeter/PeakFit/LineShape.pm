@@ -2,7 +2,7 @@ package Demeter::PeakFit::LineShape;
 
 =for Copyright
  .
- Copyright (c) 2006-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -26,7 +26,7 @@ with 'Demeter::Data::Arrays';
 use MooseX::Aliases;
 
 has '+plottable' => (default => 1);
-has '+data'    => (isa => Empty.'|Demeter::Data|Demeter::XES');
+has '+data'    => (isa => Empty.'|Demeter::Data');  # (isa => Empty.'|Demeter::Data|Demeter::XES');
 has '+name'    => (default => 'Lineshape' );
 has 'parent'   => (is => 'rw', isa => Empty.'|Demeter::PeakFit', default => q{},
 		   trigger => sub{ my ($self, $new) = @_; $self->data($new->data)});
@@ -208,7 +208,7 @@ Demeter::PeakFit::LineShape - A lineshape object for peak fitting in Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
@@ -321,7 +321,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

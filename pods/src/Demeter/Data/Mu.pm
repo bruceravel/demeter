@@ -2,7 +2,7 @@ package Demeter::Data::Mu;
 
 =for Copyright
  .
- Copyright (c) 2006-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -223,15 +223,18 @@ sub put_data {
 
   ## resolve column tokens
   my $group = $self->group;
+  if (Demeter->is_larch) {
+    $energy_string =~ s{\$(\d+)}{sprintf("%s.data[%d, :]", $group, $1-1)}ge;
+  } else { 
+    $energy_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
+  };
   if ($self->datatype eq 'chi') {
     $chi_string    =~ s{\$(\d+)}{$group.$cols[$1]}g;
-    $energy_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
     $self->chi_string($chi_string);
   } else {
     $i0_string     =~ s{\$(\d+)}{$group.$cols[$1]}g;
     $signal_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
     $xmu_string    =~ s{\$(\d+)}{$group.$cols[$1]}g;
-    $energy_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
 
     $self->i0_string($i0_string);
     $self->signal_string($signal_string);
@@ -277,10 +280,8 @@ sub fix_chik {
   my ($self) = @_;
   my @k = $self->get_array('k');
   return $self if ( ($k[0] == 0) and (all { abs($k[$_] - $k[$_-1] - 0.05) < $EPSILON4 } (1 .. $#k)) );
-  #my $command = 
   $self->dispense("process", "fix_chik");
-  #print $command;
-  #$self->dispose($command);
+  #$self->disose("show ".$self->group.".k");
   return $self;
 };
 
@@ -323,7 +324,7 @@ sub normalize {
     $self->bkg_nc0(sprintf("%.14f", $self->fetch_scalar("norm_c0")));
     $self->bkg_nc1(sprintf("%.14f", $self->fetch_scalar("norm_c1")));
     $self->bkg_nc2(sprintf("%.14g", $self->fetch_scalar("norm_c2")));
-    $self->bkg_nc3(sprintf("%.14g", $self->fetch_scalar("norm_c3"))) if $self->is_larch;
+    $self->bkg_nc3(sprintf("%.14g", $self->fetch_scalar("norm_c3") || 0)) if $self->is_larch;
 
     if ($self->datatype eq 'xmudat') {
       $self->bkg_slope(0);
@@ -350,7 +351,7 @@ sub normalize {
     $self->bkg_nc0(sprintf("%.14f", $self->fetch_scalar("norm_c0")));
     $self->bkg_nc1(sprintf("%.14f", $self->fetch_scalar("norm_c1")));
     $self->bkg_nc2(sprintf("%.14g", $self->fetch_scalar("norm_c2")));
-    $self->bkg_nc3(sprintf("%.14g", $self->fetch_scalar("norm_c3"))) if $self->is_larch;
+    $self->bkg_nc3(sprintf("%.14g", $self->fetch_scalar("norm_c3") || 0)) if $self->is_larch;
     $self->dispense("process", "nderiv");
   } else { # we take a somewhat different path through these chores for pre-normalized data
     $self->initialize_e0;
@@ -552,7 +553,7 @@ sub autobk {
   $self->bkg_nc0(sprintf("%.14f", $self->fetch_scalar("norm_c0")));
   $self->bkg_nc1(sprintf("%.14f", $self->fetch_scalar("norm_c1")));
   $self->bkg_nc2(sprintf("%.14g", $self->fetch_scalar("norm_c2")));
-  $self->bkg_nc3(sprintf("%.14g", $self->fetch_scalar("norm_c3"))) if $self->is_larch;
+  $self->bkg_nc3(sprintf("%.14g", $self->fetch_scalar("norm_c3") || 0)) if $self->is_larch;
 
   ## note the largest value of the k array
   my @k = $self->get_array('k');
@@ -961,7 +962,7 @@ Demeter::Data::Mu - Methods for processing and plotting mu(E) data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
@@ -1172,7 +1173,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

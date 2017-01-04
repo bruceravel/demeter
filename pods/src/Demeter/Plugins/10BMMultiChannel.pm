@@ -9,6 +9,7 @@ const my $INIFILE => '10bmmultichannel.demeter_conf';
 
 use Moose;
 extends 'Demeter::Plugins::FileType';
+use Demeter::Data::MultiChannel;
 
 has '+conffile'     => (default => File::Spec->catfile(Demeter->dot_folder, $INIFILE));
 
@@ -132,7 +133,7 @@ Demeter::Plugins::10BMMultiChannel - filetype plugin for 10BM multi-channel data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 

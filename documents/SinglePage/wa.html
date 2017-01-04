@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>WebAtoms: Convert crystallographic data into a Feff input file ... on the web! &mdash; Miscellaneous Demeter 0.9.25 documentation</title>
+    <title>WebAtoms: Convert crystallographic data into a Feff input file ... on the web! &mdash; Miscellaneous Demeter 0.9.26 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.25',
+        VERSION:     '0.9.26',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/wheat.ico"/>
-    <link rel="top" title="Miscellaneous Demeter 0.9.25 documentation" href="index.html" />
+    <link rel="top" title="Miscellaneous Demeter 0.9.26 documentation" href="index.html" />
     <link rel="prev" title="Notes towards making Debian packages for Demeter" href="debian.html" />
 
     <link rel="stylesheet" type="text/css" href="_static/demeter.css" />
@@ -39,7 +39,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="debian.html" title="Notes towards making Debian packages for Demeter"
              accesskey="P">previous</a></li>
-        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter 0.9.25 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter 0.9.26 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -69,7 +69,8 @@ know by opening an <a class="reference external" href="https://github.com/brucer
 <li>Assuming you have <a class="reference external" href="https://www.perl.org/get.html">perl installed</a> on your computer, you will need
 to install <a class="reference external" href="http://perldancer.org/">the Dancer web framework</a>,
 <a class="reference external" href="https://metacpan.org/pod/distribution/YAML/lib/YAML.pod">perl's YAML tool</a>,
-and <a class="reference external" href="http://bruceravel.github.io/demeter/">Demeter</a>.</li>
+<a class="reference external" href="http://bruceravel.github.io/demeter/">Demeter</a>, and all of
+their dependencies.</li>
 <li>Launch the application by doing <code class="docutils literal"><span class="pre">perl</span> <span class="pre">bin/app.pl</span></code> at the
 command line.</li>
 <li>Point your browser at <a class="reference external" href="http://localhost:3000">http://localhost:3000</a></li>
@@ -82,7 +83,8 @@ command line.</li>
 <li>Assuming you have <a class="reference external" href="https://www.perl.org/get.html">perl installed</a> on your computer, you will need
 to install <a class="reference external" href="http://perldancer.org/">the Dancer web framework</a>,
 <a class="reference external" href="https://metacpan.org/pod/distribution/YAML/lib/YAML.pod">perl's YAML tool</a>,
-and <a class="reference external" href="http://bruceravel.github.io/demeter/">Demeter</a>.</li>
+<a class="reference external" href="http://bruceravel.github.io/demeter/">Demeter</a>, and all of
+their dependencies.</li>
 <li>Follow the <a class="reference external" href="https://metacpan.org/pod/Dancer2::Manual::Deployment">instructions for deploying a Dancer application</a>
 appropriate to your web server.</li>
 </ol>
@@ -105,11 +107,11 @@ an issue at the GitHub site</a>.</p>
 <h2>Using WebAtoms<a class="headerlink" href="#using-webatoms" title="Permalink to this headline">¶</a></h2>
 <p>When run in your browser, <font size=-1 color="#8C4112">WEBATOMS</font> (like <a class="reference external" href="http://www.thelatinlibrary.com/caesar/gall1.shtml">Gaul</a>) is in three
 parts.  Across the top of the window are a bunch of useful links,
-including the link in the upper left back to the empty
-<font size=-1 color="#8C4112">WEBATOMS</font> application.  On the left is a form to be filled
-in with crystallographic data.  On the right is the response area,
-which will (hopefully!) be filled with a <code class="file docutils literal"><span class="pre">feff.inp</span></code> file or some
-other useful crystallographic calculation.</p>
+including the link back to the empty <font size=-1 color="#8C4112">WEBATOMS</font> application
+in the upper left.  On the left is a form to be filled in with
+crystallographic data.  On the right is the response area, which will
+(hopefully!) be filled with a <code class="file docutils literal"><span class="pre">feff.inp</span></code> file or some other
+useful crystallographic calculation.</p>
 <div class="figure align-center" id="id9">
 <a class="reference external image-reference" href="../_images/webatoms.png"><img alt="_images/webatoms.png" src="_images/webatoms.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text"><font size=-1 color="#8C4112">WEBATOMS</font>, running locally, after importing a CIF file for Ga<sub>2</sub>O<sub>3</sub></span></p>
@@ -129,7 +131,7 @@ setting into a setting that will be recognized by <font size=-1 color="#8C4112">
 crystal engine.  This often causes confusion and is <a class="reference external" href="http://bruceravel.github.io/demeter/documents/Artemis/atoms/space.html#multiple-origins-and-the-shift-keyword">discussed here in
 some detail</a>.</p>
 <p>Once you are done entering crystal data, <img alt="leftclick" title="Left mouse button" src="./_static/leftclick.png" hspace="3"></a> click the
-<kbd class="light">Compute</kbd> button.  The corresponding <code class="file docutils literal"><span class="pre">feff.,inp</span></code>
+<kbd class="light">Compute</kbd> button.  The corresponding <code class="file docutils literal"><span class="pre">feff.inp</span></code>
 file will be displayed in the response area on the right.</p>
 <p>To save the contents of the response area, <img alt="leftclick" title="Left mouse button" src="./_static/leftclick.png" hspace="3"></a> click
 the <kbd class="light">Save as</kbd> button.  You will be prompted for the name
@@ -167,7 +169,7 @@ other web or desktop applications.</li>
 <li>Need to streamline file import this so that the second button
 click is not necessary</li>
 <li>Upload directly from a file, i.e.
-<code class="docutils literal"><span class="pre">http://webatoms.server/file?file=http://www.crystallography.net/cod/1535967.cif</span></code>
+<code class="docutils literal"><span class="pre">http://webatoms.server/?file=/path/to/1535967.cif</span></code>
 or some such.  Although care should be taken, as this can
 <a class="reference external" href="https://blog.steve.fi/If_your_code_accepts_URIs_as_input__.html">expose files inappropriately</a>
 to the internet.</li>
@@ -358,7 +360,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 </li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.25</b></p>
+<p>Current version: <b>0.9.26</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
@@ -406,7 +408,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" style="margin-right: 10px">
           <a href="debian.html" title="Notes towards making Debian packages for Demeter"
              >previous</a></li>
-        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter 0.9.25 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Miscellaneous Demeter 0.9.26 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

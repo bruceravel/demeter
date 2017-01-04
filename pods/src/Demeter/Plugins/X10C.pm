@@ -34,7 +34,12 @@ sub fix {
   while (<D>) {
     $_ =~ s/$null//g;		# clean up nulls
     print N "# " . $_ if $header; # comment headers
-    ($header = 0), next if (uc($_) =~ /^\s+DATA START/);
+    if (uc($_) =~ /^\s+DATA START/) {
+      print N "# --------------------", $/;
+      print N "# energy 1 2 3 4 5 6 7", $/;
+      $header = 0;
+      next;
+    };
     next if ($header);
     $_ =~ s/([eE][-+]\d{1,2})-/$1 -/g; # clean up 5th column
     print N $_;
@@ -70,7 +75,7 @@ Demeter::Plugin::X10C - NSLS X10C filetype plugin
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 

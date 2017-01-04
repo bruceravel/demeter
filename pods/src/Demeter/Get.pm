@@ -2,7 +2,7 @@ package Demeter::Get;
 
 =for Copyright
  .
- Copyright (c) 2006-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -34,7 +34,8 @@ sub backend_id {
   if ($self->is_ifeffit) {
     return "Ifeffit " . Ifeffit::get_string('&build')
   } elsif ($self->is_larch) {
-    return "Larch " . Larch::get_larch_scalar('larch.__version__');
+    return $self->backend_name;
+    #return "Larch " . Larch::get_larch_scalar('larch.__version__');
   };
 };
 
@@ -43,7 +44,8 @@ sub backend_version {
   if ($self->is_ifeffit) {
     return (split(" ", Ifeffit::get_string('&build')))[0];
   } elsif ($self->is_larch) {
-    return Larch::get_larch_scalar('larch.__version__');
+    return 'X.xx';
+    #return Larch::get_larch_scalar('larch.__version__');
   };
 };
 
@@ -58,7 +60,7 @@ sub fetch_scalar {
     my $gp = $self->group || Demeter->mo->throwaway_group;
     if ($param =~ m{norm_c\d}) {
       $param = $gp.'.pre_edge_details.'.$param;
-      return denull(Larch::get_larch_scalar($param));
+
     } elsif ($param =~ m{epsilon_([kr])}) {
       #if ($self->fit_group) {
       #	my $n = $self->fit_data-1;
@@ -66,75 +68,70 @@ sub fetch_scalar {
       #	return Larch::get_larch_array($param);
       #} else {
       $param = join('.', $self->group, 'epsilon_'.$1);
-      return denull(Larch::get_larch_scalar($param));
+
       #};
     } elsif ($param =~ m{r_factor}) {
       $param = $gp.'.params.rfactor';
-      return denull(Larch::get_larch_scalar($param));
+
     } elsif ($param =~ m{(?<!demlcf\.)(chi_reduced|chi_square)}) { # NOT the ones from an LCF fit!
       $param = $gp.'.params.'.$1;
-      return denull(Larch::get_larch_scalar($param));
+
     } elsif ($param =~ m{\A(?:e0|edge_step|kmax_suggest)\z}) {
       $param = $gp.'.'.$param;
-      return denull(Larch::get_larch_scalar($param));
 
     ## normalization parameters
     } elsif ($param =~ m{pre_(?:offset|slope)}) {
       $param = $gp.'.pre_edge_details.'.$param;
-      return denull(Larch::get_larch_scalar($param));
 
     ## auto-alignment parameter
     } elsif ($param =~ m{delta_(aa__)_(esh|scale)}) {
       $param = $1.'.'.$2.'.stderr';
-      return denull(Larch::get_larch_scalar($param));
+
     } elsif ($param =~ m{(aa__)_(esh|scale)\b}) {
       $param = $1.'.'.$2.'.value';
-      return denull(Larch::get_larch_scalar($param));
+
     } elsif ($param =~ m{delta_(aa__)_(esh|scale)}) {
       $param = $1.'.'.$2.'.stderr';
-      return denull(Larch::get_larch_scalar($param));
 
     ## log ratio/phase difference parameters
     } elsif ($param =~ m{\A(lr_)__(pd[024])}) {
       $param = $1.'e.'.$2.'.value';
-      return denull(Larch::get_larch_scalar($param));
+
     } elsif ($param =~ m{\A(lr_)__(pd[13])}) {
       $param = $1.'o.'.$2.'.value';
-      return denull(Larch::get_larch_scalar($param));
+
     } elsif ($param =~ m{delta_(lr_)__(pd[024])}) {
       $param = $1.'e.'.$2.'.stderr';
-      return denull(Larch::get_larch_scalar($param));
+
     } elsif ($param =~ m{delta_(lr_)__(pd[13])}) {
       $param = $1.'o.'.$2.'.stderr';
-      return denull(Larch::get_larch_scalar($param));
 
-    ## exafs fitting parameters
+      ## exafs fitting parameters
     } elsif ($param =~ m{delta_(.+)}) {
       $param = join('.', 'gds', $1, 'stderr');
-      return denull(Larch::get_larch_scalar($param));
 
     } elsif ($param =~ m{\Ademlcf.+_(a|e|offset|slope)\z}) {
       $param .= '.value';
-      return denull(Larch::get_larch_scalar($param));
 
     } elsif ($param =~ m{\Adempeak\.\w+_\d\z}) {
       $param .= '.value';
-      return denull(Larch::get_larch_scalar($param));
 
     } elsif ($param =~ m{_p(\d+)\z}) {
       $param = 'dempcatt._p'.$1;
-      return denull(Larch::get_larch_scalar($param));
 
     } elsif ($param eq 'filter_top') {
       $param = "f1f2.$param";
-      return denull(Larch::get_larch_scalar($param));
 
     } elsif (Demeter->mo->fit) { # a fit is happenening, this is a Parameter, need its value
-      return denull(Larch::get_larch_scalar($param.'.value'));
-
-    } else {
-      return denull(Larch::get_larch_scalar($param));
-    };
+      $param = $param.'.value';
+    }
+    $param = Larch::get_larch_scalar($param);
+    if (not defined $param) {
+      $param = 0;
+    } elsif (ref($param) eq 'ARRAY') { # not 100% sure this is needed
+      $param = @{$param}[0];
+    }
+    return $param;
   };
 };
 
@@ -150,11 +147,12 @@ sub fetch_string {
     return Ifeffit::get_string($param);
 
   } elsif ($self->is_larch) {
-    if ($param eq'column_label') {
+    if ($param eq 'column_label') {
       my $gp = ($self->attribute_exists('group') and $self->group) ? $self->group : Demeter->mo->throwaway_group;
       $param = $gp.'.column_labels';
+      $self->dispose("show $param");
       my $list = Larch::get_larch_scalar($param);
-      $list = eval($list) if ref($list) ne 'ARRAY';
+      $list = eval($list) if ($list and ref($list) ne 'ARRAY');
       return q{} if not $list;
       return join(" ", @$list);
     } else {
@@ -168,6 +166,11 @@ sub fetch_array {
   if ($self->is_ifeffit) {
     return Ifeffit::get_array($param);
   } elsif ($self->is_larch) {
+    #if ($param =~ m{pre\z}) {
+    #  $param .= '_edge';
+    #}elsif ($param =~ m{post\z}) {
+    #  $param .= '_edge';
+    #};
     return Larch::get_larch_array($param);
   };
 };
@@ -265,7 +268,7 @@ Demeter::Get - Choke point for probing Ifeffit, Larch, or other backends
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
@@ -361,7 +364,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

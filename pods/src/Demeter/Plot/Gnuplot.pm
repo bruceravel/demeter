@@ -2,7 +2,7 @@ package Demeter::Plot::Gnuplot;
 
 =for Copyright
  .
- Copyright (c) 2006-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@ extends 'Demeter::Plot';
 use Carp;
 use File::Spec;
 use Demeter::Constants qw($NUMBER);
-use Capture::Tiny qw(capture_merged);
+#use Capture::Tiny qw(capture_merged);
 
 has '+error_log' => (default => File::Spec->catfile($Demeter::mode->iwd,
 						    $Demeter::mode->external_plot_object->{__error_log}));
@@ -49,7 +49,9 @@ has '+partstyle' => (default => sub{ shift->co->default("gnuplot", "partstyle") 
 has '+pathstyle' => (default => sub{ shift->co->default("gnuplot", "pathstyle") || 'lines'});
 
 has '+version' => (default => sub {
-		     my $x = capture_merged {system 'gnuplot -V'};
+		     #my $x = capture_merged {system 'gnuplot -V'};
+		     my $prog = Demeter->co->default('gnuplot', 'program') || 'gnuplot';
+		     my $x = `$prog -V`;
 		     if ($x =~ m{(\d+\.\d+)\s+(patchlevel\s+(\d+))?}) {
 		       if ($3) {
 			 return $1.'.'.$3;
@@ -289,7 +291,7 @@ Demeter::Plot::Gnuplot - Using Gnuplot with Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
@@ -383,7 +385,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

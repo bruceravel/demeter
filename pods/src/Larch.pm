@@ -1,215 +1,206 @@
 package Larch;
 
+# require Exporter;
+# @ISA = qw(Exporter);
+# @EXPORT_OK = qw(dispose larch decode_data get_data get_messages
+# 		get_larch_scalar put_larch_scalar
+# 		get_larch_array put_larch_array
+# 		create_larch_connection shutdown_larch_connection
+# 		get_client_info set_client_info run_selftest);
+
 use strict;
 use warnings;
 use Cwd;
 use Demeter::Here;
-use File::Spec;
+use File::Which qw(which);
+use RPC::XML::Client;
 use Time::HiRes qw(usleep);
-use YAML::Tiny;
 
+use Proc::Background;
 
-######################################################################
-## ----- configure and start the Larch server
-######################################################################
-#my $ini = File::Spec->catfile(Demeter->dot_folder, "larch_server.yaml");
-my $ini = File::Spec->catfile(Demeter::Here::here, 'share', 'ini', 'larch_server.ini'); # if (not -e $ini);
-my $rhash;
+use vars qw($larch_is_go $larchconn $larch_exe $larch_port);
+$larch_exe = q{};
 
-print "Trying Larch server: $ini\n";
+sub find_larch {
+  # search for Python exe and larch_server script,
+  # return command to run larch server
+  my $osname = lc($^O);
+  my $python_exe = "python";
+  my $pyscript_dir = "";
+  my @dirlist ;
+  if (($osname eq 'mswin32') or ($osname eq 'cygwin')) {
+    @dirlist = split /;/, $ENV{'PATH'};
+    push @dirlist,  (File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda3'),
+		     File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda2'),
+		     File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda'),
+		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda3'),
+		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda2'),
+		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda'),
+		     'C:\Python27', 'C:\Python35');
+    $python_exe = "python.exe";
+    $pyscript_dir = "Scripts";
+  } else {
+    @dirlist = split /:/, $ENV{'PATH'};
+    push @dirlist,  (File::Spec->catfile($ENV{HOME}, 'anaconda3', 'bin'),
+		     File::Spec->catfile($ENV{HOME}, 'anaconda2', 'bin'),
+		     File::Spec->catfile($ENV{HOME}, 'anaconda', 'bin'));
 
-
-eval {local $SIG{__DIE__} = sub {}; $rhash = YAML::Tiny::LoadFile($ini)};
-
-## print join("|", %$rhash), $/;
-
-$rhash->{server}  ||= 'localhost';
-$rhash->{port}    ||= 4966;
-$rhash->{proxy}     = sprintf("http://%s:%d", $rhash->{server}, $rhash->{port});
-$rhash->{timeout} ||= 3;
-$rhash->{quiet}   ||= 0;
-$rhash->{keepalive} ||= 7*24*60*60 ;
-$rhash->{exe}       = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? $rhash->{windows} : 'larch_server';
-
-#####
-# test for running larch server
-# note: this tests only that a port is a larch server,
-#       *not* that it is in use for another purpose.
-#       I didn't see how to test that with XMLRPC::Lite
-sub test_larch_server {
-    my ($host, $port) = @_;
-    my $addr = sprintf("http://%s:%d", $host, $port);
-    my $server = XMLRPC::Lite -> proxy($addr);
-    eval{$server->get_rawdata('_sys.config.user_larchdir')};
-    return $@;
+  }
+  my $pyexe_ = which($python_exe);
+  my $larch_ = which("larch_server");
+  if (defined($pyexe_) && (-e $pyexe_) && defined($larch_) && (-e $larch_))  {
+    $larch_exe = "$pyexe_ $larch_";
+    return $larch_exe;
+  }
+  foreach my $d (@dirlist) {
+    my $pyexe_ =  File::Spec->catfile($d, $python_exe);
+    my $larch_ =  File::Spec->catfile($d, $pyscript_dir, 'larch_server');
+    if ((-e $pyexe_) && (-e $larch_))  {
+      $larch_exe = "$pyexe_ $larch_";
+      last;
+    }
+  }
+  return $larch_exe;
 };
 
-# find and return the next unused larch port,
-# given a host and starting port number.
+# find and return the next unused larch port, given executable
+# (only works on local host...)
 # this will avoid multiple clients using the same port
 sub get_next_larch_port {
-    my ($host, $port_start) = @_;
-    for (my $i=0; $i<250; $i++) {
-	my $port = $port_start + $i;
-	if (test_larch_server($host, $port)) {
-	    return $port;
-	}
-    }
-    return -1;
-}
-
-$rhash->{port}  = get_next_larch_port($rhash->{server}, $rhash->{port});
-$rhash->{proxy} = sprintf("http://%s:%d", $rhash->{server}, $rhash->{port});
-
-my $command = $rhash->{exe}." -p ". $rhash->{port}." start";
-print "Trying Larch server:  $command\n";
-my $ok = system $command;
-
-######################################################################
-## ----- contact the Larch server, trying repeatedly until contact is
-##       established, eventually failing if contact cannot be made
-######################################################################
-use XMLRPC::Lite;
-our $client;
-$client = XMLRPC::Lite -> proxy($rhash->{proxy});
-our $rpcdata;
-
-use vars qw($larch_is_go $port);
-$larch_is_go = 1;
-$port = $rhash->{port};
-
-eval {$client->larch(q{cd('} . cwd . q{')})};
-my $count = 0;
-while ($count < $rhash->{timeout}*15) {
-  $larch_is_go = 0 if $@;
-  eval {$client->larch(q{cd('} . cwd . q{')})};
-  if (not $rhash->{quiet}) {print $@, $/};
-  $larch_is_go = 1, last if not $@;
-  ++$count;
-  usleep(200000);
+  # find next available port to run on
+  my ($lexe) = @_;
+  my $s = `$lexe -n`;
+  $s =~ s/[^\d.]/ /g ;
+  my @w = split /\s+/, $s;
+  return $w[-1];
 };
 
-my $username = getpwuid($<);
-eval {$client->set_client_info('user', $username)};
-eval {$client->set_client_info('app', 'demeter')};
-eval {$client->set_client_info('pid', $$)};
-eval {$client->set_keepalive_time($rhash->{keepalive})};
+our $proc;
+sub start_larch_server {
+  $larch_port = -1;
+  $larch_exe = find_larch();
+  if (length $larch_exe > 10) {
+    # find next available port to run on
+    # print STDOUT "Larch exe $larch_exe\n";
+    $larch_port = get_next_larch_port($larch_exe);
+    # print STDOUT "Larch port $larch_port\n";
+    if ($larch_port > 2000) {
+      my $command = $larch_exe." -p ". $larch_port." start";
+      print STDOUT "\nStarting Larch server: $command\n";
+      $proc = system $command;
+      # verify connnection to server
+      my $addr = sprintf("http://%s:%d", 'localhost', $larch_port);
+      my $conn = RPC::XML::Client->new($addr);
+      usleep(250000);
+      for (my $i=0; $i<20; $i++) {
+	if ($conn->simple_request('system.listMethods')) {
+	  my $m = $conn->simple_request('system.listMethods');
+	  last;
+	}
+	usleep(250000);
+      }
+    }
+  } else {
+    print STDOUT "\nCould not find Larch Server";
+  }
+  return $larch_port;
+};
 
-######################################################################
-## ----- send a string to the server
-######################################################################
+
+sub create_larch_connection {
+  $larch_port = start_larch_server();
+  return $larch_port if ($larch_port < 0);
+  sleep(1);
+
+  my $addr = sprintf("http://127.0.0.1:%d", $larch_port);
+  $larchconn = RPC::XML::Client->new($addr);
+  $larchconn->send_request("larch", "cd('".cwd."')");
+  $larch_is_go = 1;
+  return $larchconn;
+};
+
+sub shutdown_larch_connection {
+  print "Request Server to shut down\n";
+  $larchconn->send_request("shutdown");
+};
+
 sub dispose {
   my ($text) = @_;
-  $rpcdata = $client -> larch($text);
-  return $rpcdata;
+  return $larchconn->send_request("larch", $text);
 };
+
+sub larch {
+  my ($text) = @_;
+  return $larchconn->send_request("larch", $text);
+};
+
+sub decode_data {
+  my ($dat) = @_;
+  #my %dat;
+  # print("DECODE: ", ref($dat), "\n");
+  if (ref($dat) eq 'ARRAY') {
+    return @$dat;
+  } elsif (ref($dat) eq 'RPC::XML::nil') {
+    return undef;
+  } elsif (ref($dat) eq 'RPC::XML::string') {
+    return $$dat;
+  } elsif (ref($dat) eq 'RPC::XML::double') {
+    return $$dat;
+  } elsif (ref($dat) eq 'RPC::XML::struct') {
+    my $class = $dat->{__class__};
+    #print "STRUCT CLass " , $$class, "\n";
+    if ($$class eq "HASH") {
+      return %$dat;
+    } elsif ($$class eq "Array"){
+      my $value = $dat->{value};
+      my $dtype = $dat->{__dtype__}->value;
+      my $shape = @{$dat->{__shape__}->value};
+      return $value->value;
+    } elsif (($$class eq "List") or
+	     ($$class eq "Tuple") or
+	     ($$class eq "Complex")) {
+      my $value = $dat->{value};
+      # print "LIST/TUPLE ", $value, $value->value, "\n";
+      return $value->value;
+    } elsif (($$class eq "Dict") or
+	     ($$class eq "Group")) {
+      my %out;
+      foreach my $key (keys %$dat) {
+	if ($key ne '__class__') {
+	  $out{$key} =  decode_data($$dat{$key});
+	}
+      }
+      return \%out;
+    } else {
+      print "cannot decode data, unknown structure class: $$class \n";
+    }
+  } else {
+    return $dat; # print "cannot decode data, unknown data type: ref($dat) \n";
+  }
+}
 
 sub get_messages {
-  $rpcdata = $client -> get_messages();
-  return $rpcdata->result;
+  return decode_data($larchconn->send_request("get_messages"));
 };
 
-######################################################################
-## ----- put and get scalars and lists from the server
-######################################################################
+sub set_client_info {
+  my ($key, $val) = @_;
+  return $larchconn->send_request("set_client_info", $key, $val);
+};
 
-sub get_larch_array {
+sub get_client_info {
+  my ($key, $val) = @_;
+  return $larchconn->send_request("get_client_info");
+};
+
+sub get_data {
   my ($param) = @_;
-  #Demeter->trace;
-  #$rpcdata = $client -> get_data('_main.'.$param);
-
-  $rpcdata = $client -> get_data($param);
-
-  ## this is a mess and mixes cases relevant to the time before and after
-  ## https://github.com/xraypy/xraylarch/issues/99
-  return () if (not defined($rpcdata->result));
-  if (ref($rpcdata->result) eq 'HASH') {
-    my $ret = $rpcdata->result->{value};
-    if ($param =~ m{correl}) {
-      my %hash = %{$rpcdata->result};
-      delete $hash{__class__};
-      my @ret = %hash;
-      return @ret;
-    } elsif (ref($ret) eq 'ARRAY') {
-      return @$ret;
-    } elsif (not $ret) {
-      return ();
-    } else {
-      return @{eval $ret};
-    };
-  } elsif ($rpcdata->result =~ m{\A\{}) {
-    ## if the RPC client returns a stringification of a python
-    ## dictionary.  the following converts that to a hash
-    ## serialization, evals it into a hash, then returns it as an
-    ## hash.  sigh....
-    my $hash = $rpcdata->result;
-    $hash =~ s{:}{=>}g;
-    #print $hash, $/;
-    $hash = eval $hash;
-    #print $hash, $/;
-    return %$hash;
-    #return @{$hash->{value}};
-  } else {
-    my $ret = eval $rpcdata->result;
-    return () if not $ret;
-    #Demeter->trace;
-    #print '>>>>>', ref($ret), $/;
-    if (ref($ret) eq 'ARRAY') {
-      return @$ret;
-    # } elsif ($ret =~ m{\(array\(}) {
-    #   $ret =~ s{\(array\(}{};
-    #   chop($ret); chop($ret); chop($ret);
-    #   $ret = eval($ret);
-    #   return @$ret;
-    } else {
-      return ();
-    }
-  };
-  #or not (defined($rpcdata->result->{value})));
+  return $larchconn->send_request("get_data", $param);
 };
-
-sub put_larch_array {
-  my ($param, $aref) = @_;
-  my $value = '[' . join(',', @$aref) . ']';
-  return dispose("$param = array($value, dtype=float64)");
-};
-
-
-
 
 sub get_larch_scalar {
   my ($param) = @_;
-  $rpcdata = $client -> get_data($param);
-  my $res = $rpcdata->result;
-
-  #if ($param =~ m{demlcf}) {
-  #  print $param, $/;
-  #  print $res, $/;
-  #};
-
-  if (not defined($res)) {
-    return 0;
-  } elsif (ref($res) eq 'HASH') {
-    $res = $res->{value};
-    #print $res, $/;
-  } elsif ($rpcdata->result =~ m{\A\{}) {
-    ## the RPC client returns a stringification of a python
-    ## dictionary.  the following converts that to a hash
-    ## serialization, evals it into a hash, then returns it as an
-    ## array.  sigh....
-    my $hash = $rpcdata->result;
-    $hash =~ s{:}{=>}g;
-    $hash = eval $hash;
-    if (defined $hash->{value}) {
-      return $hash->{value};
-    } else {
-      return 0;
-    };
-  } else {
-    #print "------------- $param ", $res, $/;
-    $res =~ s{(\A\"|\"\z)}{}g;
-  };
-  return $res;
+  return decode_data(get_data($param));
 };
 
 sub put_larch_scalar {
@@ -217,10 +208,79 @@ sub put_larch_scalar {
   return dispose("$param = $value");
 };
 
+sub get_larch_array {
+  my ($param) = @_;
+  my $tmp = decode_data(get_data($param));
+  if (defined $tmp) {
+    return @{$tmp} if ref($tmp) eq 'ARRAY';
+    return %{$tmp} if ref($tmp) eq 'HASH';
+  };
+  return ();
+};
+
+sub put_larch_array {
+  my ($param, $aref) = @_;
+  return q{} if ($#{$aref} < 1);
+  my $value = '[' . join(',', @$aref) . ']';
+  return dispose("$param = array($value, dtype=float64)");
+};
+
+sub run_selftest {
+  my $max_outerloop = 20;
+  my $max_innerloop = 20;
+  my @messages;
+  my @array;
+  my $ret;
+  for (my $loop=0; $loop<$max_outerloop; $loop++) {
+    print "# Simple Array Creation: loop: $loop / $max_outerloop \n";
+
+    for (my $i=0; $i<$max_innerloop; $i++) {
+      dispose("x$i =  linspace(0, $i+1, 11)");
+      select(undef, undef, undef, 0.0005);
+      if ($i % 5 == 0) {
+	dispose("print 'hello $i ".localtime."' ");
+	@messages = get_messages();
+	print "Message # ", @messages;
+      }
+    }
+    print "# Read XAFS Data, run autobk with different inputs\n";
+    for (my $i=0; $i<$max_innerloop; $i++) {
+      print "--> LOOP ($loop, $i) / ($max_outerloop, $max_innerloop)\n";
+      my $rbkg = 0.5 + $i/(1.0*$max_innerloop);
+      dispose("fc$i = read_ascii('fe3c_rt.xdi')");
+      dispose("fc$i.mu = fc$i.mutrans");
+      dispose("autobk(fc$i, rbkg=$rbkg)");
+
+      @array = get_larch_array("fc$i.column_labels");
+      print "Column Labels: ", join(', ', @array), "\n";
+
+      @array = get_larch_array("fc$i.chi[:5]");
+      print "Chi(k): ", join(', ', @array), "\n";
+      dispose("show(fc$i)");
+      #dispose("show(fc$i.autobk_details)");
+      @messages = get_messages();
+      print "Messages:\n ", @messages, "\n";
+    }
+  }
+};
+
+
+## if there is not already a connection,
+## start server on next port create connection to it
+
+if (!$larchconn) {
+  create_larch_connection();
+}
+
+END {
+  #my $action = ($ENV{DEMETER_LARCH_PERSIST}) ? 'status' : 'stop';
+  system "$larch_exe -p $larch_port stop";
+}
+
 $larch_is_go;
 
-
 __END__
+
 
 =head1 NAME
 
@@ -238,6 +298,10 @@ and sending command strings to Larch via an XML-RPC framework.
 =item C<dispose>
 
 Send a text string to the server for interpretation by Larch.
+
+=item C<shutdown_server>
+
+stop the Larch Server.
 
 =item C<get_larch_scalar>
 
@@ -272,7 +336,7 @@ Bruce Ravel (L<http://bruceravel.github.io/home>)
 
 L<http://bruceravel.github.io/demeter/>
 
-Larch is copyright (c) 2016, Matthew Newville and Tom Trainor
+Larch is copyright (c) 2017, Matthew Newville and Tom Trainor
 
 =head1 SEE ALSO
 
