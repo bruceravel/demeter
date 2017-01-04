@@ -302,7 +302,6 @@ sub path {
   my ($self, $do_ff2chi) = @_;
   $self->_update_from_ScatteringPath if $self->sp;
 
-  Demeter->trace;
   my $this_command = $self->_path_command($do_ff2chi);
   $this_command =~ s{(?<!sigma2_)(debye|eins)\(}{sigma2_$1\(}g if (Demeter->is_larch);
   $this_command =~ s{sigma2_(debye|eins)\(}{$1\(}g if (Demeter->is_ifeffit);
