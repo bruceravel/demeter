@@ -1,0 +1,9 @@
+{
+  ## erase one or more gds parameters
+  q{}
+}
+try:
+    del gds.{$items}
+except LookupError:
+    pass
+#endtry

@@ -252,8 +252,8 @@ You can build and install the documentation by doing
   ./Build manuals
   ./Build install # (or sudo ./Build install)
 
-Building the documentation requires sphinx, pybtex, and
-sphinxcontrib-bibtex.
+Building the documentation requires sphinx, pybtex,
+sphinxcontrib-bibtex, and sphinxcontrib-blockdiag.
 
 END_MESSAGE
 ;
