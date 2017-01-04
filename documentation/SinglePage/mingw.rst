@@ -245,12 +245,12 @@ looks like this:
 .. blockdiag::
 
    blockdiag {
-
-     node_width = 200;
-     default_fontsize = 14;
-
-     documentation -> Artemis, Athena, DPG, SinglePage;
+       node_width = 200;
+       default_fontsize = 14;
+       documentation -> Artemis, Athena, DPG, SinglePage;
    }
+
+
 
 where each of :file:`Artemis`, :file:`Athena`, :file:`DPG`, and
 :file:`SinglePage` contains the contents of their respective
