@@ -32,8 +32,11 @@ my $file = $orig;
 
 my $data = Demeter::Data->new(file=>$file);
 $data->_update('data');
-ok( $data->provenance =~ m{mu\(E\)},              "mu(E) file");
-
+if (Demeter->is_ifeffit) {
+  ok( $data->provenance =~ m{mu\(E\)},            "mu(E) file (xmu ifeffit)");
+} else {
+  ok( $data->provenance =~ m{column data},        "column data (xmu with Larch)");
+};
 $orig = File::Spec->catfile($here, 'fe.060');
 $file = $orig;
 $data = Demeter::Data->new(file=>$file,

@@ -44,7 +44,7 @@ sub fix {
       my @fields = split(" ", $line);
       ($dspacing, $stpdeg) = @fields[4,5];
 
-    } elsif ($_ =~ m{\A\s*(?:DELTA|DELEND|SEC|OFFSETS)}) { # various headers
+    } elsif ($_ =~ m{\A\s*(?:DELTA|DELEND|SEC|OFFSETS?)}) { # various headers
       print N "# ", $_, $/;
 
     } elsif (all {looks_like_number($_)} @list) {
@@ -58,6 +58,8 @@ sub fix {
     } else { #($_ =~ m{\d{1,2}-\d{1,2}\-\d{1,2}\s*\z}) { # comment line with date at end
       #print "found it!\n";
       print N "# ", $_, $/;
+      print N "# -----------------------", $/;
+      print N "# energy  i0  it  ir  if", $/;
 
     };
 

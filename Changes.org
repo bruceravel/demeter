@@ -56,6 +56,7 @@
     + Fixed a few testing bugs, skip XDI tests, force use of Ifeffit
       for testing.  The last two are not permanent.  In particular,
       testing with Larch is very important.
+    + All tests passing with Larch (also still pass with Ifeffit)!
 
 *** Windows
     + Upgrade to Strawberry with perl 5.24
