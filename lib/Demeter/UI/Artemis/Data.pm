@@ -268,7 +268,6 @@ sub new {
   $this->mouseover("plot_r123", "Plot this data set as $CHI(R) with all three k-weights and scaled to the same size.");
   $this->mouseover("plot_kq",   "Plot this data set as both $CHI(k) and Re[$CHI(q)].");
 
-
   ## -------- title lines
   my $titlesbox      = Wx::StaticBox->new($leftpane, -1, 'Title lines ', wxDefaultPosition, wxDefaultSize);
   my $titlesboxsizer = Wx::StaticBoxSizer->new( $titlesbox, wxHORIZONTAL );
@@ -277,7 +276,6 @@ sub new {
   $titlesboxsizer -> Add($this->{titles}, 1, wxALL|wxGROW, 0);
   $left           -> Add($titlesboxsizer, 2, wxALL|wxGROW, 5);
   $this->mouseover("titles", "These lines will be written to output files.  Use them to describe this data set.");
-
 
   ## -------- Fourier transform parameters
   my $ftbox      = Wx::StaticBox->new($leftpane, -1, 'Fourier transform parameters ', wxDefaultPosition, wxDefaultSize);
@@ -381,7 +379,6 @@ sub new {
     $this->mouseover("kwindow", "The functional form of the window used for the forward Fourier transform.");
     $this->mouseover("rwindow", "The functional form of the window used for the backward Fourier transform.");
   };
-
 
   ## -------- k-weights
   my $kwbox      = Wx::StaticBox->new($leftpane, -1, 'Fitting k weights ', wxDefaultPosition, wxDefaultSize);
@@ -573,7 +570,11 @@ sub initial_page_panel {
   EVT_HYPERLINK($self, $emp,   sub{$self->empirical;});
   $_ -> SetFont( Wx::Font->new( 10, wxDEFAULT, wxITALIC, wxNORMAL, 0, "" ) ) foreach ($dndtext, $qfs, $atoms, $su, $emp);
   $su-> Enable(0);
-  $_ -> SetVisitedColour($_->GetNormalColour) foreach ($qfs, $atoms, $emp); #, $su, $feff);
+
+  ## this triggers  spurious GDK noise
+  # foreach my $hl ($qfs, $atoms, $emp) { #, $su, $feff);
+  #   $hl -> SetVisitedColour($hl->GetNormalColour);
+  # };
 
   ##my $or = Wx::StaticText -> new($panel, -1, "\tor");
 
