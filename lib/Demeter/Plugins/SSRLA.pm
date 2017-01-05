@@ -2,6 +2,7 @@ package Demeter::Plugins::SSRLA;  # -*- cperl -*-
 
 use Moose;
 extends 'Demeter::Plugins::FileType';
+use Demeter::Constants qw{$EPSILON3};
 
 has '+is_binary'   => (default => 0);
 has '+description' => (default => "ASCII data from the SSRL XAFS Data Collector");
@@ -66,6 +67,8 @@ sub fix {
       };
     } else {			# data columns
       my @line = split(" ", $_);
+      next if $#line < 0;
+      next if $line[2] < $EPSILON3;
       @line = ($line[2], $line[1], $line[0], @line[3..$#line]);
       my $nn = $#line+1;
       my $pattern = "%.4f  " x $nn . $/;
