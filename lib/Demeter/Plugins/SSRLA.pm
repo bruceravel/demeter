@@ -6,7 +6,7 @@ use Demeter::Constants qw{$EPSILON3};
 
 has '+is_binary'   => (default => 0);
 has '+description' => (default => "ASCII data from the SSRL XAFS Data Collector");
-has '+version'     => (default => 0.1);
+has '+version'     => (default => 0.2);
 
 my %special = (chr(169) => '(c)',
 	       chr(176) => 'deg',
@@ -131,6 +131,17 @@ they get stripped from the file and replaced with ASCII look-alikes.
 
   ©  ==> (c)
   °  ==> deg
+
+=head1 VERSION HISTORY
+
+=over 4
+
+=item 0.2
+
+Allow variable lines after the C<Data:> header.  Remove trailing lines
+of all zeros from the file.
+
+=back
 
 =head1 AUTHOR
 

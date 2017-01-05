@@ -20,6 +20,7 @@
       (Thanks to Sinead Rowe)
     + Fix a problem processing keV data when using Larch (Thanks to
       [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-November/008880.html][Juan de la Figuera]]) (See issue #42)
+    + Bug fix for the SSRLA filetype plugin (Thanks to Simon Bare)
 
 *** Artemis
     + Actually use the user-supplied value of epsilon_k (Thanks to
