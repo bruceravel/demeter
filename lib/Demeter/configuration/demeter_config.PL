@@ -81,7 +81,7 @@ sub _read_config_file {
       if (not -e $includefile) { # this allows for arbitrary include files
 	$includefile = File::Spec->catfile(dirname($file), $includefile);
       };
-      print "    reading $includefile\n";
+      #print "    reading $includefile\n";
       _read_config_file($includefile);
 
     } elsif ($line =~ m{^\s*section\s*=\s*(\w+)}) {
