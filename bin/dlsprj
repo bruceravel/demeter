@@ -15,6 +15,11 @@
 
 =cut
 
+BEGIN {
+  my $will_plot = grep {$_ =~ m{\A-{1,2}p\z}} @ARGV;
+  $ENV{DEMETER_NO_BACKEND} = 1 if (not $will_plot);
+}
+
 use Cwd;
 use File::Basename;
 use Getopt::Long qw(GetOptionsFromString);
@@ -28,7 +33,7 @@ my ($emin, $emax) = (0,0);
 my %hash = ("plot|p=s"     => \$plot,
 	    "stack=s"      => \$inc,
 	    "params=s"     => \$params,
-	    "g"            => \$gnuplot,
+	    #"g"            => \$gnuplot,
 	    "xanes"        => \$xanes,
 	    "edge"         => \$edge,
 	    "kw|kweight=i" => \$kw,
@@ -56,7 +61,7 @@ if (Demeter->is_prj($file)) {
 };
 my ($en, $ex) = ($prj->co->default('plot', 'emin'), $prj->co->default('plot', 'emax'));
 $prj -> set(file=>$file);
-$prj -> plot_with('gnuplot') if $gnuplot;
+#$prj -> plot_with('gnuplot') if $gnuplot;
 #$prj -> set_mode(screen => 1);
 
 print '===> ', Cwd::abs_path($file), $/ x 2, $prj -> list(split(/,/,$params)), $/;
@@ -227,10 +232,6 @@ forward Fourier transform kmin value:
         1 : HgO        1.0        2
         2 : HgS black  1.0        2
         3 : HgS red    1.0        2
-
-=item C<-g>
-
-Use the gnuplot plotting backend.  The default is to use pgplot.
 
 =back
 
