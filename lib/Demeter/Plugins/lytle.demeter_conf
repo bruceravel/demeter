@@ -1,0 +1,25 @@
+## This configuration file is for Demeter version 0.9.9.
+######################################################################
+section=lytle
+section_description
+  These variables determine the behavior of the Lytle plugin.
+
+variable=stpdeg
+type=positive integer
+default=2000
+minint=1000
+maxint=10000
+description
+  The default number of steps per degree when using the Si(220)
+  crystal.  This is specified for early files that have a header
+  lacking this information.  The other option seems to be 4000 and is
+  used for the Si(111) crystal along with a d-spacing of 3.13562.
+
+variable=dspace
+type=real
+default=1.92017
+units=Angstrom
+description
+  The dspacing of the monochromator crystal.  The default is for
+  Si(220).  The Si(111) number is 3.13562 and is used with a
+  steps/degree value of 4000.
