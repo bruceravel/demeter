@@ -5,6 +5,7 @@ use Fcntl qw(:flock);
 use File::Copy;
 use File::Basename;
 use Text::Unidecode;
+use filetest 'access';
 
 sub readable {
   my ($self, $file) = @_;
