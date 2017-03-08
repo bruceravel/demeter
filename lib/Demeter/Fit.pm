@@ -508,7 +508,8 @@ sub fit {
     if ($data->fit_data lt $self->ndata) {
       $command .= $data->template("fit", "fit");
     } else {
-      $command .= $data->template("fit", "endfit");
+      my @mdsgroups = map {$_->group} @datasets;
+      $command .= $data->template("fit", "endfit", {MDS=>\@mdsgroups});
     };
 
     $self -> restraints(q{}) if ($count == 1);

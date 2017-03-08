@@ -633,7 +633,7 @@ sub uptodate {
   #     $thisgds->dispose($thisgds->write_gds);
   #   };
 
-  foreach my $k (keys(%$rframes)) {
+  foreach my $k (sort keys(%$rframes)) { # sorting will order them in their order in the Data list
     next unless ($k =~ m{\Adata});
     my $this = $rframes->{$k}->{data};
     ++$abort if ($rframes->{$k}->fetch_parameters == 0);

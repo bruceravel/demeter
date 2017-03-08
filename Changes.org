@@ -28,6 +28,7 @@
     + disable C-left on path list, which was used (I think) to clone
       paths.  This is a loss for dnd a path to another data set, but I
       suspect that is not much used.
+    + Fix several bugs in multiple data set fits using Larch
 
 *** Atoms
     + WebAtoms, https://github.com/bruceravel/WebAtoms, also
@@ -37,6 +38,7 @@
     + Handle =:1= and =:2= symbol modifiers in a more robust manner --
       remove the modifier and apply the tabulated shift vector in the
       case of a =:1= group (Thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-December/008914.html][Marcus Fehse]])
+    + Change how default value of postcrit attribute is set.
 
 *** Hephaestus
     + Added P K, S K, Cl K, Ag L3, and Pb L3 standards contributed by
