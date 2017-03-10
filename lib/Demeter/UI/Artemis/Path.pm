@@ -177,7 +177,7 @@ sub new {
   EVT_TEXT($this, $this->{pp_n}, sub{ verify_n(@_) });
   $this->{pp_n}->{was} = q{};
   $vbox -> Add($gbs, 2, wxGROW|wxTOP|wxBOTTOM, 10);
-  $this->{pp_n} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
+  #$this->{pp_n} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9. ]) ) );
   my $last = q{label}; # fourth
   #$last = 'dphase' if ($this->{datapage}->{data}->co->default('artemis', 'offer_dphase'));
   foreach my $k (qw(n s02 e0 delr sigma2 ei third fourth dphase)) {
@@ -370,7 +370,7 @@ sub OnPPClick {
 sub verify_n {
   my ($pathpage, $event) = @_;
   my $value = $pathpage->{pp_n}->GetValue;
-  if (looks_like_number($value)) {
+  if (looks_like_number($value) or ($value =~ m{\A\s*\z})) {
     $pathpage->{pp_n}->{was} = $value;
     $pathpage->{datapage}->status(q{});
   } else {
@@ -552,7 +552,7 @@ sub include_label {
 
   $self->Rename($name);
   my $label = $self->{path}->label;
-  ($label = sprintf("((( %s )))", $label)) if not $inc;
+  ($label = sprintf("--( %s )--", $label)) if not $inc;
   $self->{datapage}->{pathlist}->SetPageText($which, $label);
   $self->{datapage}->{pathlist}->{LIST}->Check($which, $check_state);
 };
@@ -597,7 +597,7 @@ sub Rename {
     $self->{path}->label($newname);
   };
   my $label = $newname;
-  ($label = sprintf("((( %s )))", $label)) if not $included;
+  ($label = sprintf("--( %s )--", $label)) if not $included;
   $self->{idlabel} -> SetLabel($label);
 };
 
