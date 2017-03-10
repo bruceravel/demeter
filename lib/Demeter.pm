@@ -54,7 +54,7 @@ BEGIN {
       $ENV{DEMETER_BACKEND} = 'larch';
       eval "use Larch";
       if ($@) {
-	print STDOUT " -- falling back to Ifeffit\n";
+	#print STDOUT " -- falling back to Ifeffit\n";
 	$ENV{DEMETER_BACKEND} = 'ifeffit';
 	eval "use Ifeffit qw(ifeffit);"
       };
