@@ -473,7 +473,7 @@ for the major isotopes.
 
 
 **General data**
-    Swiped from http://edu.kde.org/kalzium/
+    Swiped from https://edu.kde.org/kalzium/
 **Mossbauer data**
     List of Mossbauer active isotopes is from http://mossbauer.org,
     which used to be a site about Mossbauer spectroscopy but now seems 

@@ -150,7 +150,7 @@ Preprocessing column data on the fly
 You may have some reason to do a bit of additional processing of the
 columns in the data file.  As an example, the `data handling section
 of the Ifeffit FAQ
-<http://cars9.uchicago.edu/iffwiki/FAQ/Data_Handling>`__ explains how
+<http://cars9.uchicago.edu/ifeffit/FAQ/Data_Handling>`__ explains how
 to import data from the Ferrel Lytle database which were recorded as a
 function of motor position for the monochromator angle.  For data like
 thse, it is necessary to convert motor position to energy using some

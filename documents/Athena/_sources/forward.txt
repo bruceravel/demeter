@@ -1,7 +1,7 @@
 ..
    Athena document is copyright 2016 Bruce Ravel and released under
    The Creative Commons Attribution-ShareAlike License
-   http://creativecommons.org/licenses/by-sa/3.0/
+   https://creativecommons.org/licenses/by-sa/3.0/
 
 Forward
 =======
@@ -147,11 +147,11 @@ The following great software tools were used to create this document:
   simply wonderful `Emacs Code Browser
   <http://ecb.sourceforge.net/>`__
 
-- The `pybtex <http://pybtex.org/>`_ bibliography processor for
+- The `pybtex <https://pybtex.org/>`_ bibliography processor for
   python.
 
 - The `sphinxcontrib-bibtex
-  <https://sphinxcontrib-bibtex.readthedocs.org/en/latest/>`_
+  <https://sphinxcontrib-bibtex.readthedocs.io/en/latest/>`_
   package, which is a Sphinx extension for BibTeX style citations.
 
 - The `sphinxtr <https://github.com/jterrace/sphinxtr>`_ package,
@@ -166,11 +166,11 @@ The following great software tools were used to create this document:
   were made by `Freepik <http://www.freepik.com>`_ from
   http://www.flaticon.com and are available under `the Creative
   Commons Attribution License 3.0
-  <http://creativecommons.org/licenses/by/3.0/>`_.
+  <https://creativecommons.org/licenses/by/3.0/>`_.
   
 Almost all screenshots were made of either :demeter:`athena` or the
 `Gnuplot <http://gnuplot.info/>`__ window on my `KDE desktop
-<http://www.kde.org>`__. The screenshots of spreadsheets made from a
+<https://www.kde.org>`__. The screenshots of spreadsheets made from a
 report (:numref:`Fig. %s <fig-exportexcel>`) and an LCF fit
 report (:numref:`Fig. %s <fig-auclexcel>`) are displayed in
 `LibreOffice <http://www.libreoffice.org>`__.
@@ -179,7 +179,7 @@ report (:numref:`Fig. %s <fig-auclexcel>`) are displayed in
 The images of the `Tholos temple
 <https://en.wikipedia.org/wiki/Delphi#Tholos>`_ on the front page and
 the `Klimt painting Pallas Athena
-<http://www.wikiart.org/en/gustav-klimt/minerva-or-pallas-athena>`_ in
+<https://www.wikiart.org/en/gustav-klimt/minerva-or-pallas-athena>`_ in
 the navigation box of the html document are from
 http://www.artchive.com.
 
@@ -187,9 +187,9 @@ The image used as the :demeter:`athena` program icon is from a
 :quoted:`Terracotta lekythos depicting Athena holding a spear and
 aphlaston`. The image is licensed as `Creative Commons
 Attribution-Share Alike 3.0
-<http://creativecommons.org/licenses/by-sa/3.0>`_ and can be found at
+<https://creativecommons.org/licenses/by-sa/3.0>`_ and can be found at
 `Wikimedia Commons
-<http://commons.wikimedia.org/wiki/File:Brygos_Painter_lekythos_Athena_holding_spear_MET.jpg>`__.
+<https://commons.wikimedia.org/wiki/File:Brygos_Painter_lekythos_Athena_holding_spear_MET.jpg>`__.
 
 
 Data citations
@@ -220,7 +220,7 @@ Data citations
 - The sulphate data shown in `the self-absorption section
   <process/sa.html>`__ were donated by Zhang Ghong and come with
   Daniel Haskel's `Fluo program
-  <http://www.aps.anl.gov/xfd/people/haskel/fluo.html>`__. The copper
+  <http://www.aps.anl.gov/~haskel/fluo.html>`__. The copper
   data shown in `the same section <process/sa.html>`__ come with
   Corwin Booth's `RSXAP program <http://lise.lbl.gov/RSXAP/>`__.
 
@@ -252,7 +252,7 @@ Installing ATHENA on your computer
     procedure is `explained in detail here
     <http://bruceravel.github.io/demeter/documents/SinglePage/packages.html>`_. An
     excellent addendum to those instructions is `found here
-    <https://gist.github.com/3959252>`_.
+    <https://gist.github.com/waveform80/3959252>`_.
 **Windows**
     Follow the links to `the Windows instructions on the Demeter
     homepage <http://bruceravel.github.io/demeter/#windows>`__ to download the
@@ -272,7 +272,7 @@ Building this document from source
 
 The source files and all images files for this document can be
 downloaded using Git. To grab the source, you will need a `Git
-client <http://git-scm.com/>`__ on your computer. This command checks a
+client <https://git-scm.com/>`__ on your computer. This command checks a
 copy of the source out and downloads it onto your computer:
 
 .. code-block:: bash
@@ -313,11 +313,11 @@ You can check the version of :program:`Sphinx` with this command
 
 You will also need to install the following python packages
 
-#. The `pybtex <http://pybtex.org/>`_ bibliography processor for
+#. The `pybtex <https://pybtex.org/>`_ bibliography processor for
    python.
    
 #. The `sphinxcontrib-bibtex
-   <https://sphinxcontrib-bibtex.readthedocs.org/en/latest/>`_
+   <https://sphinxcontrib-bibtex.readthedocs.io/en/latest/>`_
    package, which is Sphinx extension for BibTeX style citations.
 
 These can be installed at the command line by

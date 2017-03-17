@@ -30,13 +30,13 @@ Macintosh OSX
 
 Frank Schima and Joe Fowler have performed yeoman's duty by making
 Demeter and its tool chain available on `MacPorts
-<http://www.macports.org/>`_.
+<https://www.macports.org/>`_.
 
-The Macintosh package uses `MacPorts <http://www.macports.org/>`_ and
+The Macintosh package uses `MacPorts <https://www.macports.org/>`_ and
 may lag a bit behind the :demeter:`demeter` source code.
 
 #. **Carefully** follow the steps to install Macports at
-   http://www.macports.org/install.php.
+   https://www.macports.org/install.php.
 
 #. Open a new Terminal window and type the following:
 

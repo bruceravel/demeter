@@ -245,7 +245,7 @@ Algorithm references
 **Fluo algorithm**
     The program documentation for Fluo can be found at Dani's web site
     and includes the mathematical derivation:
-    http://www.aps.anl.gov/xfd/people/haskel/fluo.html
+    http://www.aps.anl.gov/~haskel/fluo.html
 
 **Booth Algorithm**
     .. bibliography:: ../athena.bib

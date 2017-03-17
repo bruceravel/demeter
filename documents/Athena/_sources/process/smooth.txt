@@ -33,7 +33,7 @@ is set using the number selection control used to set the kernel size
 of the other two options..
 
 A `Savitsky-Golay filter
-<http://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_smoothing_filter>`__.
+<https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_smoothing_filter>`__.
 is available when using :demeter:`larch`, but not with
 :demeter:`ifeffit`.
 

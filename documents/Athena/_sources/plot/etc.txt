@@ -229,7 +229,7 @@ XKCD-style plots
 ----------------
 
 :demeter:`athena` can make plots in a style that resembles the famous
-`XKCD comic <http://xkcd.com/>`__.
+`XKCD comic <https://xkcd.com/>`__.
 
 To make use of this most essential feature, you should first download
 and install the `Humor-Sans

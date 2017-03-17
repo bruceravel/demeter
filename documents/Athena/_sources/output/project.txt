@@ -90,7 +90,7 @@ are in the form written out by perl's `Data::Dumper
 :demeter:`athena`'s internal data structures into perl code.  When the
 project file is imported, these lines of perl code are
 evaluated. (This evaluation is performed in a `Safe
-<https://metacpan.org/module/Safe>`__ compartment, i.e. a memory space
+<https://metacpan.org/pod/Safe>`__ compartment, i.e. a memory space
 with restricted access to perl's system functionality. This provides a
 certain level of protection against project files constructed with
 malicious intent.)
