@@ -25,13 +25,13 @@ Shouldn't it then be sufficient just to measure that short data range?
 In a certain sense, the answer to that question might be
 :quoted:`yes`.  If the whole purpose of the measurement is to be a
 fingerprinting exercise |nd| is this sample FeS\ :sub:`2` or is it
-something else |nd| then the data measured over that very short might
-might be adequate.  However, XANES data are used for lots of things
-other than mere fingerprinting.
+something else?  |nd| then the data measured over that very short
+energy might might be adequate.  However, XANES data are used for lots
+of things other than mere fingerprinting.
 
 Any quantitative interpretation of the XANES data, for example `linear
 combination fitting <../analysis/lcf.html>`__ or `principle
-compponents analysis <../analysis/pca.html>`__, requires that the data
+components analysis <../analysis/pca.html>`__, requires that the data
 be normalized in a sensible, defensible, reproducible manner.  Without
 access to the full data range, it is very difficult to a good job of
 normalizing the short-range XANES data.
