@@ -293,6 +293,32 @@ sub apply {
   };
 
   Demeter->co->set_default($parent, $param, $value);
+  if ($type eq 'boolean') {
+    $self->{Value}   -> SetLabel(Demeter->truefalse( Demeter->co->default($parent, $param) ));
+
+  } elsif ($type eq 'color') {
+    my $color;
+    my $this = Demeter->co->default($parent, $param);
+    if ($this =~ m{\A\#}) {
+      my $col = Wx::Colour->new($this);
+      $self->{Value} -> SetBackgroundColour( $col );
+      $color = $col;
+    } else {
+      $self->{Value} -> SetBackgroundColour( $cdb->Find($this) );
+      $color = $cdb->Find($this);
+    };
+
+    $this = Demeter->co->demeter($parent, $param);
+    if ($this =~ m{\A\#}) {
+      my $col = Wx::Colour->new($this);
+      $self->{Default}->SetBackgroundColour( $col );
+    } else {
+      $self->{Default}->SetBackgroundColour( $cdb->Find($this) );
+    };
+
+  } else {
+    $self->{Value} -> SetLabel(Demeter->co->default($parent, $param));
+  };
   Demeter->co->write_ini if $save;
   $self->$callback($parent, $param, $value, $save);
 };

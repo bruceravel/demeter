@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4. Normalization and background removal &mdash; Athena 0.9.26 documentation</title>
+    <title>4.6. Data measured over a very short energy range &mdash; Athena 0.9.26 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -25,8 +25,9 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
     <link rel="top" title="Athena 0.9.26 documentation" href="../index.html" />
-    <link rel="next" title="4.1. Normalization" href="norm.html" />
-    <link rel="prev" title="3.5. Preprocessing data" href="../import/preproc.html" />
+    <link rel="up" title="4. Normalization and background removal" href="index.html" />
+    <link rel="next" title="5. Plotting Your Data" href="../plot/index.html" />
+    <link rel="prev" title="4.5. Energy-dependent normalization" href="ednorm.html" />
 
     <link rel="stylesheet" type="text/css" href="../_static/demeter.css" />
     <link rel="stylesheet" type="text/css" href="../_static/keys.css" />
@@ -38,12 +39,13 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="norm.html" title="4.1. Normalization"
+          <a href="../plot/index.html" title="5. Plotting Your Data"
              accesskey="N">next</a></li>
         <li class="right" >
-          <a href="../import/preproc.html" title="3.5. Preprocessing data"
+          <a href="ednorm.html" title="4.5. Energy-dependent normalization"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.26 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.26 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">4. Normalization and background removal</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -52,53 +54,70 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="normalization-and-background-removal">
-<span id="bkg-chapter"></span><h1>4. Normalization and background removal<a class="headerlink" href="#normalization-and-background-removal" title="Permalink to this headline">¶</a></h1>
-<p>The primary function of <font size=-1 color="#8C4112">ATHENA</font> is to import and process XAS
-data. In the broadest sense, this task takes three steps:</p>
-<ul class="simple">
-<li>Import raw data and convert it to μ(E).</li>
-<li>Normalize the data so that the measurement is independent of the
-details of the sample or the detector setup.</li>
-<li>Determine the background function and subtract it from the data to
-make χ(k).</li>
-</ul>
-<p>Of course, there are many other details, such as calibration,
-alignment, deglitching, and so on. Those will be discussed in detail
-in later sections of the document. In this section, we will cover the
-details of the normalization algorithm and the <font size=-1 color="#8C4112">AUTOBK</font>
-background removal algorithm.  Special attention will be payed to the
-most important background removal parameters.</p>
-<p>For many measured μ(E) spectra, <font size=-1 color="#8C4112">ATHENA</font> will do a good
-job of normalizing data and removing the background using its default
-parameters. In other situations – noisy data, data with large white
-lines, data which terminate in the appearance of another edge – user
-intervention is required. for those situations it is important that
-you understand well how the various parameters in the background
-removal section of the main window affect the data.</p>
-<hr class="docutils" />
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="norm.html">4.1. Normalization</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="norm.html#the-normalization-algorithm">4.1.1. The normalization algorithm</a></li>
-<li class="toctree-l2"><a class="reference internal" href="norm.html#the-flattening-algorithm">4.1.2. The flattening algorithm</a></li>
-<li class="toctree-l2"><a class="reference internal" href="norm.html#getting-the-post-edge-right">4.1.3. Getting the post-edge right</a></li>
-<li class="toctree-l2"><a class="reference internal" href="norm.html#getting-the-pre-edge-right">4.1.4. Getting the pre-edge right</a></li>
-<li class="toctree-l2"><a class="reference internal" href="norm.html#measuring-and-normalizing-xanes-data">4.1.5. Measuring and normalizing XANES data</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="rbkg.html">4.2. The AUTOBK Algorithm and the Rbkg Parameter</a></li>
-<li class="toctree-l1"><a class="reference internal" href="kweight.html">4.3. Spline clamps and k-weight in background removal</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="kweight.html#spline-clamps">4.3.1. Spline clamps</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kweight.html#the-effect-of-k-weight-on-background-removal">4.3.2. The effect of k-weight on background removal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kweight.html#the-interaction-between-spline-clamps-and-k-weight">4.3.3. The interaction between spline clamps and k-weight</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="range.html">4.4. Spline range in background removal</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ednorm.html">4.5. Energy-dependent normalization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="short.html">4.6. Data measured over a very short energy range</a></li>
-</ul>
+  <div class="section" id="data-measured-over-a-very-short-energy-range">
+<span id="short-sec"></span><h1>4.6. Data measured over a very short energy range<a class="headerlink" href="#data-measured-over-a-very-short-energy-range" title="Permalink to this headline">¶</a></h1>
+<p>When measuring XANES data, the experimenter might be tempted to
+severely restrict the range of the measurement to a narrow span just
+around the edge energy.  For example, the short span of the red trace
+in <a class="reference internal" href="#fig-bkg-short"><span>Fig. 4.29</span></a> includes the three small peaks in
+the edge that positively identify the species as FeS<sub>2</sub>.
+Shouldn't it then be sufficient just to measure that short data range?</p>
+<div class="figure align-center" id="id1">
+<span id="fig-bkg-short"></span><a class="reference external image-reference" href="../_images/bkg_short.png"><img alt="../_images/bkg_short.png" src="../_images/bkg_short.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 4.29 </span><span class="caption-text">Data on FeS<sub>2</sub> truncated to the region just around the edge.</span></p>
 </div>
+<p>In a certain sense, the answer to that question might be
+“yes”.  If the whole purpose of the measurement is to be a
+fingerprinting exercise – is this sample FeS<sub>2</sub> or is it
+something else – then the data measured over that very short might
+might be adequate.  However, XANES data are used for lots of things
+other than mere fingerprinting.</p>
+<p>Any quantitative interpretation of the XANES data, for example <a class="reference external" href="../analysis/lcf.html">linear
+combination fitting</a> or <a class="reference external" href="../analysis/pca.html">principle
+compponents analysis</a>, requires that the data
+be normalized in a sensible, defensible, reproducible manner.  Without
+access to the full data range, it is very difficult to a good job of
+normalizing the short-range XANES data.</p>
+<p>This is easy to see with this example.  Because the data are truncated
+somewhere in the midst of the first big oscillation after the edge, it
+is basically impossible to know where the <a class="reference external" href="../bkg/norm.html#the-normalization-algorithm">post-edge line</a> should go.  There
+simply isn't enough data to establish the trend that the post-edge
+line is designed to follow.  Without that information, the value of
+the edge step cannot be determined accurately, possibly resulting in a
+very large systematic uncertainty in the edge-step normalization
+parameter.  This large uncertainty would then have a significant
+impact on any quantitative analysis attempted using these data.</p>
+<p>Severely restricting the pre-edge region can have a similar impact on
+the normalization.  Although this example has enough of the pre-edge
+region to do a reasonable job with the <a class="reference external" href="../bkg/norm.html#the-normalization-algorithm">pre-edge line</a>, that would not be
+true if it were much shorter.</p>
+<p>It is for this reason that <strong>good experimental practice</strong> is to
+measure a reasonable amount of data both before and after the edge.
+Even for a XANES study, it is a good idea to measure at least 100 eV
+before the edge and at least 300 eV after.  If you are very concerned
+with time, you can consider measuring very sparsely outside the edge
+region.  With even as few as 10 points in the post-edge region, it
+becomes possible to normalize the red trace in <a class="reference internal" href="#fig-bkg-short"><span>Fig. 4.29</span></a> in a reliable fashion.</p>
+<p>Note, though, that the advice on data range depends on the situation.
+In <a class="reference internal" href="#fig-bkg-ok"><span>Fig. 4.30</span></a>, we see oxygen K-edge data measured
+on CaTiO<sub>3</sub>.  The EXAFS is often weak in data measured on low
+energy edges.  In this case a reasonable normalization is possible
+even though the data only extend about 90 eV above the edge.  Even so,
+another few widely-spaced data points would have made it much easier
+to reliable process these data.</p>
+<div class="figure align-center" id="id2">
+<span id="fig-bkg-ok"></span><a class="reference external image-reference" href="../_images/bkg_ok.png"><img alt="../_images/bkg_ok.png" src="../_images/bkg_ok.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 4.30 </span><span class="caption-text">Oxygen K-edge Data on CaTiO<sub>3</sub> measured at a soft x-ray
+beamline.</span></p>
+</div>
+<p>In some situations, the MBACK algorithm might help normalize short
+data in a sensible manner.  But even that algorithm is not completely
+stable with respect to such a short data range.  MBACK is <a class="reference external" href="http://xraypy.github.io/xraylarch/xafs/preedge.html#the-mback-algorithm">implemented
+in Larch</a>
+but is not at this time available in <font size=-1 color="#8C4112">ATHENA</font>.</p>
+<ul class="simple" id="bibtex-bibliography-bkg/short-0">
+<li>Tsu-Chien Weng, Geoffrey&nbsp;S. Waldo, and James&nbsp;E. Penner-Hahn. A method for normalization of X-ray absorption spectra. <em>Journal of Synchrotron Radiation</em>, 12(4):506–510, Jul 2005. <a class="reference external" href="https://doi.org/10.1107/S0909049504034193">doi:10.1107/S0909049504034193</a>.</li>
+</ul>
 
 <br>
 
@@ -125,13 +144,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../forward.html">1. Forward</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">2. Introduction to ATHENA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../import/index.html">3. Data import</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">4. Normalization and background removal</a><ul>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">4. Normalization and background removal</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="norm.html">4.1. Normalization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rbkg.html">4.2. The AUTOBK Algorithm and the Rbkg Parameter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kweight.html">4.3. Spline clamps and k-weight in background removal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="range.html">4.4. Spline range in background removal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ednorm.html">4.5. Energy-dependent normalization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="short.html">4.6. Data measured over a very short energy range</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">4.6. Data measured over a very short energy range</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../plot/index.html">5. Plotting Your Data</a></li>
@@ -184,7 +203,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/bkg/index.txt"
+      <li><a href="../_sources/bkg/short.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -196,12 +215,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="norm.html" title="4.1. Normalization"
+          <a href="../plot/index.html" title="5. Plotting Your Data"
              >next</a></li>
         <li class="right" >
-          <a href="../import/preproc.html" title="3.5. Preprocessing data"
+          <a href="ednorm.html" title="4.5. Energy-dependent normalization"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.26 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.26 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >4. Normalization and background removal</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

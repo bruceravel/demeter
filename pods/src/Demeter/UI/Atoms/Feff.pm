@@ -545,6 +545,7 @@ sub fill_intrp_page {
   my $which = Demeter->co->default('pathfinder', 'rank');
   $feff->rank_paths($which);
   foreach my $p (@{ $feff->pathlist }) {
+    #Demeter->pjoin($i, $p->get_rank($which), $feff->postcrit);
     if ($p->get_rank($which) > $feff->postcrit) {
       $p->pathfinder_index($i);
       my $idx = $self->{parent}->{Paths}->{paths}->InsertImageStringItem($i, sprintf("%3d", $i), 0);

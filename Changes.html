@@ -114,6 +114,7 @@ sure that standard is removed from the list of marked groups.
 (Thanks to Sinead Rowe)</li>
 <li>Fix a problem processing keV data when using Larch (Thanks to
 <a href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-November/008880.html">Juan de la Figuera</a>) (See issue #42)</li>
+<li>Bug fix for the SSRLA filetype plugin (Thanks to Simon Bare)</li>
 </ul>
 </div>
 </div>
@@ -127,6 +128,11 @@ sure that standard is removed from the list of marked groups.
 <li>disable C-left on path list, which was used (I think) to clone
 paths.  This is a loss for dnd a path to another data set, but I
 suspect that is not much used.</li>
+<li>Fix several bugs in multiple data set fits using Larch</li>
+<li>Change the symbol for an excluded path from <a href="https://en.wikipedia.org/wiki/Triple_parentheses">three parens
+(((path)))</a> to <code>--(path)--</code></li>
+<li>Improved validator for N path parameter &#x2013; it can now be blank.
+Also selecting all then typing works sensibly</li>
 </ul>
 </div>
 </div>
@@ -135,12 +141,14 @@ suspect that is not much used.</li>
 <h4 id="orgheadline3"><span class="section-number-4">1.1.3</span> Atoms</h4>
 <div class="outline-text-4" id="text-1-1-3">
 <ul class="org-ul">
-<li>WebAtoms, <a href="https://github.com/bruceravel/WebAtoms">https://github.com/bruceravel/WebAtoms</a></li>
+<li>WebAtoms, <a href="https://github.com/bruceravel/WebAtoms">https://github.com/bruceravel/WebAtoms</a>, also
+<a href="http://millenia.cars.aps.anl.gov/webatoms">http://millenia.cars.aps.anl.gov/webatoms</a></li>
 <li>Lots of fixes for problems uncovered while working on WebAtoms</li>
 <li>Set DEMETER_NO_BACKEND = 1 when using CLI interface</li>
 <li>Handle <code>:1</code> and <code>:2</code> symbol modifiers in a more robust manner &#x2013;
 remove the modifier and apply the tabulated shift vector in the
 case of a <code>:1</code> group (Thanks to <a href="http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-December/008914.html">Marcus Fehse</a>)</li>
+<li>Change how default value of postcrit attribute is set.</li>
 </ul>
 </div>
 </div>
@@ -183,7 +191,8 @@ testing with Larch is very important.</li>
 <h4 id="orgheadline6"><span class="section-number-4">1.1.6</span> Windows</h4>
 <div class="outline-text-4" id="text-1-1-6">
 <ul class="org-ul">
-<li>Upgrade to Strawberry with perl 5.24</li>
+<li>Upgrade to Strawberry with perl 5.24, upgrade to 64 bit Gnuplot
+5.0.4</li>
 </ul>
 </div>
 </div>

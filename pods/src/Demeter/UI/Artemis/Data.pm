@@ -1527,8 +1527,8 @@ sub set_degens {
 
 ## how = 0 : each path this feff
 ## how = 1 : each path this data
-## how = 2 : each path each data   (not yet)
-## how = 3 : marked paths          (not yet)
+## how = 2 : each path each data
+## how = 3 : marked paths
 sub add_parameters {
   my ($self, $param, $me, $how, $silent) = @_;
   my $displayed_path = $self->{pathlist}->GetCurrentPage;
@@ -1558,6 +1558,7 @@ sub add_parameters {
     };
     $which = "the marked paths";
   };
+  Demeter::UI::Artemis::modified(1);
   $self->status("Set $param to \"$me\" for $which." ) if not $silent;
 };
 
@@ -1582,6 +1583,7 @@ sub export_pp {
 	       'each path in this data set',
 	       'each path in each data set',
 	       'the marked paths')[$how];
+  Demeter::UI::Artemis::modified(1);
   $self->status("Exported these path parameters to $which." );
 };
 

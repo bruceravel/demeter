@@ -123,7 +123,9 @@ sub fetch_scalar {
       $param = "f1f2.$param";
 
     } elsif (Demeter->mo->fit) { # a fit is happenening, this is a Parameter, need its value
-      $param = $param.'.value';
+      if ($param !~ m{\.(?:value|stderr)\z}) {
+	$param = $param.'.value';
+      };
     }
     $param = Larch::get_larch_scalar($param);
     if (not defined $param) {
