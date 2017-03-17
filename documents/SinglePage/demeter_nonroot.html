@@ -384,10 +384,10 @@ $ rm -fr ~/perl5/
 terminal to use by default.  It will query a <strong class="program">gnuplot</strong>
 session to see if either the wxt or qt terminal types is available.
 If not, it will fall back to the X11 terminal.</p>
-<p>That said, the X11 terminal is rather ugly.  Because <a class="reference external" href="https://groups.google.com/forum/#!topic/comp.graphics.apps.gnuplot/kfYtd2pwrW0">Debian/Ubuntu
-apparently dropped support for wxt</a>
-you might want to recompile <strong class="program">gnuplot</strong> from source.  User
-Patrick Browne offers this recipe:</p>
+<p>That said, the X11 terminal is rather ugly.  Because Debian/Ubuntu
+support for the wxt terminal may be spotty, you might want to
+recompile <strong class="program">gnuplot</strong> from source.  User Patrick Browne offers
+this recipe:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>~&gt; sudo apt-get install libwxgtk2.8-dev libgtk2.0-dev
 ~&gt; wget <span class="s2">&quot;http://downloads.sourceforge.net/project/gnuplot/gnuplot/5.0.4/gnuplot-5.0.4.tar.gz&quot;</span>
 ~&gt; tar xzf gnuplot-5.0.4.tar.gz  <span class="c1">## or whatever version number is current</span>

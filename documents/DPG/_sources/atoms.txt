@@ -48,7 +48,8 @@ attribute must be used to specify a CIF file.
     my $atoms = Demeter::Atoms->new(cif => "Fe2N_ICSD.cif");
     print $atoms->Write("feff6");
 
-The `STAR::Parser <http://pdb.sdsc.edu/STAR/index.html>`__ module is
+The `STAR::Parser
+<http://www.iucr.org/resources/cif/software/starparser>`__ module is
 used to interpret the CIF file. This is a quirky bit of code and my
 understanding of it is not so deep. There are probably examples of CIF
 files that do not get imported properly, but it seems to work in most

@@ -15,11 +15,6 @@ people?  Ever thought about doing something to contribute to the
 community?  This document offers some suggestion for things you can do
 to help the :demeter:`ifeffit` community.
 
-This page was inspired by `these two
-<http://www.softwarequalityconnection.com/2012/03/14-ways-to-contribute-to-open-source-without-being-a-programming-genius-or-a-rock-star/>`_
-`excellent pages
-<http://www.berkshirelug.org/mediawiki/index.php/ContributingToFOSS>`_
-about contributing to open source software projects.
 
 Day to day contributions
 ------------------------

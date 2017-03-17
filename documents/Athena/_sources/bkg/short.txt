@@ -26,8 +26,8 @@ In a certain sense, the answer to that question might be
 :quoted:`yes`.  If the whole purpose of the measurement is to be a
 fingerprinting exercise |nd| is this sample FeS\ :sub:`2` or is it
 something else?  |nd| then the data measured over that very short
-energy might might be adequate.  However, XANES data are used for lots
-of things other than mere fingerprinting.
+energy might be adequate.  However, XANES data are used for lots of
+things other than mere fingerprinting.
 
 Any quantitative interpretation of the XANES data, for example `linear
 combination fitting <../analysis/lcf.html>`__ or `principle

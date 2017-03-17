@@ -226,10 +226,11 @@ Data citations
 
 - Data on a hydrated uranyl phosphate that appear in several places
   are the U L\ :sub:`III` standard used by `my former research group
-  <http://www.mesg.anl.gov/>`__. Spectra from this standard have
-  appeared in many publications from that group. The U\ :sub:`3`\ O\
-  :sub:`8` sample shown in the `the deglitching section
-  <process/deg.html>`__ are from the group's standards library.
+  <http://www.bio.anl.gov/research/subsurface-science/>`__. Spectra
+  from this standard have appeared in many publications from that
+  group. The U\ :sub:`3`\ O\ :sub:`8` sample shown in the `the
+  deglitching section <process/deg.html>`__ are from the group's
+  standards library.
 
 - Tin edge data which appear in several places are from
    

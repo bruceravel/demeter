@@ -62,7 +62,7 @@ you are unable to properly correct, you can still analyze your EXAFS
 data for bond lengths.
 
 `Here is my presentation on self-absorption
-corrections. <https://speakerdeck.com/bruceravel/understanding-self-absorption-in-%0Afluorescence-xas>`__
+corrections. <https://speakerdeck.com/bruceravel/understanding-self-absorption-in-fluorescence-xas>`__
 There I discuss the applicability of this tool in more detail. You will
 find that, in general, the self-absorption tool is very hard to apply to
 real data. There is quite a bit of useful information on this topic at

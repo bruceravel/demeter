@@ -363,11 +363,10 @@ terminal to use by default.  It will query a :program:`gnuplot`
 session to see if either the wxt or qt terminal types is available.
 If not, it will fall back to the X11 terminal.
 
-That said, the X11 terminal is rather ugly.  Because `Debian/Ubuntu
-apparently dropped support for wxt
-<https://groups.google.com/forum/#!topic/comp.graphics.apps.gnuplot/kfYtd2pwrW0>`_
-you might want to recompile :program:`gnuplot` from source.  User
-Patrick Browne offers this recipe:
+That said, the X11 terminal is rather ugly.  Because Debian/Ubuntu
+support for the wxt terminal may be spotty, you might want to
+recompile :program:`gnuplot` from source.  User Patrick Browne offers
+this recipe:
 
 .. code-block:: bash
 

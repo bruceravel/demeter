@@ -58,7 +58,7 @@ pragmas.  That is such an inherently good idea that :demeter:`demeter`
 insists upon it.  Exporting these two perl pragmata is accomplished in
 the same manner as for `Modern::Perl
 <https://metacpan.org/pod/Modern::Perl>`_ (see `lines 38 and 39
-<https://metacpan.org/source/CHROMATIC/Modern-Perl-1.20150127/lib/Modern/Perl.pm#L38>`_).
+<https://metacpan.org/source/CHROMATIC/Modern-Perl-1.20170117/lib/Modern/Perl.pm#L36>`_).
 
 ---------------------
 

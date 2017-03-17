@@ -103,9 +103,9 @@ workshops post PDF or PowerPoint files for the lectures given at the
 workshop. Go ahead and poke around http://xafs.org |nd| many of your
 questions will be answered.
 
-In November 2011 the Diamond Light Source invited me to do `an XAS
+In November 2011, the Diamond Light Source invited me to do `an XAS
 training course
-<http://www.diamond.ac.uk/Beamlines/Spectroscopy/Techniques/XAS.html>`_.
+http://www.diamond.ac.uk/Beamlines/Spectroscopy/Techniques/XAS.html>`_.
 All of the lectures were recorded as was the computer desktop during
 all lectures and demonstrations.  The Diamond technical staff did a
 great job editing this metrial into several hours of streaming video.

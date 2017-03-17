@@ -683,12 +683,13 @@ Credits
 
 - The pictures used on the buttons were cropped from images I found
   using Google. The picture of the ion chamber is from the Advanced
-  Designed Consulting web site. Their ion chambers are quite
-  nice. The edge finder icon was swiped from the find.png icon in the
-  kid's icon theme for KDE. The line finder icon is from a web page
-  by the Alberta Synchrotron Institute and depicts a fluorescence map
-  of some rock.  The documentation icon was found under a Creative
-  Commons license at http://battellemedia.com/archives/001952.php
+  Designed Consulting web site. Their ion chambers are quite nice. The
+  edge finder icon was swiped from the find.png icon in the kid's icon
+  theme for KDE. The line finder icon is from a web page by the
+  Alberta Synchrotron Institute and depicts a fluorescence map of some
+  rock.  The documentation icon was found under a Creative Commons
+  license at http://battellemedia.com (but is no longer available at
+  that site).
 
 - The formulas utility owes much to Gerry Roe, who pointed out a bug,
   and Erik Gullikson, whose similar utility on the web set me
@@ -735,7 +736,7 @@ The absorption data resources all have literature references.
        :list: bullet
 
     The data is available at
-    http://www-cxro.lbl.gov/optical_constants.
+    http://henke.lbl.gov/optical_constants/
 
 **The Chantler tables**
     .. bibliography:: athena.bib
