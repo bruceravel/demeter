@@ -45,3 +45,4 @@ removal section of the main window affect the data.
    kweight
    range
    ednorm
+   short
