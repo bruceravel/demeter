@@ -390,7 +390,7 @@ sub ACTION_org2html {
     print "org2html not found, not converting org pages (see https://github.com/fniessen/orgmk)\n";
     return;
   };
-  print "copying stylesheets\n";
+  print "copying stylesheets and converting org to html\n";
   copy(File::Spec->catfile('css','orgstyle.css'), File::Spec->catfile($ghpages, 'stylesheets', 'orgstyle.css'));
   copy(File::Spec->catfile('css','orgtocstyle.css'), File::Spec->catfile($ghpages, 'stylesheets', 'orgtocstyle.css'));
   if (not is_older("todo.org", File::Spec->catfile($ghpages, 'todo.html'))) {
@@ -412,6 +412,7 @@ my $old_cpan = qr{http://search\.cpan\.org/perldoc\?};
 my $new_cpan = q{https://metacpan.org/pod/};
 sub ACTION_doctree {
   my $self = shift;
+  print "making project docs\n";
   my $LIB  = 'lib'; #File::Spec->catfile('..', '..', '..', 'lib');
   my $BIN  = 'bin'; #File::Spec->catfile('..', '..', '..', 'bin');
   my @list = (qw(denv dhephaestus datoms dfeff dfeffit rdfit dlsprj standards dathena dartemis));
@@ -422,9 +423,10 @@ sub ACTION_doctree {
 				 outroot  => File::Spec->canonpath(File::Spec->catfile($ghpages, 'pods')),
 				 libroot  => [$LIB, $BIN],
 				 forcegen => 1,
+				 index    => 0,
 				 title    => 'Demeter',
 				 desc     => "Perl tools for X-ray Absorption Spectroscopy",
-				 except   => [qr(Savitzky), qr(ToolTemplate), qr(XDI), qr(PCA_new), qr(Larch_inline)],
+				 except   => [qr(Savitzky), qr(ToolTemplate), qr(XDI), qr(PCA_new), qr(Larch_inline), qr(LarchServer)],
 				);
   $pd->gen();
   foreach my $d (@list) {
