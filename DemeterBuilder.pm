@@ -70,6 +70,12 @@ sub ACTION_test {
   print "NOTE: Forcing use of Ifeffit in testing.\n";
   $self->SUPER::ACTION_test;
 };
+sub ACTION_ltest {
+  my $self = shift;
+  $ENV{DEMETER_FORCE_IFEFFIT} = 0;
+  print "NOTE: Forcing use of Larch in testing.\n";
+  $self->SUPER::ACTION_test;
+};
 
 sub ACTION_docs {
   1; ## null op
