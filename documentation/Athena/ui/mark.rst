@@ -103,9 +103,9 @@ represent conceptual aspects of strings. Here are a few examples:
 Regular expressions are a large and fascinating topic of study, but
 beyond the scope of this document. Try
 Wikipedia's `excellent article on regular
-expressions <http://en.wikipedia.org/wiki/Regular_expression>`__ for
+expressions <https://en.wikipedia.org/wiki/Regular_expression>`__ for
 more information. `Mastering Regular
-Expressions <http://www.oreilly.com/catalog/regex3/>`__ by Jeffrey
+Expressions <http://shop.oreilly.com/product/9780596528126.do>`__ by Jeffrey
 Freidl is a superb book on the subject.
 
 Any regular expression that works in perl will work for marking groups

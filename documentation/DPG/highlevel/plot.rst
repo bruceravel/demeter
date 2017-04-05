@@ -86,7 +86,7 @@ to hold the attributes of the Plot object. I then pass that array as the
 argument of the ``set`` method of the Plot object. Those attributes
 could be listed as explicit arguments of the ``set`` method. As always
 in perl, `there's more than one way to do
-it <http://en.wikipedia.org/wiki/There's_more_than_one_way_to_do_it>`__.
+it <https://en.wikipedia.org/wiki/There's_more_than_one_way_to_do_it>`__.
 
 
 Normalized data & background

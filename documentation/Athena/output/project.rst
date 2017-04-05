@@ -86,11 +86,11 @@ The :demeter:`athena` project file is designed to be quick and easy
 for :demeter:`athena` to read. Unfortunately, the file format is not
 particularly human-friendly.  Most of the lines of the project file
 are in the form written out by perl's `Data::Dumper
-<http://cpan.uwinnipeg.ca/dist/Data-Dumper>`__ module. This freezes
+<https://metacpan.org/pod/Data::Dumper>`__ module. This freezes
 :demeter:`athena`'s internal data structures into perl code.  When the
 project file is imported, these lines of perl code are
 evaluated. (This evaluation is performed in a `Safe
-<https://metacpan.org/module/Safe>`__ compartment, i.e. a memory space
+<https://metacpan.org/pod/Safe>`__ compartment, i.e. a memory space
 with restricted access to perl's system functionality. This provides a
 certain level of protection against project files constructed with
 malicious intent.)

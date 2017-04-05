@@ -6,7 +6,7 @@ Installing Demeter on the Mac
 =============================
 
 
-The Macintosh package uses `MacPorts <http://www.macports.org/>`_ and
+The Macintosh package uses `MacPorts <https://www.macports.org/>`_ and
 is currently at version 0.9.22.
 
 .. admonition:: Note
@@ -20,7 +20,7 @@ Short instructions
 ------------------
 
 #. **Carefully** follow the steps to install Macports at
-   http://www.macports.org/install.php.
+   https://www.macports.org/install.php.
 
 #. Open a new Terminal window and type the following:
 

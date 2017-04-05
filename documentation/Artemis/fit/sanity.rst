@@ -100,7 +100,7 @@ Disable sanity checks` menu in the Main window.
 As a side note, item 15 is particularly interesting.
 :demeter:`demeter` does a simple lexical analysis on the ensemble of
 math expressions defined on the GDS window, then uses `a formal graph
-theory tool <https://metacpan.org/module/Graph>`__ to develop a graph
+theory tool <https://metacpan.org/pod/Graph>`__ to develop a graph
 depiction of the parameters. Loops (like the first example) and cycles
 (like the second) a trivially evident when the parameters are viewed
 as a formal graph. That was a really fun part of :demeter:`demeter` to

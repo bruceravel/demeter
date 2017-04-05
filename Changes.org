@@ -33,6 +33,10 @@
       (((path)))]] to ~--(path)--~
     + Improved validator for N path parameter -- it can now be blank.
       Also selecting all then typing works sensibly
+    + Put in a more rigorous check for exceeding ~&max_data_sets~ when
+      using Ifeffit.  Simply refuse to import more than that many data
+      sets regardless of ~Include in fit~ settings.  (Thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2017-March/009062.html][Victor
+      Streltsov]])
 
 *** Atoms
     + WebAtoms, https://github.com/bruceravel/WebAtoms, also

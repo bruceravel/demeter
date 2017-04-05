@@ -105,7 +105,7 @@ of a number of structural parameters.
 
 You can find example EXAFS data and a structure from which to build
 the :file:`feff.inp` file at `my XAS Education site
-<https://github.com/bruceravel/XAS-Education/tree/master/Examples/methyltin>`_.
+<https://github.com/bruceravel/XAS-Education/tree/master/Examples/Methyltin>`_.
 Import the |mu| (E) data into :demeter:`athena`.  When you are content
 with the processing of the data, save an :demeter:`athena` project
 file and dive into this example.

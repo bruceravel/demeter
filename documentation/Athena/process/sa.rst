@@ -62,7 +62,7 @@ you are unable to properly correct, you can still analyze your EXAFS
 data for bond lengths.
 
 `Here is my presentation on self-absorption
-corrections. <https://speakerdeck.com/bruceravel/understanding-self-absorption-in-%0Afluorescence-xas>`__
+corrections. <https://speakerdeck.com/bruceravel/understanding-self-absorption-in-fluorescence-xas>`__
 There I discuss the applicability of this tool in more detail. You will
 find that, in general, the self-absorption tool is very hard to apply to
 real data. There is quite a bit of useful information on this topic at
@@ -245,7 +245,7 @@ Algorithm references
 **Fluo algorithm**
     The program documentation for Fluo can be found at Dani's web site
     and includes the mathematical derivation:
-    http://www.aps.anl.gov/xfd/people/haskel/fluo.html
+    http://www.aps.anl.gov/~haskel/fluo.html
 
 **Booth Algorithm**
     .. bibliography:: ../athena.bib

@@ -1,7 +1,7 @@
 ..
    Artemis document is copyright 2016 Bruce Ravel and released under
    The Creative Commons Attribution-ShareAlike License
-   http://creativecommons.org/licenses/by-sa/3.0/
+   https://creativecommons.org/licenses/by-sa/3.0/
 
 
 Forward
@@ -141,11 +141,11 @@ The following great software tools were used to create this document:
   simply wonderful `Emacs Code Browser
   <http://ecb.sourceforge.net/>`__
 
-- The `pybtex <http://pybtex.org/>`_ bibliography processor for
+- The `pybtex <https://pybtex.org/>`_ bibliography processor for
   python.
 
 - The `sphinxcontrib-bibtex
-  <https://sphinxcontrib-bibtex.readthedocs.org/en/latest/>`_
+  <https://sphinxcontrib-bibtex.readthedocs.io/en/latest/>`_
   package, which is Sphinx extension for BibTeX style citations.
 
 - The `sphinxtr <https://github.com/jterrace/sphinxtr>`_ package,
@@ -160,19 +160,19 @@ The following great software tools were used to create this document:
   were made by `Freepik <http://www.freepik.com>`_ from
   http://www.flaticon.com and are available under `the Creative
   Commons Attribution License 3.0
-  <http://creativecommons.org/licenses/by/3.0/>`_.
+  <https://creativecommons.org/licenses/by/3.0/>`_.
   
 Almost all screenshots were made of either :demeter:`artemis` or the
 `Gnuplot <http://gnuplot.info/>`__ window on my `KDE desktop
-<http://www.kde.org>`__. 
+<https://www.kde.org>`__. 
 
 
 The image of `the Temple of Artemis at Jerash, Jordan
-<http://en.wikipedia.org/wiki/Temple_of_Artemis_(Jerash)>`_ is courtesy of
+<https://en.wikipedia.org/wiki/Temple_of_Artemis_(Jerash)>`_ is courtesy of
 by Matthew Marcus.
 
 `The image at the top of the navigation sidebar
-<http://commons.wikimedia.org/wiki/File:Brauron_-_Votive_Relief1.jpg>`_
+<https://commons.wikimedia.org/wiki/File:Brauron_-_Votive_Relief1.jpg>`_
 is a votive relief from the Archaeological Museum of Brauron in
 Brauron, Greece and is in the public domain.  It depicts a family of
 worshippers sacrificing a goat to the goddess Artemis.  Good advice!
@@ -267,7 +267,7 @@ Building this document from source
 
 The source files and all images files for this document can be
 downloaded using Git. To grab the source, you will need an `Git
-client <http://git-scm.com/>`__ on your computer. This command checks a
+client <https://git-scm.com/>`__ on your computer. This command checks a
 copy of the source out and downloads it onto your computer:
 
 ::
@@ -302,11 +302,11 @@ of :program:`sphinx-build`.  Note that Ubuntu 15.04 comes with version
 
 You will also need to install the following python packages
 
-#. The `pybtex <http://pybtex.org/>`_ bibliography processor for
+#. The `pybtex <https://pybtex.org/>`_ bibliography processor for
    python.
    
 #. The `sphinxcontrib-bibtex
-   <https://sphinxcontrib-bibtex.readthedocs.org/en/latest/>`_
+   <https://sphinxcontrib-bibtex.readthedocs.io/en/latest/>`_
    package, which is Sphinx extension for BibTeX style citations.
 
 These can be installed at the command line by

@@ -103,7 +103,7 @@ workshops post PDF or PowerPoint files for the lectures given at the
 workshop. Go ahead and poke around http://xafs.org |nd| many of your
 questions will be answered.
 
-In November 2011 the Diamond Light Source invited me to do `an XAS
+In November 2011, the Diamond Light Source invited me to do `an XAS
 training course
 <http://www.diamond.ac.uk/Beamlines/Spectroscopy/Techniques/XAS.html>`_.
 All of the lectures were recorded as was the computer desktop during
@@ -111,10 +111,10 @@ all lectures and demonstrations.  The Diamond technical staff did a
 great job editing this metrial into several hours of streaming video.
 These are excellent references for using and understanding the
 software.  (`Here is a hint
-<http://support.mozilla.org/en-US/questions/747274>`_ for following
-the Microsoft Media Server (``mms:``) links on that page if you are
-using Linux and Firefox.  Presumably, similar solutions exist for
-other browsers.)
+<https://support.mozilla.org/t5/Firefox/To-make-firefox-handle-mms-protocol-here-is-a-technique-that/m-p/114106>`_
+for following the Microsoft Media Server (``mms:``) links on that page
+if you are using Linux and Firefox.  Presumably, similar solutions
+exist for other browsers.)
 
 These are good overviews of XAS: 
 
@@ -139,14 +139,14 @@ Ifeffit and Demeter software
 ----------------------------
 
 You can clone the :demeter:`demeter` source code at
-http://github.com/bruceravel/demeter.  Links to an installer package
-for Windows are also at http://bruceravel.github.io/demeter, as is
+https://github.com/bruceravel/demeter.  Links to an installer package
+for Windows are also at https://bruceravel.github.io/demeter, as is
 documentation for :demeter:`athena`, :demeter:`artemis`, and
 :demeter:`hephaestus`.
 
 Slide decks for the lectures the I give at XAS training courses can be
 found at https://speakerdeck.com/bruceravel.  Those are all under a
-`Creative Commons <http://creativecommons.org/licenses/by-sa/3.0/>`_
+`Creative Commons <https://creativecommons.org/licenses/by-sa/3.0/>`_
 license, so feel free to download, share, and use ant of the materials
 found there.
 

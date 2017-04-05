@@ -1,7 +1,7 @@
 ..
    Artemis document is copyright 2016 Bruce Ravel and released under
    The Creative Commons Attribution-ShareAlike License
-   http://creativecommons.org/licenses/by-sa/3.0/
+   https://creativecommons.org/licenses/by-sa/3.0/
 
 The main window
 ===============
@@ -220,7 +220,7 @@ The bottom two options tick on or off the :guilabel:`Plot after fit` buttons for
 each data set, which may be useful for a multiple data set fit.
 
 :demeter:`artemis` can make plots in a style that resembles the famous
-`XKCD comic <http://xkcd.com/>`__. To make use of this most essential
+`XKCD comic <https://xkcd.com/>`__. To make use of this most essential
 feature, you should first download and install the `Humor-Sans font
 <http://antiyawn.com/uploads/humorsans.html>`__ onto your computer.
 Once you have installed the font, simply check the

@@ -1211,6 +1211,8 @@ sub OnToolClick {
 };
 sub OnDataRightClick {
   my ($self, $event) = @_;
+  return 0 if (not Demeter::UI::Artemis::Import::_check_number_of_data_sets());
+
   my $dialog = Demeter::UI::Wx::MRU->new($frames{main}, 'athena', "Select a recent Athena project file", "Recent Athena project files");
   $frames{main}->status("There are no recent Athena project files."), return if ($dialog == -1);
   if( $dialog->ShowModal == wxID_CANCEL ) {

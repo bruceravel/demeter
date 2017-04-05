@@ -95,8 +95,23 @@ sub prjrecord {
 ## the "private" functions for specific import chores follow ...
 ##############################################################################################################
 
+sub _check_number_of_data_sets {
+  return 1 if Demeter->is_larch;
+  my $max = Demeter->dd->fetch_scalar('&max_data_sets');
+  my $count = 0;
+  foreach my $k (sort keys(%Demeter::UI::Artemis::frames)) { # sorting will order them in their order in the Data list
+    ++$count if ($k =~ m{\Adata});
+  };
+  ##$rframes->{main}->status(sprintf("%d data sets, %d max", $count, $max));
+  return 1 if ($count < $max);
+  $Demeter::UI::Artemis::frames{main}->status("You may not import more data.  Ifeffit only allows for $max data sets.", 'alert');
+  return 0;
+};
+
+
 sub _prj {
   my ($fname) = @_;
+  return 0 if (not _check_number_of_data_sets());
   my $choice = 1;
   if ($fname =~ m{(\s+<(\d?)>)\z}) {
     $choice = $2;
@@ -213,6 +228,7 @@ sub _feff {
 
 sub _chi {
   my ($fname) = @_;
+  return 0 if (not _check_number_of_data_sets());
   my $file = $fname;
   my ($unidecoded, $deunifile, $original) = (0, qw{}, qw{});
   if (not $fname) {

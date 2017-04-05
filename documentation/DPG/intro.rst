@@ -115,7 +115,7 @@ crossed my mind.
 The technology behind Demeter
 -----------------------------
 
-:demeter:`demeter` uses `perl <http://perl.org>`__. This is, I
+:demeter:`demeter` uses `perl <https://perl.org>`__. This is, I
 suppose, an unsexy choice these days.  All the cool kids, after all,
 use python.  I like perl.  I can think in perl. And I can code quickly
 and fluently in perl.  What's more, perl has `CPAN
@@ -133,7 +133,7 @@ Moose. This left me with about 2/3 as many lines of code and a code
 base that was more robust and more featureful. Neat-o!
 
 For the nerdly, Moose is an implementation of a `meta-object
-protocol <http://en.wikipedia.com/wiki/Metaobject>`__. This interesting
+protocol <https://en.wikipedia.com/wiki/Metaobject>`__. This interesting
 and powerful tool allows for the semantics of the object system to be
 modified at either compile or run time. The problem of adding features
 and functionality to the object system is therefore pushed downstream

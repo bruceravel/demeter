@@ -22,7 +22,7 @@ hosted on a web server and accessed through your browser.  It is
 **To run WebAtoms locally**
 
   #. Clone a copy from the GitHub site or `download the latest zip file
-     <https://github.com/bruceravel/WebAtoms/archive/master.zip>`_.
+     <https://codeload.github.com/bruceravel/WebAtoms/zip/master>`_.
 
   #. Assuming you have `perl installed
      <https://www.perl.org/get.html>`_ on your computer, you will need
@@ -40,7 +40,7 @@ hosted on a web server and accessed through your browser.  It is
 **To deploy WebAtoms on your server**
 
   #. Clone a copy from the GitHub site or `download the latest zip file
-     <https://github.com/bruceravel/WebAtoms/archive/master.zip>`_.
+     <https://codeload.github.com/bruceravel/WebAtoms/zip/master>`_.
 
   #. Assuming you have `perl installed
      <https://www.perl.org/get.html>`_ on your computer, you will need
