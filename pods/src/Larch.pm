@@ -279,7 +279,6 @@ END {
 
 $larch_is_go;
 
-__END__
 
 
 =head1 NAME
