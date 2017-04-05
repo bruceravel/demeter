@@ -107,8 +107,8 @@ sub BUILD {
   ##   thus perl_base is C:\strawberry, see line 268
   if ($self->is_windows) {
     my ($volume,$directories,$fname) = File::Spec->splitpath( $^X );
-    #$directories =~ s{\A[/\\]}{};
-    $directories =~ s{[/\\]\z}{};
+    $directories =~ s{\A[/\\]}{}; # remove leading and training slashes from $directories, this
+    $directories =~ s{[/\\]\z}{}; # lets the pop pop line below work as expected
     my @dir = File::Spec->splitdir( $directories );
     pop @dir; pop @dir;  # perl\bin
     $self->perl_base(File::Spec->catdir($volume, @dir));

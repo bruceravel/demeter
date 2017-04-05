@@ -37,6 +37,8 @@
       using Ifeffit.  Simply refuse to import more than that many data
       sets regardless of ~Include in fit~ settings.  (Thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2017-March/009062.html][Victor
       Streltsov]])
+    + Fix a bug finding location of gnuplot and feff executables
+      (Thanks to Robert Gordon)
 
 *** Atoms
     + WebAtoms, https://github.com/bruceravel/WebAtoms, also
