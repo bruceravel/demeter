@@ -93,10 +93,10 @@ sub Import {
     @files = $fd->GetPaths;
   };
 
-
-  if (Demeter->is_ifeffit and ($#files > 49)) {
+  # sum of data groups in the group list + number being imported
+  if (Demeter->is_ifeffit and ($app->{main}->{list}->GetCount + $#files > 49)) {
     my $yesno = Demeter::UI::Wx::VerbDialog->new($app->{main}, -1,
-						 "That number of files may overextened Ifeffit's statically allocated memory.  It may be wise to make projects of fewer than 50 data groups.  If you continue importing, you run the risk of corrupting Ifeffit's memory and possibly crashing Athena.",
+						 "You are running a risk of overextending Ifeffit's statically allocated memory.  A good rule of thumb is to keep projects below about 50 data groups.  If you continue importing, you run the risk of corrupting Ifeffit's memory and possibly crashing Athena.  At the very least, you should save your work before continuing.",
 						 "Lots of files!",
 						 "Continue importing");
     my $response = $yesno -> ShowModal;
