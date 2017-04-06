@@ -282,33 +282,38 @@ sub ACTION_compile_ifeffit_wrapper {
       1;
 
     } else {
-      ($compile_flags, $linker_flags) = (q{}, q{});
-      ($pgplot_location, $iffdir) = ("", `ifeffit -i`);
-      $iffdir =~ s/\s*$//;
-      print STDOUT
-	"Ifeffit's installations directory is $iffdir\n\t(found by capturing \`ifeffit -i\`)\n";
-      open C, "$iffdir/config/Config.mak" or
-	die "Could not open $iffdir/config/Config.mak file for reading\n";
-      while (<C>) {
-	next if (/^\s*\#/);
-	chomp;
-	($compile_flags   .= (split(/=/, $_))[1]) if (/^LIB/);
-	$compile_flags    .= " ";
-	($pgplot_location .= (split(" ", $_))[2]) if (/^LIB_PLT/);
-	$linker_flags = $compile_flags;
+      ($pgplot_location, $compile_flags, $linker_flags) = (q{}, q{});
+      $iffdir = `ifeffit -i 2>/dev/null`;
+      if ($iffdir =~ m{\A\s*\z}) {
+	print STDOUT "** Ifeffit is not available.  Install Larch to use Demeter. **\n";
+      } else {
+	$iffdir =~ s/\s*$//;
+	print STDOUT
+	  "Ifeffit's installations directory is $iffdir\n\t(found by capturing \`ifeffit -i\`)\n";
+	open C, "$iffdir/config/Config.mak" or
+	  die "Could not open $iffdir/config/Config.mak file for reading\n";
+	while (<C>) {
+	  next if (/^\s*\#/);
+	  chomp;
+	  ($compile_flags   .= (split(/=/, $_))[1]) if (/^LIB/);
+	  $compile_flags    .= " ";
+	  ($pgplot_location .= (split(" ", $_))[2]) if (/^LIB_PLT/);
+	  $linker_flags = $compile_flags;
+	};
+	print STDOUT "Compilation flags (from $iffdir/config/Config.mak):\n\t$compile_flags\n";
       };
-      print STDOUT "Compilation flags (from $iffdir/config/Config.mak):\n\t$compile_flags\n";
+      $pgplot_location =~ s/-L//;
+    }
+
+    if ($iffdir !~ m{\A\s*\z}) {
+      my $cbuilder = $self->cbuilder;
+      my $obj_file = $cbuilder->compile(source               => 'src/ifeffit_wrap.c',
+					extra_compiler_flags => $compile_flags);
+      my $lib_file = $cbuilder->link(objects            => $obj_file,
+				     module_name        => 'Ifeffit',
+				     extra_linker_flags => $linker_flags,
+				     lib_file           => "src/Ifeffit.$suffix");
     };
-    $pgplot_location =~ s/-L//;
-
-
-    my $cbuilder = $self->cbuilder;
-    my $obj_file = $cbuilder->compile(source               => 'src/ifeffit_wrap.c',
-				      extra_compiler_flags => $compile_flags);
-    my $lib_file = $cbuilder->link(objects            => $obj_file,
-				   module_name        => 'Ifeffit',
-				   extra_linker_flags => $linker_flags,
-				   lib_file           => "src/Ifeffit.$suffix");
   };
 };
 

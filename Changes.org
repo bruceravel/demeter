@@ -73,6 +73,7 @@
       for testing.  The last two are not permanent.  In particular,
       testing with Larch is very important.
     + All tests passing with Larch (also still pass with Ifeffit)!
+    + Do not require the presence of Ifeffit to build Demeter
 
 *** Windows
     + Upgrade to Strawberry with perl 5.24, upgrade to 64 bit Gnuplot
