@@ -7,6 +7,8 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON EVT_TEXT EVT_TEXT_ENTER EVT_CHOICE EVT_CHECKBOX);
 use Wx::Perl::TextValidator;
+
+use Demeter::Diff;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 use File::Basename;
@@ -368,7 +370,7 @@ Demeter::UI::Athena::Difference - A difference spectrum tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
@@ -410,7 +412,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

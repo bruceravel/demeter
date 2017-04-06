@@ -184,7 +184,7 @@ fitting <../analysis/peak.html>`__, and many other chores often benefit
 from using flattened data rather than simply normalized data.
 
 This idea was swiped from
-`SixPACK <http://www.sams-xrays.com/#!sixpack/rovht>`__.
+`SixPACK <https://www.sams-xrays.com/sixpack>`__.
 
 
 Getting the post-edge right

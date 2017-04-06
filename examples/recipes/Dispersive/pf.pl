@@ -11,6 +11,7 @@
 ## objects at line 95 (or 122).
 
 use Demeter qw(:ui=screen :plotwith=gnuplot);
+use Demeter::Data::Pixel;
 use autodie qw(open close);
 use Compress::Zlib;
 

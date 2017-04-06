@@ -4,7 +4,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2008-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -28,6 +28,8 @@ my $here  = dirname($0);
 my $data  = Demeter::Data -> new;
 my $data2 = Demeter::Data -> new;
 
+#$data->set_mode(screen=>1);
+
 ok( ref($data) =~ m{Data},              "made a Data object");
 ok( $data->group ne $data2->group,      "made distinct Data objects: " . $data->group . " ne " . $data2->group);
 ok( $data->plottable,                   "Data object is plottable");
@@ -37,11 +39,12 @@ ok( ref($data->mo->plot) =~ 'Plot',     'Data object can find the Plot object');
 ok( $data->group =~ m{\A\w{5}\z},       'Data object has a proper group name');
 $data -> name('this');
 ok( $data->name eq 'this',           'Data object has a settable label');
+my $which = (Demeter->is_larch) ? 'larch' : 'ifeffit';
 ok( ($data->mo->template_plot     =~ m{plot}   and
      $data->mo->template_feff     eq 'feff6'   and
-     $data->mo->template_process  eq 'ifeffit' and
-     $data->mo->template_fit      eq 'ifeffit' and
-     $data->mo->template_analysis eq 'ifeffit'),
+     $data->mo->template_process  eq $which and
+     $data->mo->template_fit      eq $which and
+     $data->mo->template_analysis eq $which),
                                         "Data object can find template sets");
 
 
@@ -88,12 +91,14 @@ ok( ($data->bkg_kwindow eq 'welch' and $data->fft_kwindow eq 'welch' and $data->
 
 $data->file(File::Spec->catfile($here, 'data.xmu'));
 $data->determine_data_type;
-ok( $data->datatype eq 'xmu',                               "determine_data_type works: xmu");
+ok( $data->datatype eq 'xmu',                               "determine_data_type works: xmu (".$data->datatype.')');
 $data2->file(File::Spec->catfile($here, 'data.chi'));
 $data2->determine_data_type;
 ok( $data2->datatype eq 'chi',                              "determine_data_type works: chi");
 
-my $string = $data -> template("test", "test", {x=>5});
+
+$which = (Demeter->is_larch) ? "test_larch" : "test_ifeffit";
+my $string = $data -> template("test", $which, {x=>5});
 ok( $string =~ $data->group,                                'simple template works');
 
 ## -------- Methods for setting E0
@@ -120,19 +125,22 @@ $data3->e0('ifeffit'); ## how do I make this happen automatically??
 
 ok( $data3->datatype eq 'xmu',                                  "determine_data_type works, columns: xmu");
 ok( ($data3->fft_edge eq 'k' and $data3->bkg_z eq 'Fe'),        'find_edge works: '.join(" ", $data3->fft_edge, $data3->bkg_z));
-ok( abs($data3->bkg_e0 - 7105.506) < $fuzz,                     'find e0: ifeffit (' . $data3->bkg_e0 . ')');
+
+$which = (Demeter->is_larch) ? 'larch'   : 'ifeffit';
+my $e0 = (Demeter->is_larch) ? 7104.9984 : 7105.506; # current larch is 0.9.31 (22-Nov-2016)
+ok( abs($data3->bkg_e0 - $e0) < $fuzz,                          "find e0: $which (" . $data3->bkg_e0 . ') (should be'.$e0.')');
 $data3->e0('zero');
 ok( abs($data3->bkg_e0 - 7105.292) < $fuzz,                     'find e0: zero crossing (' . $data3->bkg_e0 . ')');
 $data3->e0(7110);
 ok( abs($data3->bkg_e0 - 7110) < $fuzz,                         'find e0: number (' . $data3->bkg_e0 . ')');
 $data3->e0('fraction');
-ok( abs($data3->bkg_e0 - 7112.902) < $fuzz,                      'find e0: fraction (' . $data3->bkg_e0 . ' at ' . $data3->bkg_e0_fraction . ')');
+ok( abs($data3->bkg_e0 - 7112.902) < $fuzz,                     'find e0: fraction (' . $data3->bkg_e0 . ' at ' . $data3->bkg_e0_fraction . ')');
 $data3->e0('atomic');
 ok( abs($data3->bkg_e0 - 7112) < $fuzz,                         'find e0: atomic (' . $data3->bkg_e0 . ')');
 
 
 $data3->e0($data5);
-ok( abs($data3->bkg_e0 - 7105.506) < $fuzz,                     'find e0: other Data object (' . $data3->bkg_e0 . ')');
+ok( abs($data3->bkg_e0 - $e0) < $fuzz,                          'find e0: other Data object (' . $data3->bkg_e0 . ')');
 
 ok(abs($data3->yofx('xmu', q{}, 7112) - 1.17) < 0.01,           'yofx method works');
 ok($data3->iofx('energy', 7112) == 77,                          'iofx works');
@@ -196,12 +204,15 @@ ok( ( ($k[0] == 0) and (all { abs($k[$_] - $k[$_-1] - 0.05) < 1e-4 } (1 .. $#k))
 ## -------- Data from arrays
 my @x = $data3->get_array('energy');
 my @y = $data3->get_array('xmu');
+#$data3->set_mode(screen=>1);
 my $fa = Demeter::Data->put(\@x, \@y, datatype=>'xmu');
+$data3->dispose("show ".$fa->group);
+$data3->dispose("show ".$fa->group.'.energy');
 $fa->_update('fft');
-ok( abs($fa->bkg_e0 - 7105.506) < $fuzz,                     'Data from arrays works (' . $fa->bkg_e0 . ')');
+ok( abs($fa->bkg_e0 - $e0) < $fuzz,                     'Data from arrays works (' . $fa->bkg_e0 . ')'); # see line 130
 
 my @z = $data3->get_array('not_an_array');
-ok( $#z == -1,                     'Non existent array');
+ok( $#z == -1,                 'Non existent array');
 
 # my $str1 = $data3->fetch_string($data3->group.'_title_01');
 # $data3->clear_ifeffit_titles;

@@ -2,7 +2,7 @@ package  Demeter::UI::Artemis::Data;
 
 =for Copyright
  .
- Copyright (c) 2006-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -268,7 +268,6 @@ sub new {
   $this->mouseover("plot_r123", "Plot this data set as $CHI(R) with all three k-weights and scaled to the same size.");
   $this->mouseover("plot_kq",   "Plot this data set as both $CHI(k) and Re[$CHI(q)].");
 
-
   ## -------- title lines
   my $titlesbox      = Wx::StaticBox->new($leftpane, -1, 'Title lines ', wxDefaultPosition, wxDefaultSize);
   my $titlesboxsizer = Wx::StaticBoxSizer->new( $titlesbox, wxHORIZONTAL );
@@ -277,7 +276,6 @@ sub new {
   $titlesboxsizer -> Add($this->{titles}, 1, wxALL|wxGROW, 0);
   $left           -> Add($titlesboxsizer, 2, wxALL|wxGROW, 5);
   $this->mouseover("titles", "These lines will be written to output files.  Use them to describe this data set.");
-
 
   ## -------- Fourier transform parameters
   my $ftbox      = Wx::StaticBox->new($leftpane, -1, 'Fourier transform parameters ', wxDefaultPosition, wxDefaultSize);
@@ -381,7 +379,6 @@ sub new {
     $this->mouseover("kwindow", "The functional form of the window used for the forward Fourier transform.");
     $this->mouseover("rwindow", "The functional form of the window used for the backward Fourier transform.");
   };
-
 
   ## -------- k-weights
   my $kwbox      = Wx::StaticBox->new($leftpane, -1, 'Fitting k weights ', wxDefaultPosition, wxDefaultSize);
@@ -573,7 +570,11 @@ sub initial_page_panel {
   EVT_HYPERLINK($self, $emp,   sub{$self->empirical;});
   $_ -> SetFont( Wx::Font->new( 10, wxDEFAULT, wxITALIC, wxNORMAL, 0, "" ) ) foreach ($dndtext, $qfs, $atoms, $su, $emp);
   $su-> Enable(0);
-  $_ -> SetVisitedColour($_->GetNormalColour) foreach ($qfs, $atoms, $emp); #, $su, $feff);
+
+  ## this triggers  spurious GDK noise
+  # foreach my $hl ($qfs, $atoms, $emp) { #, $su, $feff);
+  #   $hl -> SetVisitedColour($hl->GetNormalColour);
+  # };
 
   ##my $or = Wx::StaticText -> new($panel, -1, "\tor");
 
@@ -1526,8 +1527,8 @@ sub set_degens {
 
 ## how = 0 : each path this feff
 ## how = 1 : each path this data
-## how = 2 : each path each data   (not yet)
-## how = 3 : marked paths          (not yet)
+## how = 2 : each path each data
+## how = 3 : marked paths
 sub add_parameters {
   my ($self, $param, $me, $how, $silent) = @_;
   my $displayed_path = $self->{pathlist}->GetCurrentPage;
@@ -1557,6 +1558,7 @@ sub add_parameters {
     };
     $which = "the marked paths";
   };
+  Demeter::UI::Artemis::modified(1);
   $self->status("Set $param to \"$me\" for $which." ) if not $silent;
 };
 
@@ -1581,6 +1583,7 @@ sub export_pp {
 	       'each path in this data set',
 	       'each path in each data set',
 	       'the marked paths')[$how];
+  Demeter::UI::Artemis::modified(1);
   $self->status("Exported these path parameters to $which." );
 };
 
@@ -2689,6 +2692,7 @@ sub make_HistogramSS {
   my $read_file = 1;
 
   if ((not $spref->[9]) or ($feff->mo->fetch("Distributions", $spref->[9])->type ne 'ss')) {
+    eval "require Demeter::Feff::Distributions";
     $histogram = Demeter::Feff::Distributions->new(type=>'ss');
     $histogram -> set(rmin=>$spref->[4], rmax=>$spref->[5], bin=>$spref->[6], feff=>$feff, ipot=>$spref->[7],);
   } else {
@@ -2779,6 +2783,7 @@ sub make_HistogramNCL {
   my $book  = $this->{BOOK};
 
   my $feff = Demeter->mo->fetch("Feff", $spref->[2]);
+  eval "require Demeter::Feff::Distributions";
   my $histogram = Demeter::Feff::Distributions->new(type=>'ncl');
   $histogram -> set(r1=>$spref->[4], r2=>$spref->[5], r3=>$spref->[6], r4=>$spref->[7],
 		    rbin => $spref->[8], betabin => $spref->[9],
@@ -2832,6 +2837,7 @@ sub make_HistogramThru {
   my $book  = $this->{BOOK};
 
   my $feff = Demeter->mo->fetch("Feff", $spref->[2]);
+  eval "require Demeter::Feff::Distributions";
   my $histogram = Demeter::Feff::Distributions->new(type=>'thru');
   $histogram -> set(rmin=>$spref->[4], rmax=>$spref->[5],
 		    rbin => $spref->[6], betabin => $spref->[7],
@@ -2892,7 +2898,7 @@ Demeter::UI::Artemis::Data - Data group interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
@@ -2929,7 +2935,7 @@ Bruce Ravel, L<http://bruceravel.github.io/home>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

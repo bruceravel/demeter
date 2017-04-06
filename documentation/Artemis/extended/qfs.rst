@@ -19,7 +19,7 @@ and a nominal distance between the absorber and the scatterer,
 :demeter:`artemis` constructs input for :demeter:`feff`. This input
 data assumes that the absorber and scatterer are present in a `rock
 salt structured
-<http://en.wikipedia.org/wiki/Cubic_crystal_system#Rock-salt_structure>`__
+<https://en.wikipedia.org/wiki/Cubic_crystal_system#Rock-salt_structure>`__
 crystal. The lattice constant of this notional cubic crystal is such
 that the nearest neighbor distance is the nominal distance supplied by
 the user. :demeter:`feff` is run and the scattering path for the
@@ -100,7 +100,7 @@ cannot be positively identified as belonging to a particular atom.
 
 To address this situation, :demeter:`feff` uses an algorithm called the Mattheis
 prescription, which inscribes spheres in `Wigner-Seitz
-cells <http://en.wikipedia.org/wiki/Wigner%E2%80%93Seitz_cell>`__, to
+cells <https://en.wikipedia.org/wiki/Wigner%E2%80%93Seitz_cell>`__, to
 reduce the radii of all atoms in the material together until the reduced
 radii are just touching and never overlapping. These smaller radii are
 called the muffin-tin radii. The electron density within one muffin-tin
@@ -276,7 +276,7 @@ you do not know its structure. The point of the EXAFS analysis is to
 determine the structure. The upshot of this discussion would seem to be
 that you need to know the structure in order to measure the structure.
 That's a
-`catch-22 <http://en.wikipedia.org/wiki/Catch-22_%28logic%29>`__, right?
+`catch-22 <https://en.wikipedia.org/wiki/Catch-22_%28logic%29>`__, right?
 
 Not really. As I often say in my lectures during XAS training courses:
 you never know nothing. It is rare that you cannot make an educated

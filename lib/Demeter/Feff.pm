@@ -2,7 +2,7 @@ package Demeter::Feff;
 
 =for Copyright
  .
- Copyright (c) 2006-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -33,7 +33,7 @@ if ($Demeter::mode->ui eq 'screen') {
 };
 use Demeter::Return;
 
-use Capture::Tiny qw(capture tee);
+#use Capture::Tiny qw(capture tee);
 use Carp;
 use Chemistry::Elements qw(get_symbol);
 use Compress::Zlib;
@@ -185,9 +185,9 @@ has 'miscdat'      => (is=>'rw', isa => 'Str',    default => q{});
 has 'vint'         => (is=>'rw', isa => 'LaxNum', default => 0);
 has 'hidden'       => (is=>'rw', isa => 'Bool',   default => 0);
 
-has 'fuzz'         => (is=>'rw', isa =>  NonNeg,  default => Demeter->co->default('pathfinder','fuzz')||0.03);
-has 'betafuzz'     => (is=>'rw', isa =>  NonNeg,  default => Demeter->co->default('pathfinder','betafuzz')||3);
-has 'eta_suppress' => (is=>'rw', isa => 'Bool',   default => Demeter->co->default('pathfinder','eta_suppress')||0);
+has 'fuzz'         => (is=>'rw', isa =>  NonNeg,  default => sub{return Demeter->co->default('pathfinder','fuzz')         || 0.03 });
+has 'betafuzz'     => (is=>'rw', isa =>  NonNeg,  default => sub{return Demeter->co->default('pathfinder','betafuzz')     || 3    });
+has 'eta_suppress' => (is=>'rw', isa => 'Bool',   default => sub{return Demeter->co->default('pathfinder','eta_suppress') || 0    });
 
 		       ## result of pathfinder
 has 'site_fraction'=> (is => 'rw', isa => 'LaxNum', default => 1);
@@ -204,7 +204,7 @@ has 'pathlist' => (		# list of ScatteringPath objects
 				}
 		  );
 has 'npaths'       => (is=>'rw', isa =>  Natural,   default => 0);
-has 'postcrit'     => (is=>'rw', isa =>  NonNeg,    default => Demeter->co->default('pathfinder','postcrit'));   # positive float
+has 'postcrit'     => (is=>'rw', isa =>  NonNeg,    default => sub{return Demeter->co->default('pathfinder','postcrit')});   # positive float
 
 		       ## reporting and processing
 has 'screen'       => (is=>'rw', isa => 'Bool', default => 1);
@@ -1379,7 +1379,7 @@ override serialization => sub {
   my ($self) = @_;
 
   my %cards = ();
-  foreach my $key (qw(abs_index edge s02 rmax name nlegs npaths rmultiplier pcrit ccrit
+  foreach my $key (qw(abs_index edge s02 rmax name nlegs npaths rmultiplier pcrit ccrit postcrit
 		      workspace screen buffer save fuzz betafuzz eta_suppress miscdat
 		      group hidden source feff_version scf fms ldos xanes polarization ellipticity)) {
     $cards{$key} = $self->$key;
@@ -1489,7 +1489,7 @@ Demeter::Feff - Make and manipulate Feff calculations
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 
 =head1 SYNOPSIS
@@ -2031,7 +2031,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

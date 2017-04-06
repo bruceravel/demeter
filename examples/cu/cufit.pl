@@ -2,7 +2,7 @@
 
 =for Copyright
  .
- Copyright (c) 2006-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -17,6 +17,8 @@
 
 
 use Demeter qw(:fit :ui=screen);
+use Demeter::Feff::External;
+
 print "Sample fit to copper data using Demeter ", $Demeter::VERSION, $/;
 unlink "cufit.iff" if (-e "cufit.iff");
 

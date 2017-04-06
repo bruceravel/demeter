@@ -1,16 +1,27 @@
 package Demeter::Plugins::Lytle;
 
+use Const::Fast;
+const my $INIFILE => 'lytle.demeter_conf';
+
 use Moose;
 extends 'Demeter::Plugins::FileType';
 
+has '+conffile'     => (default => File::Spec->catfile(Demeter->dot_folder, $INIFILE));
+
 has '+is_binary'   => (default => 0);
 has '+description' => (default => "the Lytle database file stored by encoder value");
-has '+version'     => (default => 0.1);
+has '+version'     => (default => 0.2);
 
 use Demeter::Constants qw($R2D $HC);
 
+use File::Basename;
+use File::Copy;
+use File::Spec;
 use Scalar::Util qw(looks_like_number);
 use List::MoreUtils qw(all);
+
+
+Demeter -> co -> read_config(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'Plugins', $INIFILE));
 
 sub is {
   my ($self) = @_;
@@ -18,6 +29,7 @@ sub is {
   my $first = <D>;
   close D;
   return 1 if ($first =~ m{\A\s*NPTS\s+NS\s+CUEDGE\s+CUHITE});
+  #return 1 if ($first =~ m{\A\s*CUEDGE\s+START\s+STOP\s+BEG\s+FSCTS});
   return 0;
 };
 
@@ -30,11 +42,12 @@ sub fix {
   open D, $file or die "could not open $file as data (fix in Lytle)\n";
   open N, ">".$new or die "could not write to $new (fix in Lytle)\n";
 
-  my ($stpdeg, $dspacing) = (0, 0);
+  my ($stpdeg, $dspacing) = (Demeter->co->default('lytle', 'stpdeg'), Demeter->co->default('lytle', 'dspace'));
 
   while (<D>) {
     chomp;
     next if (m{\A\s*\z});
+    $_ =~ s{(E(-|\+)\d+)-}{$1 }g; # fix what appears to be a Fortran formatting overrun
     my @list = split(" ", $_);
 
     if ($_ =~ m{\A\s*NPTS}) {	# first two lines, snarf mono parameters
@@ -44,7 +57,7 @@ sub fix {
       my @fields = split(" ", $line);
       ($dspacing, $stpdeg) = @fields[4,5];
 
-    } elsif ($_ =~ m{\A\s*(?:DELTA|DELEND|SEC|OFFSETS)}) { # various headers
+    } elsif ($_ =~ m{\A\s*(?:DELTA|DELEND|SEC|OFFSETS?)}) { # various headers
       print N "# ", $_, $/;
 
     } elsif (all {looks_like_number($_)} @list) {
@@ -58,6 +71,8 @@ sub fix {
     } else { #($_ =~ m{\d{1,2}-\d{1,2}\-\d{1,2}\s*\z}) { # comment line with date at end
       #print "found it!\n";
       print N "# ", $_, $/;
+      print N "# -----------------------", $/;
+      print N "# energy  i0  it  if  ir", $/;
 
     };
 
@@ -95,7 +110,7 @@ Demeter::Plugin::Lytle - Import Lytle database files stored by encoder value.
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 

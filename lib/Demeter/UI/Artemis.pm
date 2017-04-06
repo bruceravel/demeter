@@ -41,7 +41,7 @@ use Demeter::UI::Wx::VerbDialog;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 local $Archive::Zip::UNICODE = 1;
-use Capture::Tiny ':all';
+#use Capture::Tiny ':all';
 use Cwd;
 use File::Basename;
 use File::Copy;
@@ -506,6 +506,7 @@ sub OnInit {
   Demeter->dispense('fit', 'prep_fit');
 
   $frames{main}->status("Welcome to Artemis $MDASH " . Demeter->identify . " $MDASH " . Demeter->backends);
+  print DateTime->now, "  Athena is go! ...\n" if ($ENV{DEMETER_TIMING});
   1;
 }
 
@@ -632,7 +633,7 @@ sub uptodate {
   #     $thisgds->dispose($thisgds->write_gds);
   #   };
 
-  foreach my $k (keys(%$rframes)) {
+  foreach my $k (sort keys(%$rframes)) { # sorting will order them in their order in the Data list
     next unless ($k =~ m{\Adata});
     my $this = $rframes->{$k}->{data};
     ++$abort if ($rframes->{$k}->fetch_parameters == 0);
@@ -1210,6 +1211,8 @@ sub OnToolClick {
 };
 sub OnDataRightClick {
   my ($self, $event) = @_;
+  return 0 if (not Demeter::UI::Artemis::Import::_check_number_of_data_sets());
+
   my $dialog = Demeter::UI::Wx::MRU->new($frames{main}, 'athena', "Select a recent Athena project file", "Recent Athena project files");
   $frames{main}->status("There are no recent Athena project files."), return if ($dialog == -1);
   if( $dialog->ShowModal == wxID_CANCEL ) {
@@ -1715,7 +1718,7 @@ Demeter::UI::Artemis - EXAFS analysis using Feff and Ifeffit/Larch
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
@@ -1760,7 +1763,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

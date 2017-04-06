@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
-use Demeter qw(:analysis :ui=screen :plotwith=gnuplot);
+use Demeter qw(:data :ui=screen :plotwith=gnuplot);
+use Demeter::PeakFit;
 
 my $xes = Demeter::XES->new(file=>'../XES/7725.11',
 			    energy => 2, emission => 3,

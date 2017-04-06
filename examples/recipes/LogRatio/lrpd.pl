@@ -6,7 +6,8 @@
 ## data consists of two scattering shells.  But these data are handy...
 
 
-use Demeter qw(:ui=screen :plotwith=gnuplot);
+use Demeter qw(:data :ui=screen :plotwith=gnuplot);
+use Demeter::LogRatio;
 Demeter->set_mode(screen=>0);
 
 

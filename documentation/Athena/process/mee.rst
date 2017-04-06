@@ -26,7 +26,7 @@ EXAFS. Other multi-electron excitations have even larger
 cross-sections compared to their primary excitations. For an excellent
 discussion of multi-electron excitations see `Iztok Arcon's
 Multielectron photo excitations page
-<http://www.p-ng.si/~arcon/xas/mpe/mpe.htm>`__.
+<http://www.ung.si/~arcon/xas/mpe/mpe.htm>`__.
 
 Another phenomenon which is somewhat similar in its effect on your
 data is the presence of a small impurity of the Z+1 element, leading

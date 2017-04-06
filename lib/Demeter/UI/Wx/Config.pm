@@ -2,7 +2,7 @@ package Demeter::UI::Wx::Config;
 
 =for Copyright
  .
- Copyright (c) 2006-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -293,6 +293,32 @@ sub apply {
   };
 
   Demeter->co->set_default($parent, $param, $value);
+  if ($type eq 'boolean') {
+    $self->{Value}   -> SetLabel(Demeter->truefalse( Demeter->co->default($parent, $param) ));
+
+  } elsif ($type eq 'color') {
+    my $color;
+    my $this = Demeter->co->default($parent, $param);
+    if ($this =~ m{\A\#}) {
+      my $col = Wx::Colour->new($this);
+      $self->{Value} -> SetBackgroundColour( $col );
+      $color = $col;
+    } else {
+      $self->{Value} -> SetBackgroundColour( $cdb->Find($this) );
+      $color = $cdb->Find($this);
+    };
+
+    $this = Demeter->co->demeter($parent, $param);
+    if ($this =~ m{\A\#}) {
+      my $col = Wx::Colour->new($this);
+      $self->{Default}->SetBackgroundColour( $col );
+    } else {
+      $self->{Default}->SetBackgroundColour( $cdb->Find($this) );
+    };
+
+  } else {
+    $self->{Value} -> SetLabel(Demeter->co->default($parent, $param));
+  };
   Demeter->co->write_ini if $save;
   $self->$callback($parent, $param, $value, $save);
 };
@@ -484,7 +510,7 @@ Demeter::UI::Wx::Config - A configuration widget for Demeter applications
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
@@ -625,7 +651,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

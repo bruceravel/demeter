@@ -4,7 +4,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2008-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -37,18 +37,20 @@ ok( $this->name eq 'this',           "$OBJ object has a settable label");
 ok( ref($this->mo) =~ 'Mode',        "$OBJ object can find the Mode object");
 ok( ref($this->co) =~ 'Config',      "$OBJ object can find the Config object");
 ok( ref($this->po) =~ 'Plot',        "$OBJ object can find the Plot object");
+my $which = (Demeter->is_larch) ? 'larch' : 'ifeffit';
 ok( ($this->mo->template_plot     =~ m{plot}   and
      $this->mo->template_feff     eq 'feff6'   and
-     $this->mo->template_process  eq 'ifeffit' and
-     $this->mo->template_fit      eq 'ifeffit' and
-     $this->mo->template_analysis eq 'ifeffit'),
+     $this->mo->template_process  eq $which and
+     $this->mo->template_fit      eq $which and
+     $this->mo->template_analysis eq $which),
                                      "$OBJ object can find template sets");
-
-
-my $xes = Demeter::XES->new(file=>File::Spec->catfile($here,'7725.11'),
-			    energy => 2, emission => 3,
-			    e1 => 7610, e2 => 7624, e3 => 7664, e4 => 7690,
-			   );
-$xes -> _background;
-ok( lc($xes->z)    eq 'co',  'found element');
-ok( lc($xes->line) eq 'kb1', 'found emission line');
+SKIP: {
+  skip "XES system not being maintained", 2 if 1;
+  my $xes = Demeter::XES->new(file=>File::Spec->catfile($here,'7725.11'),
+			      energy => 2, emission => 3,
+			      e1 => 7610, e2 => 7624, e3 => 7664, e4 => 7690,
+			     );
+  $xes -> _background;
+  ok( lc($xes->z)    eq 'co',  'found element');
+  ok( lc($xes->line) eq 'kb1', 'found emission line');
+};

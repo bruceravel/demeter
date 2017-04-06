@@ -145,7 +145,7 @@ degenerate. The width of this bin is set by the
 :configparam:`Pathfinder,fuzz` preference.
 
 Consider this :file:`feff.inp` file (made from `this crystal data
-<https://raw.github.com/bruceravel/XAS-Education/master/Examples/Xtal/PbFe12O19.inp>`__):
+<https://raw.githubusercontent.com/bruceravel/XAS-Education/master/Examples/Xtal/PbFe12O19.inp>`__):
 
 ::
 

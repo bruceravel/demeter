@@ -106,4 +106,4 @@ Great help from Macports
   <https://trac.macports.org/search?portsummarysearch=on>`_
 
 - File new ticket `Macports new ticket
-  <https://trac.macports.org/newticket>`_
+  <https://trac.macports.org/wiki/Tickets>`_

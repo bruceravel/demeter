@@ -2,7 +2,7 @@ package Demeter::PeakFit;
 
 =for Copyright
  .
- Copyright (c) 2006-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -38,10 +38,12 @@ if ($Demeter::mode->ui eq 'screen') {
 };
 
 use vars qw($Fityk_exists);
-$Fityk_exists       = eval "require fityk";
+$Fityk_exists = 1;
+eval "use fityk.pm";
+$Fityk_exists = 0 if $@;
 
 has '+plottable'      => (default => 1);
-has '+data'	      => (isa => Empty.'|Demeter::Data|Demeter::XES');
+has '+data'	      => (isa => Empty.'|Demeter::Data'); # (isa => Empty.'|Demeter::Data|Demeter::XES');
 has '+name'	      => (default => 'Peak fit' );
 has 'screen'	      => (is => 'rw', isa => 'Bool',   default => 0);
 has 'buffer'	      => (is => 'rw', isa => 'ArrayRef | ScalarRef');
@@ -592,7 +594,7 @@ Demeter::PeakFit - A peak fitting object for Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
@@ -818,7 +820,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

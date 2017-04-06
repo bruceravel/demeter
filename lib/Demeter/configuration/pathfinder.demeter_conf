@@ -274,8 +274,10 @@ description
   other aspect of the operation of the pathfinder.  In Artemis, this
   is used to restrict the paths displayed in the path list to those
   that exceed the given size.  Set this to 0 to display all paths,
-  regardless of size, in Artemis' path list In Artemis, a change to
-  this parameter will take affect after the next Feff calculation. 
+  regardless of size, in Artemis' path list.  For a change in this
+  parameter to take effect in Artemis, you MUST apply this change THEN
+  import the new atoms or feff input file.  That is, this parameter is
+  set for a Feff object at the moment of creation.
 
 variable=suppress_5_6_not_straight
 type=boolean

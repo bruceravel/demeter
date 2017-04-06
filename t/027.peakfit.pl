@@ -4,7 +4,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2008-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -19,7 +19,8 @@
 
 use Test::More tests => 17;
 
-use Demeter qw(:analysis);
+use Demeter qw(:data);
+use Demeter::PeakFit;
 use File::Basename;
 use File::Spec;
 use Demeter::Constants qw($EPSILON2);
@@ -28,7 +29,7 @@ my $here  = dirname($0);
 
 
 SKIP: {
-  skip "No Fityk, skipping all PeakFit tests",17 if not $Demeter::Fityk_exists;
+  skip "No Fityk, skipping all PeakFit tests",17 if not $Demeter::PeakFit::Fityk_exists;
 
 my $this = Demeter::PeakFit -> new();
 my $OBJ  = 'PeakFit';
@@ -42,11 +43,12 @@ ok( $this->name eq 'this',           "$OBJ object has a settable label");
 ok( ref($this->mo) =~ 'Mode',        "$OBJ object can find the Mode object");
 ok( ref($this->co) =~ 'Config',      "$OBJ object can find the Config object");
 ok( ref($this->po) =~ 'Plot',        "$OBJ object can find the Plot object");
+my $which = (Demeter->is_larch) ? 'larch' : 'ifeffit';
 ok( ($this->mo->template_plot     =~ m{plot}   and
      $this->mo->template_feff     eq 'feff6'   and
-     $this->mo->template_process  eq 'ifeffit' and
-     $this->mo->template_fit      eq 'ifeffit' and
-     $this->mo->template_analysis eq 'ifeffit'),
+     $this->mo->template_process  eq $which and
+     $this->mo->template_fit      eq $which and
+     $this->mo->template_analysis eq $which),
                                      "$OBJ object can find template sets");
 
 

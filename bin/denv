@@ -2,7 +2,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2016 Bruce Ravel (L<http://bruceravel.github.io/home>).
+ Copyright (c) 2008-2017 Bruce Ravel (L<http://bruceravel.github.io/home>).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -32,7 +32,7 @@ denv - Display Demeter's operating environment
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 DESCRIPTION
 

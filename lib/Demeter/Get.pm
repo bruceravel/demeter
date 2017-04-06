@@ -2,7 +2,7 @@ package Demeter::Get;
 
 =for Copyright
  .
- Copyright (c) 2006-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -123,7 +123,9 @@ sub fetch_scalar {
       $param = "f1f2.$param";
 
     } elsif (Demeter->mo->fit) { # a fit is happenening, this is a Parameter, need its value
-      $param = $param.'.value';
+      if ($param !~ m{\.(?:value|stderr)\z}) {
+	$param = $param.'.value';
+      };
     }
     $param = Larch::get_larch_scalar($param);
     if (not defined $param) {
@@ -147,11 +149,12 @@ sub fetch_string {
     return Ifeffit::get_string($param);
 
   } elsif ($self->is_larch) {
-    if ($param eq'column_label') {
+    if ($param eq 'column_label') {
       my $gp = ($self->attribute_exists('group') and $self->group) ? $self->group : Demeter->mo->throwaway_group;
       $param = $gp.'.column_labels';
+      $self->dispose("show $param");
       my $list = Larch::get_larch_scalar($param);
-      $list = eval($list) if ref($list) ne 'ARRAY';
+      $list = eval($list) if ($list and ref($list) ne 'ARRAY');
       return q{} if not $list;
       return join(" ", @$list);
     } else {
@@ -165,6 +168,11 @@ sub fetch_array {
   if ($self->is_ifeffit) {
     return Ifeffit::get_array($param);
   } elsif ($self->is_larch) {
+    #if ($param =~ m{pre\z}) {
+    #  $param .= '_edge';
+    #}elsif ($param =~ m{post\z}) {
+    #  $param .= '_edge';
+    #};
     return Larch::get_larch_array($param);
   };
 };
@@ -262,7 +270,7 @@ Demeter::Get - Choke point for probing Ifeffit, Larch, or other backends
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
@@ -358,7 +366,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

@@ -1398,6 +1398,7 @@ lib/Demeter/templates/fit/feffit/sum.tmpl
 lib/Demeter/templates/fit/ifeffit/background.tmpl
 lib/Demeter/templates/fit/ifeffit/correl.tmpl
 lib/Demeter/templates/fit/ifeffit/endfit.tmpl
+lib/Demeter/templates/fit/ifeffit/erase_gds.tmpl
 lib/Demeter/templates/fit/ifeffit/ff2chi.tmpl
 lib/Demeter/templates/fit/ifeffit/fit.tmpl
 lib/Demeter/templates/fit/ifeffit/gds.tmpl
@@ -1435,6 +1436,7 @@ lib/Demeter/templates/fit/iff_columns/save_fit.tmpl
 lib/Demeter/templates/fit/iff_columns/sum.tmpl
 lib/Demeter/templates/fit/larch/correl.tmpl
 lib/Demeter/templates/fit/larch/endfit.tmpl
+lib/Demeter/templates/fit/larch/erase_gds.tmpl
 lib/Demeter/templates/fit/larch/ff2chi.tmpl
 lib/Demeter/templates/fit/larch/fit.tmpl
 lib/Demeter/templates/fit/larch/gds.tmpl
@@ -1825,7 +1827,8 @@ lib/Demeter/templates/report/standard/setme.tmpl
 lib/Demeter/templates/report/standard/skip.tmpl
 lib/Demeter/templates/report/standard/statistics.tmpl
 lib/Demeter/templates/report/standard/xdi_report.tmpl
-lib/Demeter/templates/test/test/test.tmpl
+lib/Demeter/templates/test/test/test_ifeffit.tmpl
+lib/Demeter/templates/test/test/test_larch.tmpl
 lib/Demeter/ThreeBody.pm
 lib/Demeter/Tools.pm
 lib/Demeter/UI/Artemis.pm
@@ -2484,8 +2487,6 @@ lib/Xray/Scattering/None.pm
 lib/Xray/Scattering/WaasKirf.pm
 LICENSE
 MANIFEST			This list of files
-META.json
-META.yml
 notes/Atoms/A2n_atoms.inp
 notes/Atoms/C2c_atoms.inp
 notes/Atoms/cluster_problem

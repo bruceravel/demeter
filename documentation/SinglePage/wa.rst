@@ -22,13 +22,15 @@ hosted on a web server and accessed through your browser.  It is
 **To run WebAtoms locally**
 
   #. Clone a copy from the GitHub site or `download the latest zip file
-     <https://github.com/bruceravel/WebAtoms/archive/master.zip>`_.
+     <https://codeload.github.com/bruceravel/WebAtoms/zip/master>`_.
 
   #. Assuming you have `perl installed
      <https://www.perl.org/get.html>`_ on your computer, you will need
      to install `the Dancer web framework <http://perldancer.org/>`_,
-     `perl's YAML tool <https://metacpan.org/pod/distribution/YAML/lib/YAML.pod>`_,
-     and `Demeter <http://bruceravel.github.io/demeter/>`_.
+     `perl's YAML tool
+     <https://metacpan.org/pod/distribution/YAML/lib/YAML.pod>`_,
+     `Demeter <http://bruceravel.github.io/demeter/>`_, and all of
+     their dependencies.
 
   #. Launch the application by doing ``perl bin/app.pl`` at the
      command line.
@@ -38,13 +40,15 @@ hosted on a web server and accessed through your browser.  It is
 **To deploy WebAtoms on your server**
 
   #. Clone a copy from the GitHub site or `download the latest zip file
-     <https://github.com/bruceravel/WebAtoms/archive/master.zip>`_.
+     <https://codeload.github.com/bruceravel/WebAtoms/zip/master>`_.
 
   #. Assuming you have `perl installed
      <https://www.perl.org/get.html>`_ on your computer, you will need
      to install `the Dancer web framework <http://perldancer.org/>`_,
-     `perl's YAML tool <https://metacpan.org/pod/distribution/YAML/lib/YAML.pod>`_,
-     and `Demeter <http://bruceravel.github.io/demeter/>`_.
+     `perl's YAML tool
+     <https://metacpan.org/pod/distribution/YAML/lib/YAML.pod>`_,
+     `Demeter <http://bruceravel.github.io/demeter/>`_, and all of
+     their dependencies.
 
   #. Follow the `instructions for deploying a Dancer application
      <https://metacpan.org/pod/Dancer2::Manual::Deployment>`_
@@ -76,11 +80,11 @@ Using WebAtoms
 When run in your browser, :demeter:`WebAtoms` (like `Gaul
 <http://www.thelatinlibrary.com/caesar/gall1.shtml>`_) is in three
 parts.  Across the top of the window are a bunch of useful links,
-including the link in the upper left back to the empty
-:demeter:`WebAtoms` application.  On the left is a form to be filled
-in with crystallographic data.  On the right is the response area,
-which will (hopefully!) be filled with a :file:`feff.inp` file or some
-other useful crystallographic calculation.
+including the link back to the empty :demeter:`WebAtoms` application
+in the upper left.  On the left is a form to be filled in with
+crystallographic data.  On the right is the response area, which will
+(hopefully!) be filled with a :file:`feff.inp` file or some other
+useful crystallographic calculation.
 
 .. figure:: ../_images/webatoms.png
    :target: ../_images/webatoms.png
@@ -111,7 +115,7 @@ some detail
 <http://bruceravel.github.io/demeter/documents/Artemis/atoms/space.html#multiple-origins-and-the-shift-keyword>`_.
 
 Once you are done entering crystal data, :mark:`leftclick,.` click the
-:button:`Compute,light` button.  The corresponding :file:`feff.,inp`
+:button:`Compute,light` button.  The corresponding :file:`feff.inp`
 file will be displayed in the response area on the right.
 
 To save the contents of the response area, :mark:`leftclick,.` click
@@ -155,7 +159,7 @@ application:
    #. Need to streamline file import this so that the second button
       click is not necessary
    #. Upload directly from a file, i.e.
-      ``http://webatoms.server/file?file=http://www.crystallography.net/cod/1535967.cif``
+      ``http://webatoms.server/?file=/path/to/1535967.cif``
       or some such.  Although care should be taken, as this can
       `expose files inappropriately
       <https://blog.steve.fi/If_your_code_accepts_URIs_as_input__.html>`_

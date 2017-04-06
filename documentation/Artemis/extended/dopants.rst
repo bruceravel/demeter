@@ -105,7 +105,7 @@ was published as
 In that paper, significant site swapping was found between the site
 occupied by Zr and one of the Ti sites. Consequently, the CIF file is
 published with partial occupancies for those tow sites. `Here is the
-CIF file <http://www.crystallography.net/9009220.html>`__.
+CIF file <http://www.crystallography.net/cod/9009220.html>`__.
 
 When this CIF file is imported into :demeter:`artemis`, you see this
 error message:

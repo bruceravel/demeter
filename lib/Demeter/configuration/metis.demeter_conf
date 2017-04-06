@@ -1,0 +1,164 @@
+## -*- config -*-
+###########################################################################
+## This configuration file is for Metis version 5.
+##
+##     Metis is Copyright (c) 2006-2014,2016 Bruce Ravel and Jeremy Kropf.
+##
+##	  The latest version of Metis can always be found at
+##               http://bruceravel.github.io/BLA-XANES/
+##
+## -------------------------------------------------------------------
+##     All rights reserved. This program is free software; you can
+##     redistribute it and/or modify it provided that the above notice
+##     of copyright, these terms of use, and the disclaimer of
+##     warranty below appear in the source code and documentation, and
+##     that none of the names of Argonne National Laboratory, The
+##     University of Chicago, University of Washington, or the authors
+##     appear in advertising or endorsement of works derived from this
+##     software without specific prior written permission from all
+##     parties.
+##
+##     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+##     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+##     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+##     NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+##     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+##     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+##     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+##     OTHER DEALINGS IN THIS SOFTWARE.
+## -------------------------------------------------------------------
+###########################################################################
+
+
+## This file contains the Metis configuration group
+
+
+######################################################################
+section=metis
+section_description
+  These variables determine the behavior of Metis.
+
+variable=imagescale
+type=real
+default=40
+description
+  A scaling factor for the color scale when plotting images.  A bigger
+  number leads to a smaller range of the plot.
+
+variable=tiffcounter
+type=string
+default=00001
+description
+  The counter part of the elastic tiff image name.
+
+variable=energycounterwidth
+type=positive integer
+default=5
+minint=1
+maxint=10
+description
+  The width of the energy counter part of the energy tiff image name.
+
+variable=terminal
+type=list
+options=wxt qt x11 aqua windows
+default=qt
+description
+  The Gnuplot terminal type.
+
+variable=outimage
+type=list
+options=gif tif
+default=gif
+description
+  The default output image type, typically either gif or tif.
+
+variable=color
+type=list
+options=grey green blue orange purple red surprise
+default=surprise
+description
+  Color for visualizing images and masks.  The surprise option
+  selects one of the colors at random.
+
+variable=splot_palette_name
+type=list
+options=Ocean Parula Pm3d Rainbow
+default=Parula
+description
+  The palette for the plot of the RXES plane type.
+
+variable=xdi_metadata_file
+type=file
+default=__METIS_BASE__/../share/bla.xdi.ini
+description
+  Path to .ini file with beamline specific XDI metadata.
+
+variable=scan_file_template
+type=string
+default=%s.001
+description
+  Template for the scan file name
+  .  %s = stub
+  .  %e = emission energy
+  .  %i = incident energy
+  .  %t = tiffcounter
+  .  %c = energy counter
+
+variable=elastic_file_template
+type=string
+default=%s_elastic_%e_%t.tif
+description
+  Template for the elastic file name
+  .  %s = stub
+  .  %e = emission energy
+  .  %i = incident energy
+  .  %t = tiffcounter
+  .  %c = energy counter
+
+variable=image_file_template
+type=string
+default=%s_%c.tif
+description
+  Template for the image file name
+  .  %s = stub
+  .  %e = emission energy
+  .  %i = incident energy
+  .  %t = tiffcounter
+  .  %c = energy counter
+
+variable=gaussian_kernel
+type=list
+options=3x3 5x5
+default=3x3
+description
+  The size of the kernel for the Gaussian filter.
+
+variable=polyfill_order
+type=positive integer
+default=6
+minint=3
+maxint=10
+description
+  The order of the polynomial used in the polyfill mask creation step.
+
+variable=polyfill_gaps
+type=boolean
+default=1
+onvalue=1
+offvalue=0
+description
+  When true, fill gaps in the fitted polynomial functions, making the
+  mask continuous.  The gaps are usually due either to Soller slits or
+  the processing of a section with weak signal.
+
+variable=gnuplot_wait
+type=positive integer
+default=10
+minint=10
+maxint=100
+restart=1
+description
+  Gnuplot response timeout.  10 is usually adequate, but increasing
+  this can help if using Metis over a slow network connection.
+

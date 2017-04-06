@@ -2,7 +2,7 @@ package Demeter::UI::HephaestusApp;
 
 =for Copyright
  .
- Copyright (c) 2006-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -395,6 +395,8 @@ sub OnInit {
 #  $frame->{line}->adjust_column_width;
 
   $frame -> Show( 1 );
+  print DateTime->now, "  Hephaestus is go! ...\n" if ($ENV{DEMETER_TIMING});
+  1;
 };
 
 sub multiplex {
@@ -491,7 +493,7 @@ Demeter::UI::Hephaestus - A souped-up periodic table for XAS
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
@@ -556,7 +558,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

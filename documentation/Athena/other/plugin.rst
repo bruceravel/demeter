@@ -10,8 +10,8 @@ File type plugins
 Extending ATHENA to read new file types
 ---------------------------------------
 
-:mark:`bend,..` :demeter:`athena` uses :demeter:`ifeffit`'s `read\_data()
-<http://cars9.uchicago.edu/~ifeffit/refman/node99.html>`__ function or
+:mark:`bend,..` :demeter:`athena` uses :demeter:`ifeffit`'s :code:`read\_data()`
+function or
 :demeter:`larch`'s `read\_ascii()
 <http://xraypy.github.io/xraylarch/data/index.html>`__ function to
 import data. This means that :demeter:`athena`'s notion of what is an

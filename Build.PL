@@ -2,7 +2,7 @@
 
 =for Copyright
  .
- Copyright (c) 2006-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -130,12 +130,15 @@ my $build = DemeterBuilder
 				## project docs
 				'Pod::ProjectDocs'        => '0',
 				'File::Slurper'           => '0',
-				'Capture::Tiny'           => '0',
 
 				## these are used to build the Ifeffit wrapper
                                 'ExtUtils::CBuilder'      => '0',
 			       },
 	 PL_files           => {
+				## demeter configuration converted to a quick-loading JSON file (with .db so it gets installed by default)
+				'lib/Demeter/configuration/demeter_config.PL' => 'lib/Demeter/configuration/demeter_config.db',
+
+				## space group database
 				'lib/Xray/Crystal/share/space_groups.db.PL' => 'lib/Xray/Crystal/share/space_groups.db',
 
                                 ## from Xray::Absorption
@@ -183,14 +186,17 @@ my $build = DemeterBuilder
 				'src/*.so',
 				'src/*.dylib',
 				'src/*.dll',
+				'lib/Demeter/configuration/demeter_config.db',
+				'lib/Demeter/configuration/plot.demeter_conf',
+				'lib/Demeter/configuration/gnuplot.demeter_conf',
 				'lib/Xray/Absorption/*.db',
 				'lib/Xray/Scattering/*.db',
 				'lib/Xray/Crystal/share/*.db',
-				'lib/Demeter/doc/dpg/bin/build',
-				'lib/Demeter/doc/dpg/etc/ttree.cfg',
-				'lib/Demeter/doc/dpg/html',
-				'lib/Demeter/doc/dpg/templates/lib/config/map',
-				'lib/Demeter/doc/dpg/templates/lib/config/version',
+				#'lib/Demeter/doc/dpg/bin/build',   # doc/ is deprecated
+				#'lib/Demeter/doc/dpg/etc/ttree.cfg',
+				#'lib/Demeter/doc/dpg/html',
+				#'lib/Demeter/doc/dpg/templates/lib/config/map',
+				#'lib/Demeter/doc/dpg/templates/lib/config/version',
 				't/feff',
 			       ],
 	 meta_merge     => {
@@ -246,8 +252,8 @@ You can build and install the documentation by doing
   ./Build manuals
   ./Build install # (or sudo ./Build install)
 
-Building the documentation requires sphinx, pybtex, and
-sphinxcontrib-bibtex.
+Building the documentation requires sphinx, pybtex,
+sphinxcontrib-bibtex, and sphinxcontrib-blockdiag.
 
 END_MESSAGE
 ;
@@ -258,7 +264,7 @@ Build.PL - Demeter build script
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 

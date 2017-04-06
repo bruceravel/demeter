@@ -3,6 +3,10 @@
   #   {$D->group} returns the ifeffit group name
   #   {$D->parameter} returns the value of that parameter
 }
+##| fit arrays for {$D->group}
+{$D->group}_fit     = group()
+{$D->group}_fit.k   = {$D->group}.k
+{$D->group}_fit.chi = dset_{$D->group}.model.chi
 ##| residual arrays for {$D->group}
 {$D->group}_res     = group()
 {$D->group}_res.k   = {$D->group}.k

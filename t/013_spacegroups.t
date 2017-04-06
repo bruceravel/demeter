@@ -2,7 +2,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2008-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -14,6 +14,10 @@
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 =cut
+
+BEGIN {
+  $ENV{DEMETER_NO_BACKEND} = 1;
+}
 
 use Storable;
 use Xray::Crystal;

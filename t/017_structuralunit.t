@@ -4,7 +4,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2008-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -20,6 +20,7 @@
 use Test::More tests => 12;
 
 use Demeter qw(:fit);
+use Demeter::StructuralUnit;
 
 my $this = Demeter::StructuralUnit -> new();
 my $OBJ  = 'StructuralUnit';
@@ -34,11 +35,12 @@ ok(!$this->data,                     "$OBJ object has no associated Data object"
 ok( ref($this->mo) =~ 'Mode',        "$OBJ object can find the Mode object");
 ok( ref($this->co) =~ 'Config',      "$OBJ object can find the Config object");
 ok( ref($this->po) =~ 'Plot',        "$OBJ object can find the Plot object");
+my $which = (Demeter->is_larch) ? 'larch' : 'ifeffit';
 ok( ($this->mo->template_plot     =~ m{plot}   and
      $this->mo->template_feff     eq 'feff6'   and
-     $this->mo->template_process  eq 'ifeffit' and
-     $this->mo->template_fit      eq 'ifeffit' and
-     $this->mo->template_analysis eq 'ifeffit'),
+     $this->mo->template_process  eq $which and
+     $this->mo->template_fit      eq $which and
+     $this->mo->template_analysis eq $which),
                                      "$OBJ object can find template sets");
 
 my @paths = (Demeter::Path->new(), Demeter::Path->new(), Demeter::Path->new());

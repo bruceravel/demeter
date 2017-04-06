@@ -32,7 +32,14 @@ use File::Which qw(which);
 ######################################################################
 ## Configuration
 
-my $WINPERL = File::Spec->catfile($ENV{APPDATA}||'./', 'DemeterPerl');
+my $WINPERL;
+if (defined($ENV{COMPUTERNAME}) and ($ENV{COMPUTERNAME} eq 'WPS-136083')) {
+  # the correct value for the build machine in my office
+  $WINPERL = 'C:\\Strawberry';
+} else {
+  # the likeliest value on some other computer
+  $WINPERL = File::Spec->catfile($ENV{APPDATA}||'./', 'DemeterPerl');
+};
 my %windows = (base    => $WINPERL,  # base of Demeter's perl
 	       gnuwin  => File::Spec->catfile($WINPERL, 'lib'),
 	       mingw   => File::Spec->catfile($WINPERL, 'c', 'lib', 'i686-w64-mingw32', '4.7.3'),
@@ -61,6 +68,12 @@ sub ACTION_test {
   my $self = shift;
   $ENV{DEMETER_FORCE_IFEFFIT} = 1;
   print "NOTE: Forcing use of Ifeffit in testing.\n";
+  $self->SUPER::ACTION_test;
+};
+sub ACTION_ltest {
+  my $self = shift;
+  $ENV{DEMETER_FORCE_IFEFFIT} = 0;
+  print "NOTE: Forcing use of Larch in testing.\n";
   $self->SUPER::ACTION_test;
 };
 
@@ -246,21 +259,22 @@ sub ACTION_compile_ifeffit_wrapper {
       ($pgplot_location, $iffdir) = (q{}, q{});
 
       $linker_flags = [
-		       q{-L}.$windows{gnuwin}.q{\lib"},
-		       q{-lcurses -lreadline},
+		       q{-L"}.$windows{gnuwin}.q{\lib"},
+		       #q{-lcurses -lreadline},
+	               q{-lcurses -lreadline},
 
-		       q{-L}.$windows{base}.q{\perl\lib\CORE"},
-		       q{-L}.$windows{base}.q{\c\lib"},
-		       q{-L}.$windows{mingw},
-		       q{-L}.$windows{ifeffit},
+		       q{-L"}.$windows{base}.q{\perl\lib\CORE"},
+		       q{-L"}.$windows{base}.q{\c\lib"},
+		       q{-L"}.$windows{mingw}.q{"},
+		       q{-L"}.$windows{ifeffit}.q{"},
 		       q{-lifeffit -lxafs},
 
 		       #q{-L"C:\MinGW\bin"},
-		       q{-L}.$windows{mingw},
-		       q{-L}.$windows{mingw}.q{\lib"},
+		       q{-L"}.$windows{mingw}.q{"},
+		       q{-L"}.$windows{mingw}.q{\lib"},
 		       q(-lgfortran -lmingw32 -lgcc_s -lmoldname -lmingwex -lmsvcrt -luser32 -lkernel32 -ladvapi32 -lshell32),
 
-		       q{-L}.$windows{pgplot},
+		       q{-L"}.$windows{pgplot}.q{"},
 		       qw{-lcpgplot -lpgplot -lGrWin -lgdi32 -lgfortran},
 		      ];
       #    $compile_flags = $linker_flags;
@@ -376,7 +390,7 @@ sub ACTION_org2html {
     print "org2html not found, not converting org pages (see https://github.com/fniessen/orgmk)\n";
     return;
   };
-  print "copying stylesheets\n";
+  print "copying stylesheets and converting org to html\n";
   copy(File::Spec->catfile('css','orgstyle.css'), File::Spec->catfile($ghpages, 'stylesheets', 'orgstyle.css'));
   copy(File::Spec->catfile('css','orgtocstyle.css'), File::Spec->catfile($ghpages, 'stylesheets', 'orgtocstyle.css'));
   if (not is_older("todo.org", File::Spec->catfile($ghpages, 'todo.html'))) {
@@ -398,6 +412,7 @@ my $old_cpan = qr{http://search\.cpan\.org/perldoc\?};
 my $new_cpan = q{https://metacpan.org/pod/};
 sub ACTION_doctree {
   my $self = shift;
+  print "making project docs\n";
   my $LIB  = 'lib'; #File::Spec->catfile('..', '..', '..', 'lib');
   my $BIN  = 'bin'; #File::Spec->catfile('..', '..', '..', 'bin');
   my @list = (qw(denv dhephaestus datoms dfeff dfeffit rdfit dlsprj standards dathena dartemis));
@@ -408,9 +423,10 @@ sub ACTION_doctree {
 				 outroot  => File::Spec->canonpath(File::Spec->catfile($ghpages, 'pods')),
 				 libroot  => [$LIB, $BIN],
 				 forcegen => 1,
+				 index    => 0,
 				 title    => 'Demeter',
 				 desc     => "Perl tools for X-ray Absorption Spectroscopy",
-				 except   => [qr(Savitzky), qr(ToolTemplate), qr(XDI), qr(PCA_new), qr(Larch_inline)],
+				 except   => [qr(Savitzky), qr(ToolTemplate), qr(XDI), qr(PCA_new), qr(Larch_inline), qr(LarchServer)],
 				);
   $pd->gen();
   foreach my $d (@list) {
@@ -466,6 +482,7 @@ sub ACTION_bump {
   print "
 perl-reversion misses version numbers in
 	Build.PL
+and the conf.py files for the Sphinx documents.
 
 Don't forget to push and tag!
 "

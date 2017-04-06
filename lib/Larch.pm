@@ -16,6 +16,8 @@ use File::Which qw(which);
 use RPC::XML::Client;
 use Time::HiRes qw(usleep);
 
+use Proc::Background;
+
 use vars qw($larch_is_go $larchconn $larch_exe $larch_port);
 $larch_exe = q{};
 
@@ -71,6 +73,7 @@ sub get_next_larch_port {
   return $w[-1];
 };
 
+our $proc;
 sub start_larch_server {
   $larch_port = -1;
   $larch_exe = find_larch();
@@ -82,8 +85,7 @@ sub start_larch_server {
     if ($larch_port > 2000) {
       my $command = $larch_exe." -p ". $larch_port." start";
       print STDOUT "\nStarting Larch server: $command\n";
-      my $out = system $command;
-
+      $proc = system $command;
       # verify connnection to server
       my $addr = sprintf("http://%s:%d", 'localhost', $larch_port);
       my $conn = RPC::XML::Client->new($addr);
@@ -132,30 +134,30 @@ sub larch {
 
 sub decode_data {
   my ($dat) = @_;
-  my %dat;
+  #my %dat;
   # print("DECODE: ", ref($dat), "\n");
   if (ref($dat) eq 'ARRAY') {
     return @$dat;
-  }  elsif (ref($dat) eq 'RPC::XML::nil') {
+  } elsif (ref($dat) eq 'RPC::XML::nil') {
     return undef;
   } elsif (ref($dat) eq 'RPC::XML::string') {
     return $$dat;
   } elsif (ref($dat) eq 'RPC::XML::double') {
     return $$dat;
   } elsif (ref($dat) eq 'RPC::XML::struct') {
-    my $class = %$dat{__class__};
-    # print "STRUCT CLass " , $class, "\n";
-    if ($$class eq "HASH"){
-      return decode_data($dat{value});
+    my $class = $dat->{__class__};
+    #print "STRUCT CLass " , $$class, "\n";
+    if ($$class eq "HASH") {
+      return %$dat;
     } elsif ($$class eq "Array"){
-      my $value = %$dat{value};
-      my $dtype = %$dat{__dtype__}->value;
-      my $shape = @{%$dat{__shape__}->value};
+      my $value = $dat->{value};
+      my $dtype = $dat->{__dtype__}->value;
+      my $shape = @{$dat->{__shape__}->value};
       return $value->value;
     } elsif (($$class eq "List") or
 	     ($$class eq "Tuple") or
 	     ($$class eq "Complex")) {
-      my $value = %$dat{value};
+      my $value = $dat->{value};
       # print "LIST/TUPLE ", $value, $value->value, "\n";
       return $value->value;
     } elsif (($$class eq "Dict") or
@@ -166,7 +168,7 @@ sub decode_data {
 	  $out{$key} =  decode_data($$dat{$key});
 	}
       }
-      return %out;
+      return \%out;
     } else {
       print "cannot decode data, unknown structure class: $$class \n";
     }
@@ -207,12 +209,16 @@ sub put_larch_scalar {
 sub get_larch_array {
   my ($param) = @_;
   my $tmp = decode_data(get_data($param));
-  return @{$tmp} if defined $tmp;
-  return undef;
+  if (defined $tmp) {
+    return @{$tmp} if ref($tmp) eq 'ARRAY';
+    return %{$tmp} if ref($tmp) eq 'HASH';
+  };
+  return ();
 };
 
 sub put_larch_array {
   my ($param, $aref) = @_;
+  return q{} if ($#{$aref} < 1);
   my $value = '[' . join(',', @$aref) . ']';
   return dispose("$param = array($value, dtype=float64)");
 };
@@ -265,7 +271,8 @@ if (!$larchconn) {
 }
 
 END {
-  my $ok = system "$larch_exe -p $larch_port stop";
+  #my $action = ($ENV{DEMETER_LARCH_PERSIST}) ? 'status' : 'stop';
+  system "$larch_exe -p $larch_port stop";
 }
 
 
@@ -328,7 +335,7 @@ Bruce Ravel (L<http://bruceravel.github.io/home>)
 
 L<http://bruceravel.github.io/demeter/>
 
-Larch is copyright (c) 2016, Matthew Newville and Tom Trainor
+Larch is copyright (c) 2017, Matthew Newville and Tom Trainor
 
 =head1 SEE ALSO
 

@@ -1,0 +1,12 @@
+{
+  ## erase one or more gds parameters
+  use Text::Wrap;
+  local $Text::Wrap::columns = 200;
+  $all = q{};
+  $items =~ s{\@group}{}g;
+  if ($items) {
+    $all = wrap('del ', 'del ', $items);
+  };
+  q{}
+}
+{$all}

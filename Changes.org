@@ -5,7 +5,7 @@
 #+OPTIONS: toc:2
 
 * 0.9 series
-** 0.9.26   ?? Smarch    2017
+** 0.9.26   ?? April     2017
 *** Athena
     + [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-September/008818.html][fix XDI headers]] in "save marked groups" output files, also add
       templates to provide for the special case in k of two abscissa
@@ -20,6 +20,9 @@
       (Thanks to Sinead Rowe)
     + Fix a problem processing keV data when using Larch (Thanks to
       [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-November/008880.html][Juan de la Figuera]]) (See issue #42)
+    + Bug fix for the SSRLA filetype plugin (Thanks to Simon Bare)
+    + The check for exceeding Ifeffit's rough limit was ridiculously
+      broken
 
 *** Artemis
     + Actually use the user-supplied value of epsilon_k (Thanks to
@@ -27,14 +30,27 @@
     + disable C-left on path list, which was used (I think) to clone
       paths.  This is a loss for dnd a path to another data set, but I
       suspect that is not much used.
+    + Fix several bugs in multiple data set fits using Larch
+    + Change the symbol for an excluded path from [[https://en.wikipedia.org/wiki/Triple_parentheses][three parens (((path)))
+     ]] to ~--(path)--~
+    + Improved validator for N path parameter -- it can now be blank.
+      Also selecting all then typing works sensibly
+    + Put in a more rigorous check for exceeding ~&max_data_sets~ when
+      using Ifeffit.  Simply refuse to import more than that many data
+      sets regardless of ~Include in fit~ settings.  (Thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2017-March/009062.html][Victor
+      Streltsov]])
+    + Fix a bug finding location of gnuplot and feff executables
+      (Thanks to Robert Gordon)
 
 *** Atoms
-    + WebAtoms, https://github.com/bruceravel/WebAtoms
+    + WebAtoms, https://github.com/bruceravel/WebAtoms, also
+      http://millenia.cars.aps.anl.gov/webatoms
     + Lots of fixes for problems uncovered while working on WebAtoms
     + Set DEMETER_NO_BACKEND = 1 when using CLI interface
     + Handle =:1= and =:2= symbol modifiers in a more robust manner --
       remove the modifier and apply the tabulated shift vector in the
       case of a =:1= group (Thanks to [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-December/008914.html][Marcus Fehse]])
+    + Change how default value of postcrit attribute is set.
 
 *** Hephaestus
     + Added P K, S K, Cl K, Ag L3, and Pb L3 standards contributed by
@@ -43,6 +59,7 @@
 *** Demeter
     + Try to start Larch, if no success fall back to Ifeffit.  Accept
       a PR from Matt related to this.
+    + Delay loading of more stuff to speed start-up
     + Update non-root installation instructions (Thanks to [[https://github.com/bruceravel/demeter/issues/36][Patrick Browne]])
     + DEMETER_MODE and DEMETER_NO_BACKEND environment variables
       recognized.  The first provides a way to set the Mode ui _very_
@@ -55,8 +72,11 @@
     + Fixed a few testing bugs, skip XDI tests, force use of Ifeffit
       for testing.  The last two are not permanent.  In particular,
       testing with Larch is very important.
+    + All tests passing with Larch (also still pass with Ifeffit)!
 
 *** Windows
+    + Upgrade to Strawberry with perl 5.24, upgrade to 64 bit Gnuplot
+      5.0.4
 
 ** 0.9.25   24 August    2016
 *** Athena

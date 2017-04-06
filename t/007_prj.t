@@ -4,7 +4,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2008-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -38,11 +38,12 @@ ok(!$this->data,                                        "$OBJ object has no asso
 ok( ref($this->mo) =~ 'Mode',                         "$OBJ object can find the Mode object");
 ok( ref($this->co) =~ 'Config',               "$OBJ object can find the Config object");
 ok( ref($this->po) =~ 'Plot',                   "$OBJ object can find the Plot object");
+my $which = (Demeter->is_larch) ? 'larch' : 'ifeffit';
 ok( ($this->mo->template_plot     =~ m{plot}   and
      $this->mo->template_feff     eq 'feff6'   and
-     $this->mo->template_process  eq 'ifeffit' and
-     $this->mo->template_fit      eq 'ifeffit' and
-     $this->mo->template_analysis eq 'ifeffit'),
+     $this->mo->template_process  eq $which and
+     $this->mo->template_fit      eq $which and
+     $this->mo->template_analysis eq $which),
                                                         "$OBJ object can find template sets");
 
 my @list = @{ $this->entries };
@@ -66,10 +67,10 @@ ok( $first->data,                                       "$OBJ object is its own 
 ok( ref($first->mode) =~ 'Mode',                        "$OBJ object can find the Mode object");
 ok( ref($first->mode->config) =~ 'Config',              "$OBJ object can find the Config object");
 ok( ref($first->mode->plot) =~ 'Plot',                  "$OBJ object can find the Plot object");
-ok( ($first->mode->template_plot     =~ m{plot}   and
-     $first->mode->template_feff     eq 'feff6'   and
-     $first->mode->template_process  eq 'ifeffit' and
-     $first->mode->template_fit      eq 'ifeffit' and
-     $first->mode->template_analysis eq 'ifeffit'),
+ok( ($this->mo->template_plot     =~ m{plot}   and
+     $this->mo->template_feff     eq 'feff6'   and
+     $this->mo->template_process  eq $which and
+     $this->mo->template_fit      eq $which and
+     $this->mo->template_analysis eq $which),
                                                         "$OBJ object can find template sets");
 ok( $first->from_athena,                                "from_athena flag is set");

@@ -4,7 +4,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2008-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -17,7 +17,11 @@
 
 =cut
 
-use Test::More tests => 11;
+BEGIN {
+  $ENV{DEMETER_NO_BACKEND} = 1;
+}
+
+use Test::More tests => 10;
 
 use Demeter qw(:fit);
 
@@ -34,11 +38,12 @@ ok( !$this->data,                                       "$OBJ object has no asso
 ok( ref($this->mo) =~ 'Mode',                         "$OBJ object can find the Mode object");
 ok( ref($this->co) =~ 'Config',               "$OBJ object can find the Config object");
 ok( ref($this->po) =~ 'Plot',                   "$OBJ object can find the Plot object");
-ok( ($this->mo->template_plot     =~ m{plot}   and
-     $this->mo->template_feff     eq 'feff6'   and
-     $this->mo->template_process  eq 'ifeffit' and
-     $this->mo->template_fit      eq 'ifeffit' and
-     $this->mo->template_analysis eq 'ifeffit'),
-                                                        "$OBJ object can find template sets");
+# my $which = (Demeter->is_larch) ? 'larch' : 'ifeffit';
+# ok( ($this->mo->template_plot     =~ m{plot}   and
+#      $this->mo->template_feff     eq 'feff6'   and
+#      $this->mo->template_process  eq $which and
+#      $this->mo->template_fit      eq $which and
+#      $this->mo->template_analysis eq $which),
+#                                                         "$OBJ object can find template sets");
 
 ok( $this->id   eq 'virtual path',                      "id set to its default");

@@ -2,7 +2,7 @@
 
 =for Copyright
  .
- Copyright (c) 2006-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -16,6 +16,7 @@
 =cut
 
 use Demeter qw(:ui=screen);
+use Demeter::Feff::External;
 
 print "Multiple data set fit to 10K and 150K copper data using Demeter ", $Demeter::VERSION, $/;
 

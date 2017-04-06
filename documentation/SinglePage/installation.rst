@@ -17,7 +17,7 @@ perl.
 
 These instructions are for installing system-wide, which requires root
 privileges.  All instructions are given assuming that you use a system
-which uses `sudo <http://en.wikipedia.org/wiki/Sudo>`_.  If your
+which uses `sudo <https://en.wikipedia.org/wiki/Sudo>`_.  If your
 machine does not use :command:`sudo`, then replace :command:`sudo`
 with :command:`su -s` in the instructions that follow.
 
@@ -149,7 +149,7 @@ Build DEMETER and its dependencies
     To download a copy of the source code, do one of the following:
 
     #. Use git to clone a copy.  You will need to have `git
-       <http://git-scm.com/>`_, which is a version control system used
+       <https://git-scm.com/>`_, which is a version control system used
        to manage the Demeter source code, installed on your
        computer. On Ubuntu machines, the package is called
        :quoted:`git-core`.  At the command line, do:
@@ -194,9 +194,9 @@ Build DEMETER and its dependencies
 
 **Step 3a: Configure cpan (optional)**
 
-    You will use the `cpan <https://metacpan.org/module/cpan>`_
+    You will use the `cpan <https://metacpan.org/pod/cpan>`_
     program to download most of the dependencies from `the CPAN
-    repository <http://metacpan.org>`_. You can make this process
+    repository <https://metacpan.org>`_. You can make this process
     easier by configuring the cpan program. Start cpan:
     
     ::
@@ -261,7 +261,7 @@ Build DEMETER and its dependencies
 
     :quoted:`PDL::Stats` presents a special challange.  There is a
     `known bug
-    <http://sourceforge.net/p/pdl/mailman/pdl-devel/?viewmonth=201505&viewday=12>`_
+    <https://sourceforge.net/p/pdl/mailman/pdl-devel/?viewmonth=201505&viewday=12>`_
     in :quoted:`PDL::Stats` that is not yet fixed (at the time of this
     writing, Aug. 2015) in the upstream source.  If possible, use your
     system's pre-built package (the Debian package is called
@@ -380,7 +380,7 @@ to install Carlo Segre's pre-built versions of :demeter:`ifeffit` and
 :program:`PGPLOT` by following the instructions at
 http://debian-xray.iit.edu/.
 
-Prior to Step 3a, go to https://metacpan.org/module/local::lib and
+Prior to Step 3a, go to https://metacpan.org/pod/local::lib and
 download the latest version of the :quoted:`local::lib` module.
 Unpack it and cd into the newly created directory.  (`See this mailing
 list post
@@ -406,7 +406,7 @@ If you use the bash shell, do
    echo 'eval $(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)' >>~/.bashrc
 
 If you use a shell that uses C shell syntax, follow the instructions
-at https://metacpan.org/module/local::lib#The-bootstrapping-technique.
+at https://metacpan.org/pod/local::lib#The-bootstrapping-technique.
 
 This last step adds a line to your login file. The easiest way for
 this to take effect is to log out and log in again or to open a new

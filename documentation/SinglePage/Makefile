@@ -51,6 +51,7 @@ clean:
 
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
+#sh fix_mingw.sh
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 

@@ -93,10 +93,10 @@ sub Import {
     @files = $fd->GetPaths;
   };
 
-
-  if (Demeter->is_ifeffit and ($#files > 49)) {
+  # sum of data groups in the group list + number being imported
+  if (Demeter->is_ifeffit and ($app->{main}->{list}->GetCount + $#files > 49)) {
     my $yesno = Demeter::UI::Wx::VerbDialog->new($app->{main}, -1,
-						 "That number of files may overextened Ifeffit's statically allocated memory.  It may be wise to make projects of fewer than 50 data groups.  If you continue importing, you run the risk of corrupting Ifeffit's memory and possibly crashing Athena.",
+						 "You are running a risk of overextending Ifeffit's statically allocated memory.  A good rule of thumb is to keep projects below about 50 data groups.  If you continue importing, you run the risk of corrupting Ifeffit's memory and possibly crashing Athena.  At the very least, you should save your work before continuing.",
 						 "Lots of files!",
 						 "Continue importing");
     my $response = $yesno -> ShowModal;
@@ -504,6 +504,7 @@ sub _data {
 	  :                                            'xmu';
   my $message = q{};
   if ($med) {
+    require "Demeter/Data/MultiChannel.pm";
     my $mc = Demeter::Data::MultiChannel->new(file=>$file, energy=>$data->energy);
     my $align = $yaml->{preproc_align};
     my $eshift = 0;
@@ -1109,7 +1110,7 @@ Demeter::UI::Athena::IO - import/export functionality
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
@@ -1132,7 +1133,7 @@ Bruce Ravel, L<http://bruceravel.github.io/home>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

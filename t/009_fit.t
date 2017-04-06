@@ -4,7 +4,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2008-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -38,11 +38,12 @@ ok( $this->data,                              "$OBJ object has an associated Dat
 ok( ref($this->mo) =~ 'Mode',                 "$OBJ object can find the Mode object");
 ok( ref($this->co) =~ 'Config',               "$OBJ object can find the Config object");
 ok( ref($this->po) =~ 'Plot',                 "$OBJ object can find the Plot object");
+my $which = (Demeter->is_larch) ? 'larch' : 'ifeffit';
 ok( ($this->mo->template_plot     =~ m{plot}   and
      $this->mo->template_feff     eq 'feff6'   and
-     $this->mo->template_process  eq 'ifeffit' and
-     $this->mo->template_fit      eq 'ifeffit' and
-     $this->mo->template_analysis eq 'ifeffit'),
+     $this->mo->template_process  eq $which and
+     $this->mo->template_fit      eq $which and
+     $this->mo->template_analysis eq $which),
                                                         "$OBJ object can find template sets");
 
 
@@ -77,13 +78,13 @@ ok( $#{ $this->paths } == 0,  'set paths array attribute');
 
 
 ## -------- run a fit
-$this -> set_mode(screen=>0, backend=>1);
+#$this->set_mode(screen=>1);
 $this->fit;
-
+#$this->dispose("show ".$this->group);
 
 # -------- test correlations methods
 ok( $this->correl(qw(amp ss)) > 0.9,          'grabbing a high correlation: C(amp,ss) > 0.9 : '.$this->correl(qw(amp ss)));
-ok( $this->correl(qw(amp enot)) < 0.2,        'grabbing a low correlation:  C(amp,e0) < 0.2 : '.$this->correl(qw(amp enot)));
+ok( (($this->correl(qw(amp enot)) > 1e-5) and ($this->correl(qw(amp enot)) < 0.2)),        'grabbing a low correlation:  C(amp,e0) < 0.2 : '.$this->correl(qw(amp enot)));
 my %all = $this->all_correl;
 ok( keys(%all) == 6,                          'can grab all correlations');
 $this->cormin(0.5);

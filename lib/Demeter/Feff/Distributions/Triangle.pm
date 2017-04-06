@@ -3,9 +3,10 @@ use Moose::Role;
 use MooseX::Aliases;
 
 use POSIX qw(acos);
-use Demeter::Constants qw($PI);
 
+use Demeter::Constants qw($PI);
 use Demeter::NumTypes qw( Ipot );
+use Demeter::ThreeBody;
 
 ## DS triangle histogram attributes
 has 'skip'      => (is => 'rw', isa => 'Int', default => 50,);
@@ -226,7 +227,7 @@ Demeter::Feff::Distributions::Triangle - Histograms for short triangular paths
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
@@ -322,7 +323,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2016 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

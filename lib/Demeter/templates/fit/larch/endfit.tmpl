@@ -17,7 +17,7 @@
   q{}
 }
 ###__ perform the fit
-del {$D->group}.epsilon_k, {$D->group}.epsilon_r
+#del {$D->group}.epsilon_k, {$D->group}.epsilon_r
 trans_{$D->group} = feffit_transform(kmin={$D->fft_kmin}, kmax={$D->fft_kmax}, kw={$kstring}, dk={$D->fft_dk}, window='{$D->fft_kwindow}',
                                rmin={$D->bft_rmin}, rmax={$D->bft_rmax})
 dset_{$D->group} = feffit_dataset(data={$D->group},{$epsstring}
@@ -25,8 +25,3 @@ dset_{$D->group} = feffit_dataset(data={$D->group},{$epsstring}
                             transform=trans_{$D->group})
 dsets.append(dset_{$D->group})
 {$F->group} = feffit(gds, dsets)
-
-##| fit group for {$D->group}
-{$D->group}_fit     = group()
-{$D->group}_fit.k   = {$D->group}.k
-{$D->group}_fit.chi = dset_{$D->group}.model.chi

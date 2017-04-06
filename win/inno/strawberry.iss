@@ -1,12 +1,12 @@
 ; -- demeter_and_strawberry_perl.iss --
 
 #define MyInstName "Demeter_Installer_for_Windows"
-#define MyAppVersion "0.9.24"
+#define MyAppVersion "0.9.25"
 #define MyAppPublisher "Bruce Ravel"
 #define MyAppURL "http://bruceravel.github.io/demeter"
 #define Demeter "Demeter with Strawberry Perl"
 #define Bits "64"
-#define Pre "pre4"
+#define Pre "pre2"
 
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
 ; using ISC 5.4.2(a)
@@ -42,6 +42,8 @@ AppUpdatesURL={#MyAppURL}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 
+PrivilegesRequired = lowest
+
 ChangesAssociations=yes
 ChangesEnvironment=yes
 
@@ -62,32 +64,32 @@ Filename: "{app}\relocation.pl.bat";
 Name: "{userappdata}\demeter"
 
 [Registry]
-Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; \
+Root: HKCU; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; \
     ValueName: "Path"; ValueType: expandsz; ValueData: "{olddata};{code:getPath}"; \
     Check: NeedsAddPath('\perl\site\bin');
 ; TODO: don't add the leading semi-colon to the Path if there is already a trailing one
-Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueName: "PGPLOT_DIR"; ValueType: expandsz; ValueData: "{app}\c\lib\pgplot";
-Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueName: "FONTCONFIG_FILE"; ValueType: expandsz; ValueData: "{app}\c\bin\etc\fonts\fonts.conf";
+Root: HKCU; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueName: "PGPLOT_DIR"; ValueType: expandsz; ValueData: "{app}\c\lib\pgplot";
+Root: HKCU; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueName: "FONTCONFIG_FILE"; ValueType: expandsz; ValueData: "{app}\c\bin\etc\fonts\fonts.conf";
 
 ;; File associations
-Root: HKCR; Subkey: ".pl"; ValueType: string; ValueName: ""; ValueData: "Perl"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "Perl"; ValueType: string; ValueName: ""; ValueData: "Perl program"; Flags: uninsdeletekey 
-Root: HKCR; Subkey: "Perl\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\perl\bin\perl.exe,0"; Flags: uninsdeletekey
-Root: HKCR; Subkey: "Perl\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\perl\bin"" ""%1"""; Flags: uninsdeletekey 
+Root: HKCU; Subkey: ".pl"; ValueType: string; ValueName: ""; ValueData: "Perl"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "Perl"; ValueType: string; ValueName: ""; ValueData: "Perl program"; Flags: uninsdeletekey 
+Root: HKCU; Subkey: "Perl\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\perl\bin\perl.exe,0"; Flags: uninsdeletekey
+Root: HKCU; Subkey: "Perl\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\perl\bin"" ""%1"""; Flags: uninsdeletekey 
 
-Root: HKCR; Subkey: ".prj"; ValueType: string; ValueName: ""; ValueData: "Athena"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "Athena"; ValueType: string; ValueName: ""; ValueData: "Athena project file"; Flags: uninsdeletekey 
-Root: HKCR; Subkey: "Athena\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\perl\site\lib\Demeter\UI\Athena\share\athena_icon.ico"; Flags: uninsdeletekey
-Root: HKCR; Subkey: "Athena\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\perl\site\bin\dathena.bat"" ""%1"""; Flags: uninsdeletekey 
+Root: HKCU; Subkey: ".prj"; ValueType: string; ValueName: ""; ValueData: "Athena"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "Athena"; ValueType: string; ValueName: ""; ValueData: "Athena project file"; Flags: uninsdeletekey 
+Root: HKCU; Subkey: "Athena\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\perl\site\lib\Demeter\UI\Athena\share\athena_icon.ico"; Flags: uninsdeletekey
+Root: HKCU; Subkey: "Athena\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\perl\site\bin\dathena.bat"" ""%1"""; Flags: uninsdeletekey 
 
-Root: HKCR; Subkey: ".fpj"; ValueType: string; ValueName: ""; ValueData: "Artemis"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "Artemis"; ValueType: string; ValueName: ""; ValueData: "Artemis fitting project"; Flags: uninsdeletekey 
-Root: HKCR; Subkey: "Artemis\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\perl\site\lib\Demeter\UI\Artemis\share\artemis_icon.ico"; Flags: uninsdeletekey
-Root: HKCR; Subkey: "Artemis\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\perl\site\bin\dartemis.bat"" ""%1"""; Flags: uninsdeletekey 
+Root: HKCU; Subkey: ".fpj"; ValueType: string; ValueName: ""; ValueData: "Artemis"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "Artemis"; ValueType: string; ValueName: ""; ValueData: "Artemis fitting project"; Flags: uninsdeletekey 
+Root: HKCU; Subkey: "Artemis\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\perl\site\lib\Demeter\UI\Artemis\share\artemis_icon.ico"; Flags: uninsdeletekey
+Root: HKCU; Subkey: "Artemis\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\perl\site\bin\dartemis.bat"" ""%1"""; Flags: uninsdeletekey 
 
 
 [Files]
-Source: "*"; DestDir: "{app}"; Flags: "recursesubdirs"; Excludes: "\cpan\build\*,\cpan\sources\*,\perl\site\lib\Xray\BLA.pm,\perl\site\lib\Xray\BLA\*,\perl\site\lib\Demeter\UI\Metis.pm,\perl\site\lib\Demeter\UI\Metis\*,\perl\site\bin\bla*,\perl\site\bin\metis*";
+Source: "*"; DestDir: "{app}"; Flags: "recursesubdirs"; Excludes: "\cpan\build\*,\cpan\sources\*,\perl\site\lib\Xray\BLA.pm,\perl\site\lib\Xray\BLA\*,\perl\site\lib\Demeter\UI\Metis.pm,\perl\site\lib\Demeter\UI\Metis\*,\perl\site\bin\bla*,\perl\site\bin\metis*,\c\hdf5\*,\perl\site\lib\PDL\IO\HDF5.pm,\perl\site\lib\PDL\IO\HDF5\*,\perl\site\lib\auto\PDL\IO\HDF5\HDF5.xs.dll";
 
 [Tasks]
 Name: "desktopicon"; Description: "Create &desktop icons"; GroupDescription: "Additional shortcuts:";
@@ -137,7 +139,7 @@ function NeedsAddPath(Param: string): boolean;
 var
   OrigPath: string;
 begin
-  if not RegQueryStringValue(HKEY_LOCAL_MACHINE,
+  if not RegQueryStringValue(HKEY_CURRENT_USER,
     'SYSTEM\CurrentControlSet\Control\Session Manager\Environment',
     'Path', OrigPath)
   then begin
@@ -157,7 +159,7 @@ var
   end_pos: Longint;
   new_str: string;
 begin
-  if not RegQueryStringValue(HKEY_LOCAL_MACHINE,
+  if not RegQueryStringValue(HKEY_CURRENT_USER,
     'SYSTEM\CurrentControlSet\Control\Session Manager\Environment',
     'Path', OrigPath)
   then begin
@@ -167,7 +169,7 @@ begin
   start_pos  := Pos(getPath(''), OrigPath);
   end_pos    := start_pos + Length(getPath(''));
   new_str    := Copy(OrigPath, 0, start_pos-1) + Copy(OrigPath, end_pos, Length(OrigPath));
-  RegWriteExpandStringValue(HKEY_LOCAL_MACHINE,
+  RegWriteExpandStringValue(HKEY_CURRENT_USER,
     'SYSTEM\CurrentControlSet\Control\Session Manager\Environment',
     'Path', new_str);
   Result := True;

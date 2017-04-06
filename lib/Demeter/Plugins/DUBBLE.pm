@@ -143,7 +143,7 @@ Demeter::Plugin::DUBBLE - Import data from the DUBBLE beamline at ESRF
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.25.
+This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
@@ -215,4 +215,4 @@ true value be the number of subsequent lines which contain MED data.
 
   Bruce Ravel <L<http://bruceravel.github.io/home>>
   http://bruceravel.github.io/demeter
-  Athena copyright (c) 2001-2016
+  Athena copyright (c) 2001-2017

@@ -4,7 +4,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2008-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -20,6 +20,7 @@
 use Test::More tests => 4;
 
 use Demeter qw(:data);
+use Demeter::Data::MultiChannel;
 my $demeter  = Demeter -> new;
 use Cwd;
 use File::Basename;
@@ -31,8 +32,11 @@ my $file = $orig;
 
 my $data = Demeter::Data->new(file=>$file);
 $data->_update('data');
-ok( $data->provenance =~ m{mu\(E\)},              "mu(E) file");
-
+if (Demeter->is_ifeffit) {
+  ok( $data->provenance =~ m{mu\(E\)},            "mu(E) file (xmu ifeffit)");
+} else {
+  ok( $data->provenance =~ m{column data},        "column data (xmu with Larch)");
+};
 $orig = File::Spec->catfile($here, 'fe.060');
 $file = $orig;
 $data = Demeter::Data->new(file=>$file,

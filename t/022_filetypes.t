@@ -4,7 +4,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2016 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2008-2017 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -43,6 +43,15 @@ my %athena = (SSRLA	=> [25521.4,   'transmission'],
 	      DUBBLE    => [12660.9,   'fluorescence'],
 	      LNLS      => [6983.6,    'fluorescence'],
 	     );
+if (Demeter->is_larch) {	# e0 is mostly a few tenths of an eV lower with Larch
+  $athena{HXMA}     -> [0] = 11865.992;
+  $athena{PFBL12C}  -> [0] = 12279.48;
+  $athena{SSRLA}    -> [0] = 25521.053;
+  $athena{SSRLB}    -> [0] = 20003.006;
+  $athena{X10C}     -> [0] =  8345.0;
+  $athena{X15B}     -> [0] =  2475.0046;  # huh?
+  $athena{X23A2MED} -> [0] =  7133.5;
+};
 Demeter->register_plugins;
 
 foreach my $type (sort keys %athena) {
