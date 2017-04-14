@@ -55,6 +55,7 @@
 *** Hephaestus
     + Added P K, S K, Cl K, Ag L3, and Pb L3 standards contributed by
       Lisa Bovenkamp-Langlois
+    + Some history of the periodic table
 
 *** Demeter
     + Try to start Larch, if no success fall back to Ifeffit.  Accept
@@ -73,7 +74,8 @@
       for testing.  The last two are not permanent.  In particular,
       testing with Larch is very important.
     + All tests passing with Larch (also still pass with Ifeffit)!
-    + Do not require the presence of Ifeffit to build Demeter
+    + Do not require the presence of Ifeffit to build Demeter (Thanks
+      to Tom Schoonjans and Matt)
 
 *** Windows
     + Upgrade to Strawberry with perl 5.24, upgrade to 64 bit Gnuplot

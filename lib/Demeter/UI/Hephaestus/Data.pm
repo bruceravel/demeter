@@ -320,6 +320,44 @@ sub show_date {
   $self->{date}->Enable(1);
   increment_date($self, $event);
 };
+my %events = (
+	      1660 => "10th century CE: Muhammad ibn Zakariyya al-Razi first refutes Aristotle's theory of 4 elements",
+	      1670 => "1669: Hennig Brand discovers phosphorus, the first chemically discovered element",
+	      1680 => "",
+	      1690 => "",
+	      1700 => "",
+	      1710 => "",
+	      1720 => "",
+	      1730 => "",
+	      1740 => "",
+	      1750 => "",
+	      1760 => "",
+	      1770 => "",
+	      1780 => "1777: Carl Wilhelm Scheele publishes his discovery of oxygen",
+	      1790 => "1789: Antoine Lavoisier defines the modern term 'element' and produces the first list of elements",
+	      1800 => "1800: Alessandro Volta makes first battery with Cu and Ag disks stacked in brine electrolyte",
+	      1810 => "",
+	      1820 => "1817: Johann Wolfgang Dobereiner makes an early classification of elements into chemically similar triads",
+	      1830 => "1830: August Comte predicts that analytic chemistry is 'an aberration which is happily almost impossible'",
+	      1840 => "",
+	      1850 => "",
+	      1860 => "",
+	      1870 => "1869: Dmitri Mendeleev presents the Periodic Table",
+	      1880 => "",
+	      1890 => "",
+	      1900 => "1896: Marie Curie discovers that uranium emits X-rays",
+	      1910 => "1902; Earnest Ruthorford, Hans Geiger, and James Marsden discover the atomic nucleus",
+	      1920 => "1914: Henry Moseley finds a relationship between X-ray wavelength and atomic number",
+	      1930 => "1922: Dirk Coster and Georg von Hevesy discover hafnium, the last discovered stable element",
+	      1940 => "1940: Edwin McMillan and Philip Abelson produce neptunium, the first transuranic element discovered",
+	      1950 => "1943: Glenn Seaborg modifies the periodic table to include the actinide series",
+	      1970 => "1970: John Pople develops Gaussian, an early computational chemistry program",
+	      1980 => "1971: Edward Stern, Dale Sayers, and Ferrell Lytle explain XAFS",
+	      1990 => "",
+	      2000 => "",
+	      2010 => "2004: Yuri Oganessian discovers flerovium, beginning a series of discoveries via bombardment by Ca",
+	      2020 => "2016: IUPAC names the elements nihonium, moscovium, tennessine, and oganesson",
+	     );
 sub increment_date {
   my ($self, $event) = @_;
   my $year = 1660 + 10*$self->{date}->GetValue; # discovery of phosphorus in 1669
@@ -327,6 +365,8 @@ sub increment_date {
   foreach my $z (1 .. 118) {
     enable_element($self->{pt}, get_symbol($z), sub{ $kalzium{$z}{date} < $year });
   };
+  $self->{echo}->SetStatusText($events{$year} || q{});
+
 };
 
 
