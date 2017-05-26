@@ -892,6 +892,13 @@ sub _prj {
       $app->make_page('PeakFit') if (not exists $app->{main}->{PeakFit});
       $app->{main}->{PeakFit}->reinstate($prj->peakfit, $prj->lineshapes);
     };
+
+    ## a Metis-specific, "it's good to be charge" block of code
+    if (%{$prj->bla_npix}) {
+      %Demeter::UI::Athena::npix = %{$prj->bla_npix};
+      #use Data::Dump::Color;
+      #dd \%Demeter::UI::Athena::npix;
+    };
   };
 
   $data->push_mru("xasdata", $orig);

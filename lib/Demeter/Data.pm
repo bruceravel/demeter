@@ -434,6 +434,7 @@ has 'fit_group' 	  => (is => 'rw', isa => 'Str',      default => q{}, );
 has 'y_offset'	          => (is => 'rw', isa => 'LaxNum',   default => 0, traits => [ qw(Quenchable) ],);
 has 'plot_multiplier'	  => (is => 'rw', isa => 'LaxNum',   default => 1, traits => [ qw(Quenchable) ],);
 
+#has 'bla_npixels'         => (is => 'rw', isa => 'Int',      default => 0,);
 
 sub BUILD {
   my ($self, @params) = @_;

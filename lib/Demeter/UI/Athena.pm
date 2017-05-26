@@ -86,6 +86,10 @@ use vars qw($athena_base $icon $noautosave %frames);
 $athena_base = identify_self();
 $noautosave = 0;		# set this to skip autosave, see Demeter::UI::Artemis::Import::_feffit
 
+## a Metis-specific, "it's good to be charge" block of code
+use vars qw(%npix);
+%npix = ();
+
 sub OnInit {
   my ($app) = @_;
   local $|=1;
@@ -470,6 +474,7 @@ const my $IFEFFIT_SCALARS	=> Wx::NewId();
 const my $IFEFFIT_GROUPS	=> Wx::NewId();
 const my $IFEFFIT_ARRAYS	=> Wx::NewId();
 const my $IFEFFIT_MEMORY	=> Wx::NewId();
+const my $BLA_NPIXELS	        => Wx::NewId();
 
 const my $MARK_ALL		=> Wx::NewId();
 const my $MARK_NONE		=> Wx::NewId();
@@ -593,7 +598,6 @@ sub menubar {
   $debugmenu->Append($PCA_YAML,     "PCA object yaml",           "Show yaml dialog for PCA object" );
   $debugmenu->Append($PEAK_YAML,    "PeakFit object yaml",       "Show yaml dialog for PeakFit object" );
 
-
   $monitormenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the '.Demeter->backend_name.' and plotting commands buffer' );
   $monitormenu->Append($STATUS,      "Show status bar buffer", 'Show the buffer containing messages written to the status bars');
   my $thing1 = $monitormenu->AppendSeparator;
@@ -607,8 +611,9 @@ sub menubar {
                                                               # see line 192
 
   #if (Demeter->co->default("athena", "debug_menus")) {
-    $monitormenu->AppendSeparator;
-    $monitormenu->AppendSubMenu($debugmenu, 'Debug options', 'Display debugging tools');
+  $monitormenu->AppendSeparator;
+  $monitormenu->Append($BLA_NPIXELS,      'BLA npixel data', 'Show dialog with BLA npixel data');
+  $monitormenu->AppendSubMenu($debugmenu, 'Debug options',   'Display debugging tools');
   #};
 
   my $e0allmenu   = Wx::Menu->new;
@@ -994,6 +999,23 @@ sub OnMenuClick {
       last SWITCH if $app->is_empty;
       my $dialog = Demeter::UI::Common::ShowText
 	-> new($app->{main}, $app->current_data->serialization, 'Structure of Data object')
+	  -> Show;
+      last SWITCH;
+    };
+    ($id == $BLA_NPIXELS) and do {
+      last SWITCH if $app->is_empty;
+      my $text =  "             group     npixels    normalized\n";
+      $text   .=  "================================================\n";
+      my ($d, $gp, $lab);
+      foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+	$d = $app->{main}->{list}->GetIndexedData($i);
+	$gp = $d->group;
+	next if not (exists $Demeter::UI::Athena::npix{$gp});
+	$lab = $d->name;
+	$text .= sprintf("  %20s  %6d  %12.5f\n", $lab, $Demeter::UI::Athena::npix{$gp}->[0], $Demeter::UI::Athena::npix{$gp}->[1]);
+      };
+      my $dialog = Demeter::UI::Common::ShowText
+	-> new($app->{main}, $text, 'BLA npixel data')
 	  -> Show;
       last SWITCH;
     };
@@ -1954,6 +1976,7 @@ sub OnGroupSelect {
   $app->{main}->{groupmenu}  -> Enable($DATA_TEXT,($app->current_data and (-e $app->current_data->file)));
   $app->{main}->{energymenu} -> Enable($SHOW_REFERENCE,($app->current_data and $app->current_data->reference));
   $app->{main}->{energymenu} -> Enable($TIE_REFERENCE,($app->current_data and not $app->current_data->reference));
+  $app->{main}->{monitormenu}-> Enable($BLA_NPIXELS, ($app->current_data and exists($Demeter::UI::Athena::npix{$app->current_data->group})));
 
   my $n = $app->{main}->{list}->GetCount;
   foreach my $x ($PLOT_QUAD, $PLOT_IOSIG, $PLOT_K123, $PLOT_R123) {$app->{main}->{currentplotmenu} -> Enable($x, $n)};
