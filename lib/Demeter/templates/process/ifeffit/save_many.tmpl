@@ -6,6 +6,15 @@
   $eshift = "+".$S->bkg_eshift if ($C->get("many_space") eq 'energy');
   q{}
 }
+{
+  if ($C->get("save_with_multipliers")) {
+    $OUT .= "## multiply by plot multipliers\n";
+    foreach $g (@list) {
+      $OUT .= 'set ' . $g->group . '.' . $C->get("many_suffix") . ' = ' . $g->plot_multiplier . '*' . $g->group . '.' . $C->get("many_suffix") . "\n";
+    }
+  }
+  q{}
+}
 {$eline}set {$S->group}.xxx = {$S->group}.{$C->get("many_space")}{$eshift}
 write_data(file="{$C->get("many_file")}", $many_title_*, {$S->group}.xxx,
            {foreach $g (@list) {$OUT .= $g->group . '.' . $C->get("many_suffix") . ', '}}

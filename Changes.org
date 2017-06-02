@@ -23,6 +23,11 @@
     + Bug fix for the SSRLA filetype plugin (Thanks to Simon Bare)
     + The check for exceeding Ifeffit's rough limit was ridiculously
       broken
+    + Give the user an option to multiply marked groups by
+      plot_multiplier before saving marked mu(E), deriv(mu(E)), or
+      second(mu(E))
+    + add functionality for interacting with metis's npixel counts,
+      but do so in an unobtrusive and backwards compatible manner
 
 *** Artemis
     + Actually use the user-supplied value of epsilon_k (Thanks to

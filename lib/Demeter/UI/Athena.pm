@@ -356,6 +356,7 @@ const my $SAVE_CHIK		=> Wx::NewId();
 const my $SAVE_CHIR		=> Wx::NewId();
 const my $SAVE_CHIQ		=> Wx::NewId();
 const my $SAVE_COMPAT		=> Wx::NewId();
+const my $WITH_MULTIPLIERS	=> Wx::NewId();
 const my $SAVE_ORIG		=> Wx::NewId();
 const my $SAVE_JSON		=> Wx::NewId();
 
@@ -539,10 +540,12 @@ sub menubar {
 
   my $savemarkedmenu = Wx::Menu->new;
   $savemarkedmenu->Append($MARKED_XMU,   "$MU(E)",          "Save marked groups as $MU(E) to a column data file");
-  $savemarkedmenu->Append($MARKED_NORM,  "norm(E)",         "Save marked groups as norm(E) to a column data file");
   $savemarkedmenu->Append($MARKED_DER,   "deriv($MU(E))",   "Save marked groups as deriv($MU(E)) to a column data file");
-  $savemarkedmenu->Append($MARKED_NDER,  "deriv(norm(E))",  "Save marked groups as deriv(norm(E)) to a column data file");
   $savemarkedmenu->Append($MARKED_SEC,   "second($MU(E))",  "Save marked groups as second($MU(E)) to a column data file");
+  $savemarkedmenu->AppendCheckItem($WITH_MULTIPLIERS, "Save $MU(E) with plot multipliers", "Save marked groups as $MU(E)/deriv($MU(E)/second($MU(E) with plot multipliers");
+  $savemarkedmenu->AppendSeparator;
+  $savemarkedmenu->Append($MARKED_NORM,  "norm(E)",         "Save marked groups as norm(E) to a column data file");
+  $savemarkedmenu->Append($MARKED_NDER,  "deriv(norm(E))",  "Save marked groups as deriv(norm(E)) to a column data file");
   $savemarkedmenu->Append($MARKED_NSEC,  "second(norm(E))", "Save marked groups as second(norm(E)) to a column data file");
   $savemarkedmenu->AppendSeparator;
   $savemarkedmenu->Append($MARKED_CHI,   "$CHI(k)",         "Save marked groups as $CHI(k) to a column data file");
@@ -560,6 +563,7 @@ sub menubar {
   $savemarkedmenu->Append($MARKED_QRE,   "Re[$CHI(q)]",     "Save marked groups as Re[$CHI(q)] to a column data file");
   $savemarkedmenu->Append($MARKED_QIM,   "Im[$CHI(q)]",     "Save marked groups as Im[$CHI(q)] to a column data file");
   $savemarkedmenu->Append($MARKED_QPHA,  "Pha[$CHI(q)]",    "Save marked groups as Pha[$CHI(q)] to a column data file");
+  $app->{main}->{savemarkedmenu} = $savemarkedmenu;
 
   my $saveeachmenu   = Wx::Menu->new;
   $saveeachmenu->Append($EACH_MUE,    "$MU(E)",  "Save $MU(E) for each marked group" );
@@ -798,6 +802,10 @@ sub menubar {
 sub project_compatibility {
   my ($app) = @_;
   return $app->{main}->{filemenu}->IsChecked($SAVE_COMPAT);
+};
+sub save_with_multipliers {
+  my ($app) = @_;
+  return $app->{main}->{filemenu}->IsChecked($WITH_MULTIPLIERS);
 };
 
 sub set_mru {

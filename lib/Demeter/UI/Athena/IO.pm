@@ -996,6 +996,12 @@ sub save_marked {
                     : ($how eq 'chiq_pha') ? ("Pha[$CHI(q)]",    '.chiq_pha')
 		    :                        ('???',             '.???');
 
+  ## give the use the option of multiplying mu(E) by the plot multiplier before writing marked to a file
+  Demeter->co->set("save_with_multipliers" => 0);
+  if (any {$how eq $_} (qw(xmu der sec))) {
+    Demeter->co->set("save_with_multipliers" => $app->save_with_multipliers);
+  };
+
   my $fd = Wx::FileDialog->new( $app->{main}, "Save $desc data for marked groups", cwd, 'marked'.$suff,
 				"$desc data (*$suff)|*$suff|All files (*)|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
