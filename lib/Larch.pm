@@ -36,14 +36,18 @@ sub find_larch {
 		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda3'),
 		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda2'),
 		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda'),
-		     'C:\Python27', 'C:\Python35');
+		     'C:\Python27', 'C:\Python35', 'C:\Python36');
     $python_exe = "python.exe";
     $pyscript_dir = "Scripts";
   } else {
     @dirlist = split /:/, $ENV{'PATH'};
     push @dirlist,  (File::Spec->catfile($ENV{HOME}, 'anaconda3', 'bin'),
 		     File::Spec->catfile($ENV{HOME}, 'anaconda2', 'bin'),
-		     File::Spec->catfile($ENV{HOME}, 'anaconda', 'bin'));
+		     File::Spec->catfile($ENV{HOME}, 'anaconda', 'bin'),
+		     File::Spec->catfile('/', 'anaconda3', 'bin'),
+		     File::Spec->catfile('/', 'anaconda2', 'bin'),
+		     File::Spec->catfile('/', 'anaconda', 'bin'),
+		    );
 
   }
   my $pyexe_ = which($python_exe);
