@@ -16,8 +16,6 @@ use File::Which qw(which);
 use RPC::XML::Client;
 use Time::HiRes qw(usleep);
 
-use Proc::Background;
-
 use vars qw($larch_is_go $larchconn $larch_exe $larch_port);
 $larch_exe = q{};
 
