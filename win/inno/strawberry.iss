@@ -1,12 +1,12 @@
 ; -- demeter_and_strawberry_perl.iss --
 
 #define MyInstName "Demeter_Installer_for_Windows"
-#define MyAppVersion "0.9.25"
+#define MyAppVersion "0.9.26"
 #define MyAppPublisher "Bruce Ravel"
 #define MyAppURL "http://bruceravel.github.io/demeter"
 #define Demeter "Demeter with Strawberry Perl"
 #define Bits "64"
-#define Pre "pre2"
+#define Pre "pre3"
 
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
 ; using ISC 5.4.2(a)
@@ -31,8 +31,8 @@ Compression=lzma2
 SolidCompression=yes
 SourceDir=c:\strawberry
 OutputDir=c:\output\{#MyAppVersion}
-;OutputBaseFilename=Demeter_{#MyAppVersion}_with_Strawberry_Perl_({#Bits})_{#Pre}
-OutputBaseFilename=Demeter_{#MyAppVersion}_with_Strawberry_Perl_({#Bits})
+OutputBaseFilename=Demeter_{#MyAppVersion}_with_Strawberry_Perl_({#Bits})_{#Pre}
+;OutputBaseFilename=Demeter_{#MyAppVersion}_with_Strawberry_Perl_({#Bits})
 AppComments=XAS Data Processing and Analysis
 AppContact={#MyAppURL}
 AppCopyright=Demeter is copyright (c) 2006-2016 Bruce Ravel; Ifeffit is copyright (c) 2008, Matt Newville; Larch is copyright (c) 2016, Matt Newville and Tom Trainor; Perl is copyright 1987-2011, Larry Wall
@@ -69,7 +69,7 @@ Root: HKCU; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environmen
     Check: NeedsAddPath('\perl\site\bin');
 ; TODO: don't add the leading semi-colon to the Path if there is already a trailing one
 Root: HKCU; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueName: "PGPLOT_DIR"; ValueType: expandsz; ValueData: "{app}\c\lib\pgplot";
-Root: HKCU; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueName: "FONTCONFIG_FILE"; ValueType: expandsz; ValueData: "{app}\c\bin\etc\fonts\fonts.conf";
+;Root: HKCU; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueName: "FONTCONFIG_FILE"; ValueType: expandsz; ValueData: "{app}\c\bin\etc\fonts\fonts.conf";
 
 ;; File associations
 Root: HKCU; Subkey: ".pl"; ValueType: string; ValueName: ""; ValueData: "Perl"; Flags: uninsdeletevalue

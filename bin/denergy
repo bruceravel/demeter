@@ -23,13 +23,27 @@ die b("$element is not an element", 'red').$/ if not get_Z($element);
 my $edge = lc($ARGV[1]);
 my $energy = Xray::Absorption->get_energy($element, $edge);
 
-my $which = ($edge =~ m{\A(?:k|l[1-3]|m[1-5]|n[1-7]|o[1-5]|p[1-3])\z}) ? 'edge' : 'line';
+my $which = ($edge =~ m{\A(?:k|l[1-3]?|m[1-5]?|n[1-7]|o[1-5]|p[1-3])\z}) ? 'edge' : 'line';
 
 if ($which eq 'edge') {
-  printf "\n%s (%s, #%d) %s %s energy = %s eV\n\n",
-    b(get_name($element), 'cyan'), get_symbol($element), get_Z($element),
+  if (($edge eq 'l') or ($edge eq 'm')) {
+    my ($ed, $energy) = (qw{}, qw{});
+    my $n = ($edge eq 'l') ? 3 : 5;
+    foreach my $i (reverse(1 .. $n)) {
+      $ed .= b(uc($edge).$i, 'green') . '/';
+      $energy .= b(Xray::Absorption->get_energy($element, $edge.$i), 'yellow') . '/';
+    };
+    chop $ed;
+    chop $energy;
+    printf "\n%s (%s, #%d) %s %s energies : %s eV\n\n",
+      b(get_name($element), 'cyan'), get_symbol($element), get_Z($element),
+      $ed, $which, $energy;
+  } else {
+    printf "\n%s (%s, #%d) %s %s energy = %s eV\n\n",
+      b(get_name($element), 'cyan'), get_symbol($element), get_Z($element),
       b(ucfirst($edge), 'green'), $which,
-	b($energy, 'yellow');
+      b($energy, 'yellow');
+  };
 } else {
   die b("\n$edge is not an edge or line symbol\n", 'red').$/ if not Xray::Absorption->get_IUPAC($edge);
   printf "\n%s (%s, #%d) %s (%s) %s energy = %s eV\n\n",

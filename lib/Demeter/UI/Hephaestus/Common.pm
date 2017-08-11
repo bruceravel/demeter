@@ -50,8 +50,10 @@ sub e2l {
 
 ## arguments: $::app, pointer to periodic table widget, element symbol,
 ## function reference that takes $element as its argument and evaluates T/F
+my %translate = reverse(Nh=>'Uut', Mc => 'Uup', Ts=>'Uus', Og=>'Uuo');
 sub enable_element {
   my ($pt, $element, $function) = @_;
+  $element = $translate{$element} if exists $translate{$element};
   $pt->{$element}->Enable($function->($element));
 };
 

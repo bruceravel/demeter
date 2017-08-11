@@ -23,6 +23,11 @@
     + Bug fix for the SSRLA filetype plugin (Thanks to Simon Bare)
     + The check for exceeding Ifeffit's rough limit was ridiculously
       broken
+    + Give the user an option to multiply marked groups by
+      plot_multiplier before saving marked mu(E), deriv(mu(E)), or
+      second(mu(E))
+    + add functionality for interacting with metis's npixel counts,
+      but do so in an unobtrusive and backwards compatible manner
 
 *** Artemis
     + Actually use the user-supplied value of epsilon_k (Thanks to
@@ -55,6 +60,7 @@
 *** Hephaestus
     + Added P K, S K, Cl K, Ag L3, and Pb L3 standards contributed by
       Lisa Bovenkamp-Langlois
+    + Some history of the periodic table
 
 *** Demeter
     + Try to start Larch, if no success fall back to Ifeffit.  Accept
@@ -73,6 +79,8 @@
       for testing.  The last two are not permanent.  In particular,
       testing with Larch is very important.
     + All tests passing with Larch (also still pass with Ifeffit)!
+    + Do not require the presence of Ifeffit to build Demeter (Thanks
+      to Tom Schoonjans and Matt)
 
 *** Windows
     + Upgrade to Strawberry with perl 5.24, upgrade to 64 bit Gnuplot

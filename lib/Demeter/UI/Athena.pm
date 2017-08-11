@@ -86,6 +86,10 @@ use vars qw($athena_base $icon $noautosave %frames);
 $athena_base = identify_self();
 $noautosave = 0;		# set this to skip autosave, see Demeter::UI::Artemis::Import::_feffit
 
+## a Metis-specific, "it's good to be charge" block of code
+use vars qw(%npix);
+%npix = ();
+
 sub OnInit {
   my ($app) = @_;
   local $|=1;
@@ -352,6 +356,7 @@ const my $SAVE_CHIK		=> Wx::NewId();
 const my $SAVE_CHIR		=> Wx::NewId();
 const my $SAVE_CHIQ		=> Wx::NewId();
 const my $SAVE_COMPAT		=> Wx::NewId();
+const my $WITH_MULTIPLIERS	=> Wx::NewId();
 const my $SAVE_ORIG		=> Wx::NewId();
 const my $SAVE_JSON		=> Wx::NewId();
 
@@ -470,6 +475,7 @@ const my $IFEFFIT_SCALARS	=> Wx::NewId();
 const my $IFEFFIT_GROUPS	=> Wx::NewId();
 const my $IFEFFIT_ARRAYS	=> Wx::NewId();
 const my $IFEFFIT_MEMORY	=> Wx::NewId();
+const my $BLA_NPIXELS	        => Wx::NewId();
 
 const my $MARK_ALL		=> Wx::NewId();
 const my $MARK_NONE		=> Wx::NewId();
@@ -534,10 +540,12 @@ sub menubar {
 
   my $savemarkedmenu = Wx::Menu->new;
   $savemarkedmenu->Append($MARKED_XMU,   "$MU(E)",          "Save marked groups as $MU(E) to a column data file");
-  $savemarkedmenu->Append($MARKED_NORM,  "norm(E)",         "Save marked groups as norm(E) to a column data file");
   $savemarkedmenu->Append($MARKED_DER,   "deriv($MU(E))",   "Save marked groups as deriv($MU(E)) to a column data file");
-  $savemarkedmenu->Append($MARKED_NDER,  "deriv(norm(E))",  "Save marked groups as deriv(norm(E)) to a column data file");
   $savemarkedmenu->Append($MARKED_SEC,   "second($MU(E))",  "Save marked groups as second($MU(E)) to a column data file");
+  $savemarkedmenu->AppendCheckItem($WITH_MULTIPLIERS, "Save $MU(E) with plot multipliers", "Save marked groups as $MU(E)/deriv($MU(E)/second($MU(E) with plot multipliers");
+  $savemarkedmenu->AppendSeparator;
+  $savemarkedmenu->Append($MARKED_NORM,  "norm(E)",         "Save marked groups as norm(E) to a column data file");
+  $savemarkedmenu->Append($MARKED_NDER,  "deriv(norm(E))",  "Save marked groups as deriv(norm(E)) to a column data file");
   $savemarkedmenu->Append($MARKED_NSEC,  "second(norm(E))", "Save marked groups as second(norm(E)) to a column data file");
   $savemarkedmenu->AppendSeparator;
   $savemarkedmenu->Append($MARKED_CHI,   "$CHI(k)",         "Save marked groups as $CHI(k) to a column data file");
@@ -555,6 +563,7 @@ sub menubar {
   $savemarkedmenu->Append($MARKED_QRE,   "Re[$CHI(q)]",     "Save marked groups as Re[$CHI(q)] to a column data file");
   $savemarkedmenu->Append($MARKED_QIM,   "Im[$CHI(q)]",     "Save marked groups as Im[$CHI(q)] to a column data file");
   $savemarkedmenu->Append($MARKED_QPHA,  "Pha[$CHI(q)]",    "Save marked groups as Pha[$CHI(q)] to a column data file");
+  $app->{main}->{savemarkedmenu} = $savemarkedmenu;
 
   my $saveeachmenu   = Wx::Menu->new;
   $saveeachmenu->Append($EACH_MUE,    "$MU(E)",  "Save $MU(E) for each marked group" );
@@ -593,7 +602,6 @@ sub menubar {
   $debugmenu->Append($PCA_YAML,     "PCA object yaml",           "Show yaml dialog for PCA object" );
   $debugmenu->Append($PEAK_YAML,    "PeakFit object yaml",       "Show yaml dialog for PeakFit object" );
 
-
   $monitormenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the '.Demeter->backend_name.' and plotting commands buffer' );
   $monitormenu->Append($STATUS,      "Show status bar buffer", 'Show the buffer containing messages written to the status bars');
   my $thing1 = $monitormenu->AppendSeparator;
@@ -607,8 +615,9 @@ sub menubar {
                                                               # see line 192
 
   #if (Demeter->co->default("athena", "debug_menus")) {
-    $monitormenu->AppendSeparator;
-    $monitormenu->AppendSubMenu($debugmenu, 'Debug options', 'Display debugging tools');
+  $monitormenu->AppendSeparator;
+  $monitormenu->Append($BLA_NPIXELS,      'BLA npixel data', 'Show dialog with BLA npixel data');
+  $monitormenu->AppendSubMenu($debugmenu, 'Debug options',   'Display debugging tools');
   #};
 
   my $e0allmenu   = Wx::Menu->new;
@@ -793,6 +802,10 @@ sub menubar {
 sub project_compatibility {
   my ($app) = @_;
   return $app->{main}->{filemenu}->IsChecked($SAVE_COMPAT);
+};
+sub save_with_multipliers {
+  my ($app) = @_;
+  return $app->{main}->{filemenu}->IsChecked($WITH_MULTIPLIERS);
 };
 
 sub set_mru {
@@ -994,6 +1007,23 @@ sub OnMenuClick {
       last SWITCH if $app->is_empty;
       my $dialog = Demeter::UI::Common::ShowText
 	-> new($app->{main}, $app->current_data->serialization, 'Structure of Data object')
+	  -> Show;
+      last SWITCH;
+    };
+    ($id == $BLA_NPIXELS) and do {
+      last SWITCH if $app->is_empty;
+      my $text =  "             group     npixels    normalized\n";
+      $text   .=  "================================================\n";
+      my ($d, $gp, $lab);
+      foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+	$d = $app->{main}->{list}->GetIndexedData($i);
+	$gp = $d->group;
+	next if not (exists $Demeter::UI::Athena::npix{$gp});
+	$lab = $d->name;
+	$text .= sprintf("  %20s  %6d  %12.5f\n", $lab, $Demeter::UI::Athena::npix{$gp}->[0], $Demeter::UI::Athena::npix{$gp}->[1]);
+      };
+      my $dialog = Demeter::UI::Common::ShowText
+	-> new($app->{main}, $text, 'BLA npixel data')
 	  -> Show;
       last SWITCH;
     };
@@ -1954,6 +1984,7 @@ sub OnGroupSelect {
   $app->{main}->{groupmenu}  -> Enable($DATA_TEXT,($app->current_data and (-e $app->current_data->file)));
   $app->{main}->{energymenu} -> Enable($SHOW_REFERENCE,($app->current_data and $app->current_data->reference));
   $app->{main}->{energymenu} -> Enable($TIE_REFERENCE,($app->current_data and not $app->current_data->reference));
+  $app->{main}->{monitormenu}-> Enable($BLA_NPIXELS, ($app->current_data and exists($Demeter::UI::Athena::npix{$app->current_data->group})));
 
   my $n = $app->{main}->{list}->GetCount;
   foreach my $x ($PLOT_QUAD, $PLOT_IOSIG, $PLOT_K123, $PLOT_R123) {$app->{main}->{currentplotmenu} -> Enable($x, $n)};

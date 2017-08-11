@@ -892,6 +892,13 @@ sub _prj {
       $app->make_page('PeakFit') if (not exists $app->{main}->{PeakFit});
       $app->{main}->{PeakFit}->reinstate($prj->peakfit, $prj->lineshapes);
     };
+
+    ## a Metis-specific, "it's good to be charge" block of code
+    if (%{$prj->bla_npix}) {
+      %Demeter::UI::Athena::npix = %{$prj->bla_npix};
+      #use Data::Dump::Color;
+      #dd \%Demeter::UI::Athena::npix;
+    };
   };
 
   $data->push_mru("xasdata", $orig);
@@ -988,6 +995,12 @@ sub save_marked {
                     : ($how eq 'chiq_im')  ? ("Im[$CHI(q)]",     '.chiq_im')
                     : ($how eq 'chiq_pha') ? ("Pha[$CHI(q)]",    '.chiq_pha')
 		    :                        ('???',             '.???');
+
+  ## give the use the option of multiplying mu(E) by the plot multiplier before writing marked to a file
+  Demeter->co->set("save_with_multipliers" => 0);
+  if (any {$how eq $_} (qw(xmu der sec))) {
+    Demeter->co->set("save_with_multipliers" => $app->save_with_multipliers);
+  };
 
   my $fd = Wx::FileDialog->new( $app->{main}, "Save $desc data for marked groups", cwd, 'marked'.$suff,
 				"$desc data (*$suff)|*$suff|All files (*)|*",

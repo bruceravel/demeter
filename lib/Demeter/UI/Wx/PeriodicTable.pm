@@ -174,20 +174,28 @@ sub new {
   my $bheight = int(2.5*$font_size+3);
   my $tsz = Wx::GridBagSizer->new( 2, 2 );
 
+  my %translate = (Nh=>'Uut', Mc => 'Uup', Ts=>'Uus', Og=>'Uuo');
   foreach my $el (@elements) {
     my $element = $el->[ELEMENT];
     my $button = Wx::Button->new( $self, -1, $element, [-1,-1], [37,-1], wxBU_EXACTFIT );
     $self->{$element} = $button;
     my $cell = $tsz -> Add($button, Wx::GBPosition->new($el->[ROW], $el->[COL]));
+
+    my $sym = $element;
+    ## fix breakage in C::E 1.071 which localized the %elements hash and uses the wrong symbols for Nh, Mc, Ts, and Og
+    if ($Chemistry::Elements::VERSION eq '1.071') {
+      $element = $translate{$element} if exists($translate{$element});
+    };
+
     EVT_BUTTON( $parent, $button, sub{&$command($element)} );
-    my $text = sprintf("%s: %s, element #%d", $element, get_name($element), get_Z($element));
+    my $text = sprintf("%s: %s, element #%d", $sym, get_name($element), get_Z($element));
     EVT_ENTER_WINDOW($button, sub{$statusbar->PushStatusText($text) if $statusbar; $_[1]->Skip});
     EVT_LEAVE_WINDOW($button, sub{$statusbar->PopStatusText         if $statusbar; $_[1]->Skip});
-    if ($element =~ m{\AUu}) {
-      $button->SetFont( Wx::Font->new( $smfont_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-    } else {
+    #if ($element =~ m{\AUu}) {
+    #  $button->SetFont( Wx::Font->new( $smfont_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+    #} else {
       $button->SetFont( Wx::Font->new( $font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-    };
+    #};
     $button->SetBackgroundColour( Wx::Colour->new(@{ $color_of{$el->[PHASE]} }) );
   };
   my $label = Wx::StaticText->new($self, -1, "Lanthanides", [5,-1], [105,23], wxALIGN_RIGHT);
