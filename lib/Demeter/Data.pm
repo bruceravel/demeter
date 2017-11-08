@@ -106,6 +106,9 @@ has 'annotation'  => (is => 'rw', isa => 'Str',    default => q{});
 has 'importance'  => (is => 'rw', isa => 'LaxNum',    default => 1);
 has 'merge_weight'=> (is => 'rw', isa => 'LaxNum',    default => 1);
 
+has 'is_z'        => (is => 'rw', isa => Element.'|'.Empty);
+has 'is_edge'     => (is => 'rw', isa => Edge.'|'.Empty);
+has 'is_edge_margin' => (is => 'rw', isa => 'LaxNum', default => 15);
 
 has 'tying' => (is=>'rw', isa => 'Bool', default => 0);
 has 'reference'   => (is => 'rw', isa => Empty.'|Demeter::Data', default => q{},
@@ -495,6 +498,9 @@ override all => sub {
   delete $all{xdi};
   delete $all{fit_group};
   delete $all{bkg_funnorm} if not Demeter->co->default('athena', 'show_funnorm'); # preserve backwards compatability before 0.9.23
+  delete $all{is_z};		# do not save these to the project file ... must be explicitly used
+  delete $all{is_edge};
+  delete $all{is_edge_margin};
   return %all;
 };
 

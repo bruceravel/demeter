@@ -54,6 +54,19 @@ sub e0 {
     $self->bkg_z($elem);
     $self->fft_edge($edge);
   };
+  #Demeter->pjoin($self->is_z, $self->is_edge);
+  if (is_Element($self->is_z) and is_Edge($self->is_edge)) {
+    my $target = Xray::Absorption->get_energy( $self->is_z, $self->is_edge);
+    my $value = $self->bkg_e0;
+    if (abs($target - $value) > $self->is_edge_margin) {
+      $self->bkg_z($self->is_z);
+      $self->fft_edge($self->is_edge);
+      $e0 = $self->e0_atomic;
+      $self->bkg_e0($e0);
+      $e0 = $self->e0_fraction;
+      $self->bkg_e0($e0);
+    };
+  };
   $self->update_norm(1);
   return $e0;
 };

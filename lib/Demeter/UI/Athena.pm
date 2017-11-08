@@ -32,6 +32,7 @@ use Demeter::UI::Athena::TextBuffer;
 use Demeter::UI::Athena::Replot;
 use Demeter::UI::Athena::GroupList;
 use Demeter::UI::Athena::FileDropTarget;
+use Demeter::StrTypes qw(Edge Element);
 
 use Demeter::UI::Artemis::DND::PlotListDrag;
 use Demeter::UI::Athena::Status;
@@ -160,6 +161,12 @@ sub OnInit {
   $app->{selecting_data_group}=0;
   $app->{update_kweights}=1;
 
+  ## -------- buffers related to specifying element/edge
+  $app->{is_z} = q{};
+  $app->{is_edge} = q{};
+  $app->{is_edge_margin} = q{};
+
+  
   ## -------- text buffers for various TextEntryDialogs
   $app->{rename_buffer}  = [];
   $app->{rename_pointer} = -1;
@@ -418,6 +425,8 @@ const my $E0_FRACTION_MARKED	=> Wx::NewId();
 const my $E0_ZERO_MARKED        => Wx::NewId();
 const my $E0_DMAX_MARKED        => Wx::NewId();
 const my $E0_PEAK_MARKED        => Wx::NewId();
+const my $E0_SPECIFY            => Wx::NewId();
+const my $E0_UNSPECIFY          => Wx::NewId();
 
 const my $WL_THIS               => Wx::NewId();
 const my $WL_MARKED             => Wx::NewId();
@@ -674,6 +683,9 @@ sub menubar {
   $energymenu->AppendSeparator;
   $energymenu->Append($SHOW_REFERENCE, "Identify reference channel", "Identify the group that shares the data/reference relationship with this group.");
   $energymenu->Append($TIE_REFERENCE,  "Tie reference channel",  "Tie together two marked groups as data and reference channel.");
+  $energymenu->AppendSeparator;
+  $energymenu->Append($E0_SPECIFY,   "Enforce element and edge");
+  $energymenu->Append($E0_UNSPECIFY, "Stop enforcing element and edge");
   $app->{main}->{energymenu} = $energymenu;
 
 
@@ -988,6 +1000,36 @@ sub OnMenuClick {
       $app->tie_reference;
       last SWITCH;
     };
+    ($id == $E0_SPECIFY) and do {
+      my $specify_dialog = Demeter::UI::Athena::SpecifyConfig->new($app->{main});
+      my $result = $specify_dialog -> ShowModal;
+      if ($result != wxID_CANCEL) {
+	if (is_Element(ucfirst(lc($specify_dialog->{elem}->GetValue)))) {
+	  $app->{is_z} = $specify_dialog->{elem}->GetValue;
+	  Demeter->dd->is_z($app->{is_z});
+	};
+	if (is_Edge(lc($specify_dialog->{edge}->GetValue))) {
+	  $app->{is_edge} = lc($specify_dialog->{edge}->GetValue);
+	  Demeter->dd->is_edge($app->{is_edge});
+	};
+	if (looks_like_number($specify_dialog->{margin}->GetValue)) {
+	  $app->{is_edge_margin} = $specify_dialog->{margin}->GetValue;
+	  Demeter->dd->is_edge_margin($app->{is_edge_margin});
+	};
+	$app->{main}->status(sprintf("Enforcing element %s and edge %s with a margin of %.1f.",
+				     ucfirst(lc($app->{is_z})), uc($app->{is_edge}), $app->{is_edge_margin}));
+      };
+    };
+    ($id == $E0_UNSPECIFY) and do {
+      $app->{is_z} = q{};
+      $app->{is_edge} = q{};
+      $app->{is_edge_margin} = 15;
+      Demeter->dd->is_z(q{});
+      Demeter->dd->is_edge(q{});
+      Demeter->dd->is_edge_margin(15);
+      $app->{main}->status("No longer enforcing element and edge.");
+    };
+
     ($id == $REMOVE) and do {
       $app->Remove('current');
       last SWITCH;
