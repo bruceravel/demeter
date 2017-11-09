@@ -27,6 +27,7 @@ use Demeter::Constants qw($EPSILON3 $NUMBER);
 use List::Util qw(max);
 use List::MoreUtils qw(firstidx);
 use Xray::Absorption;
+use Chemistry::Elements qw(get_symbol);
 
 sub e0 {
   my ($self, $how) = @_;
@@ -69,6 +70,19 @@ sub e0 {
   };
   $self->update_norm(1);
   return $e0;
+};
+
+sub enforce_e0 {
+  my ($self, $z, $edge, $margin) = @_;
+  if ($z) {
+    Demeter->dd->is_z(get_symbol($z));
+    Demeter->dd->is_edge(Xray::Absorption -> get_Siegbahn($edge));
+    Demeter->dd->is_edge_margin($margin);
+  } else {
+    Demeter->dd->is_z(q{});
+    Demeter->dd->is_edge(q{});
+    Demeter->dd->is_edge_margin(15);
+  };
 };
 
 sub e0_ifeffit {
