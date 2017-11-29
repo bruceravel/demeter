@@ -23,40 +23,46 @@ sub find_larch {
   # search for Python exe and larch_server script,
   # return command to run larch server
   my $osname = lc($^O);
-  my $python_exe = "python";
+  my $pyexec_name  = "python";
   my $pyscript_dir = "";
-  my @dirlist ;
   if (($osname eq 'mswin32') or ($osname eq 'cygwin')) {
-    @dirlist = split /;/, $ENV{'PATH'};
-    push @dirlist,  (File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda3'),
+    $pyexec_name  = "python.exe";
+    $pyscript_dir = "Scripts";
+  }
+
+  # first look on PATH
+  my $py_exe = which($pyexec_name);
+  my $larch_exe = which("larch_server");
+  if (defined($py_exe) && (-e $py_exe) && defined($larch_exe) && (-e $larch_exe))  {
+      return $larch_exe;
+  }
+  # if larch is not found on PATH, look in typical Python / Anaconda places
+  # build list of typical Python / Anaconda install directories
+  my @dirlist = split /;/, $ENV{'PATH'};
+  if (($osname eq 'mswin32') or ($osname eq 'cygwin')) {
+    push @dirlist,  (File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'xraylarch'),
+		     File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda3'),
 		     File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda2'),
 		     File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda'),
+		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'xraylarch'),
 		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda3'),
 		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda2'),
 		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda'),
-		     'C:\Python27', 'C:\Python35', 'C:\Python36');
-    $python_exe = "python.exe";
-    $pyscript_dir = "Scripts";
+		     'C:\Python37', 'C:\Python36', 'C:\Python35', 'C:\Python27');
   } else {
-    @dirlist = split /:/, $ENV{'PATH'};
-    push @dirlist,  (File::Spec->catfile($ENV{HOME}, 'anaconda3', 'bin'),
+    push @dirlist,  (File::Spec->catfile($ENV{HOME}, 'xraylarch', 'bin'),
+		     File::Spec->catfile($ENV{HOME}, 'anaconda3', 'bin'),
 		     File::Spec->catfile($ENV{HOME}, 'anaconda2', 'bin'),
 		     File::Spec->catfile($ENV{HOME}, 'anaconda', 'bin'),
 		     File::Spec->catfile('/', 'anaconda3', 'bin'),
 		     File::Spec->catfile('/', 'anaconda2', 'bin'),
 		     File::Spec->catfile('/', 'anaconda', 'bin'),
 		    );
-
-  }
-  my $pyexe_ = which($python_exe);
-  my $larch_exe = which("larch_server");
-  if (defined($pyexe_) && (-e $pyexe_) && defined($larch_exe) && (-e $larch_exe))  {
-      return $larch_exe;
   }
   foreach my $d (@dirlist) {
-    my $pyexe_ =  File::Spec->catfile($d, $python_exe);
+    my $py_exe =  File::Spec->catfile($d, $pyexec_name);
     my $larch_exe =  File::Spec->catfile($d, $pyscript_dir, 'larch_server');
-    if ((-e $pyexe_) && (-e $larch_exe))  {
+    if ((-e $py_exe) && (-e $larch_exe))  {
 	return $larch_exe;
     }
   }
