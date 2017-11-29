@@ -11,6 +11,7 @@ use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON EVT_K
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_HYPERLINK);
 use Wx::Perl::TextValidator;
 use Const::Fast;
+use Demeter::UI::Athena::SpecifyConfig;
 use Demeter::UI::Wx::Colours;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 const my $PM => $PLUSMN2;
@@ -1236,7 +1237,11 @@ sub DoContextMenu {
 
     ## -------- bkg_eshift context menu
     ($id == $IDENTIFY_REFERENCE) and do {
-      $app->{main}->status(sprintf("%s is the reference for %s", $data->reference->name, $data->name));
+      if ($data->reference) {
+	$app->{main}->status(sprintf("%s is the reference for %s", $data->reference->name, $data->name));
+      } else {
+	$app->{main}->status(sprintf("%s does not have a reference", $data->name));
+      };
       last SWITCH;
     };
     ($id == $UNTIE_REFERENCE) and do {

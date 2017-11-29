@@ -3,6 +3,7 @@ package Demeter::UI::Athena::IO;
 use strict;
 use warnings;
 
+use Demeter::StrTypes qw(Edge Element);
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::ColumnSelection;
 use Demeter::UI::Common::Prj;
@@ -302,7 +303,15 @@ sub _data {
     $displayfile = $orig;
     $data = Demeter::Data->new(file=>$file);
   };
-  $data->source($plugin->file) if $plugin;
+  if ($plugin) {
+    $data->source($plugin->file);
+    $displayfile = $plugin->fixed if $plugin->display_new;
+  };
+  if (is_Element($app->{is_z}) and is_Edge($app->{is_edge})) {
+    $data->is_z($app->{is_z});
+    $data->is_edge($app->{is_edge});
+    $data->is_edge_margin($app->{is_edge_margin} || 15);
+  };
 
   my @suggest = ($plugin) ? $plugin->suggest() : ();
   my %suggest = @suggest;	# suggested columns from a plugin

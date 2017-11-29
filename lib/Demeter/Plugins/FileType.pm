@@ -30,6 +30,7 @@ has 'conffile'    => (is => 'rw', isa => 'Str',  default => q{});
 has 'lower_case'  => (is => 'rw', isa => 'Bool', default => 1);
 has 'time_consuming'  => (is => 'rw', isa => 'Bool', default => 0);
 has 'working_message' => (is => 'rw', isa => 'Str', default => q{});
+has 'display_new'  => (is => 'rw', isa => 'Bool', default => 0);
 
 has 'metadata_ini' => (is => 'rw', isa => 'Str', default => q{});
 
@@ -361,6 +362,13 @@ mechanism for modifying the configuration.
 If the plugin is for a file from a beamline with metadata tabulated in
 Demeter's F<share/xdi/> folder, this attribute should be set to F<.ini>
 file for that beamline.
+
+=item C<display_new>
+
+When true, this tells Athena to use the filename of the file copied to
+the stash folder in the group list.  The value of this is that
+information can be inserted by a plugin into the filename.  That
+information then makes its way into the group list label.
 
 =back
 
