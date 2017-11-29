@@ -28,6 +28,9 @@
       second(mu(E))
     + add functionality for interacting with metis's npixel counts,
       but do so in an unobtrusive and backwards compatible manner
+    + fix a bug identifying reference group when no ref group exists
+    + Added ability to enforce that a group imported be recognized as
+      a user-specified element and edge (thanks to Shelly Kelly)
 
 *** Artemis
     + Actually use the user-supplied value of epsilon_k (Thanks to

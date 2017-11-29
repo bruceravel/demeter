@@ -129,7 +129,7 @@ sub on_close {
 
 =head1 NAME
 
-Demeter::UI::Athena::Prefs - A preferences tool for Athena's filetype plugins
+Demeter::UI::Athena::PluginConfig - A preferences tool for Athena's filetype plugins
 
 =head1 VERSION
 
