@@ -209,6 +209,32 @@ def depart_mark_latex(self, node):
     self.body.append(" ")
 
 
+# EndParDirective:
+class endpar(nodes.Element):
+    pass
+
+class EndParDirective(Directive):
+
+    required_arguments = 0
+    optional_arguments = 0
+
+    has_content = False
+
+    def run(self):
+        return [endpar()]
+
+def visit_endpar_latex(self, node):
+    self.body.append('\n\n')
+
+def depart_endpar_latex(self, node):
+    pass
+
+def visit_endpar_html(self, node):
+    self.body.append('\n<br>\n')
+
+def depart_endpar_html(self, node):
+    pass
+    
 
 class linebreak(nodes.Element):
     pass
@@ -344,6 +370,11 @@ def setup(app):
     app.add_node(mark,
             html = (visit_mark_html, depart_mark_html),
             latex = (visit_mark_latex, depart_mark_latex)
+            )
+    app.add_directive('endpar', EndParDirective)
+    app.add_node(endpar,
+            html = (visit_endpar_html, depart_endpar_html),
+            latex = (visit_endpar_latex, depart_endpar_latex)
             )
     app.add_directive('linebreak', LineBreakDirective)
     app.add_node(linebreak,
