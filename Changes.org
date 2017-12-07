@@ -31,6 +31,8 @@
     + fix a bug identifying reference group when no ref group exists
     + Added ability to enforce that a group imported be recognized as
       a user-specified element and edge (thanks to Shelly Kelly)
+    + Fixed a bug related to when default parameter values are set
+      during data import
 
 *** Artemis
     + Actually use the user-supplied value of epsilon_k (Thanks to
@@ -39,8 +41,8 @@
       paths.  This is a loss for dnd a path to another data set, but I
       suspect that is not much used.
     + Fix several bugs in multiple data set fits using Larch
-    + Change the symbol for an excluded path from [[https://en.wikipedia.org/wiki/Triple_parentheses][three parens (((path)))
-     ]] to ~--(path)--~
+    + Change the symbol for an excluded path from
+      [[https://en.wikipedia.org/wiki/Triple_parentheses][three parens (((path))) ]] to ~--(path)--~
     + Improved validator for N path parameter -- it can now be blank.
       Also selecting all then typing works sensibly
     + Put in a more rigorous check for exceeding ~&max_data_sets~ when
@@ -88,6 +90,10 @@
 *** Windows
     + Upgrade to Strawberry with perl 5.24, upgrade to 64 bit Gnuplot
       5.0.4
+    + Fix a problem with demeter.ini files having outdated locations
+      for gnuplot->program and feff->executable (thanks to Kirill
+      Lomachenko, Kathy Dardenne, and Robert Gordon)
+    + Updated documentation in installer
 
 ** 0.9.25   24 August    2016
 *** Athena
