@@ -85,7 +85,7 @@ our $proc;
 sub start_larch_server {
   $larch_port = -1;
   $larch_exe = find_larch();
-  if (length $larch_exe > 10) {
+  if (defined($larch_exe) and (length $larch_exe > 10)) {
     # find next available port to run on
     # print STDOUT "Larch exe $larch_exe\n";
     $larch_port = get_next_larch_port($larch_exe);
@@ -107,7 +107,8 @@ sub start_larch_server {
       }
     }
   } else {
-    print STDOUT "\nCould not find Larch Server";
+    1;
+    #print STDOUT "\nCould not find Larch Server";
   }
   return $larch_port;
 };
