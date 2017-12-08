@@ -5,7 +5,7 @@
 #+OPTIONS: toc:2
 
 * 0.9 series
-** 0.9.26   ?? April     2017
+** 0.9.26   21 December  2017
 *** Athena
     + [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-September/008818.html][fix XDI headers]] in "save marked groups" output files, also add
       templates to provide for the special case in k of two abscissa
@@ -69,7 +69,7 @@
 
 *** Demeter
     + Try to start Larch, if no success fall back to Ifeffit.  Accept
-      a PR from Matt related to this.
+      several PRs from Matt related to this.
     + Delay loading of more stuff to speed start-up
     + Update non-root installation instructions (Thanks to [[https://github.com/bruceravel/demeter/issues/36][Patrick Browne]])
     + DEMETER_MODE and DEMETER_NO_BACKEND environment variables

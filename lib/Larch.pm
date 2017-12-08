@@ -92,8 +92,12 @@ sub start_larch_server {
     # print STDOUT "Larch port $larch_port\n";
     if ($larch_port > 2000) {
       my $command = $larch_exe." -p ". $larch_port." start";
-      print STDOUT "\nStarting Larch server: $command\n";
-      $proc = system $command;
+      print STDOUT "\nStarting Larch server: $command\n" if $ENV{DEMETER_LARCH_VERBOSE};
+      if ($ENV{DEMETER_LARCH_VERBOSE}) {
+	$proc = system $command;
+      } else {
+	$proc = system(split(" ", $command), q{-q});
+      };
       # verify connnection to server
       my $addr = sprintf("http://%s:%d", 'localhost', $larch_port);
       my $conn = RPC::XML::Client->new($addr);
@@ -107,8 +111,7 @@ sub start_larch_server {
       }
     }
   } else {
-    1;
-    #print STDOUT "\nCould not find Larch Server";
+    print STDOUT "\nCould not find Larch Server" if $ENV{DEMETER_LARCH_VERBOSE};
   }
   return $larch_port;
 };
@@ -127,7 +130,7 @@ sub create_larch_connection {
 };
 
 sub shutdown_larch_connection {
-  print "Request Server to shut down\n";
+  print "Request Server to shut down\n" if $ENV{DEMETER_LARCH_VERBOSE};
   $larchconn->send_request("shutdown");
 };
 
@@ -337,6 +340,16 @@ Push a list to Larch given a symbol name.
 See the file F<lib/Demeter/share/ini/larch_server.ini>.  The URL and
 port used by the server can be configured, as can the length of the
 timeout and the on-screen verbosity of the server.
+
+=head1 ENVIRONMENT VARIABLES
+
+=over 4
+
+=item C<DEMETER_LARCH_VERBOSE>
+
+When non-zero, print messages to STDOUT.
+
+=back
 
 =head1 AUTHOR
 
