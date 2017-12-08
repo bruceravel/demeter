@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>14.3. A worked example (in text!) &mdash; Artemis 0.9.26 documentation</title>
+    <title>14.3. A worked example (in text!) &#8212; Artemis 0.9.26 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -17,15 +17,15 @@
         VERSION:     '0.9.26',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Artemis 0.9.26 documentation" href="../index.html" />
-    <link rel="up" title="14. Crystallography for EXAFS" href="index.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="15. Extended discussions" href="../extended/index.html" />
     <link rel="prev" title="14.2. Absorption calculations and experimental corrections" href="abs.html" />
 
@@ -44,8 +44,8 @@
         <li class="right" >
           <a href="abs.html" title="14.2. Absorption calculations and experimental corrections"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">14. Crystallography for EXAFS</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">14. Crystallography for EXAFS</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -72,16 +72,16 @@ is indicated by the <code class="docutils literal"><span class="pre">nitrogen</s
 be printed in <code class="file docutils literal"><span class="pre">feff.inp</span></code> is chosen with the <code class="docutils literal"><span class="pre">rmax</span></code> keyword. The
 <code class="docutils literal"><span class="pre">rpath</span></code> keyword is used to set the value of <code class="docutils literal"><span class="pre">RMAX</span></code> in the <code class="file docutils literal"><span class="pre">feff.inp</span></code>
 file, which indicates the length of the longest path to be calculated.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>title PbTiO3 10K,a=3.885,c=4.139
-space P 4 m m
-a=3.885         c=4.139         nitrogen = 0.5
-rmax=5.0        rpath=4.2       core=ti
-atom
-* At      x    y    z      tag
-  Pb     0.0  0.0  0.0
-  Ti     0.5  0.5  0.5377
-  O      0.5  0.5  0.1118 axial
-  O      0.0  0.5  0.6174 planar
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="n">PbTiO3</span> <span class="mi">10</span><span class="n">K</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mf">3.885</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="mf">4.139</span>
+<span class="n">space</span> <span class="n">P</span> <span class="mi">4</span> <span class="n">m</span> <span class="n">m</span>
+<span class="n">a</span><span class="o">=</span><span class="mf">3.885</span>         <span class="n">c</span><span class="o">=</span><span class="mf">4.139</span>         <span class="n">nitrogen</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">rmax</span><span class="o">=</span><span class="mf">5.0</span>        <span class="n">rpath</span><span class="o">=</span><span class="mf">4.2</span>       <span class="n">core</span><span class="o">=</span><span class="n">ti</span>
+<span class="n">atom</span>
+<span class="o">*</span> <span class="n">At</span>      <span class="n">x</span>    <span class="n">y</span>    <span class="n">z</span>      <span class="n">tag</span>
+  <span class="n">Pb</span>     <span class="mf">0.0</span>  <span class="mf">0.0</span>  <span class="mf">0.0</span>
+  <span class="n">Ti</span>     <span class="mf">0.5</span>  <span class="mf">0.5</span>  <span class="mf">0.5377</span>
+  <span class="n">O</span>      <span class="mf">0.5</span>  <span class="mf">0.5</span>  <span class="mf">0.1118</span> <span class="n">axial</span>
+  <span class="n">O</span>      <span class="mf">0.0</span>  <span class="mf">0.5</span>  <span class="mf">0.6174</span> <span class="n">planar</span>
 </pre></div>
 </div>
 <p>Note that CIF files can also be used as the input to <font size=-1 color="#8C4112">ATOMS</font>
@@ -119,91 +119,91 @@ run the modules separately. Values for other cards have been assumed
 and might not be desired. Other cards have been left out entirely.
 Always check your <code class="file docutils literal"><span class="pre">feff.inp</span></code> file to be sure it is just what you
 want.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>* This feff6 file was generated by Demeter 0.9.13
-* Demeter written by and copyright (c) Bruce Ravel, 2006-2012
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">This</span> <span class="n">feff6</span> <span class="n">file</span> <span class="n">was</span> <span class="n">generated</span> <span class="n">by</span> <span class="n">Demeter</span> <span class="mf">0.9</span><span class="o">.</span><span class="mi">13</span>
+<span class="o">*</span> <span class="n">Demeter</span> <span class="n">written</span> <span class="n">by</span> <span class="ow">and</span> <span class="n">copyright</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="n">Bruce</span> <span class="n">Ravel</span><span class="p">,</span> <span class="mi">2006</span><span class="o">-</span><span class="mi">2012</span>
 
-* --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
-* title = PbTiO3 10K,a=3.885,c=4.139
-* space = P 4 m m
-* a     =   3.88500    b    =   3.88500    c     =   4.13900
-* alpha =  90.00000    beta =  90.00000    gamma =  90.00000
-* rmax  =   5.00000    core  = ti
-* shift =
-* atoms
-* # el.     x           y           z        tag
-*   Pb     0.00000     0.00000     0.00000   Pb
-*   Ti     0.50000     0.50000     0.53770   Ti
-*   O      0.50000     0.50000     0.11180   axial
-*   O      0.00000     0.50000     0.61740   planar
-* --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+<span class="o">*</span> <span class="o">--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--</span>
+<span class="o">*</span> <span class="n">title</span> <span class="o">=</span> <span class="n">PbTiO3</span> <span class="mi">10</span><span class="n">K</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mf">3.885</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="mf">4.139</span>
+<span class="o">*</span> <span class="n">space</span> <span class="o">=</span> <span class="n">P</span> <span class="mi">4</span> <span class="n">m</span> <span class="n">m</span>
+<span class="o">*</span> <span class="n">a</span>     <span class="o">=</span>   <span class="mf">3.88500</span>    <span class="n">b</span>    <span class="o">=</span>   <span class="mf">3.88500</span>    <span class="n">c</span>     <span class="o">=</span>   <span class="mf">4.13900</span>
+<span class="o">*</span> <span class="n">alpha</span> <span class="o">=</span>  <span class="mf">90.00000</span>    <span class="n">beta</span> <span class="o">=</span>  <span class="mf">90.00000</span>    <span class="n">gamma</span> <span class="o">=</span>  <span class="mf">90.00000</span>
+<span class="o">*</span> <span class="n">rmax</span>  <span class="o">=</span>   <span class="mf">5.00000</span>    <span class="n">core</span>  <span class="o">=</span> <span class="n">ti</span>
+<span class="o">*</span> <span class="n">shift</span> <span class="o">=</span>
+<span class="o">*</span> <span class="n">atoms</span>
+<span class="o">*</span> <span class="c1"># el.     x           y           z        tag</span>
+<span class="o">*</span>   <span class="n">Pb</span>     <span class="mf">0.00000</span>     <span class="mf">0.00000</span>     <span class="mf">0.00000</span>   <span class="n">Pb</span>
+<span class="o">*</span>   <span class="n">Ti</span>     <span class="mf">0.50000</span>     <span class="mf">0.50000</span>     <span class="mf">0.53770</span>   <span class="n">Ti</span>
+<span class="o">*</span>   <span class="n">O</span>      <span class="mf">0.50000</span>     <span class="mf">0.50000</span>     <span class="mf">0.11180</span>   <span class="n">axial</span>
+<span class="o">*</span>   <span class="n">O</span>      <span class="mf">0.00000</span>     <span class="mf">0.50000</span>     <span class="mf">0.61740</span>   <span class="n">planar</span>
+<span class="o">*</span> <span class="o">--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--</span>
 
-TITLE PbTiO3 10K,a=3.885,c=4.139
+<span class="n">TITLE</span> <span class="n">PbTiO3</span> <span class="mi">10</span><span class="n">K</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mf">3.885</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="mf">4.139</span>
 
-HOLE      1   1.0   * FYI: (Ti K edge @ 4966 eV, second number is S0^2)
-*         mphase,mpath,mfeff,mchi
-CONTROL   1      1     1     1
-PRINT     1      0     0     0
+<span class="n">HOLE</span>      <span class="mi">1</span>   <span class="mf">1.0</span>   <span class="o">*</span> <span class="n">FYI</span><span class="p">:</span> <span class="p">(</span><span class="n">Ti</span> <span class="n">K</span> <span class="n">edge</span> <span class="o">@</span> <span class="mi">4966</span> <span class="n">eV</span><span class="p">,</span> <span class="n">second</span> <span class="n">number</span> <span class="ow">is</span> <span class="n">S0</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span>
+<span class="o">*</span>         <span class="n">mphase</span><span class="p">,</span><span class="n">mpath</span><span class="p">,</span><span class="n">mfeff</span><span class="p">,</span><span class="n">mchi</span>
+<span class="n">CONTROL</span>   <span class="mi">1</span>      <span class="mi">1</span>     <span class="mi">1</span>     <span class="mi">1</span>
+<span class="n">PRINT</span>     <span class="mi">1</span>      <span class="mi">0</span>     <span class="mi">0</span>     <span class="mi">0</span>
 
-RMAX      4.2
-*NLEG      4
+<span class="n">RMAX</span>      <span class="mf">4.2</span>
+<span class="o">*</span><span class="n">NLEG</span>      <span class="mi">4</span>
 
-POTENTIALS
- * ipot   Z      tag
-    0     22     Ti
-    1     82     Pb
-    2     22     Ti
-    3     8      O
+<span class="n">POTENTIALS</span>
+ <span class="o">*</span> <span class="n">ipot</span>   <span class="n">Z</span>      <span class="n">tag</span>
+    <span class="mi">0</span>     <span class="mi">22</span>     <span class="n">Ti</span>
+    <span class="mi">1</span>     <span class="mi">82</span>     <span class="n">Pb</span>
+    <span class="mi">2</span>     <span class="mi">22</span>     <span class="n">Ti</span>
+    <span class="mi">3</span>     <span class="mi">8</span>      <span class="n">O</span>
 
 
-ATOMS                  * this list contains 94 atoms
-*   x          y          z     ipot tag           distance
-   0.00000    0.00000    0.00000  0  Ti            0.00000
-   0.00000    0.00000   -1.76280  3  axial.1       1.76280
-   1.37355    1.37355    0.32988  3  planar.1      1.97031
-  -1.37355    1.37355    0.32988  3  planar.1      1.97031
-   1.37355   -1.37355    0.32988  3  planar.1      1.97031
-  -1.37355   -1.37355    0.32988  3  planar.1      1.97031
-   0.00000    0.00000    2.37620  3  axial.2       2.37620
-   2.74711    0.00000    1.91346  1  Pb.1          3.34783
-  -2.74711    0.00000    1.91346  1  Pb.1          3.34783
-   0.00000    2.74711    1.91346  1  Pb.1          3.34783
-   0.00000   -2.74711    1.91346  1  Pb.1          3.34783
-   2.74711    0.00000   -2.22554  1  Pb.2          3.53548
-  -2.74711    0.00000   -2.22554  1  Pb.2          3.53548
-   0.00000    2.74711   -2.22554  1  Pb.2          3.53548
-   0.00000   -2.74711   -2.22554  1  Pb.2          3.53548
-   2.74711    2.74711    0.00000  2  Ti.1          3.88500
-  -2.74711    2.74711    0.00000  2  Ti.1          3.88500
-   2.74711   -2.74711    0.00000  2  Ti.1          3.88500
-  -2.74711   -2.74711    0.00000  2  Ti.1          3.88500
-   0.00000    0.00000    4.13900  2  Ti.2          4.13900
-   0.00000    0.00000   -4.13900  2  Ti.2          4.13900
-   2.74711    2.74711   -1.76280  3  axial.3       4.26623
-  -2.74711    2.74711   -1.76280  3  axial.3       4.26623
-   2.74711   -2.74711   -1.76280  3  axial.3       4.26623
-  -2.74711   -2.74711   -1.76280  3  axial.3       4.26623
-   1.37355    1.37355   -3.80912  3  planar.2      4.27583
-  -1.37355    1.37355   -3.80912  3  planar.2      4.27583
-   1.37355   -1.37355   -3.80912  3  planar.2      4.27583
-  -1.37355   -1.37355   -3.80912  3  planar.2      4.27583
-   4.12066    1.37355    0.32988  3  planar.3      4.35607
-  -4.12066    1.37355    0.32988  3  planar.3      4.35607
-   1.37355    4.12066    0.32988  3  planar.3      4.35607
-  -1.37355    4.12066    0.32988  3  planar.3      4.35607
-   4.12066   -1.37355    0.32988  3  planar.3      4.35607
-  -4.12066   -1.37355    0.32988  3  planar.3      4.35607
-   1.37355   -4.12066    0.32988  3  planar.3      4.35607
-  -1.37355   -4.12066    0.32988  3  planar.3      4.35607
-   2.74711    2.74711    2.37620  3  axial.4       4.55407
-  -2.74711    2.74711    2.37620  3  axial.4       4.55407
-   2.74711   -2.74711    2.37620  3  axial.4       4.55407
-  -2.74711   -2.74711    2.37620  3  axial.4       4.55407
-   1.37355    1.37355    4.46888  3  planar.4      4.87280
-  -1.37355    1.37355    4.46888  3  planar.4      4.87280
-   1.37355   -1.37355    4.46888  3  planar.4      4.87280
-  -1.37355   -1.37355    4.46888  3  planar.4      4.87280
+<span class="n">ATOMS</span>                  <span class="o">*</span> <span class="n">this</span> <span class="nb">list</span> <span class="n">contains</span> <span class="mi">94</span> <span class="n">atoms</span>
+<span class="o">*</span>   <span class="n">x</span>          <span class="n">y</span>          <span class="n">z</span>     <span class="n">ipot</span> <span class="n">tag</span>           <span class="n">distance</span>
+   <span class="mf">0.00000</span>    <span class="mf">0.00000</span>    <span class="mf">0.00000</span>  <span class="mi">0</span>  <span class="n">Ti</span>            <span class="mf">0.00000</span>
+   <span class="mf">0.00000</span>    <span class="mf">0.00000</span>   <span class="o">-</span><span class="mf">1.76280</span>  <span class="mi">3</span>  <span class="n">axial</span><span class="o">.</span><span class="mi">1</span>       <span class="mf">1.76280</span>
+   <span class="mf">1.37355</span>    <span class="mf">1.37355</span>    <span class="mf">0.32988</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">1</span>      <span class="mf">1.97031</span>
+  <span class="o">-</span><span class="mf">1.37355</span>    <span class="mf">1.37355</span>    <span class="mf">0.32988</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">1</span>      <span class="mf">1.97031</span>
+   <span class="mf">1.37355</span>   <span class="o">-</span><span class="mf">1.37355</span>    <span class="mf">0.32988</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">1</span>      <span class="mf">1.97031</span>
+  <span class="o">-</span><span class="mf">1.37355</span>   <span class="o">-</span><span class="mf">1.37355</span>    <span class="mf">0.32988</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">1</span>      <span class="mf">1.97031</span>
+   <span class="mf">0.00000</span>    <span class="mf">0.00000</span>    <span class="mf">2.37620</span>  <span class="mi">3</span>  <span class="n">axial</span><span class="o">.</span><span class="mi">2</span>       <span class="mf">2.37620</span>
+   <span class="mf">2.74711</span>    <span class="mf">0.00000</span>    <span class="mf">1.91346</span>  <span class="mi">1</span>  <span class="n">Pb</span><span class="o">.</span><span class="mi">1</span>          <span class="mf">3.34783</span>
+  <span class="o">-</span><span class="mf">2.74711</span>    <span class="mf">0.00000</span>    <span class="mf">1.91346</span>  <span class="mi">1</span>  <span class="n">Pb</span><span class="o">.</span><span class="mi">1</span>          <span class="mf">3.34783</span>
+   <span class="mf">0.00000</span>    <span class="mf">2.74711</span>    <span class="mf">1.91346</span>  <span class="mi">1</span>  <span class="n">Pb</span><span class="o">.</span><span class="mi">1</span>          <span class="mf">3.34783</span>
+   <span class="mf">0.00000</span>   <span class="o">-</span><span class="mf">2.74711</span>    <span class="mf">1.91346</span>  <span class="mi">1</span>  <span class="n">Pb</span><span class="o">.</span><span class="mi">1</span>          <span class="mf">3.34783</span>
+   <span class="mf">2.74711</span>    <span class="mf">0.00000</span>   <span class="o">-</span><span class="mf">2.22554</span>  <span class="mi">1</span>  <span class="n">Pb</span><span class="o">.</span><span class="mi">2</span>          <span class="mf">3.53548</span>
+  <span class="o">-</span><span class="mf">2.74711</span>    <span class="mf">0.00000</span>   <span class="o">-</span><span class="mf">2.22554</span>  <span class="mi">1</span>  <span class="n">Pb</span><span class="o">.</span><span class="mi">2</span>          <span class="mf">3.53548</span>
+   <span class="mf">0.00000</span>    <span class="mf">2.74711</span>   <span class="o">-</span><span class="mf">2.22554</span>  <span class="mi">1</span>  <span class="n">Pb</span><span class="o">.</span><span class="mi">2</span>          <span class="mf">3.53548</span>
+   <span class="mf">0.00000</span>   <span class="o">-</span><span class="mf">2.74711</span>   <span class="o">-</span><span class="mf">2.22554</span>  <span class="mi">1</span>  <span class="n">Pb</span><span class="o">.</span><span class="mi">2</span>          <span class="mf">3.53548</span>
+   <span class="mf">2.74711</span>    <span class="mf">2.74711</span>    <span class="mf">0.00000</span>  <span class="mi">2</span>  <span class="n">Ti</span><span class="o">.</span><span class="mi">1</span>          <span class="mf">3.88500</span>
+  <span class="o">-</span><span class="mf">2.74711</span>    <span class="mf">2.74711</span>    <span class="mf">0.00000</span>  <span class="mi">2</span>  <span class="n">Ti</span><span class="o">.</span><span class="mi">1</span>          <span class="mf">3.88500</span>
+   <span class="mf">2.74711</span>   <span class="o">-</span><span class="mf">2.74711</span>    <span class="mf">0.00000</span>  <span class="mi">2</span>  <span class="n">Ti</span><span class="o">.</span><span class="mi">1</span>          <span class="mf">3.88500</span>
+  <span class="o">-</span><span class="mf">2.74711</span>   <span class="o">-</span><span class="mf">2.74711</span>    <span class="mf">0.00000</span>  <span class="mi">2</span>  <span class="n">Ti</span><span class="o">.</span><span class="mi">1</span>          <span class="mf">3.88500</span>
+   <span class="mf">0.00000</span>    <span class="mf">0.00000</span>    <span class="mf">4.13900</span>  <span class="mi">2</span>  <span class="n">Ti</span><span class="o">.</span><span class="mi">2</span>          <span class="mf">4.13900</span>
+   <span class="mf">0.00000</span>    <span class="mf">0.00000</span>   <span class="o">-</span><span class="mf">4.13900</span>  <span class="mi">2</span>  <span class="n">Ti</span><span class="o">.</span><span class="mi">2</span>          <span class="mf">4.13900</span>
+   <span class="mf">2.74711</span>    <span class="mf">2.74711</span>   <span class="o">-</span><span class="mf">1.76280</span>  <span class="mi">3</span>  <span class="n">axial</span><span class="o">.</span><span class="mi">3</span>       <span class="mf">4.26623</span>
+  <span class="o">-</span><span class="mf">2.74711</span>    <span class="mf">2.74711</span>   <span class="o">-</span><span class="mf">1.76280</span>  <span class="mi">3</span>  <span class="n">axial</span><span class="o">.</span><span class="mi">3</span>       <span class="mf">4.26623</span>
+   <span class="mf">2.74711</span>   <span class="o">-</span><span class="mf">2.74711</span>   <span class="o">-</span><span class="mf">1.76280</span>  <span class="mi">3</span>  <span class="n">axial</span><span class="o">.</span><span class="mi">3</span>       <span class="mf">4.26623</span>
+  <span class="o">-</span><span class="mf">2.74711</span>   <span class="o">-</span><span class="mf">2.74711</span>   <span class="o">-</span><span class="mf">1.76280</span>  <span class="mi">3</span>  <span class="n">axial</span><span class="o">.</span><span class="mi">3</span>       <span class="mf">4.26623</span>
+   <span class="mf">1.37355</span>    <span class="mf">1.37355</span>   <span class="o">-</span><span class="mf">3.80912</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">2</span>      <span class="mf">4.27583</span>
+  <span class="o">-</span><span class="mf">1.37355</span>    <span class="mf">1.37355</span>   <span class="o">-</span><span class="mf">3.80912</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">2</span>      <span class="mf">4.27583</span>
+   <span class="mf">1.37355</span>   <span class="o">-</span><span class="mf">1.37355</span>   <span class="o">-</span><span class="mf">3.80912</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">2</span>      <span class="mf">4.27583</span>
+  <span class="o">-</span><span class="mf">1.37355</span>   <span class="o">-</span><span class="mf">1.37355</span>   <span class="o">-</span><span class="mf">3.80912</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">2</span>      <span class="mf">4.27583</span>
+   <span class="mf">4.12066</span>    <span class="mf">1.37355</span>    <span class="mf">0.32988</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">3</span>      <span class="mf">4.35607</span>
+  <span class="o">-</span><span class="mf">4.12066</span>    <span class="mf">1.37355</span>    <span class="mf">0.32988</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">3</span>      <span class="mf">4.35607</span>
+   <span class="mf">1.37355</span>    <span class="mf">4.12066</span>    <span class="mf">0.32988</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">3</span>      <span class="mf">4.35607</span>
+  <span class="o">-</span><span class="mf">1.37355</span>    <span class="mf">4.12066</span>    <span class="mf">0.32988</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">3</span>      <span class="mf">4.35607</span>
+   <span class="mf">4.12066</span>   <span class="o">-</span><span class="mf">1.37355</span>    <span class="mf">0.32988</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">3</span>      <span class="mf">4.35607</span>
+  <span class="o">-</span><span class="mf">4.12066</span>   <span class="o">-</span><span class="mf">1.37355</span>    <span class="mf">0.32988</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">3</span>      <span class="mf">4.35607</span>
+   <span class="mf">1.37355</span>   <span class="o">-</span><span class="mf">4.12066</span>    <span class="mf">0.32988</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">3</span>      <span class="mf">4.35607</span>
+  <span class="o">-</span><span class="mf">1.37355</span>   <span class="o">-</span><span class="mf">4.12066</span>    <span class="mf">0.32988</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">3</span>      <span class="mf">4.35607</span>
+   <span class="mf">2.74711</span>    <span class="mf">2.74711</span>    <span class="mf">2.37620</span>  <span class="mi">3</span>  <span class="n">axial</span><span class="o">.</span><span class="mi">4</span>       <span class="mf">4.55407</span>
+  <span class="o">-</span><span class="mf">2.74711</span>    <span class="mf">2.74711</span>    <span class="mf">2.37620</span>  <span class="mi">3</span>  <span class="n">axial</span><span class="o">.</span><span class="mi">4</span>       <span class="mf">4.55407</span>
+   <span class="mf">2.74711</span>   <span class="o">-</span><span class="mf">2.74711</span>    <span class="mf">2.37620</span>  <span class="mi">3</span>  <span class="n">axial</span><span class="o">.</span><span class="mi">4</span>       <span class="mf">4.55407</span>
+  <span class="o">-</span><span class="mf">2.74711</span>   <span class="o">-</span><span class="mf">2.74711</span>    <span class="mf">2.37620</span>  <span class="mi">3</span>  <span class="n">axial</span><span class="o">.</span><span class="mi">4</span>       <span class="mf">4.55407</span>
+   <span class="mf">1.37355</span>    <span class="mf">1.37355</span>    <span class="mf">4.46888</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">4</span>      <span class="mf">4.87280</span>
+  <span class="o">-</span><span class="mf">1.37355</span>    <span class="mf">1.37355</span>    <span class="mf">4.46888</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">4</span>      <span class="mf">4.87280</span>
+   <span class="mf">1.37355</span>   <span class="o">-</span><span class="mf">1.37355</span>    <span class="mf">4.46888</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">4</span>      <span class="mf">4.87280</span>
+  <span class="o">-</span><span class="mf">1.37355</span>   <span class="o">-</span><span class="mf">1.37355</span>    <span class="mf">4.46888</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">4</span>      <span class="mf">4.87280</span>
 
-END
+<span class="n">END</span>
 </pre></div>
 </div>
 </div>
@@ -221,16 +221,16 @@ absorber.</p>
 <p>In the example above, let's consider that the dilute absorber is
 Nb. To make it the absorber, we must modify the <code class="file docutils literal"><span class="pre">feff.inp</span></code>
 file like so:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>POTENTIALS
- * ipot   Z      tag
-    0     41     Nb
-    1     82     Pb
-    2     22     Ti
-    3     8      O
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">POTENTIALS</span>
+ <span class="o">*</span> <span class="n">ipot</span>   <span class="n">Z</span>      <span class="n">tag</span>
+    <span class="mi">0</span>     <span class="mi">41</span>     <span class="n">Nb</span>
+    <span class="mi">1</span>     <span class="mi">82</span>     <span class="n">Pb</span>
+    <span class="mi">2</span>     <span class="mi">22</span>     <span class="n">Ti</span>
+    <span class="mi">3</span>     <span class="mi">8</span>      <span class="n">O</span>
 
-ATOMS                  * this list contains 94 atoms
-*   x          y          z     ipot tag           distance
-   0.00000    0.00000    0.00000  0  Nb            0.00000
+<span class="n">ATOMS</span>                  <span class="o">*</span> <span class="n">this</span> <span class="nb">list</span> <span class="n">contains</span> <span class="mi">94</span> <span class="n">atoms</span>
+<span class="o">*</span>   <span class="n">x</span>          <span class="n">y</span>          <span class="n">z</span>     <span class="n">ipot</span> <span class="n">tag</span>           <span class="n">distance</span>
+   <span class="mf">0.00000</span>    <span class="mf">0.00000</span>    <span class="mf">0.00000</span>  <span class="mi">0</span>  <span class="n">Nb</span>            <span class="mf">0.00000</span>
 </pre></div>
 </div>
 <p class="last">Note that the labels (i.e. the instances of the string “Nb”) are
@@ -244,19 +244,19 @@ in the <code class="docutils literal"><span class="pre">POTENTIALS</span></code>
 Ti as the absorber, we need to consider the possibility of a Nb atom
 in the third coordination shell. To do this, we must adit the
 <code class="docutils literal"><span class="pre">POTENTIALS</span></code> list to include Nb:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>POTENTIALS
- * ipot   Z      tag
-    0     22     Ti
-    1     82     Pb
-    2     22     Ti
-    3     8      O
-    4     41     Nb
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">POTENTIALS</span>
+ <span class="o">*</span> <span class="n">ipot</span>   <span class="n">Z</span>      <span class="n">tag</span>
+    <span class="mi">0</span>     <span class="mi">22</span>     <span class="n">Ti</span>
+    <span class="mi">1</span>     <span class="mi">82</span>     <span class="n">Pb</span>
+    <span class="mi">2</span>     <span class="mi">22</span>     <span class="n">Ti</span>
+    <span class="mi">3</span>     <span class="mi">8</span>      <span class="n">O</span>
+    <span class="mi">4</span>     <span class="mi">41</span>     <span class="n">Nb</span>
 </pre></div>
 </div>
 <p>We must then replace one or more of the atoms in the third
 coordination shell with the new unique potential. Here is one
 example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>2.74711    2.74711    0.00000  4  Nb            3.88500
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mf">2.74711</span>    <span class="mf">2.74711</span>    <span class="mf">0.00000</span>  <span class="mi">4</span>  <span class="n">Nb</span>            <span class="mf">3.88500</span>
 </pre></div>
 </div>
 <p class="last">Again, the “Nb” label is not used by <font size=-1 color="#8C4112">FEFF</font> in
@@ -270,23 +270,23 @@ won't make much of a difference in this case, but in the case of an
 double bonded oxygenyl ligand (as in a uranyl or vanadyl species),
 it almost certainly will.</p>
 <p>First you must add a unique potential</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>POTENTIALS
- * ipot   Z      tag
-    0     22     Ti
-    1     82     Pb
-    2     22     Ti
-    3     8      axial
-    4     8      planar
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">POTENTIALS</span>
+ <span class="o">*</span> <span class="n">ipot</span>   <span class="n">Z</span>      <span class="n">tag</span>
+    <span class="mi">0</span>     <span class="mi">22</span>     <span class="n">Ti</span>
+    <span class="mi">1</span>     <span class="mi">82</span>     <span class="n">Pb</span>
+    <span class="mi">2</span>     <span class="mi">22</span>     <span class="n">Ti</span>
+    <span class="mi">3</span>     <span class="mi">8</span>      <span class="n">axial</span>
+    <span class="mi">4</span>     <span class="mi">8</span>      <span class="n">planar</span>
 </pre></div>
 </div>
 <p>Then you must modify the potential indeces in the to use the new
 potential index: <code class="docutils literal"><span class="pre">ATOMS</span></code> list:</p>
-<div class="last highlight-python"><div class="highlight"><pre><span></span> 0.00000    0.00000   -1.76280  4  axial.1       1.76280
- 1.37355    1.37355    0.32988  3  planar.1      1.97031
--1.37355    1.37355    0.32988  3  planar.1      1.97031
- 1.37355   -1.37355    0.32988  3  planar.1      1.97031
--1.37355   -1.37355    0.32988  3  planar.1      1.97031
- 0.00000    0.00000    2.37620  4  axial.2       2.37620
+<div class="last highlight-default"><div class="highlight"><pre><span></span> <span class="mf">0.00000</span>    <span class="mf">0.00000</span>   <span class="o">-</span><span class="mf">1.76280</span>  <span class="mi">4</span>  <span class="n">axial</span><span class="o">.</span><span class="mi">1</span>       <span class="mf">1.76280</span>
+ <span class="mf">1.37355</span>    <span class="mf">1.37355</span>    <span class="mf">0.32988</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">1</span>      <span class="mf">1.97031</span>
+<span class="o">-</span><span class="mf">1.37355</span>    <span class="mf">1.37355</span>    <span class="mf">0.32988</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">1</span>      <span class="mf">1.97031</span>
+ <span class="mf">1.37355</span>   <span class="o">-</span><span class="mf">1.37355</span>    <span class="mf">0.32988</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">1</span>      <span class="mf">1.97031</span>
+<span class="o">-</span><span class="mf">1.37355</span>   <span class="o">-</span><span class="mf">1.37355</span>    <span class="mf">0.32988</span>  <span class="mi">3</span>  <span class="n">planar</span><span class="o">.</span><span class="mi">1</span>      <span class="mf">1.97031</span>
+ <span class="mf">0.00000</span>    <span class="mf">0.00000</span>    <span class="mf">2.37620</span>  <span class="mi">4</span>  <span class="n">axial</span><span class="o">.</span><span class="mi">2</span>       <span class="mf">2.37620</span>
 </pre></div>
 </div>
 </dd>
@@ -305,9 +305,9 @@ features. Should you wish to use them, you must edit the
 <hr class="docutils" />
 <p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
 copyright © 2016 Bruce Ravel</p>
-<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>This document is licensed under <a class="reference external" href="https://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
 <p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
-consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+consider <a class="reference external" href="https://creativecommons.org/donate/">supporting The Creative Commons</a>.</p>
 </div>
 </div>
 
@@ -338,13 +338,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">14. Crystallography for EXAFS</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="space.html">14.1. Understanding and denoting space groups</a></li>
 <li class="toctree-l2"><a class="reference internal" href="abs.html">14.2. Absorption calculations and experimental corrections</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">14.3. A worked example (in text!)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">14.3. A worked example (in text!)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../extended/index.html">15. Extended discussions</a></li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.26</b></p>
+<p>Current Demeter version: <b>0.9.26</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
@@ -352,6 +352,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/XAS-Education/">Bruce's XAS Education page</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -365,20 +366,17 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/atoms/example.txt"
+      <li><a href="../_sources/atoms/example.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -395,13 +393,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="abs.html" title="14.2. Absorption calculations and experimental corrections"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >14. Crystallography for EXAFS</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >14. Crystallography for EXAFS</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, Bruce Ravel.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+        &#169; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
     </div>
   </body>
 </html>

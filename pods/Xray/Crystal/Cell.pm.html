@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Xray::Crystal::Cell</title>
-<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Xray::Crystal::Cell &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,220 +15,292 @@
 </div>
 <div class="path">
   <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Xray-Crystal-Cell
+  Xray::Crystal::Cell
 </div>
 <div>
 <a href="../../src/Xray/Crystal/Cell.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#ATTRIBUTES">ATTRIBUTES</a></li>
+  <li><a href="#METHODS">METHODS</a></li>
+  <li><a href="#CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Xray::Crystal::Cell - A crystallographic unit cell object</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<pre>  $cell = Xray::Crystal::Cell-&gt;new;
+<pre><code>  $cell = Xray::Crystal::Cell-&gt;new;
   $cell -&gt; space_group($space);
   $cell -&gt; a($val);
    ##  and so on...
   $cell -&gt; populate(\@sites);
-   ## where @sites is a list of Site objects.
+   ## where @sites is a list of Site objects.</code></pre>
 
-</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This is a crystallographic cell object.  From lattice constants, a
-space group symbol, and a list of Wycoff positions, it will fully
-populate a unit cell.  This cell can then be used to make crystal or
-cluster calculations.</p>
+<p>This is a crystallographic cell object. From lattice constants, a space group symbol, and a list of Wycoff positions, it will fully populate a unit cell. This cell can then be used to make crystal or cluster calculations.</p>
 
-<h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="ATTRIBUTES">ATTRIBUTES</h1>
 
-<p>This uses Moose, so each of these attributes has an associated
-accessor by the same name.</p>
+<p>This uses Moose, so each of these attributes has an associated accessor by the same name.</p>
 
 <p>These are the attributes that are typically set by the user:</p>
 
 <dl>
-	<dt><code>a</code></dt>
-		<dd><p>The a lattice constant.</p></dd>
-	<dt><code>b</code></dt>
-		<dd><p>The b lattice constant.</p></dd>
-	<dt><code>c</code></dt>
-		<dd><p>The c lattice constant.</p></dd>
-	<dt><code>alpha</code></dt>
-		<dd><p>The angle between the b and c lattice constants.</p></dd>
-	<dt><code>beta</code></dt>
-		<dd><p>The angle between the a and c lattice constants.</p></dd>
-	<dt><code>gamma</code></dt>
-		<dd><p>The angle between the a and b lattice constants.</p></dd>
-	<dt><code>angle</code></dt>
-		<dd><p>This takes the value of the most recently set angle.  This is only
-needed for the peculiar situation of a monoclinic space group with all
-three angles equal to 90.  The function determine monoclinic will not
-be able to resolve the setting in that situation without a little
-help.  The idea is that the user has to specify at least one angle in
-order to unambiguously determine the setting.</p></dd>
-	<dt><code>space_group</code></dt>
-		<dd><p>A string specifying the space group of the cell. The supplied value is
-stored in the <code>given_group</code> attribute and this is filled with the
-canonical symbol.</p></dd>
-</dl>
-<p>The bare minimum required to define is a cell is the <code>a</code> lattice
-constant and the space group symbol.  All other attributes have
-sensible defaults or are calculated quantities.  Of course, any space
-group of lower than cubic symmetry will require that other axes and/or
-angles be specified.</p>
 
-<p>There are several other Cell attributes.  Except for the Contents
-attribute, these are updated as triggers when other attributes are
-updated.  These include:</p>
+<dt id="a"><code>a</code></dt>
+<dd>
+
+<p>The a lattice constant.</p>
+
+</dd>
+<dt id="b"><code>b</code></dt>
+<dd>
+
+<p>The b lattice constant.</p>
+
+</dd>
+<dt id="c"><code>c</code></dt>
+<dd>
+
+<p>The c lattice constant.</p>
+
+</dd>
+<dt id="alpha"><code>alpha</code></dt>
+<dd>
+
+<p>The angle between the b and c lattice constants.</p>
+
+</dd>
+<dt id="beta"><code>beta</code></dt>
+<dd>
+
+<p>The angle between the a and c lattice constants.</p>
+
+</dd>
+<dt id="gamma"><code>gamma</code></dt>
+<dd>
+
+<p>The angle between the a and b lattice constants.</p>
+
+</dd>
+<dt id="angle"><code>angle</code></dt>
+<dd>
+
+<p>This takes the value of the most recently set angle. This is only needed for the peculiar situation of a monoclinic space group with all three angles equal to 90. The function determine monoclinic will not be able to resolve the setting in that situation without a little help. The idea is that the user has to specify at least one angle in order to unambiguously determine the setting.</p>
+
+</dd>
+<dt id="space_group"><code>space_group</code></dt>
+<dd>
+
+<p>A string specifying the space group of the cell. The supplied value is stored in the <code>given_group</code> attribute and this is filled with the canonical symbol.</p>
+
+</dd>
+</dl>
+
+<p>The bare minimum required to define is a cell is the <code>a</code> lattice constant and the space group symbol. All other attributes have sensible defaults or are calculated quantities. Of course, any space group of lower than cubic symmetry will require that other axes and/or angles be specified.</p>
+
+<p>There are several other Cell attributes. Except for the Contents attribute, these are updated as triggers when other attributes are updated. These include:</p>
 
 <dl>
-	<dt><code>group</code></dt>
-		<dd><p>This is a reference to an <a href="SpaceGroup.pm.html">Xray::Crystal::SpaceGroup</a> object which
-has been initialized with the value of the <code>space_group</code> attribute.</p></dd>
-	<dt><code>given_group</code></dt>
-		<dd><p>The space group symbol used as the argument for
-the <code>space_group</code> attribute when the <code>make</code> method is called.</p></dd>
-	<dt><code>contents</code></dt>
-		<dd><p>This is an anonymous list of anonymous lists specifying the contents
-of the fully decoded unit cell.  This attribute is set by caling the
-<code>populate</code> method.  Each list element is itself a list containing the
-x, y, and z fractional coordinates of the site and a reference to the
-Site obect which generated that site.  To examine the contents of the
-cell, do something like this:</p></dd>
-<dd><pre>  my ($contents) = $cell -&gt; contents;
+
+<dt id="group"><code>group</code></dt>
+<dd>
+
+<p>This is a reference to an <a href="SpaceGroup.pm.html">Xray::Crystal::SpaceGroup</a> object which has been initialized with the value of the <code>space_group</code> attribute.</p>
+
+</dd>
+<dt id="given_group"><code>given_group</code></dt>
+<dd>
+
+<p>The space group symbol used as the argument for the <code>space_group</code> attribute when the <code>make</code> method is called.</p>
+
+</dd>
+<dt id="contents"><code>contents</code></dt>
+<dd>
+
+<p>This is an anonymous list of anonymous lists specifying the contents of the fully decoded unit cell. This attribute is set by caling the <code>populate</code> method. Each list element is itself a list containing the x, y, and z fractional coordinates of the site and a reference to the Site obect which generated that site. To examine the contents of the cell, do something like this:</p>
+
+<pre><code>  my ($contents) = $cell -&gt; contents;
   foreach my $pos (@{$contents}) {
     printf &quot;x=%8.5f, y=%8.5f, z=%8.5f$/&quot;,
       $$pos[0], $$pos[1], $$pos[2]
-  };
+  };</code></pre>
 
-</pre></dd>	<dt><code>volume</code></dt>
-		<dd><p>The volume of the unit cell computed from the axes and angles.</p></dd>
-	<dt><code>txx</code></dt>
-		<dd><p>The x-x element of the metric tensor computed from the axes and
-angles.  This is used to translate from fractional to cartesian
-coordinates.</p></dd>
-	<dt><code>tyx</code></dt>
-		<dd><p>The y-x element of the metric tensor computed from the axes and
-angles.</p></dd>
-	<dt><code>tyz</code></dt>
-		<dd><p>The y-z element of the metric tensor computed from the axes and
-angles.</p></dd>
-	<dt><code>tzx</code></dt>
-		<dd><p>The z-x element of the metric tensor computed from the axes and
-angles.</p></dd>
-	<dt><code>tzz</code></dt>
-		<dd><p>The z-z element of the metric tensor computed from the axes and
-angles.</p></dd>
-	<dt>other metric tensor elements</dt>
-		<dd><p>The yy element of the metric tensor is unity and the other three are
-zero.  These four are not actually attributes.</p></dd>
+</dd>
+<dt id="volume"><code>volume</code></dt>
+<dd>
+
+<p>The volume of the unit cell computed from the axes and angles.</p>
+
+</dd>
+<dt id="txx"><code>txx</code></dt>
+<dd>
+
+<p>The x-x element of the metric tensor computed from the axes and angles. This is used to translate from fractional to cartesian coordinates.</p>
+
+</dd>
+<dt id="tyx"><code>tyx</code></dt>
+<dd>
+
+<p>The y-x element of the metric tensor computed from the axes and angles.</p>
+
+</dd>
+<dt id="tyz"><code>tyz</code></dt>
+<dd>
+
+<p>The y-z element of the metric tensor computed from the axes and angles.</p>
+
+</dd>
+<dt id="tzx"><code>tzx</code></dt>
+<dd>
+
+<p>The z-x element of the metric tensor computed from the axes and angles.</p>
+
+</dd>
+<dt id="tzz"><code>tzz</code></dt>
+<dd>
+
+<p>The z-z element of the metric tensor computed from the axes and angles.</p>
+
+</dd>
+<dt id="other-metric-tensor-elements">other metric tensor elements</dt>
+<dd>
+
+<p>The yy element of the metric tensor is unity and the other three are zero. These four are not actually attributes.</p>
+
+</dd>
 </dl>
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<h1 id="METHODS">METHODS</h1>
 
 <dl>
-	<dt><code>populate</code></dt>
-		<dd><p>Populate a unit cell given a list of sites.  Each element of the list
-of sites must be a Site object.  The symmetries operations implied by
-the space group are applied to each unique site to generate a
-description of the stoichiometric contents of the unit cell.</p></dd>
-<dd><pre>   $cell -&gt; populate(\@sites)
 
-</pre></dd>		<dd><p>This fills the <code>contents</code> attribute of the Cell with an anonymous
-array.  Each element of the anonymous array is itself an anonymous
-array whose first three elements are the x, y, and z fractional
-coordinates of the site and whose fourth element is a reference to the
-Site that generated the position.  This is, admitedly, a complicated
-data structure and requires a lot of ``line-noise'' style perl to
-dereference all its elements.  It is, however, fairly efficient.</p></dd>
-	<dt><code>metric</code></dt>
-		<dd><p>Takes the three fractional coordinates and returns the cartesian
-coordinates of the position.  The fractional coordinates need not be
-canonicalized into the first octant, thus this method can be used to
-generate the cartesian coordinates for any atom in a cluster.</p></dd>
-<dd><pre>  ($x,$y,$z) = $cell -&gt; metric($xf, $yf, $zf);
+<dt id="populate"><code>populate</code></dt>
+<dd>
 
-</pre></dd>		<dd><p>This method is called repeatedly by the <code>build_cluster</code> function in
-the <a href="../../Demeter/Atoms.pm.html">Demeter::Atoms</a> module.  The elements of the metric
-tensor, i.e. the <code>txx</code>, <code>tyx</code>, <code>tyz</code>, <code>tzx</code>, and <code>tzz</code> Cell
-attributes, are used to make the transformation according to this
-formula:</p></dd>
-<dd><pre>              / Txx   0    0  \   / xf \
+<p>Populate a unit cell given a list of sites. Each element of the list of sites must be a Site object. The symmetries operations implied by the space group are applied to each unique site to generate a description of the stoichiometric contents of the unit cell.</p>
+
+<pre><code>   $cell -&gt; populate(\@sites)</code></pre>
+
+<p>This fills the <code>contents</code> attribute of the Cell with an anonymous array. Each element of the anonymous array is itself an anonymous array whose first three elements are the x, y, and z fractional coordinates of the site and whose fourth element is a reference to the Site that generated the position. This is, admitedly, a complicated data structure and requires a lot of ``line-noise&#39;&#39; style perl to dereference all its elements. It is, however, fairly efficient.</p>
+
+</dd>
+<dt id="metric"><code>metric</code></dt>
+<dd>
+
+<p>Takes the three fractional coordinates and returns the cartesian coordinates of the position. The fractional coordinates need not be canonicalized into the first octant, thus this method can be used to generate the cartesian coordinates for any atom in a cluster.</p>
+
+<pre><code>  ($x,$y,$z) = $cell -&gt; metric($xf, $yf, $zf);</code></pre>
+
+<p>This method is called repeatedly by the <code>build_cluster</code> function in the <a href="../../Demeter/Atoms.pm.html">Demeter::Atoms</a> module. The elements of the metric tensor, i.e. the <code>txx</code>, <code>tyx</code>, <code>tyz</code>, <code>tzx</code>, and <code>tzz</code> Cell attributes, are used to make the transformation according to this formula:</p>
+
+<pre><code>              / Txx   0    0  \   / xf \
    (x y z) = |  Tyx   1   Tyz  | |  yf  |
-              \ Tzx   0   Tzz /   \ zf /
+              \ Tzx   0   Tzz /   \ zf /</code></pre>
 
-</pre></dd>	<dt><code>d_spacing</code></dt>
-		<dd><p>Takes the Miller indeces of a scattering plane and returns the d
-spacing of that plane in Angstroms.</p></dd>
-<dd><pre>  $d = $cell -&gt; d_spacing($h, $k, $l);
+</dd>
+<dt id="d_spacing"><code>d_spacing</code></dt>
+<dd>
 
-</pre></dd>	<dt><code>multiplicity</code></dt>
-		<dd><p>Returns the multiplicity of a reflection hkl for the cell.</p></dd>
-<dd><pre>  $p = $cell -&gt; multiplicity($h, $k, $l);
+<p>Takes the Miller indeces of a scattering plane and returns the d spacing of that plane in Angstroms.</p>
 
-</pre></dd>		<dd><p>See the footnote in Cullity page 523 for a caveat.</p></dd>
-	<dt><code>cell_check</code></dt>
-		<dd><p>This method returns a warning if the cell axes and angles are not
-appropriate to the space group, otherwise it returns an empty string.</p></dd>
-<dd><pre>  print $cell -&gt; cell_check;
+<pre><code>  $d = $cell -&gt; d_spacing($h, $k, $l);</code></pre>
 
-</pre></dd>	<dt><code>clear</code></dt>
-		<dd><p>Reinitialize all attribute values;</p></dd>
+</dd>
+<dt id="multiplicity"><code>multiplicity</code></dt>
+<dd>
+
+<p>Returns the multiplicity of a reflection hkl for the cell.</p>
+
+<pre><code>  $p = $cell -&gt; multiplicity($h, $k, $l);</code></pre>
+
+<p>See the footnote in Cullity page 523 for a caveat.</p>
+
+</dd>
+<dt id="cell_check"><code>cell_check</code></dt>
+<dd>
+
+<p>This method returns a warning if the cell axes and angles are not appropriate to the space group, otherwise it returns an empty string.</p>
+
+<pre><code>  print $cell -&gt; cell_check;</code></pre>
+
+</dd>
+<dt id="clear"><code>clear</code></dt>
+<dd>
+
+<p>Reinitialize all attribute values;</p>
+
+</dd>
 </dl>
-<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<h1 id="CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</h1>
 
 <p>There is nothing configurable and no environment variables are used.</p>
 
-<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
 
-<pre>  Carp
+<pre><code>  Carp
   File::Spec
   Storable
-  Const::Fast
+  Const::Fast</code></pre>
 
-</pre><h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
 <p>These methods are not yet implemented:</p>
 
 <ul>
-	<li>overfull</li>
-	<li>warn_shift</li>
-	<li>get_symmetry_table</li>
-	<li>set_ipots</li>
+
+<li><p>overfull</p>
+
+</li>
+<li><p>warn_shift</p>
+
+</li>
+<li><p>get_symmetry_table</p>
+
+</li>
+<li><p>set_ipots</p>
+
+</li>
 </ul>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel, <a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a></p>
 
 <p>http://bruceravel.github.io/demeter/</p>
 
-
-
-
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

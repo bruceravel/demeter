@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>10. Fitting EXAFS data &mdash; Demeter Programming Guide 0.9.26 documentation</title>
+    <title>10. Fitting EXAFS data &#8212; Demeter Programming Guide 0.9.26 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -17,14 +17,15 @@
         VERSION:     '0.9.26',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Demeter Programming Guide 0.9.26 documentation" href="../index.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="10.1. Setting up a fit" href="collection.html" />
     <link rel="prev" title="9. Guess/Def/Set Parameters" href="../gds.html" />
 
@@ -43,7 +44,7 @@
         <li class="right" >
           <a href="../gds.html" title="9. Guess/Def/Set Parameters"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -137,10 +138,10 @@ parameters.</p>
 59
 60
 61</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
- <span class="k">use</span> <span class="n">Demeter</span> <span class="sx">qw(:ui=screen)</span><span class="p">;</span>
+ <span class="k">use</span> <span class="nn">Demeter</span> <span class="sx">qw(:ui=screen)</span><span class="p">;</span>
 
  <span class="c1">## import an Athena project file with copper metal in it</span>
- <span class="k">my</span> <span class="nv">$prj</span> <span class="o">=</span> <span class="nn">Demeter::Data::</span><span class="n">Prj</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="s">&#39;cu_data.prj&#39;</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$prj</span> <span class="o">=</span> <span class="nn">Demeter::Data::Prj</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="s">&#39;cu_data.prj&#39;</span><span class="p">);</span>
 
  <span class="c1">## make a Data object and set the FT and fit parameters</span>
  <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nv">$prj</span><span class="o">-&gt;</span><span class="n">record</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
@@ -152,24 +153,24 @@ parameters.</p>
             <span class="p">);</span>
 
  <span class="c1">## run a Feff calculation on copper metal</span>
- <span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Feff</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;cu_metal.inp&quot;</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::Feff</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;cu_metal.inp&quot;</span><span class="p">);</span>
  <span class="nv">$feff</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">workspace</span> <span class="o">=&gt;</span> <span class="s">&quot;cu_workspace/&quot;</span><span class="p">,</span> <span class="n">screen</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,);</span>
- <span class="nv">$feff</span> <span class="o">-&gt;</span> <span class="n">potph</span> <span class="o">-&gt;</span> <span class="n">pathfinder</span><span class="p">;</span>
+ <span class="nv">$feff</span> <span class="o">-&gt;</span> <span class="nn">potph</span> <span class="o">-&gt;</span> <span class="n">pathfinder</span><span class="p">;</span>
  <span class="k">my</span> <span class="nv">@list_of_paths</span> <span class="o">=</span> <span class="nv">$feff</span><span class="o">-&gt;</span> <span class="n">list_of_paths</span><span class="p">;</span>
 
  <span class="c1">## make GDS objects for an isotropic expansion, correlated Debye model fit to copper</span>
- <span class="k">my</span> <span class="nv">@gds</span> <span class="o">=</span>  <span class="p">(</span><span class="nn">Demeter::</span><span class="n">GDS</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span> <span class="o">=&gt;</span> <span class="s">&#39;guess&#39;</span><span class="p">,</span> <span class="n">name</span> <span class="o">=&gt;</span> <span class="s">&#39;alpha&#39;</span><span class="p">,</span> <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">),</span>
-             <span class="nn">Demeter::</span><span class="n">GDS</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span> <span class="o">=&gt;</span> <span class="s">&#39;guess&#39;</span><span class="p">,</span> <span class="n">name</span> <span class="o">=&gt;</span> <span class="s">&#39;amp&#39;</span><span class="p">,</span>   <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">),</span>
-             <span class="nn">Demeter::</span><span class="n">GDS</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span> <span class="o">=&gt;</span> <span class="s">&#39;guess&#39;</span><span class="p">,</span> <span class="n">name</span> <span class="o">=&gt;</span> <span class="s">&#39;enot&#39;</span><span class="p">,</span>  <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">),</span>
-             <span class="nn">Demeter::</span><span class="n">GDS</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span> <span class="o">=&gt;</span> <span class="s">&#39;guess&#39;</span><span class="p">,</span> <span class="n">name</span> <span class="o">=&gt;</span> <span class="s">&#39;theta&#39;</span><span class="p">,</span> <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="mi">500</span><span class="p">),</span>
-             <span class="nn">Demeter::</span><span class="n">GDS</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span> <span class="o">=&gt;</span> <span class="s">&#39;set&#39;</span><span class="p">,</span>   <span class="n">name</span> <span class="o">=&gt;</span> <span class="s">&#39;temp&#39;</span><span class="p">,</span>  <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="mi">300</span><span class="p">),</span>
-             <span class="nn">Demeter::</span><span class="n">GDS</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span> <span class="o">=&gt;</span> <span class="s">&#39;set&#39;</span><span class="p">,</span>   <span class="n">name</span> <span class="o">=&gt;</span> <span class="s">&#39;sigmm&#39;</span><span class="p">,</span> <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="mf">0.00052</span><span class="p">),</span>
+ <span class="k">my</span> <span class="nv">@gds</span> <span class="o">=</span>  <span class="p">(</span><span class="nn">Demeter::GDS</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span> <span class="o">=&gt;</span> <span class="s">&#39;guess&#39;</span><span class="p">,</span> <span class="n">name</span> <span class="o">=&gt;</span> <span class="s">&#39;alpha&#39;</span><span class="p">,</span> <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">),</span>
+             <span class="nn">Demeter::GDS</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span> <span class="o">=&gt;</span> <span class="s">&#39;guess&#39;</span><span class="p">,</span> <span class="n">name</span> <span class="o">=&gt;</span> <span class="s">&#39;amp&#39;</span><span class="p">,</span>   <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">),</span>
+             <span class="nn">Demeter::GDS</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span> <span class="o">=&gt;</span> <span class="s">&#39;guess&#39;</span><span class="p">,</span> <span class="n">name</span> <span class="o">=&gt;</span> <span class="s">&#39;enot&#39;</span><span class="p">,</span>  <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">),</span>
+             <span class="nn">Demeter::GDS</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span> <span class="o">=&gt;</span> <span class="s">&#39;guess&#39;</span><span class="p">,</span> <span class="n">name</span> <span class="o">=&gt;</span> <span class="s">&#39;theta&#39;</span><span class="p">,</span> <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="mi">500</span><span class="p">),</span>
+             <span class="nn">Demeter::GDS</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span> <span class="o">=&gt;</span> <span class="s">&#39;set&#39;</span><span class="p">,</span>   <span class="n">name</span> <span class="o">=&gt;</span> <span class="s">&#39;temp&#39;</span><span class="p">,</span>  <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="mi">300</span><span class="p">),</span>
+             <span class="nn">Demeter::GDS</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span> <span class="o">=&gt;</span> <span class="s">&#39;set&#39;</span><span class="p">,</span>   <span class="n">name</span> <span class="o">=&gt;</span> <span class="s">&#39;sigmm&#39;</span><span class="p">,</span> <span class="n">mathexp</span> <span class="o">=&gt;</span> <span class="mf">0.00052</span><span class="p">),</span>
             <span class="p">);</span>
 
  <span class="c1">## make Path objects for the first 5 paths in copper (3 shell fit)</span>
  <span class="k">my</span> <span class="nv">@paths</span> <span class="o">=</span> <span class="p">();</span>
  <span class="k">foreach</span> <span class="k">my</span> <span class="nv">$i</span> <span class="p">(</span><span class="mi">0</span> <span class="o">..</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
-   <span class="nv">$paths</span><span class="p">[</span><span class="nv">$i</span><span class="p">]</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Path</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
+   <span class="nv">$paths</span><span class="p">[</span><span class="nv">$i</span><span class="p">]</span> <span class="o">=</span> <span class="nn">Demeter::Path</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
    <span class="nv">$paths</span><span class="p">[</span><span class="nv">$i</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="n">data</span>     <span class="o">=&gt;</span> <span class="nv">$data</span><span class="p">,</span>
                    <span class="n">sp</span>       <span class="o">=&gt;</span> <span class="nv">$list_of_paths</span><span class="p">[</span><span class="nv">$i</span><span class="p">];</span>
                    <span class="n">s02</span>      <span class="o">=&gt;</span> <span class="s">&#39;amp&#39;</span><span class="p">,</span>
@@ -180,7 +181,7 @@ parameters.</p>
  <span class="p">};</span>
 
  <span class="c1">## make a Fit object</span>
- <span class="k">my</span> <span class="nv">$fit</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Fit</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span>   <span class="o">=&gt;</span> <span class="o">\</span><span class="nv">@gds</span><span class="p">,</span>
+ <span class="k">my</span> <span class="nv">$fit</span> <span class="o">=</span> <span class="nn">Demeter::Fit</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">gds</span>   <span class="o">=&gt;</span> <span class="o">\</span><span class="nv">@gds</span><span class="p">,</span>
                                <span class="n">data</span>  <span class="o">=&gt;</span> <span class="p">[</span><span class="nv">$data</span><span class="p">],</span>
                                <span class="n">paths</span> <span class="o">=&gt;</span> <span class="o">\</span><span class="nv">@paths</span>
                               <span class="p">);</span>
@@ -189,7 +190,7 @@ parameters.</p>
  <span class="nv">$fit</span> <span class="o">-&gt;</span> <span class="n">fit</span><span class="p">;</span>
 
  <span class="c1">## set up some plotting parameters</span>
- <span class="nv">$data</span><span class="o">-&gt;</span><span class="n">po</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="n">plot_data</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>   <span class="n">plot_fit</span>  <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
+ <span class="nv">$data</span><span class="o">-&gt;</span><span class="nn">po</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="n">plot_data</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>   <span class="n">plot_fit</span>  <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
                 <span class="n">plot_bkg</span>  <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>   <span class="n">plot_res</span>  <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
                 <span class="n">plot_win</span>  <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>   <span class="n">plot_run</span>  <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
                 <span class="n">kweight</span>   <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span>
@@ -258,9 +259,9 @@ parameter.</p>
 <hr class="docutils" />
 <p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
 copyright © 2016 Bruce Ravel</p>
-<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>This document is licensed under <a class="reference external" href="https://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
 <p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
-consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+consider <a class="reference external" href="https://creativecommons.org/donate/">supporting The Creative Commons</a>.</p>
 </div>
 
 
@@ -283,7 +284,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../feff/index.html">7. Feff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gds.html">9. Guess/Def/Set Parameters</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">10. Fitting EXAFS data</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">10. Fitting EXAFS data</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="collection.html">10.1. Setting up a fit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sanity.html">10.2. Sanity checks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="after.html">10.3. After a fit</a></li>
@@ -298,7 +299,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.26</b></p>
+<p>Current Demeter version: <b>0.9.26</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
@@ -306,6 +307,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/XAS-Education/">Bruce's XAS Education page</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -319,20 +321,17 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/fit/index.txt"
+      <li><a href="../_sources/fit/index.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -349,12 +348,12 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="../gds.html" title="9. Guess/Def/Set Parameters"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, Bruce Ravel.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+        &#169; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
     </div>
   </body>
 </html>

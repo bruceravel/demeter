@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.2. Setting E0 &mdash; Athena 0.9.26 documentation</title>
+    <title>7.2. Setting E0 &#8212; Athena 0.9.26 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -17,15 +17,15 @@
         VERSION:     '0.9.26',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Athena 0.9.26 documentation" href="../index.html" />
-    <link rel="up" title="7. Setting parameters" href="index.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="7.3. Default parameter values" href="defaults.html" />
     <link rel="prev" title="7.1. Constraining parameters between data groups" href="constrain.html" />
 
@@ -44,8 +44,8 @@
         <li class="right" >
           <a href="constrain.html" title="7.1. Constraining parameters between data groups"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">7. Setting parameters</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">7. Setting parameters</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -129,6 +129,44 @@ the default algorithm for determining <tt><font color="#387A38">«E0»</font></t
 <p>Submenus under the <span class="guilabel">Group</span> menu can be used to set
 <tt><font color="#387A38">«E0»</font></tt> using one of these algorithms for all groups, or the
 set of marked groups.</p>
+<div class="section" id="enforcing-an-element-and-edge">
+<h2>7.2.1. Enforcing an element and edge<a class="headerlink" href="#enforcing-an-element-and-edge" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes you have data that is otherwise usable, but which contains a
+feature that confounds one of <font size=-1 color="#8C4112">ATHENA</font>'s data reduction
+algorithms.  An example is shown below.  There was some problem within
+a short data range at the beginning of the pre-edge resulting in a
+high level of noise in the data.  When searching for the value of the
+edge energy, <font size=-1 color="#8C4112">ATHENA</font> searches for a peak in the first
+derivative.  In the case of these data, that peak in the first
+derivative is found in the noisy region at the beginning of the
+pre-edge region.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-encorce-mu"></span><a class="reference external image-reference" href="../_images/enforce_mu.png"><img alt="../_images/enforce_mu.png" src="../_images/enforce_mu.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 7.4 </span><span class="caption-text">Data with a measurement problem that confounds <font size=-1 color="#8C4112">ATHENA</font>'s
+algorithm for determining <tt><font color="#387A38">«E0»</font></tt>.</span></p>
+</div>
+<p>In a situation like this, it can be useful to supply <font size=-1 color="#8C4112">ATHENA</font>
+with a bit more information about the data.  The usual practice in
+<font size=-1 color="#8C4112">ATHENA</font> is to determine the absorbing element and edge from
+the data without input from the user.  This practice can be
+over-ridden by enforcing the element and edge for a data set.</p>
+<p>The dialog for this is located at <span class="menuselection">Energy ‣ Enforce
+element and edge</span>.  Selecting this pops uo the following dialog:</p>
+<div class="figure align-center" id="id2">
+<span id="fig-enforce"></span><a class="reference external image-reference" href="../_images/enforce.png"><img alt="../_images/enforce.png" src="../_images/enforce.png" /></a>
+<p class="caption"><span class="caption-number">Fig. 7.5 </span><span class="caption-text">The element and edge enforcement dialog.</span></p>
+</div>
+<p>Specify the element of the absorber and the edge you are measuring.
+Doing so will force <font size=-1 color="#8C4112">ATHENA</font> to consider data to be of that
+element and edge.  The <tt><font color="#387A38">«E0»</font></tt> will first be set to the
+tabulated value for the zero-valent lement.  Then <a class="reference external" href="defauls.html">default parameter
+values</a> will be set, then the <tt><font color="#387A38">«E0»</font></tt>
+parameter will be reset using the <em>Fraction of edge step</em> algorithm.</p>
+<p>If you wish to later import data of another element or edge, it is
+<strong>imperative</strong> that you stop enforcement by selecting
+<span class="menuselection">Energy ‣ Stop enforcing element and edge</span>.
+Enforcing the incorrect element or edge will have profoundly
+undesirable consequences on the data processing.</p>
 
 <br>
 
@@ -136,9 +174,10 @@ set of marked groups.</p>
 <hr class="docutils" />
 <p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
 copyright © 2016 Bruce Ravel</p>
-<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>This document is licensed under <a class="reference external" href="https://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
 <p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
-consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+consider <a class="reference external" href="https://creativecommons.org/donate/">supporting The Creative Commons</a>.</p>
+</div>
 </div>
 
 
@@ -160,7 +199,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../ui/index.html">6. User Interface</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">7. Setting parameters</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="constrain.html">7.1. Constraining parameters between data groups</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">7.2. Setting E0</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">7.2. Setting E0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="defaults.html">7.3. Default parameter values</a></li>
 </ul>
 </li>
@@ -172,7 +211,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.26</b></p>
+<p>Current Demeter version: <b>0.9.26</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
@@ -180,6 +219,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/XAS-Education/">Bruce's XAS Education page</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -198,20 +238,17 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/params/e0.txt"
+      <li><a href="../_sources/params/e0.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -228,13 +265,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="constrain.html" title="7.1. Constraining parameters between data groups"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >7. Setting parameters</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >7. Setting parameters</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, Bruce Ravel.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+        &#169; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
     </div>
   </body>
 </html>

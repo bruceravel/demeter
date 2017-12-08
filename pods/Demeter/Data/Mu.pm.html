@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::Data::Mu</title>
-<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::Data::Mu &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,195 +15,231 @@
 </div>
 <div class="path">
   <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-Data-Mu
+  Demeter::Data::Mu
 </div>
 <div>
 <a href="../../src/Demeter/Data/Mu.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#Data-processing-methods">Data processing methods</a></li>
+      <li><a href="#I-O-methods">I/O methods</a></li>
+      <li><a href="#Code-generating-methods">Code generating methods</a></li>
+      <li><a href="#Utility-methods">Utility methods</a></li>
+    </ul>
+  </li>
+  <li><a href="#CONFIGURATION">CONFIGURATION</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::Data::Mu - Methods for processing and plotting mu(E) data</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<pre>  my $data = Demeter::Data -&gt; new;
+<pre><code>  my $data = Demeter::Data -&gt; new;
   $data -&gt; set(file      =&gt; &quot;fe.060.xmu&quot;,
-	       name      =&gt; 'My copper data',
+               name      =&gt; &#39;My copper data&#39;,
                bkg_rbkg  =&gt; 1.4,
                bkg_spl2e =&gt; 1800,
-	      );
-  $data -&gt; plot(&quot;k&quot;);
+              );
+  $data -&gt; plot(&quot;k&quot;);</code></pre>
 
-</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This role of Demeter::Data contains methods for dealing with mu(E)
-data.</p>
+<p>This role of Demeter::Data contains methods for dealing with mu(E) data.</p>
 
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="METHODS">METHODS</h1>
 
-<h2 id="Data_processing_methods">Data processing methods</h2>
+<h2 id="Data-processing-methods">Data processing methods</h2>
 
-<p>These methods are very rarely called explicitly in a script.  Rather
-they get called behind the scenes when plots are made using the
-<code>plot</code> method or if some other method is called which requires that
-the data first be processed in energy.  They are documented here for
-completeness.</p>
+<p>These methods are very rarely called explicitly in a script. Rather they get called behind the scenes when plots are made using the <code>plot</code> method or if some other method is called which requires that the data first be processed in energy. They are documented here for completeness.</p>
 
 <dl>
-	<dt><code>normalize</code></dt>
-		<dd><p>This method normalizes the data and calculates the flattened,
-normalized spectrum.</p></dd>
-<dd><pre>  $data_object -&gt; normalize;
 
-</pre></dd>	<dt><code>edgestep_error</code></dt>
-		<dd><p>This method attempts to compute the uncertainty in the edge step.
-This is done by generating a sampling of randomly chosen values for
-the pre- and post-edge line parameters, computing the edge step for
-each one, and computing the standard deviation in edge step values.
-Care is taken to remove extreme outliers in edge step -- often caused
-either by <code>bkg_pre2</code> being too close to the edge or by <code>bkg_nor1</code>
-resulting in an overly large quadratic term in the post-edge line.</p></dd>
-<dd><pre>  ($mean, $sd, $report) = $data-&gt;edgestep_error($do_plot);
+<dt id="normalize"><code>normalize</code></dt>
+<dd>
 
-</pre></dd>		<dd><p>The return values are the average and standard deviation of the
-sampling of edge step values and a bit of text with some information
-abot how the calculation progressed.  When true, the parameter says to
-plot the normalized spectrum for each sampling of parameter values.</p></dd>
-	<dt><code>autobk</code></dt>
-		<dd><p>This method computes the background spline using the Autobk algorithm
-and extracts chi(k) from the mu(E) data.</p></dd>
-<dd><pre>  $data_object -&gt; autobk;
+<p>This method normalizes the data and calculates the flattened, normalized spectrum.</p>
 
-</pre></dd>	<dt><code>spline</code></dt>
-		<dd><p>This is an alias for <code>autobk</code>.</p></dd>
-	<dt><code>plotE</code></dt>
-		<dd><p>This method plots the data in energy using information from the Plot
-object.</p></dd>
-<dd><pre>  $data_object -&gt; plotE;
+<pre><code>  $data_object -&gt; normalize;</code></pre>
 
-</pre></dd>		<dd><p>This method is not typically called directly.  Instead it is called as
-one of the options of the more generic <code>plot</code> method.</p></dd>
-	<dt><code>guess_columns</code></dt>
-		<dd><p>This method uses regular expressions in the file configuration group
-to attempt to guess which columns are which in an input column data
-file.  This is most useful in a GUI where a bad or undesirable guess
-can be overridden interactively, but it still might be useful even in
-a script.</p></dd>
-<dd><pre>  $data_object -&gt; guess_columns;
+</dd>
+<dt id="edgestep_error"><code>edgestep_error</code></dt>
+<dd>
 
-</pre></dd>		<dd><p>This will set the <code>ln</code>, <code>numerator</code>, and <code>denominator</code> attributes
-of the Data object.  It will return attribute values suitable for
-transmission in preference to fluorescence.  In the event that no
-columns match, <code>numerator</code> or <code>denominator</code> (or possibly both) will
-be set to the string <code>&quot;1&quot;</code>.</p></dd>
+<p>This method attempts to compute the uncertainty in the edge step. This is done by generating a sampling of randomly chosen values for the pre- and post-edge line parameters, computing the edge step for each one, and computing the standard deviation in edge step values. Care is taken to remove extreme outliers in edge step -- often caused either by <code>bkg_pre2</code> being too close to the edge or by <code>bkg_nor1</code> resulting in an overly large quadratic term in the post-edge line.</p>
+
+<pre><code>  ($mean, $sd, $report) = $data-&gt;edgestep_error($do_plot);</code></pre>
+
+<p>The return values are the average and standard deviation of the sampling of edge step values and a bit of text with some information abot how the calculation progressed. When true, the parameter says to plot the normalized spectrum for each sampling of parameter values.</p>
+
+</dd>
+<dt id="autobk"><code>autobk</code></dt>
+<dd>
+
+<p>This method computes the background spline using the Autobk algorithm and extracts chi(k) from the mu(E) data.</p>
+
+<pre><code>  $data_object -&gt; autobk;</code></pre>
+
+</dd>
+<dt id="spline"><code>spline</code></dt>
+<dd>
+
+<p>This is an alias for <code>autobk</code>.</p>
+
+</dd>
+<dt id="plotE"><code>plotE</code></dt>
+<dd>
+
+<p>This method plots the data in energy using information from the Plot object.</p>
+
+<pre><code>  $data_object -&gt; plotE;</code></pre>
+
+<p>This method is not typically called directly. Instead it is called as one of the options of the more generic <code>plot</code> method.</p>
+
+</dd>
+<dt id="guess_columns"><code>guess_columns</code></dt>
+<dd>
+
+<p>This method uses regular expressions in the file configuration group to attempt to guess which columns are which in an input column data file. This is most useful in a GUI where a bad or undesirable guess can be overridden interactively, but it still might be useful even in a script.</p>
+
+<pre><code>  $data_object -&gt; guess_columns;</code></pre>
+
+<p>This will set the <code>ln</code>, <code>numerator</code>, and <code>denominator</code> attributes of the Data object. It will return attribute values suitable for transmission in preference to fluorescence. In the event that no columns match, <code>numerator</code> or <code>denominator</code> (or possibly both) will be set to the string <code>&quot;1&quot;</code>.</p>
+
+</dd>
 </dl>
-<h2 id="I_O_methods">I/O methods</h2>
 
-<p>These are methods used to write out column ASCII data containing data
-in energy space.</p>
+<h2 id="I-O-methods">I/O methods</h2>
+
+<p>These are methods used to write out column ASCII data containing data in energy space.</p>
 
 <dl>
-	<dt><code>save_xmu</code></dt>
-		<dd><p>This method writes an output mu(E) file containing the background,
-pre- and post-edge lines, and first and second derivatives.</p></dd>
-<dd><pre>  $data_object -&gt; save_xmu($filename);
 
-</pre></dd>		<dd><p>This method is not typically called directly.  Instead it is called as
-one of the options of the more generic <code>save</code> method.</p></dd>
-	<dt><code>save_norm</code></dt>
-		<dd><p>This method writes an output mu(E) file containing the normalized data
-and background, flattened data and background, and the first and second
-derivatives of the normalized data.</p></dd>
-<dd><pre>  $data_object -&gt; save_norm($filename);
+<dt id="save_xmu"><code>save_xmu</code></dt>
+<dd>
 
-</pre></dd>		<dd><p>This method is not typically called directly.  Instead it is called as
-one of the options of the more generic <code>save</code> method.</p></dd>
+<p>This method writes an output mu(E) file containing the background, pre- and post-edge lines, and first and second derivatives.</p>
+
+<pre><code>  $data_object -&gt; save_xmu($filename);</code></pre>
+
+<p>This method is not typically called directly. Instead it is called as one of the options of the more generic <code>save</code> method.</p>
+
+</dd>
+<dt id="save_norm"><code>save_norm</code></dt>
+<dd>
+
+<p>This method writes an output mu(E) file containing the normalized data and background, flattened data and background, and the first and second derivatives of the normalized data.</p>
+
+<pre><code>  $data_object -&gt; save_norm($filename);</code></pre>
+
+<p>This method is not typically called directly. Instead it is called as one of the options of the more generic <code>save</code> method.</p>
+
+</dd>
 </dl>
-<h2 id="Code_generating_methods">Code generating methods</h2>
 
-<p>Again, these are rarely needed in user scripts, but are documented for
-completeness.</p>
+<h2 id="Code-generating-methods">Code generating methods</h2>
+
+<p>Again, these are rarely needed in user scripts, but are documented for completeness.</p>
 
 <dl>
-	<dt><code>step</code></dt>
-		<dd><p>This method generates code for making an array containing a Heaviside
-step function centered at the edge energy and placed on the grid of
-the energy array associated with the object.  The resulting array
-containing the step function will have the suffix <code>step</code>.</p></dd>
-<dd><pre>    $string = $self-&gt;step;
 
-</pre></dd>	<dt><code>_plotE_command</code></dt>
-		<dd><p>This method generates a string containing the commands required to
-plot data in energy.  It is called by the <code>plotE</code> method, which then
-disposes of the commands.</p></dd>
+<dt id="step"><code>step</code></dt>
+<dd>
+
+<p>This method generates code for making an array containing a Heaviside step function centered at the edge energy and placed on the grid of the energy array associated with the object. The resulting array containing the step function will have the suffix <code>step</code>.</p>
+
+<pre><code>    $string = $self-&gt;step;</code></pre>
+
+</dd>
+<dt id="plotE_command"><code>_plotE_command</code></dt>
+<dd>
+
+<p>This method generates a string containing the commands required to plot data in energy. It is called by the <code>plotE</code> method, which then disposes of the commands.</p>
+
+</dd>
 </dl>
-<h2 id="Utility_methods">Utility methods</h2>
 
-<p>These are handy methods related to energy space data processing that
-might be needed in a user script.</p>
+<h2 id="Utility-methods">Utility methods</h2>
+
+<p>These are handy methods related to energy space data processing that might be needed in a user script.</p>
 
 <dl>
-	<dt><code>find_edge</code></dt>
-		<dd><p>This method determines the absorber and edge of mu(E) data by
-comparing the edge energy for these data to a table of edge energies
-of the elements.</p></dd>
-<dd><pre>   ($elem, $edge) = $self-&gt;find_edge($e0);
 
-</pre></dd><dd>
+<dt id="find_edge"><code>find_edge</code></dt>
+<dd>
 
+<p>This method determines the absorber and edge of mu(E) data by comparing the edge energy for these data to a table of edge energies of the elements.</p>
 
-</dd>	<dt><code>clamp</code></dt>
-		<dd><p>This method translates between numeric and descriptive values of
-clamping strengths.  See the clamp configuration group for tuning the
-translation between string and numeric clamp values.</p></dd>
+<pre><code>   ($elem, $edge) = $self-&gt;find_edge($e0);</code></pre>
+
+</dd>
+<dt id="clamp"><code>clamp</code></dt>
+<dd>
+
+<p>This method translates between numeric and descriptive values of clamping strengths. See the clamp configuration group for tuning the translation between string and numeric clamp values.</p>
+
+</dd>
 </dl>
-<h1 id="CONFIGURATION">CONFIGURATION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>See <a href="../Config.pm.html">Demeter::Config</a> for a description of the configuration
-system.</p>
+<h1 id="CONFIGURATION">CONFIGURATION</h1>
 
-<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<p>See <a href="../Config.pm.html">Demeter::Config</a> for a description of the configuration system.</p>
 
-<p>Demeter's dependencies are in the <cite>Build.PL</cite> file.</p>
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
 
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<p>Demeter&#39;s dependencies are in the <i>Build.PL</i> file.</p>
+
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
 <ul>
-	<li>Cromer-Liberman normalization is not yet implemented.</li>
-	<li>Something like the Penner-Hahn mxan would be nice also.</li>
-	<li>There is currently no mechanism for importing an array into Ifeffit
-and associating an object with it.</li>
+
+<li><p>Cromer-Liberman normalization is not yet implemented.</p>
+
+</li>
+<li><p>Something like the Penner-Hahn mxan would be nice also.</p>
+
+</li>
+<li><p>There is currently no mechanism for importing an array into Ifeffit and associating an object with it.</p>
+
+</li>
 </ul>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel, <a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a></p>
 
 <p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

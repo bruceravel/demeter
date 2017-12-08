@@ -32,6 +32,7 @@ use Demeter::UI::Athena::TextBuffer;
 use Demeter::UI::Athena::Replot;
 use Demeter::UI::Athena::GroupList;
 use Demeter::UI::Athena::FileDropTarget;
+use Demeter::StrTypes qw(Edge Element);
 
 use Demeter::UI::Artemis::DND::PlotListDrag;
 use Demeter::UI::Athena::Status;
@@ -85,6 +86,10 @@ sub identify_self {
 use vars qw($athena_base $icon $noautosave %frames);
 $athena_base = identify_self();
 $noautosave = 0;		# set this to skip autosave, see Demeter::UI::Artemis::Import::_feffit
+
+## a Metis-specific, "it's good to be charge" block of code
+use vars qw(%npix);
+%npix = ();
 
 sub OnInit {
   my ($app) = @_;
@@ -156,6 +161,12 @@ sub OnInit {
   $app->{selecting_data_group}=0;
   $app->{update_kweights}=1;
 
+  ## -------- buffers related to specifying element/edge
+  $app->{is_z} = q{};
+  $app->{is_edge} = q{};
+  $app->{is_edge_margin} = q{};
+
+  
   ## -------- text buffers for various TextEntryDialogs
   $app->{rename_buffer}  = [];
   $app->{rename_pointer} = -1;
@@ -352,6 +363,7 @@ const my $SAVE_CHIK		=> Wx::NewId();
 const my $SAVE_CHIR		=> Wx::NewId();
 const my $SAVE_CHIQ		=> Wx::NewId();
 const my $SAVE_COMPAT		=> Wx::NewId();
+const my $WITH_MULTIPLIERS	=> Wx::NewId();
 const my $SAVE_ORIG		=> Wx::NewId();
 const my $SAVE_JSON		=> Wx::NewId();
 
@@ -413,6 +425,8 @@ const my $E0_FRACTION_MARKED	=> Wx::NewId();
 const my $E0_ZERO_MARKED        => Wx::NewId();
 const my $E0_DMAX_MARKED        => Wx::NewId();
 const my $E0_PEAK_MARKED        => Wx::NewId();
+const my $E0_SPECIFY            => Wx::NewId();
+const my $E0_UNSPECIFY          => Wx::NewId();
 
 const my $WL_THIS               => Wx::NewId();
 const my $WL_MARKED             => Wx::NewId();
@@ -470,6 +484,7 @@ const my $IFEFFIT_SCALARS	=> Wx::NewId();
 const my $IFEFFIT_GROUPS	=> Wx::NewId();
 const my $IFEFFIT_ARRAYS	=> Wx::NewId();
 const my $IFEFFIT_MEMORY	=> Wx::NewId();
+const my $BLA_NPIXELS	        => Wx::NewId();
 
 const my $MARK_ALL		=> Wx::NewId();
 const my $MARK_NONE		=> Wx::NewId();
@@ -534,10 +549,12 @@ sub menubar {
 
   my $savemarkedmenu = Wx::Menu->new;
   $savemarkedmenu->Append($MARKED_XMU,   "$MU(E)",          "Save marked groups as $MU(E) to a column data file");
-  $savemarkedmenu->Append($MARKED_NORM,  "norm(E)",         "Save marked groups as norm(E) to a column data file");
   $savemarkedmenu->Append($MARKED_DER,   "deriv($MU(E))",   "Save marked groups as deriv($MU(E)) to a column data file");
-  $savemarkedmenu->Append($MARKED_NDER,  "deriv(norm(E))",  "Save marked groups as deriv(norm(E)) to a column data file");
   $savemarkedmenu->Append($MARKED_SEC,   "second($MU(E))",  "Save marked groups as second($MU(E)) to a column data file");
+  $savemarkedmenu->AppendCheckItem($WITH_MULTIPLIERS, "Save $MU(E) with plot multipliers", "Save marked groups as $MU(E)/deriv($MU(E)/second($MU(E) with plot multipliers");
+  $savemarkedmenu->AppendSeparator;
+  $savemarkedmenu->Append($MARKED_NORM,  "norm(E)",         "Save marked groups as norm(E) to a column data file");
+  $savemarkedmenu->Append($MARKED_NDER,  "deriv(norm(E))",  "Save marked groups as deriv(norm(E)) to a column data file");
   $savemarkedmenu->Append($MARKED_NSEC,  "second(norm(E))", "Save marked groups as second(norm(E)) to a column data file");
   $savemarkedmenu->AppendSeparator;
   $savemarkedmenu->Append($MARKED_CHI,   "$CHI(k)",         "Save marked groups as $CHI(k) to a column data file");
@@ -555,6 +572,7 @@ sub menubar {
   $savemarkedmenu->Append($MARKED_QRE,   "Re[$CHI(q)]",     "Save marked groups as Re[$CHI(q)] to a column data file");
   $savemarkedmenu->Append($MARKED_QIM,   "Im[$CHI(q)]",     "Save marked groups as Im[$CHI(q)] to a column data file");
   $savemarkedmenu->Append($MARKED_QPHA,  "Pha[$CHI(q)]",    "Save marked groups as Pha[$CHI(q)] to a column data file");
+  $app->{main}->{savemarkedmenu} = $savemarkedmenu;
 
   my $saveeachmenu   = Wx::Menu->new;
   $saveeachmenu->Append($EACH_MUE,    "$MU(E)",  "Save $MU(E) for each marked group" );
@@ -593,7 +611,6 @@ sub menubar {
   $debugmenu->Append($PCA_YAML,     "PCA object yaml",           "Show yaml dialog for PCA object" );
   $debugmenu->Append($PEAK_YAML,    "PeakFit object yaml",       "Show yaml dialog for PeakFit object" );
 
-
   $monitormenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the '.Demeter->backend_name.' and plotting commands buffer' );
   $monitormenu->Append($STATUS,      "Show status bar buffer", 'Show the buffer containing messages written to the status bars');
   my $thing1 = $monitormenu->AppendSeparator;
@@ -607,8 +624,9 @@ sub menubar {
                                                               # see line 192
 
   #if (Demeter->co->default("athena", "debug_menus")) {
-    $monitormenu->AppendSeparator;
-    $monitormenu->AppendSubMenu($debugmenu, 'Debug options', 'Display debugging tools');
+  $monitormenu->AppendSeparator;
+  $monitormenu->Append($BLA_NPIXELS,      'BLA npixel data', 'Show dialog with BLA npixel data');
+  $monitormenu->AppendSubMenu($debugmenu, 'Debug options',   'Display debugging tools');
   #};
 
   my $e0allmenu   = Wx::Menu->new;
@@ -665,6 +683,9 @@ sub menubar {
   $energymenu->AppendSeparator;
   $energymenu->Append($SHOW_REFERENCE, "Identify reference channel", "Identify the group that shares the data/reference relationship with this group.");
   $energymenu->Append($TIE_REFERENCE,  "Tie reference channel",  "Tie together two marked groups as data and reference channel.");
+  $energymenu->AppendSeparator;
+  $energymenu->Append($E0_SPECIFY,   "Enforce element and edge");
+  $energymenu->Append($E0_UNSPECIFY, "Stop enforcing element and edge");
   $app->{main}->{energymenu} = $energymenu;
 
 
@@ -793,6 +814,10 @@ sub menubar {
 sub project_compatibility {
   my ($app) = @_;
   return $app->{main}->{filemenu}->IsChecked($SAVE_COMPAT);
+};
+sub save_with_multipliers {
+  my ($app) = @_;
+  return $app->{main}->{filemenu}->IsChecked($WITH_MULTIPLIERS);
 };
 
 sub set_mru {
@@ -975,6 +1000,36 @@ sub OnMenuClick {
       $app->tie_reference;
       last SWITCH;
     };
+    ($id == $E0_SPECIFY) and do {
+      my $specify_dialog = Demeter::UI::Athena::SpecifyConfig->new($app->{main});
+      my $result = $specify_dialog -> ShowModal;
+      if ($result != wxID_CANCEL) {
+	if (is_Element(ucfirst(lc($specify_dialog->{elem}->GetValue)))) {
+	  $app->{is_z} = $specify_dialog->{elem}->GetValue;
+	  Demeter->dd->is_z($app->{is_z});
+	};
+	if (is_Edge(lc($specify_dialog->{edge}->GetValue))) {
+	  $app->{is_edge} = lc($specify_dialog->{edge}->GetValue);
+	  Demeter->dd->is_edge($app->{is_edge});
+	};
+	if (looks_like_number($specify_dialog->{margin}->GetValue)) {
+	  $app->{is_edge_margin} = $specify_dialog->{margin}->GetValue;
+	  Demeter->dd->is_edge_margin($app->{is_edge_margin});
+	};
+	$app->{main}->status(sprintf("Enforcing element %s and edge %s with a margin of %.1f.",
+				     ucfirst(lc($app->{is_z})), uc($app->{is_edge}), $app->{is_edge_margin}));
+      };
+    };
+    ($id == $E0_UNSPECIFY) and do {
+      $app->{is_z} = q{};
+      $app->{is_edge} = q{};
+      $app->{is_edge_margin} = 15;
+      Demeter->dd->is_z(q{});
+      Demeter->dd->is_edge(q{});
+      Demeter->dd->is_edge_margin(15);
+      $app->{main}->status("No longer enforcing element and edge.");
+    };
+
     ($id == $REMOVE) and do {
       $app->Remove('current');
       last SWITCH;
@@ -994,6 +1049,23 @@ sub OnMenuClick {
       last SWITCH if $app->is_empty;
       my $dialog = Demeter::UI::Common::ShowText
 	-> new($app->{main}, $app->current_data->serialization, 'Structure of Data object')
+	  -> Show;
+      last SWITCH;
+    };
+    ($id == $BLA_NPIXELS) and do {
+      last SWITCH if $app->is_empty;
+      my $text =  "             group     npixels    normalized\n";
+      $text   .=  "================================================\n";
+      my ($d, $gp, $lab);
+      foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+	$d = $app->{main}->{list}->GetIndexedData($i);
+	$gp = $d->group;
+	next if not (exists $Demeter::UI::Athena::npix{$gp});
+	$lab = $d->name;
+	$text .= sprintf("  %20s  %6d  %12.5f\n", $lab, $Demeter::UI::Athena::npix{$gp}->[0], $Demeter::UI::Athena::npix{$gp}->[1]);
+      };
+      my $dialog = Demeter::UI::Common::ShowText
+	-> new($app->{main}, $text, 'BLA npixel data')
 	  -> Show;
       last SWITCH;
     };
@@ -1954,6 +2026,7 @@ sub OnGroupSelect {
   $app->{main}->{groupmenu}  -> Enable($DATA_TEXT,($app->current_data and (-e $app->current_data->file)));
   $app->{main}->{energymenu} -> Enable($SHOW_REFERENCE,($app->current_data and $app->current_data->reference));
   $app->{main}->{energymenu} -> Enable($TIE_REFERENCE,($app->current_data and not $app->current_data->reference));
+  $app->{main}->{monitormenu}-> Enable($BLA_NPIXELS, ($app->current_data and exists($Demeter::UI::Athena::npix{$app->current_data->group})));
 
   my $n = $app->{main}->{list}->GetCount;
   foreach my $x ($PLOT_QUAD, $PLOT_IOSIG, $PLOT_K123, $PLOT_R123) {$app->{main}->{currentplotmenu} -> Enable($x, $n)};

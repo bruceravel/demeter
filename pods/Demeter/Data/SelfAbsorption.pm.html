@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::Data::SelfAbsorption</title>
-<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::Data::SelfAbsorption &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,123 +15,161 @@
 </div>
 <div class="path">
   <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-Data-SelfAbsorption
+  Demeter::Data::SelfAbsorption
 </div>
 <div>
 <a href="../../src/Demeter/Data/SelfAbsorption.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a></li>
+  <li><a href="#CONFIGURATION">CONFIGURATION</a></li>
+  <li><a href="#REFERENCES">REFERENCES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::Data::SelfAbsorption - Self-absorption corrections for mu(E) data</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This role of <a href="../Data.pm.html">Demeter::Data</a> contains methods for calculating
-self-absorption corrections for mu(E) data using various algorithms.</p>
+<p>This role of <a href="../Data.pm.html">Demeter::Data</a> contains methods for calculating self-absorption corrections for mu(E) data using various algorithms.</p>
 
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="METHODS">METHODS</h1>
 
 <dl>
-	<dt><code>sa</code></dt>
-		<dd><p>Compute the correction using one of the following methods:</p></dd>
-<dd><dl>
-	<dt><strong>fluo</strong></dt>
-		<dd><p>This corrects mu(E) data using an algorithm developed by Bruce along
-with Ed Stern and Dani Haskel.  This was first implemented by Dani
-Haskel and then reimplemented into the original Athena.  It is the
-only correction method here that is applied to mu(E) data.</p></dd>
-	<dt><strong>Troger</strong></dt>
-		<dd><p>This is a correction to chi(k) that applies only in the thick sample limit.</p></dd>
-	<dt><strong>Booth</strong></dt>
-		<dd><p>This improvement on the Troger algorithm was developed by Corwin Booth
-and Bud Bridges and can applied to a sample of any thickness, although
-the density of the sample must be supplied.  In the thick sample
-limit, it is identical to the Troger correction.</p></dd>
-	<dt><strong>atoms</strong></dt>
-		<dd><p>This correction to chi(k) computes the effects of normalization, i0,
-and self absorption using <a href="../../Xray/FluorescenceEXAFS.pm.html">Xray::FluorescenceEXAFS</a>.  It is a fairly
-crude approximation and is only valid in the thick sample limit.  It
-also does not consider the effect of incident or exit angle.</p></dd>
-</dl>
+
+<dt id="sa"><code>sa</code></dt>
+<dd>
+
+<p>Compute the correction using one of the following methods:</p>
+
+<dl>
+
+<dt id="fluo"><b>fluo</b></dt>
+<dd>
+
+<p>This corrects mu(E) data using an algorithm developed by Bruce along with Ed Stern and Dani Haskel. This was first implemented by Dani Haskel and then reimplemented into the original Athena. It is the only correction method here that is applied to mu(E) data.</p>
+
 </dd>
-<dd><pre>  $data -&gt; po -&gt; strt_plot;
-  $data -&gt; plot('k');
+<dt id="Troger"><b>Troger</b></dt>
+<dd>
+
+<p>This is a correction to chi(k) that applies only in the thick sample limit.</p>
+
+</dd>
+<dt id="Booth"><b>Booth</b></dt>
+<dd>
+
+<p>This improvement on the Troger algorithm was developed by Corwin Booth and Bud Bridges and can applied to a sample of any thickness, although the density of the sample must be supplied. In the thick sample limit, it is identical to the Troger correction.</p>
+
+</dd>
+<dt id="atoms"><b>atoms</b></dt>
+<dd>
+
+<p>This correction to chi(k) computes the effects of normalization, i0, and self absorption using <a href="../../Xray/FluorescenceEXAFS.pm.html">Xray::FluorescenceEXAFS</a>. It is a fairly crude approximation and is only valid in the thick sample limit. It also does not consider the effect of incident or exit angle.</p>
+
+</dd>
+</dl>
+
+<pre><code>  $data -&gt; po -&gt; strt_plot;
+  $data -&gt; plot(&#39;k&#39;);
   my ($sadata, $text) = $data-&gt;sa($method, formula=&gt;$formula, in=&gt;$angle_in
                                   out=&gt;$angle_out, thickness=&gt;$thickness);
-  $sadata -&gt; plot('k');
-  print $text;
+  $sadata -&gt; plot(&#39;k&#39;);
+  print $text;</code></pre>
 
-</pre></dd>		<dd><p>The method returns a reference to a Data object containing the
-corrected data and a scalar containing the textual response from the
-selected correction method.</p></dd>
-		<dd><p>The formula must be provided and must be specified using the syntax of
-<a href="../../Chemistry/Formula.pm.html">Chemistry::Formula</a>.  Defaults for in and out are 45 degrees an the
-default for thickness is to compute in the thick sample limit.</p></dd>
-		<dd><p>The named arguments can appear in any order, but the first item in the
-argument list must be the correction method.</p></dd>
-	<dt><code>info_depth</code></dt>
-		<dd><p>Return arrays of wavenumber and information depth where the
-information depth represents the depth from which signal is retrieved
-from the sample.  Essentially, this plots the energy dependence of the
-absorption length over the k-range of the data.</p></dd>
-<dd><pre>  my ($ref_k, $ref_info) = $data-&gt;info_depth(formula=&gt;$formula,
+<p>The method returns a reference to a Data object containing the corrected data and a scalar containing the textual response from the selected correction method.</p>
+
+<p>The formula must be provided and must be specified using the syntax of <a href="../../Chemistry/Formula.pm.html">Chemistry::Formula</a>. Defaults for in and out are 45 degrees an the default for thickness is to compute in the thick sample limit.</p>
+
+<p>The named arguments can appear in any order, but the first item in the argument list must be the correction method.</p>
+
+</dd>
+<dt id="info_depth"><code>info_depth</code></dt>
+<dd>
+
+<p>Return arrays of wavenumber and information depth where the information depth represents the depth from which signal is retrieved from the sample. Essentially, this plots the energy dependence of the absorption length over the k-range of the data.</p>
+
+<pre><code>  my ($ref_k, $ref_info) = $data-&gt;info_depth(formula=&gt;$formula,
                                              in=&gt;$angle_in
-                                             out=&gt;$angle_out);
+                                             out=&gt;$angle_out);</code></pre>
 
-</pre></dd>		<dd><p>The returned values are array references.</p></dd>
+<p>The returned values are array references.</p>
+
+</dd>
 </dl>
-<h1 id="CONFIGURATION">CONFIGURATION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<h1 id="CONFIGURATION">CONFIGURATION</h1>
 
 <p>See <a href="../Config.pm.html">Demeter::Config</a> for a description of the configuration system.</p>
 
-<h1 id="REFERENCES">REFERENCES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="REFERENCES">REFERENCES</h1>
 
 <dl>
-	<dt><strong>Fluo algorithm</strong></dt>
-		<dd><p>The program documentation for Fluo can be found at Dani's web site and
-includes the mathematical derivation:
-<a href="http://www.aps.anl.gov/xfd/people/haskel/fluo.html">http://www.aps.anl.gov/xfd/people/haskel/fluo.html</a>.</p></dd>
-	<dt><strong>Booth Algorithm</strong></dt>
-		<dd><p>C. H. Booth and F. Bridges, Physica Scripta, T115, (2005) p. 202.
-DOI:10.1238/Physica.Topical.115a00202 See also Corwin's web site:
-<a href="http://lise.lbl.gov/RSXAP/">http://lise.lbl.gov/RSXAP/</a></p></dd>
-	<dt><strong>Troger Algorithm</strong></dt>
-		<dd><p>L. Troger, et al., Phys. Rev., B46:6, (1992) p. 3283
-DOI: 10.1103/PhysRevB.46.3283</p></dd>
-	<dt><strong>Pfalzer Algorithm</strong></dt>
-		<dd><p>Another interesting approach to correcting self-absorption is
-presented in P. Pfalzer et al., Phys. Rev., B60:13, (1999)
-p. 9335. DOI: 10.1103/PhysRevB.60.9335</p></dd>
-		<dd><p>This is not implemented in Demeter because the main result
-requires an integral over the solid angle subtended by the
-detector. This could be implemented, but the amount of solid angle
-subtended it is not something one typically writes in the lab
-notebook. If anyone is really interested in having this algorithm
-implemented, contact Bruce.</p></dd>
-	<dt><strong>Atoms Algorithm</strong></dt>
-		<dd><p>B. Ravel, J. Synchrotron Radiat., 8:2, (2001) p. 314. DOI:
-10.1107/S090904950001493X</p></dd>
-		<dd><p>See also the documentation for Atoms at Bruce's website for more
-details about it's fluorescence correction calculations.</p></dd>
-	<dt><strong>Elam tables of absorption coefficients</strong></dt>
-		<dd><p>W.T. Elam, B.Ravel, and J.R. Sieber, Radiat. Phys. Chem., 63, (2002)
-p. 121-128, DOI: 10.1016/S0969-806X(01)00227-4</p></dd>
-</dl>
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<dt id="Fluo-algorithm"><b>Fluo algorithm</b></dt>
+<dd>
+
+<p>The program documentation for Fluo can be found at Dani&#39;s web site and includes the mathematical derivation: <a href="http://www.aps.anl.gov/xfd/people/haskel/fluo.html">http://www.aps.anl.gov/xfd/people/haskel/fluo.html</a>.</p>
+
+</dd>
+<dt id="Booth-Algorithm"><b>Booth Algorithm</b></dt>
+<dd>
+
+<p>C. H. Booth and F. Bridges, Physica Scripta, T115, (2005) p. 202. DOI:10.1238/Physica.Topical.115a00202 See also Corwin&#39;s web site: <a href="http://lise.lbl.gov/RSXAP/">http://lise.lbl.gov/RSXAP/</a></p>
+
+</dd>
+<dt id="Troger-Algorithm"><b>Troger Algorithm</b></dt>
+<dd>
+
+<p>L. Troger, et al., Phys. Rev., B46:6, (1992) p. 3283 DOI: 10.1103/PhysRevB.46.3283</p>
+
+</dd>
+<dt id="Pfalzer-Algorithm"><b>Pfalzer Algorithm</b></dt>
+<dd>
+
+<p>Another interesting approach to correcting self-absorption is presented in P. Pfalzer et al., Phys. Rev., B60:13, (1999) p. 9335. DOI: 10.1103/PhysRevB.60.9335</p>
+
+<p>This is not implemented in Demeter because the main result requires an integral over the solid angle subtended by the detector. This could be implemented, but the amount of solid angle subtended it is not something one typically writes in the lab notebook. If anyone is really interested in having this algorithm implemented, contact Bruce.</p>
+
+</dd>
+<dt id="Atoms-Algorithm"><b>Atoms Algorithm</b></dt>
+<dd>
+
+<p>B. Ravel, J. Synchrotron Radiat., 8:2, (2001) p. 314. DOI: 10.1107/S090904950001493X</p>
+
+<p>See also the documentation for Atoms at Bruce&#39;s website for more details about it&#39;s fluorescence correction calculations.</p>
+
+</dd>
+<dt id="Elam-tables-of-absorption-coefficients"><b>Elam tables of absorption coefficients</b></dt>
+<dd>
+
+<p>W.T. Elam, B.Ravel, and J.R. Sieber, Radiat. Phys. Chem., 63, (2002) p. 121-128, DOI: 10.1016/S0969-806X(01)00227-4</p>
+
+</dd>
+</dl>
+
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
+
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel, <a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a></p>
 
@@ -161,17 +177,13 @@ p. 121-128, DOI: 10.1016/S0969-806X(01)00227-4</p></dd>
 
 <p>With help from Dan Olive and Corwin Booth</p>
 
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

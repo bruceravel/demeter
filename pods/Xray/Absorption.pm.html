@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Xray::Absorption</title>
-<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Xray::Absorption &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,385 +15,399 @@
 </div>
 <div class="path">
   <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Xray-Absorption
+  Xray::Absorption
 </div>
 <div>
 <a href="../src/Xray/Absorption.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a></li>
+  <li><a href="#SYMBOLS-FOR-FLUORESCENCE-LINES">SYMBOLS FOR FLUORESCENCE LINES</a></li>
+  <li><a href="#ABSORPTION-DATA-RESOURCES">ABSORPTION DATA RESOURCES</a></li>
+  <li><a href="#UNITS">UNITS</a></li>
+  <li><a href="#BUGS-AND-THINGS-TO-DO">BUGS AND THINGS TO DO</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Xray::Absorption - X-ray absorption data for the elements</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<pre>   use Xray::Absorption;
+<pre><code>   use Xray::Absorption;
    Xray::Absorption -&gt; load(&quot;mcmaster&quot;);
-   $xsec = Xray::Absorption-&gt;cross_section('Cu', 9000);
+   $xsec = Xray::Absorption-&gt;cross_section(&#39;Cu&#39;, 9000);</code></pre>
 
-</pre><p>This example returns the cross section of Copper at 9000 eV using the
-McMaster tables.</p>
+<p>This example returns the cross section of Copper at 9000 eV using the McMaster tables.</p>
 
-<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This module supports access to X-ray absorption data.  It is designed
-to be a transparent interface to absorption data from a variety of
-sources.  Currently, the only sources of data are the 1969 McMaster
-tables, the 1999 Elam tables, the 1993 Henke tables, and the 1995
-Chantler tables.  The Brennan-Cowen implementation of the
-Cromer-Liberman tables is available as a drop-on-top addition to this
-package.  More resources can be added easily.</p>
+<p>This module supports access to X-ray absorption data. It is designed to be a transparent interface to absorption data from a variety of sources. Currently, the only sources of data are the 1969 McMaster tables, the 1999 Elam tables, the 1993 Henke tables, and the 1995 Chantler tables. The Brennan-Cowen implementation of the Cromer-Liberman tables is available as a drop-on-top addition to this package. More resources can be added easily.</p>
 
-<p>Information used to compute the mass energy-absorption coefficient is
-taken from the tabulations of Hubbell and Seltzer:
-http://physics.nist.gov/PhysRefData/XrayMassCoef/cover.html</p>
+<p>Information used to compute the mass energy-absorption coefficient is taken from the tabulations of Hubbell and Seltzer: http://physics.nist.gov/PhysRefData/XrayMassCoef/cover.html</p>
 
-<p>Because this is an object-oriented approach to X-ray absorption data,
-you must call subroutines as class methods rather than as subroutines:</p>
+<p>Because this is an object-oriented approach to X-ray absorption data, you must call subroutines as class methods rather than as subroutines:</p>
 
-<pre>   $xsec = Xray::Absorption-&gt;cross_section('Cu', 9000);
+<pre><code>   $xsec = Xray::Absorption-&gt;cross_section(&#39;Cu&#39;, 9000);</code></pre>
 
-</pre><p>is correct, but</p>
+<p>is correct, but</p>
 
-<pre>   $xsec = Xray::Absorption::cross_section('Cu', 9000);
+<pre><code>   $xsec = Xray::Absorption::cross_section(&#39;Cu&#39;, 9000);</code></pre>
 
-</pre><p>is incorrect.  Using class methods rather than a function oriented
-approach allows the user of the <code>Xray::Absorption</code> module to <i>hot
-swap</i> absorption data resources.  For example</p>
+<p>is incorrect. Using class methods rather than a function oriented approach allows the user of the <code>Xray::Absorption</code> module to <i>hot swap</i> absorption data resources. For example</p>
 
-<pre>   foreach $resource (Xray::Absorption-&gt;available) {
+<pre><code>   foreach $resource (Xray::Absorption-&gt;available) {
      Xray::Absorption-&gt;load($resource);
      print $resource, &quot; : &quot;,
-	   Xray::Absorption-&gt;cross_section('Cu', 9000), $/;
-   };
+           Xray::Absorption-&gt;cross_section(&#39;Cu&#39;, 9000), $/;
+   };</code></pre>
 
-</pre><p>compares the cross section of copper at 9 keV as calculated from the
-all available data resources.</p>
+<p>compares the cross section of copper at 9 keV as calculated from the all available data resources.</p>
 
-<p>It is necessary to initialize <code>Xray::Absorption</code> to use a particular
-database by invoking the <code>load</code> method.  This method establishes and
-changes inheritance.</p>
+<p>It is necessary to initialize <code>Xray::Absorption</code> to use a particular database by invoking the <code>load</code> method. This method establishes and changes inheritance.</p>
 
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="METHODS">METHODS</h1>
 
 <dl>
-	<dt><code>current_resource</code></dt>
-		<dd><p>Example:</p></dd>
-<dd><pre>   $this = Xray::Absorption -&gt; current_resource;
 
-</pre></dd>		<dd><p>Identifies the currently selected resource.</p></dd>
-	<dt><code>in_resource</code></dt>
-		<dd><p>Example:</p></dd>
-<dd><pre>   $is_there = Xray::Absorption -&gt; in_resource($elem);
+<dt id="current_resource"><code>current_resource</code></dt>
+<dd>
 
-</pre></dd>		<dd><p>Returns true if <code>$elem</code> is tabulated in the current resource.
-<code>$elem</code> can be a two letter symbol, the full name of the element, or
-a Z number.</p></dd>
-	<dt><code>get_energy</code></dt>
-		<dd><p>Example:</p></dd>
-<dd><pre>   $energy = $energy = Xray::Absorption -&gt; get_energy($elem, $edge);
+<p>Example:</p>
 
-</pre></dd>		<dd><p>Returns the edge energy for <code>$elem</code>.  <code>$edge</code> is one of K, L1, L2,
-L3, M1, etc.  <code>$edge</code> may also be the Siegbahn or IUPAC symbol for a
-fluorescence line.  Some data resources provide more lines than
-others.  Some may provide no lines at all.  See the documentation for
-each resource for which lines are available.  When either <code>$elem</code> or
-<code>$edge</code> is an unrecognized symbol, this method returns 0.</p></dd>
-	<dt><code>next_energy</code></dt>
-		<dd><p>Example:</p></dd>
-<dd><pre>   $next = Xray::Absorption -&gt; next_energy($elem, $edge, @list);
+<pre><code>   $this = Xray::Absorption -&gt; current_resource;</code></pre>
 
-</pre></dd>		<dd><p>Given a list of atomic symbols <code>@list</code>, return a list containing the
-element symbol, edge symbol, and energy in eV of the next highest edge
-energy after the <code>$edge</code> edge of <code>$elem</code>.  This returns an empty list
-if the any argument is unrecognizable.</p></dd>
-	<dt><code>cross_section</code></dt>
-		<dd><p>Examples:</p></dd>
-<dd><pre>   $xsec = Xray::Absorption -&gt; cross_section($elem, $en, $mode);
+<p>Identifies the currently selected resource.</p>
 
-</pre></dd><dd><pre>   @xsec = Xray::Absorption -&gt; cross_section($elem, \@en, $mode);
+</dd>
+<dt id="in_resource"><code>in_resource</code></dt>
+<dd>
 
-</pre></dd>		<dd><p>In scalar context, return the cross section in barns/atom of <code>$elem</code>
-at <code>$energy</code>.  In list context, return a list of cross-sections given
-a reference to a list of energies.  For some data resources, list
-context may be significantly faster than repeated calls in scalar
-context, i.e. this</p></dd>
-<dd><pre>   @xsec = Xray::Absorption -&gt; cross_section($elem, \@en, $mode);
+<p>Example:</p>
+
+<pre><code>   $is_there = Xray::Absorption -&gt; in_resource($elem);</code></pre>
+
+<p>Returns true if <code>$elem</code> is tabulated in the current resource. <code>$elem</code> can be a two letter symbol, the full name of the element, or a Z number.</p>
+
+</dd>
+<dt id="get_energy"><code>get_energy</code></dt>
+<dd>
+
+<p>Example:</p>
+
+<pre><code>   $energy = $energy = Xray::Absorption -&gt; get_energy($elem, $edge);</code></pre>
+
+<p>Returns the edge energy for <code>$elem</code>. <code>$edge</code> is one of K, L1, L2, L3, M1, etc. <code>$edge</code> may also be the Siegbahn or IUPAC symbol for a fluorescence line. Some data resources provide more lines than others. Some may provide no lines at all. See the documentation for each resource for which lines are available. When either <code>$elem</code> or <code>$edge</code> is an unrecognized symbol, this method returns 0.</p>
+
+</dd>
+<dt id="next_energy"><code>next_energy</code></dt>
+<dd>
+
+<p>Example:</p>
+
+<pre><code>   $next = Xray::Absorption -&gt; next_energy($elem, $edge, @list);</code></pre>
+
+<p>Given a list of atomic symbols <code>@list</code>, return a list containing the element symbol, edge symbol, and energy in eV of the next highest edge energy after the <code>$edge</code> edge of <code>$elem</code>. This returns an empty list if the any argument is unrecognizable.</p>
+
+</dd>
+<dt id="cross_section"><code>cross_section</code></dt>
+<dd>
+
+<p>Examples:</p>
+
+<pre><code>   $xsec = Xray::Absorption -&gt; cross_section($elem, $en, $mode);
+
+   @xsec = Xray::Absorption -&gt; cross_section($elem, \@en, $mode);</code></pre>
+
+<p>In scalar context, return the cross section in barns/atom of <code>$elem</code> at <code>$energy</code>. In list context, return a list of cross-sections given a reference to a list of energies. For some data resources, list context may be significantly faster than repeated calls in scalar context, i.e. this</p>
+
+<pre><code>   @xsec = Xray::Absorption -&gt; cross_section($elem, \@en, $mode);
    foreach (0 .. $#en) {
      ... do something with energy $xsec[$_] ...
-   };
+   };</code></pre>
 
-</pre></dd>		<dd><p>will be way faster than</p></dd>
-<dd><pre>   foreach (@en) {
+<p>will be way faster than</p>
+
+<pre><code>   foreach (@en) {
      $xsec = Xray::Absorption -&gt; cross_section($elem, $en, $mode);
      ... do something with $xsec ...
-   };
+   };</code></pre>
 
-</pre></dd>		<dd><p>The optional <code>$mode</code> argument tells this method what kind of data to
-return.  The default for all data resources is to return the cross
-section, however each resource has several other option.  For example,
-the McMaster tables offer along with the absorption cross section, the
-coherent scattering, the incoherent scattering, or the sum of the
-three contributions.  The allowed values for <code>$mode</code> depend on the
-data contained in the absorption resource currently loaded, but the
-default is always to return the photoelectron cross section, or the
-full cross section if the coherent and incoherent scattering portions
-are included in the resource.  See the documentation for the
-individual resource modules.  If <code>$mode</code> is not given or is given
-incorrectly, the full cross section is returned.</p></dd>
-		<dd><p>If an energy is requested which is right on an edge, all data
-resources assume that you want the cross-section just above the edge.
-The granularity of the comparison between the requested energy and the
-edge energy is 1 milivolt, so if you want a cross-section just below
-an edge, you should request an energy that is more than 1 milivolt
-less than the value returned by <code>get_energy</code>.</p></dd>
-	<dt><code>data_available</code></dt>
-		<dd><p>Example:</p></dd>
-<dd><pre>   $is_there = Xray::Absorption -&gt; data_available($elem, $edge);
+<p>The optional <code>$mode</code> argument tells this method what kind of data to return. The default for all data resources is to return the cross section, however each resource has several other option. For example, the McMaster tables offer along with the absorption cross section, the coherent scattering, the incoherent scattering, or the sum of the three contributions. The allowed values for <code>$mode</code> depend on the data contained in the absorption resource currently loaded, but the default is always to return the photoelectron cross section, or the full cross section if the coherent and incoherent scattering portions are included in the resource. See the documentation for the individual resource modules. If <code>$mode</code> is not given or is given incorrectly, the full cross section is returned.</p>
 
-</pre></dd>		<dd><p>Returns true if the selected resource contains sufficient data for
-handling the specified element in the energy range around the
-specified edge.  Returns false otherwise.</p></dd>
+<p>If an energy is requested which is right on an edge, all data resources assume that you want the cross-section just above the edge. The granularity of the comparison between the requested energy and the edge energy is 1 milivolt, so if you want a cross-section just below an edge, you should request an energy that is more than 1 milivolt less than the value returned by <code>get_energy</code>.</p>
+
+</dd>
+<dt id="data_available"><code>data_available</code></dt>
+<dd>
+
+<p>Example:</p>
+
+<pre><code>   $is_there = Xray::Absorption -&gt; data_available($elem, $edge);</code></pre>
+
+<p>Returns true if the selected resource contains sufficient data for handling the specified element in the energy range around the specified edge. Returns false otherwise.</p>
+
+</dd>
 </dl>
+
 <dl>
-	<dt><code>available</code></dt>
-		<dd><p>Example:</p></dd>
-<dd><pre>   @list = Xray::Absorption -&gt; available;
 
-</pre></dd>		<dd><p>Returns a list of all available data resource.</p></dd>
+<dt id="available"><code>available</code></dt>
+<dd>
+
+<p>Example:</p>
+
+<pre><code>   @list = Xray::Absorption -&gt; available;</code></pre>
+
+<p>Returns a list of all available data resource.</p>
+
+</dd>
 </dl>
+
 <dl>
-	<dt><code>scattering</code></dt>
-		<dd><p>Example:</p></dd>
-<dd><pre>   @list = Xray::Absorption -&gt; scattering;
 
-</pre></dd>		<dd><p>Returns a list of all available data resource which contain anomalous
-scattering functions.</p></dd>
+<dt id="scattering"><code>scattering</code></dt>
+<dd>
+
+<p>Example:</p>
+
+<pre><code>   @list = Xray::Absorption -&gt; scattering;</code></pre>
+
+<p>Returns a list of all available data resource which contain anomalous scattering functions.</p>
+
+</dd>
 </dl>
+
 <dl>
-	<dt><code>verbose</code></dt>
-		<dd><p>Example:</p></dd>
-<dd><pre>   @list = Xray::Absorption -&gt; verbose($arg);
 
-</pre></dd>		<dd><p>Turn verbose operation on or off.  If <code>$arg</code> evaluates to true, then
-warning messages will be printed to standard error.  If <code>$arg</code>
-evaluates to false, then methods will silently return 0 when they
-encounter problems.</p></dd>
+<dt id="verbose"><code>verbose</code></dt>
+<dd>
+
+<p>Example:</p>
+
+<pre><code>   @list = Xray::Absorption -&gt; verbose($arg);</code></pre>
+
+<p>Turn verbose operation on or off. If <code>$arg</code> evaluates to true, then warning messages will be printed to standard error. If <code>$arg</code> evaluates to false, then methods will silently return 0 when they encounter problems.</p>
+
+</dd>
 </dl>
+
 <dl>
-	<dt><code>get_atomic_weight</code></dt>
-		<dd><p>Example:</p></dd>
-<dd><pre>   $value = Xray::Absorption -&gt; get_atomic_weight($elem);
 
-</pre></dd>		<dd><p>Return the atomic weight of <code>$elem</code>.</p></dd>
+<dt id="get_atomic_weight"><code>get_atomic_weight</code></dt>
+<dd>
+
+<p>Example:</p>
+
+<pre><code>   $value = Xray::Absorption -&gt; get_atomic_weight($elem);</code></pre>
+
+<p>Return the atomic weight of <code>$elem</code>.</p>
+
+</dd>
 </dl>
+
 <dl>
-	<dt><code>get_density</code></dt>
-		<dd><p>Example:</p></dd>
-<dd><pre>   $value = Xray::Absorption -&gt; get_density($elem);
 
-</pre></dd>		<dd><p>Return the specific gravity of the pure material of <code>$elem</code>.</p></dd>
+<dt id="get_density"><code>get_density</code></dt>
+<dd>
+
+<p>Example:</p>
+
+<pre><code>   $value = Xray::Absorption -&gt; get_density($elem);</code></pre>
+
+<p>Return the specific gravity of the pure material of <code>$elem</code>.</p>
+
+</dd>
 </dl>
+
 <dl>
-	<dt><code>get_conversion</code></dt>
-		<dd><p>Example:</p></dd>
-<dd><pre>   $value = Xray::Absorption -&gt; get_conversion($elem);
 
-</pre></dd>		<dd><p>Return the factor for converting between barns/atom and cm
-squared/gram for <code>$elem</code>.</p></dd>
+<dt id="get_conversion"><code>get_conversion</code></dt>
+<dd>
+
+<p>Example:</p>
+
+<pre><code>   $value = Xray::Absorption -&gt; get_conversion($elem);</code></pre>
+
+<p>Return the factor for converting between barns/atom and cm squared/gram for <code>$elem</code>.</p>
+
+</dd>
 </dl>
+
 <dl>
-	<dt><code>get_Siegbahn</code></dt>
-		<dd><p>Example:</p></dd>
-<dd><pre>   $symbol = Xray::Absorption -&gt; get_Siegbahn($sym);
 
-</pre></dd>		<dd><p>Return the short Siegbahn symbol for an x-ray fluorescence line.  Thus
-&quot;Ka1&quot;, &quot;Kalpha1&quot;, and &quot;K-L3&quot; all return &quot;Ka1&quot;.  The case of the input
-symbol does not matter and the symbol is returned capitalized.  White
-space and underscores will be removed from the input symbol.  The
-symbol &quot;lb2,15&quot; is translated to &quot;lb2&quot;.  This returns 0 is <code>$sym</code> is
-not a recognizable symbol for a line.</p></dd>
+<dt id="get_Siegbahn"><code>get_Siegbahn</code></dt>
+<dd>
+
+<p>Example:</p>
+
+<pre><code>   $symbol = Xray::Absorption -&gt; get_Siegbahn($sym);</code></pre>
+
+<p>Return the short Siegbahn symbol for an x-ray fluorescence line. Thus &quot;Ka1&quot;, &quot;Kalpha1&quot;, and &quot;K-L3&quot; all return &quot;Ka1&quot;. The case of the input symbol does not matter and the symbol is returned capitalized. White space and underscores will be removed from the input symbol. The symbol &quot;lb2,15&quot; is translated to &quot;lb2&quot;. This returns 0 is <code>$sym</code> is not a recognizable symbol for a line.</p>
+
+</dd>
 </dl>
+
 <dl>
-	<dt><code>get_Siegbahn_full</code></dt>
-		<dd><p>Example:</p></dd>
-<dd><pre>   $symbol = Xray::Absorption -&gt; get_Siegbahn_full($sym);
 
-</pre></dd>		<dd><p>Return the full Siegbahn symbol for an x-ray fluorescence line.  Thus
-&quot;Ka1&quot;, &quot;Kalpha1&quot;, and &quot;K-L3&quot; all return &quot;Kalpha1&quot;.  The case of the
-input symbol does not matter and the symbol is returned capitalized.
-White space and underscores will be removed from the input symbol.
-This returns 0 is <code>$sym</code> is not a recognizable symbol for a line.</p></dd>
+<dt id="get_Siegbahn_full"><code>get_Siegbahn_full</code></dt>
+<dd>
+
+<p>Example:</p>
+
+<pre><code>   $symbol = Xray::Absorption -&gt; get_Siegbahn_full($sym);</code></pre>
+
+<p>Return the full Siegbahn symbol for an x-ray fluorescence line. Thus &quot;Ka1&quot;, &quot;Kalpha1&quot;, and &quot;K-L3&quot; all return &quot;Kalpha1&quot;. The case of the input symbol does not matter and the symbol is returned capitalized. White space and underscores will be removed from the input symbol. This returns 0 is <code>$sym</code> is not a recognizable symbol for a line.</p>
+
+</dd>
 </dl>
+
 <dl>
-	<dt><code>get_IUPAC</code></dt>
-		<dd><p>Example:</p></dd>
-<dd><pre>   $symbol = Xray::Absorption -&gt; get_IUPAC($sym);
 
-</pre></dd>		<dd><p>Return the IUPAC symbol for an x-ray fluorescence line.  Thus &quot;Ka1&quot;,
-&quot;Kalpha1&quot;, and &quot;K-L3&quot; all return &quot;K-L3&quot;.  The case of the input symbol
-does not matter and the symbol is returned in all capitals.  White
-space and underscores will be removed from the input symbol.  This
-returns 0 is <code>$sym</code> is not a recognizable symbol for a line.</p></dd>
+<dt id="get_IUPAC"><code>get_IUPAC</code></dt>
+<dd>
+
+<p>Example:</p>
+
+<pre><code>   $symbol = Xray::Absorption -&gt; get_IUPAC($sym);</code></pre>
+
+<p>Return the IUPAC symbol for an x-ray fluorescence line. Thus &quot;Ka1&quot;, &quot;Kalpha1&quot;, and &quot;K-L3&quot; all return &quot;K-L3&quot;. The case of the input symbol does not matter and the symbol is returned in all capitals. White space and underscores will be removed from the input symbol. This returns 0 is <code>$sym</code> is not a recognizable symbol for a line.</p>
+
+</dd>
 </dl>
+
 <dl>
-	<dt><code>get_gamma</code></dt>
-		<dd><p>Example:</p></dd>
-<dd><pre>   $symbol = Xray::Absorption -&gt; get_gamma($sym, $edge);
 
-</pre></dd>		<dd><p>Return an approximation of the core-hole lifetime for the given atomic
-symbol and edge.  This follows Feff very closely.  In fact the data
-used is swiped from the setgam subroutine in Feff, which is in turn
-swiped from K. Rahkonen and K. Krause, Atomic Data and Nuclear Data
-Tables, Vol 14, Number 2, 1974.  The values given by this routine are
-a bit different from those given by Feff since a different
-interpolation is used.  For O and P edges a value of 0.1 is returned,
-as in Feff.  If the arguments are not interpretable, a value of 0 is
-returned.</p></dd>
+<dt id="get_gamma"><code>get_gamma</code></dt>
+<dd>
+
+<p>Example:</p>
+
+<pre><code>   $symbol = Xray::Absorption -&gt; get_gamma($sym, $edge);</code></pre>
+
+<p>Return an approximation of the core-hole lifetime for the given atomic symbol and edge. This follows Feff very closely. In fact the data used is swiped from the setgam subroutine in Feff, which is in turn swiped from K. Rahkonen and K. Krause, Atomic Data and Nuclear Data Tables, Vol 14, Number 2, 1974. The values given by this routine are a bit different from those given by Feff since a different interpolation is used. For O and P edges a value of 0.1 is returned, as in Feff. If the arguments are not interpretable, a value of 0 is returned.</p>
+
+</dd>
 </dl>
+
 <dl>
-	<dt><code>get_one_minus_g</code></dt>
-		<dd><p>Example:</p></dd>
-<dd><pre>   $symbol = Xray::Absorption -&gt; get_g($sym, $energy);
 
-</pre></dd>		<dd><p>Return an approximation of the factor required to translate tabulated
-cross-section data to the mass energy-absorption coefficient, as
-described by Hubbell at
-http://physics.nist.gov/PhysRefData/XrayMassCoef/cover.html.</p></dd>
-		<dd><p>This term, returned as <code>1-g</code> relates the the mass attenuation
-coefficient, <code>mu/rho</code>, to the mass energy-absorption coefficient,
-<code>mu_en/rho</code>, as</p></dd>
-<dd><pre>    mu_en/rho = (1-g) * mu_tr/rho
+<dt id="get_one_minus_g"><code>get_one_minus_g</code></dt>
+<dd>
 
-</pre></dd>		<dd><p>where the mass energy-transfer coefficient, <code>mu_tr</code>, is the sum of
-the photoabsorption and incoherent cross-sections.  (At the energies
-at which this module is applicable, other cross-sections such as
-pair production can be ignored.)</p></dd>
-		<dd><p>So, to use this factor, compute the sum of the photoabsorption and
-incoherent cross-sections at some energy and multiply by the number
-this method returns.</p></dd>
-		<dd><p>The importance of this term depends on energy and on element.  For
-nitrogen, for example, this term becomes increasingly important above
-10 keV.  For argon, it is near unity up to about 30 keV.</p></dd>
-		<dd><p>No great care is taken to interpolate correctly around absorption
-edges.  That should be considered a bug.</p></dd>
-		<dd><p>This method returns 1 whenever it's imput data is confusing.  That
-seems safest.</p></dd>
+<p>Example:</p>
+
+<pre><code>   $symbol = Xray::Absorption -&gt; get_g($sym, $energy);</code></pre>
+
+<p>Return an approximation of the factor required to translate tabulated cross-section data to the mass energy-absorption coefficient, as described by Hubbell at http://physics.nist.gov/PhysRefData/XrayMassCoef/cover.html.</p>
+
+<p>This term, returned as <code>1-g</code> relates the the mass attenuation coefficient, <code>mu/rho</code>, to the mass energy-absorption coefficient, <code>mu_en/rho</code>, as</p>
+
+<pre><code>    mu_en/rho = (1-g) * mu_tr/rho</code></pre>
+
+<p>where the mass energy-transfer coefficient, <code>mu_tr</code>, is the sum of the photoabsorption and incoherent cross-sections. (At the energies at which this module is applicable, other cross-sections such as pair production can be ignored.)</p>
+
+<p>So, to use this factor, compute the sum of the photoabsorption and incoherent cross-sections at some energy and multiply by the number this method returns.</p>
+
+<p>The importance of this term depends on energy and on element. For nitrogen, for example, this term becomes increasingly important above 10 keV. For argon, it is near unity up to about 30 keV.</p>
+
+<p>No great care is taken to interpolate correctly around absorption edges. That should be considered a bug.</p>
+
+<p>This method returns 1 whenever it&#39;s imput data is confusing. That seems safest.</p>
+
+</dd>
 </dl>
-<h1 id="SYMBOLS_FOR_FLUORESCENCE_LINES">SYMBOLS FOR FLUORESCENCE LINES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>To specify fluorescence lines, Siegbahn or IUPAC symbols may be used.
-methods are provided for converting between these notations.  The
-Siegbahn notations can be in the short or full forms.  Here is a table
-of all recognized symbols:</p>
+<h1 id="SYMBOLS-FOR-FLUORESCENCE-LINES">SYMBOLS FOR FLUORESCENCE LINES</h1>
 
-<pre>   Full Siegbahn     Short Siegbahn    IUPAC
+<p>To specify fluorescence lines, Siegbahn or IUPAC symbols may be used. methods are provided for converting between these notations. The Siegbahn notations can be in the short or full forms. Here is a table of all recognized symbols:</p>
+
+<pre><code>   Full Siegbahn     Short Siegbahn    IUPAC
   -------------------------------------------------
       Kalpha1            Ka1           K-L3
-      Kalpha2            Ka2	       K-L2
-      Kalpha3            Ka3	       K-L1
-      Kbeta1             Kb1	       K-M3
-      Kbeta2             Kb2	       K-N2,3
-      Kbeta3             Kb3	       K-M2
-      Kbeta4             Kb4	       K-N4,5
-      Kbeta5             Kb5	       K-M4,5
-      Lalpha1            La1	       L3-M5
-      Lalpha2            La2	       L3-M4
-      Lbeta1             Lb1	       L2-M4
-      Lbeta2             Lb2	       L3-N4,5
-      Lbeta3             Lb3	       L1-M3
-      Lbeta4             Lb4	       L1-M2
-      Lbeta5             Lb5	       L3-O4,5
-      Lbeta6             Lb6	       L3-N1
-      Lgamma1            Lg1	       L2-N4
-      Lgamma2            Lg2	       L1-N2
-      Lgamma3            Lg3	       L1-N3
-      Lgamma6            Lg6	       L2-O4
-      Ll                 Ll 	       L3-M1
-      Lnu                Ln 	       L2-M1
-      Malpha             Ma 	       M5-N6,7
-      Mbeta              Mb 	       M4-N6
-      Mgamma             Mg 	       M3-N5
-      Mzeta              Mz 	       M4,5-N6,7
+      Kalpha2            Ka2           K-L2
+      Kalpha3            Ka3           K-L1
+      Kbeta1             Kb1           K-M3
+      Kbeta2             Kb2           K-N2,3
+      Kbeta3             Kb3           K-M2
+      Kbeta4             Kb4           K-N4,5
+      Kbeta5             Kb5           K-M4,5
+      Lalpha1            La1           L3-M5
+      Lalpha2            La2           L3-M4
+      Lbeta1             Lb1           L2-M4
+      Lbeta2             Lb2           L3-N4,5
+      Lbeta3             Lb3           L1-M3
+      Lbeta4             Lb4           L1-M2
+      Lbeta5             Lb5           L3-O4,5
+      Lbeta6             Lb6           L3-N1
+      Lgamma1            Lg1           L2-N4
+      Lgamma2            Lg2           L1-N2
+      Lgamma3            Lg3           L1-N3
+      Lgamma6            Lg6           L2-O4
+      Ll                 Ll            L3-M1
+      Lnu                Ln            L2-M1
+      Malpha             Ma            M5-N6,7
+      Mbeta              Mb            M4-N6
+      Mgamma             Mg            M3-N5
+      Mzeta              Mz            M4,5-N6,7</code></pre>
 
-</pre><p>In addition, the symbols <code>Lb2,15</code> and <code>Lbeta2,15</code> are recognized as
-synonyms for <code>Lbeta2</code>.  The methods which interpret these symbols
-will remove spaces and underscores from the input string.  Thus
-<code>K_alpha_1</code> and <code>K a 1</code> will both be recognized as <code>Kalpha1</code>.
-Since hyphens are part of the IUPAC notation, <code>K-alpha-1</code> will not be
-recognized as <code>Kalpha1</code>.  Thus use spaces or underscores if you want
-to make the Siegbahn notation more legible.</p>
+<p>In addition, the symbols <code>Lb2,15</code> and <code>Lbeta2,15</code> are recognized as synonyms for <code>Lbeta2</code>. The methods which interpret these symbols will remove spaces and underscores from the input string. Thus <code>K_alpha_1</code> and <code>K a 1</code> will both be recognized as <code>Kalpha1</code>. Since hyphens are part of the IUPAC notation, <code>K-alpha-1</code> will not be recognized as <code>Kalpha1</code>. Thus use spaces or underscores if you want to make the Siegbahn notation more legible.</p>
 
+<h1 id="ABSORPTION-DATA-RESOURCES">ABSORPTION DATA RESOURCES</h1>
 
+<p>Currently, <code>Xray::Absorption</code> has the McMaster, Elam, Henke, and Chantler tables as its data resources. New resources may be added over time. This section offers a few guidelines to anyone interested in supplying more resources. It does not matter how the new resource calculates the cross section. That is hidden behind the object-orientedness of the <code>Xray::Absorption</code> module. It is essential that the new resource take the namespace <code>Xray::Absorption::</code><i>Resource</i>, where <i>Resource</i> is a descriptive name, like <code>McMaster</code> or <code>Elam</code>. It is essential that the new resource supply these methods</p>
 
-
-<h1 id="ABSORPTION_DATA_RESOURCES">ABSORPTION DATA RESOURCES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
-
-<p>Currently, <code>Xray::Absorption</code> has the McMaster, Elam, Henke, and
-Chantler tables as its data resources.  New resources may be added
-over time.  This section offers a few guidelines to anyone interested
-in supplying more resources.  It does not matter how the new resource
-calculates the cross section.  That is hidden behind the
-object-orientedness of the <code>Xray::Absorption</code> module.  It is
-essential that the new resource take the namespace
-<code>Xray::Absorption::</code><i>Resource</i>, where <i>Resource</i> is a descriptive
-name, like <code>McMaster</code> or <code>Elam</code>.  It is essential that the new
-resource supply these methods</p>
-
-<pre>    current_resource
+<pre><code>    current_resource
     in_resource
     get_energy
     next_energy
-    cross_section
+    cross_section</code></pre>
 
-</pre><p>and that they use the semantics described above.  All other methods
-decribed in the last section are defined in <cite>Absorption.pm</cite> and do
-not need to be redefined in the resource modules.</p>
+<p>and that they use the semantics described above. All other methods decribed in the last section are defined in <i>Absorption.pm</i> and do not need to be redefined in the resource modules.</p>
 
-<p>New resources are welcome to define new methods particular to that
-data resource in addition to the 5 required methods.</p>
+<p>New resources are welcome to define new methods particular to that data resource in addition to the 5 required methods.</p>
 
-<h1 id="UNITS">UNITS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="UNITS">UNITS</h1>
 
-<p>All energies returned by the methods of <code>Xray::Absorption</code> are in
-electron volts.  All cross sections are in units of barns per atom.  A
-conversion constant between that unit and cm squared per gram is
-supplied by the <code>get_conversion</code> method.  Atomic weights are in
-atomic units.  Densities are given as specific gravity
-(i.e. dimensionless).</p>
+<p>All energies returned by the methods of <code>Xray::Absorption</code> are in electron volts. All cross sections are in units of barns per atom. A conversion constant between that unit and cm squared per gram is supplied by the <code>get_conversion</code> method. Atomic weights are in atomic units. Densities are given as specific gravity (i.e. dimensionless).</p>
 
-<h1 id="BUGS_AND_THINGS_TO_DO">BUGS AND THINGS TO DO <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="BUGS-AND-THINGS-TO-DO">BUGS AND THINGS TO DO</h1>
 
 <ul>
-	<li>Check to be sure things are properly unloaded and overloaded when
-switching resources.</li>
-	<li>Test for pathelogical cases, such as elements that don't exist, that
-have Z's in the hundreds, energies that are very low or very high, and
-so on.</li>
-	<li>It would be nice to implement the list that is used by the
-<code>next_energy</code> method as a doubly linked list.  In that way, a
-<code>previous_energy</code> method would be trivial.</li>
+
+<li><p>Check to be sure things are properly unloaded and overloaded when switching resources.</p>
+
+</li>
+<li><p>Test for pathelogical cases, such as elements that don&#39;t exist, that have Z&#39;s in the hundreds, energies that are very low or very high, and so on.</p>
+
+</li>
+<li><p>It would be nice to implement the list that is used by the <code>next_energy</code> method as a doubly linked list. In that way, a <code>previous_energy</code> method would be trivial.</p>
+
+</li>
 </ul>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel, <a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a></p>
 
 <p>http://bruceravel.github.io/demeter/</p>
 
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 1999-2008 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlartistic">perlartistic</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlartistic">perlartistic</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::UI::Standards</title>
-<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::UI::Standards &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,192 +15,216 @@
 </div>
 <div class="path">
   <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-UI-Standards
+  Demeter::UI::Standards
 </div>
 <div>
 <a href="../../src/Demeter/UI/Standards.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>Demeter::UI::Standards -  Interactions with standard reference data</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#General-methods">General methods</a></li>
+      <li><a href="#Formatting-methods">Formatting methods</a></li>
+    </ul>
+  </li>
+  <li><a href="#CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Demeter::UI::Standards - Interactions with standard reference data</p>
+
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<pre>  use Demeter;
+<pre><code>  use Demeter;
   use Demeter::UI::Standards;
-  my $standards = Demeter::UI::Standards -&gt; new;
+  my $standards = Demeter::UI::Standards -&gt; new;</code></pre>
 
-</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This module provides methods for an attempt to expand and improve upon
-the <a href="http://exafsmaterials.com/Ref_Spectra_0.4MB.pdf">pictures of metal foils spectra</a> that come
-with a box of foils from <a href="http://exafsmaterials.com">EXAFS Materials</a>.</p>
+<p>This module provides methods for an attempt to expand and improve upon the <a href="http://exafsmaterials.com/Ref_Spectra_0.4MB.pdf">pictures of metal foils spectra</a> that come with a box of foils from <a href="http://exafsmaterials.com">EXAFS Materials</a>.</p>
 
-<p>That document is fine as far as it goes, but the spectra are not all
-of the highest resolution and it only includes foils of a few select
-elements.  This implementation expands upon that by including
-reference spectra other than foils.  It is extensible in the sense
-that new materials can be added easily.  Thus this visualization of
-standard reference spectra can cover more of the periodic table and
-include various common (or even uncommon) species of any element.</p>
+<p>That document is fine as far as it goes, but the spectra are not all of the highest resolution and it only includes foils of a few select elements. This implementation expands upon that by including reference spectra other than foils. It is extensible in the sense that new materials can be added easily. Thus this visualization of standard reference spectra can cover more of the periodic table and include various common (or even uncommon) species of any element.</p>
 
-<p>A small database of reference data ships with Demeter and various
-mechanisms are provided for extending the list of materials in the
-database.  You can use files on your own computer simply by pointing
-the program at that file's location.  You can also grab data from the
-web by pointing the program at the data file's URL.</p>
+<p>A small database of reference data ships with Demeter and various mechanisms are provided for extending the list of materials in the database. You can use files on your own computer simply by pointing the program at that file&#39;s location. You can also grab data from the web by pointing the program at the data file&#39;s URL.</p>
 
-<p>Ideally, adequate metadata is provided about each material such that a
-useful and thorough presentation of the data can be made.  This
-metadata includes some comments identifying the provenance of the
-data, the crystal type used to measure the data, enough information to
-properly calibrate the data, and lists of points to mark in mu(E) or
-the derivative of mu(E).  The program behaves well in the absence of
-any of this metadata, but the utility of the program is dimished.</p>
+<p>Ideally, adequate metadata is provided about each material such that a useful and thorough presentation of the data can be made. This metadata includes some comments identifying the provenance of the data, the crystal type used to measure the data, enough information to properly calibrate the data, and lists of points to mark in mu(E) or the derivative of mu(E). The program behaves well in the absence of any of this metadata, but the utility of the program is dimished.</p>
 
-<p>This module is a wrapper around four distinct ways of visualizing
-standards data.  It can be used to interactively plot standards,
-selecting elements from an on-screen periodic table or with a GUI.  It
-can be used to generate a sequence of web pages that can be dropped on
-a web site. It can be used to generate a latex document that can be
-converted to PDF and printed to replace the one from EXAFS Materials.
-Finally, is can be used to create an Athena project file containing a
-subset of the reference materials.</p>
+<p>This module is a wrapper around four distinct ways of visualizing standards data. It can be used to interactively plot standards, selecting elements from an on-screen periodic table or with a GUI. It can be used to generate a sequence of web pages that can be dropped on a web site. It can be used to generate a latex document that can be converted to PDF and printed to replace the one from EXAFS Materials. Finally, is can be used to create an Athena project file containing a subset of the reference materials.</p>
 
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="METHODS">METHODS</h1>
 
-<h2 id="General_methods">General methods</h2>
+<h2 id="General-methods">General methods</h2>
 
-<p>These are the methods for handling the Standards object, which
-encapsolates the metadata describing the standard reference materials.</p>
+<p>These are the methods for handling the Standards object, which encapsolates the metadata describing the standard reference materials.</p>
 
 <dl>
-	<dt><code>material_exists</code></dt>
-		<dd><p>This method returns true if the argument string identifies a material
-in the database.</p></dd>
-<dd><pre>  $exists = $standards -&gt; material_exists(&quot;Zn&quot;);
 
-</pre></dd>	<dt><code>element_exists</code></dt>
-		<dd><p>This method returns true if the argument string identifies an element
-represented by one or more materials in the data base.</p></dd>
-<dd><pre>  $exists = $standards -&gt; element_exists(&quot;U&quot;);
+<dt id="material_exists"><code>material_exists</code></dt>
+<dd>
 
-</pre></dd>	<dt><code>get</code></dt>
-		<dd><p>This method returns one of the attributes of a database entry.</p></dd>
-<dd><pre>  $comment = $standards -&gt; get(&quot;fe&quot;, &quot;comment&quot;);
+<p>This method returns true if the argument string identifies a material in the database.</p>
 
-</pre></dd>	<dt><code>config</code></dt>
-		<dd><p>This method returns one of the plotting configuration parameters.</p></dd>
-<dd><pre>  $emin = $standards -&gt; config(&quot;emin&quot;);
+<pre><code>  $exists = $standards -&gt; material_exists(&quot;Zn&quot;);</code></pre>
 
-</pre></dd>		<dd><p>Currently, the Standards-specific configuration parameters control the
-plotting range and the placement of the legend.  The keywords are
-<code>emin</code>, <code>emax</code>, <code>key_x</code>, and <code>key_y</code></p></dd>
-	<dt><code>material_list</code></dt>
-		<dd><p>This returns a list of all keys identifying the materials in the
-database.  The list is sorted first by Z number of the absorber then
-alphabetically by material name.</p></dd>
+</dd>
+<dt id="element_exists"><code>element_exists</code></dt>
+<dd>
+
+<p>This method returns true if the argument string identifies an element represented by one or more materials in the data base.</p>
+
+<pre><code>  $exists = $standards -&gt; element_exists(&quot;U&quot;);</code></pre>
+
+</dd>
+<dt id="get"><code>get</code></dt>
+<dd>
+
+<p>This method returns one of the attributes of a database entry.</p>
+
+<pre><code>  $comment = $standards -&gt; get(&quot;fe&quot;, &quot;comment&quot;);</code></pre>
+
+</dd>
+<dt id="config"><code>config</code></dt>
+<dd>
+
+<p>This method returns one of the plotting configuration parameters.</p>
+
+<pre><code>  $emin = $standards -&gt; config(&quot;emin&quot;);</code></pre>
+
+<p>Currently, the Standards-specific configuration parameters control the plotting range and the placement of the legend. The keywords are <code>emin</code>, <code>emax</code>, <code>key_x</code>, and <code>key_y</code></p>
+
+</dd>
+<dt id="material_list"><code>material_list</code></dt>
+<dd>
+
+<p>This returns a list of all keys identifying the materials in the database. The list is sorted first by Z number of the absorber then alphabetically by material name.</p>
+
+</dd>
 </dl>
-<h2 id="Formatting_methods">Formatting methods</h2>
 
-<p>These methods are used to control the output for the various
-visualization modes.  Available modes are</p>
+<h2 id="Formatting-methods">Formatting methods</h2>
+
+<p>These methods are used to control the output for the various visualization modes. Available modes are</p>
 
 <ul>
-	<li>screen</li>
-	<li>web</li>
-	<li>athena</li>
+
+<li><p>screen</p>
+
+</li>
+<li><p>web</p>
+
+</li>
+<li><p>athena</p>
+
+</li>
 </ul>
 
 <p>LaTeX mode is not yet working.</p>
 
 <dl>
-	<dt><code>plot</code></dt>
-		<dd><p>This is the workhorse.  It reads and processes a data file according
-to the metadata and prepares the data for display in the chosen output
-mode.</p></dd>
-<dd><pre>  $response = $standards -&gt; plot($material, $plot_type, $target);
 
-</pre></dd>		<dd><p><code>$material</code> is a material contained in the database.  <code>$plot_type</code>
-is an integer between 1 and 3.  A value of 1 says to prepare to plot
-XANES data.  A value of 2 says to prepare to plot the derivative
-spectrum.  A value of 3 says to prepare a plot explaining the use of a
-fluorescence filter.</p></dd>
-		<dd><p><code>$target</code> identifies the visualization mode and takes one of four
-values:</p></dd>
-<dd><dl>
-	<dt><code>screen</code></dt>
-		<dd><p>The data will be plotted on screen.  For this target the return value
-will be an empty string is no problems are encountered or a error
-message explaining the source of the error.</p></dd>
-	<dt><code>athena</code></dt>
-		<dd><p>The data processing will be stopped before any plotting actually
-happens.  In this case, the return value is a reference to a Data
-object conatining that standard.  This can then be written to an
-athena project file or otherwise handled in the manner of Data object.</p></dd>
-	<dt><i>filename</i><code>.png</code></dt>
-		<dd><p>If the target ends in <code>.png</code>, then the plot will be written to a PNG
-file with that name.  When using PGPLOT, it is recommended that you
-set the <code>PGPLOT_DEV</code> environment variable to <code>/null</code>.  That will
-suppress all plots to the screen before the PNG file is generated.
-The return value is the same as for the screen target.</p></dd>
-	<dt><i>filename</i><code>.ps</code></dt>
-		<dd><p>If the target ends in <code>.ps</code>, then the plot will be written to a
-postscript file with that name.  When using PGPLOT, it is recommended
-that you set the <code>PGPLOT_DEV</code> environment variable to <code>/null</code>.  That
-will suppress all plots to the screen before the postscript file is
-generated.  The return value is the same as for the screen target.</p></dd>
-</dl>
+<dt id="plot"><code>plot</code></dt>
+<dd>
+
+<p>This is the workhorse. It reads and processes a data file according to the metadata and prepares the data for display in the chosen output mode.</p>
+
+<pre><code>  $response = $standards -&gt; plot($material, $plot_type, $target);</code></pre>
+
+<p><code>$material</code> is a material contained in the database. <code>$plot_type</code> is an integer between 1 and 3. A value of 1 says to prepare to plot XANES data. A value of 2 says to prepare to plot the derivative spectrum. A value of 3 says to prepare a plot explaining the use of a fluorescence filter.</p>
+
+<p><code>$target</code> identifies the visualization mode and takes one of four values:</p>
+
+<dl>
+
+<dt id="screen"><code>screen</code></dt>
+<dd>
+
+<p>The data will be plotted on screen. For this target the return value will be an empty string is no problems are encountered or a error message explaining the source of the error.</p>
+
 </dd>
-	<dt><code>html_index</code></dt>
-		<dd><p>This method writes an index file for the html output.  The index file
-contains links to each of the individual material files in a simple
-table.  The argument is the fully resolved name for the index file.</p></dd>
-<dd><pre>  $standard -&gt; html_index($indexfile);
+<dt id="athena"><code>athena</code></dt>
+<dd>
 
-</pre></dd>	<dt><code>html</code></dt>
-		<dd><p>This method writes a page for a given material.  All arguments are
-passed as a hash reference.  The <code>folder</code> argument is the output
-location for the html file and all image files.  The <code>skip</code> argument
-says to skip this material if the html file already exists in the
-output folder.  Setting <code>verbose</code> to 0 turns off all messages to
-STDOUT.</p></dd>
-<dd><pre>  $standards -&gt; html({
-		      material =&gt; &quot;fe&quot;,
-		      folder   =&gt; &quot;html&quot;,
-		      verbose  =&gt; 1,
-		      skip     =&gt; 0,
-		     });
+<p>The data processing will be stopped before any plotting actually happens. In this case, the return value is a reference to a Data object conatining that standard. This can then be written to an athena project file or otherwise handled in the manner of Data object.</p>
 
-</pre></dd>	<dt><code>latex</code></dt>
-		<dd><p>Not written yet.</p></dd>
-	<dt><code>athena</code></dt>
-		<dd><p>This method generates an Athena project file for all materials with an
-absorber in the list specified by the <code>elements</code> key of the has
-reference which is passed as the sole argument.  The output project
-file is specified by <code>prjfile</code>.  It will be written to
-<cite>standards.prj</cite> in the current directory if not otherwise stated.
-Setting <code>verbose</code> to 0 turns off all messages to STDOUT.</p></dd>
-<dd><pre>  $standards -&gt; athena({
+</dd>
+<dt id="filename.png"><i>filename</i><code>.png</code></dt>
+<dd>
+
+<p>If the target ends in <code>.png</code>, then the plot will be written to a PNG file with that name. When using PGPLOT, it is recommended that you set the <code>PGPLOT_DEV</code> environment variable to <code>/null</code>. That will suppress all plots to the screen before the PNG file is generated. The return value is the same as for the screen target.</p>
+
+</dd>
+<dt id="filename.ps"><i>filename</i><code>.ps</code></dt>
+<dd>
+
+<p>If the target ends in <code>.ps</code>, then the plot will be written to a postscript file with that name. When using PGPLOT, it is recommended that you set the <code>PGPLOT_DEV</code> environment variable to <code>/null</code>. That will suppress all plots to the screen before the postscript file is generated. The return value is the same as for the screen target.</p>
+
+</dd>
+</dl>
+
+</dd>
+<dt id="html_index"><code>html_index</code></dt>
+<dd>
+
+<p>This method writes an index file for the html output. The index file contains links to each of the individual material files in a simple table. The argument is the fully resolved name for the index file.</p>
+
+<pre><code>  $standard -&gt; html_index($indexfile);</code></pre>
+
+</dd>
+<dt id="html"><code>html</code></dt>
+<dd>
+
+<p>This method writes a page for a given material. All arguments are passed as a hash reference. The <code>folder</code> argument is the output location for the html file and all image files. The <code>skip</code> argument says to skip this material if the html file already exists in the output folder. Setting <code>verbose</code> to 0 turns off all messages to STDOUT.</p>
+
+<pre><code>  $standards -&gt; html({
+                      material =&gt; &quot;fe&quot;,
+                      folder   =&gt; &quot;html&quot;,
+                      verbose  =&gt; 1,
+                      skip     =&gt; 0,
+                     });</code></pre>
+
+</dd>
+<dt id="latex"><code>latex</code></dt>
+<dd>
+
+<p>Not written yet.</p>
+
+</dd>
+<dt id="athena1"><code>athena</code></dt>
+<dd>
+
+<p>This method generates an Athena project file for all materials with an absorber in the list specified by the <code>elements</code> key of the has reference which is passed as the sole argument. The output project file is specified by <code>prjfile</code>. It will be written to <i>standards.prj</i> in the current directory if not otherwise stated. Setting <code>verbose</code> to 0 turns off all messages to STDOUT.</p>
+
+<pre><code>  $standards -&gt; athena({
                         elements =&gt; \@list_of_elements,
-			prjfile  =&gt; &quot;standards.prj&quot;,
-			verbose  =&gt; 1,
-                       });
+                        prjfile  =&gt; &quot;standards.prj&quot;,
+                        verbose  =&gt; 1,
+                       });</code></pre>
 
-</pre></dd></dl>
-<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+</dd>
+</dl>
 
-<p>The meta data -- that is the data about the reference data -- is
-contained in the <cite>standards.ini</cite> file.  Here is an example:</p>
+<h1 id="CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</h1>
 
-<pre>  [fe]
+<p>The meta data -- that is the data about the reference data -- is contained in the <i>standards.ini</i> file. Here is an example:</p>
+
+<pre><code>  [fe]
   tag         = Iron foil
   comment     = Iron foil
   crystal     = Si(111)
@@ -236,31 +238,17 @@ contained in the <cite>standards.ini</cite> file.  Here is an example:</p>
   ln          = 1
   calibrate   = 7106.135, 7112
   xanes       = 7112, 7116.41, 7131.22, 7141.83
-  deriv       = 7112, 7120.88, 7129.263
+  deriv       = 7112, 7120.88, 7129.263</code></pre>
 
-</pre><p>The first few lines describe the data.  The <code>file</code> line identifies
-the data file containing the reference.  The &quot;<code>%share%</code>&quot; token is
-replaced with the actual installation location of Demeter.  The next
-four lines explain how to for mu(E) data from the columns in the file.
-The last three lines are used to calibrate the data and mark the
-interesting points in the XANES or derivative spectra.</p>
+<p>The first few lines describe the data. The <code>file</code> line identifies the data file containing the reference. The &quot;<code>%share%</code>&quot; token is replaced with the actual installation location of Demeter. The next four lines explain how to for mu(E) data from the columns in the file. The last three lines are used to calibrate the data and mark the interesting points in the XANES or derivative spectra.</p>
 
-<p>The <code>comment</code> keyword is intended to describe the physical sample.
-The <code>location</code>, <code>people</code> and <code>date</code> are intended to establish
-provenance.  The <code>location</code> is the facility and syncherotron.  The
-<code>people</code> are the experimenters who were present for the measurement.
-The <code>date</code> is the date of the measurement.  The use of the
-<a href="http://en.wikipedia.org/wiki/ISO_8601">ISO-8601</a> combined date and
-time representations is encouraged, but not enforced at this time.</p>
+<p>The <code>comment</code> keyword is intended to describe the physical sample. The <code>location</code>, <code>people</code> and <code>date</code> are intended to establish provenance. The <code>location</code> is the facility and syncherotron. The <code>people</code> are the experimenters who were present for the measurement. The <code>date</code> is the date of the measurement. The use of the <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO-8601</a> combined date and time representations is encouraged, but not enforced at this time.</p>
 
-<p>The keywords <code>coordination</code> and <code>oxidation</code> can be used to specify
-the structural environment and oxidation state of the absorber.  These
-are not used at this time.</p>
+<p>The keywords <code>coordination</code> and <code>oxidation</code> can be used to specify the structural environment and oxidation state of the absorber. These are not used at this time.</p>
 
-<p>Another option is to import data from an Athena project file.  Here is
-an example:</p>
+<p>Another option is to import data from an Athena project file. Here is an example:</p>
 
-<pre>  [cd]
+<pre><code>  [cd]
   tag         = Cadmium foil
   comment     = Cadmium foil
   location    = APS 10ID
@@ -270,76 +258,56 @@ an example:</p>
   file        = %share%/standards/data/Cd.prj
   record      = 1
   xanes       = 26711, 26720.06, 25740.66, 25772.57
-  deriv       = 26711, 26714, 26734.60, 26745.10
+  deriv       = 26711, 26714, 26734.60, 26745.10</code></pre>
 
-</pre><p>In this case, the <code>record</code> parameter is used to identify the location
-of the data in the project file.  The Athena project file is presumed
-to contain well processed data, thus the rebinning and calibration
-steps are never performed for data from an project file.</p>
+<p>In this case, the <code>record</code> parameter is used to identify the location of the data in the project file. The Athena project file is presumed to contain well processed data, thus the rebinning and calibration steps are never performed for data from an project file.</p>
 
-<p>The first section of the <cite>standards.ini</cite> file contains the
-configuration data and is used to control some aspects of the plots
-made of the reference data.</p>
+<p>The first section of the <i>standards.ini</i> file contains the configuration data and is used to control some aspects of the plots made of the reference data.</p>
 
-<p>This code will also look for a file called <cite>standards.ini</cite> located in
-the the Demeter configuration folder, <code>$HOME/.horae/</code> on linux,
-<code>%APPDATA%\demeter</code> on Windows.  The system file is read first, then
-the private file is read.  Their contents are simply concatanted,
-although an entry with the same key -- the bit in [brackets] -- in the
-private file will overwrite the similarly named entry in the system
-file.</p>
+<p>This code will also look for a file called <i>standards.ini</i> located in the the Demeter configuration folder, <code>$HOME/.horae/</code> on linux, <code>%APPDATA%\demeter</code> on Windows. The system file is read first, then the private file is read. Their contents are simply concatanted, although an entry with the same key -- the bit in [brackets] -- in the private file will overwrite the similarly named entry in the system file.</p>
 
-<p>There are a few more keywords not discussed above.  If <code>rebin</code> = 1,
-then the data will be rebinned onto a conventional grid.  The
-<code>calibrate</code> keyword is used to put data from a file onto the absolute
-energy grid.  The comma separated arguments are the energy value to
-choose as the edge and the energy value to assign to that point.</p>
+<p>There are a few more keywords not discussed above. If <code>rebin</code> = 1, then the data will be rebinned onto a conventional grid. The <code>calibrate</code> keyword is used to put data from a file onto the absolute energy grid. The comma separated arguments are the energy value to choose as the edge and the energy value to assign to that point.</p>
 
-<p>The output html and latex files are formatted using <a href="https://metacpan.org/pod/Text%3A%3ATemplate">Text::Template</a>
-templates, which can be found in the <cite>share</cite> directory of the Demeter
-installation.  This is the same formatting system as used for
-Demeter's output, but the template files are in a different location.</p>
+<p>The output html and latex files are formatted using <a href="http://metacpan.org/module/Text::Template">Text::Template</a> templates, which can be found in the <i>share</i> directory of the Demeter installation. This is the same formatting system as used for Demeter&#39;s output, but the template files are in a different location.</p>
 
-<p>All other configuration is handled using Demeter's configuration
-system.</p>
+<p>All other configuration is handled using Demeter&#39;s configuration system.</p>
 
-<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
 
 <p>This uses Demeter and its dependencies.</p>
 
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
 <ul>
-	<li>latex output</li>
-	<li>load site-specific ini files</li>
-	<li>other local data locations, other web locations</li>
+
+<li><p>latex output</p>
+
+</li>
+<li><p>load site-specific ini files</p>
+
+</li>
+<li><p>other local data locations, other web locations</p>
+
+</li>
 </ul>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>)</p>
 
 <p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
-
-
-
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2008-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

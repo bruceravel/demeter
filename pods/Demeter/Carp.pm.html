@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::Carp</title>
-<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::Carp &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,136 +15,131 @@
 </div>
 <div class="path">
   <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-Carp
+  Demeter::Carp
 </div>
 <div>
 <a href="../src/Demeter/Carp.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a>
+    <ul>
+      <li><a href="#EXPORT">EXPORT</a></li>
+    </ul>
+  </li>
+  <li><a href="#ACKNOWLEDGMENTS">ACKNOWLEDGMENTS</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#BUGS">BUGS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#COPYRIGHT-AND-LICENSE">COPYRIGHT AND LICENSE</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::Carp - Warns and dies noisily with stack backtraces and ANSIColor markup</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<pre>  use Demeter::Carp;
+<pre><code>  use Demeter::Carp;</code></pre>
 
-</pre><p>This is a small modification of the very useful <code>Carp::Always</code> module
-by Adriano R. Ferreira.</p>
+<p>This is a small modification of the very useful <code>Carp::Always</code> module by Adriano R. Ferreira.</p>
 
-<p>Like <code>Carp::Always</code>, it makes every <code>warn()</code> and <code>die()</code> complain
-loudly in the calling package and elsewhere.  It also applies some
-color to the user-supplied part of the message so that it stands out
-from the stack trace in a command line script.  This is really only
-useful in the context of Demeter as it makes specific reference to the
-Demeter::Mode object.</p>
+<p>Like <code>Carp::Always</code>, it makes every <code>warn()</code> and <code>die()</code> complain loudly in the calling package and elsewhere. It also applies some color to the user-supplied part of the message so that it stands out from the stack trace in a command line script. This is really only useful in the context of Demeter as it makes specific reference to the Demeter::Mode object.</p>
 
-<p>This plays with GUI apps like Artemis because they overwrite
-<code>$SIG{__WARN__}</code> and <code>$SIG{__DIE__}</code> appropriately for a GUI.</p>
+<p>This plays with GUI apps like Artemis because they overwrite <code>$SIG{__WARN__}</code> and <code>$SIG{__DIE__}</code> appropriately for a GUI.</p>
 
-<p>The rest of this documentation is copied verbatim from
-<code>Carp::Always</code>.</p>
+<p>The rest of this documentation is copied verbatim from <code>Carp::Always</code>.</p>
 
 <p>More often used on the command line:</p>
 
-<pre>  perl -MCarp::Always script.pl
+<pre><code>  perl -MCarp::Always script.pl</code></pre>
 
-</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This module is meant as a debugging aid. It can be
-used to make a script complain loudly with stack backtraces
-when warn()ing or die()ing.</p>
+<p>This module is meant as a debugging aid. It can be used to make a script complain loudly with stack backtraces when warn()ing or die()ing.</p>
 
-<p>Here are how stack backtraces produced by this module
-looks:</p>
+<p>Here are how stack backtraces produced by this module looks:</p>
 
-<pre>  # it works for explicit die's and warn's
-  $ perl -MCarp::Always -e 'sub f { die &quot;arghh&quot; }; sub g { f }; g'
+<pre><code>  # it works for explicit die&#39;s and warn&#39;s
+  $ perl -MCarp::Always -e &#39;sub f { die &quot;arghh&quot; }; sub g { f }; g&#39;
   arghh at -e line 1
           main::f() called at -e line 1
           main::g() called at -e line 1
 
   # it works for interpreter-thrown failures
-  $ perl -MCarp::Always -w -e 'sub f { $a = shift; @a = @$a };' \
-                           -e 'sub g { f(undef) }; g'
+  $ perl -MCarp::Always -w -e &#39;sub f { $a = shift; @a = @$a };&#39; \
+                           -e &#39;sub g { f(undef) }; g&#39;
   Use of uninitialized value in array dereference at -e line 1
-          main::f('undef') called at -e line 2
-          main::g() called at -e line 2
+          main::f(&#39;undef&#39;) called at -e line 2
+          main::g() called at -e line 2</code></pre>
 
-</pre><p>In the implementation, the <code>Carp</code> module does
-the heavy work, through <code>longmess()</code>. The
-actual implementation sets the signal hooks
-<code>$SIG{__WARN__}</code> and <code>$SIG{__DIE__}</code> to
-emit the stack backtraces.</p>
+<p>In the implementation, the <code>Carp</code> module does the heavy work, through <code>longmess()</code>. The actual implementation sets the signal hooks <code>$SIG{__WARN__}</code> and <code>$SIG{__DIE__}</code> to emit the stack backtraces.</p>
 
-<p>Oh, by the way, <code>carp</code> and <code>croak</code> when requiring/using
-the <code>Carp</code> module are also made verbose, behaving
-like <code>cloak</code> and <code>confess</code>, respectively.</p>
+<p>Oh, by the way, <code>carp</code> and <code>croak</code> when requiring/using the <code>Carp</code> module are also made verbose, behaving like <code>cloak</code> and <code>confess</code>, respectively.</p>
 
 <h2 id="EXPORT">EXPORT</h2>
 
 <p>Nothing at all is exported.</p>
 
-<h1 id="ACKNOWLEDGMENTS">ACKNOWLEDGMENTS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="ACKNOWLEDGMENTS">ACKNOWLEDGMENTS</h1>
 
-<p>This module was born as a reaction to a release
-of <a href="https://metacpan.org/pod/Acme%3A%3AJavaTrace">Acme::JavaTrace</a> by E9bastien Aperghis-Tramoni.
-E9bastien also has a newer module called
-<a href="https://metacpan.org/pod/Devel%3A%3ASimpleTrace">Devel::SimpleTrace</a> with the same code and fewer flame
-comments on docs. The pruning of the uselessly long
-docs of this module were prodded by Michael Schwern.</p>
+<p>This module was born as a reaction to a release of <a href="http://metacpan.org/module/Acme::JavaTrace">Acme::JavaTrace</a> by <span style="white-space: nowrap;">E9</span>bastien Aperghis-Tramoni. <span style="white-space: nowrap;">E9</span>bastien also has a newer module called <a href="http://metacpan.org/module/Devel::SimpleTrace">Devel::SimpleTrace</a> with the same code and fewer flame comments on docs. The pruning of the uselessly long docs of this module were prodded by Michael Schwern.</p>
 
-<p>Schwern and others told me &quot;the module name stinked&quot; -
-it was called <code>Carp::Indeed</code>. After thinking long
-and not getting nowhere, I went with nuffin's suggestion
-and now it is called <code>Carp::Always</code>.
-<code>Carp::Indeed</code> which is now deprecate
-lives in its own distribution (which won't go anywhere
-but will stay there as a redirection to this module).</p>
+<p>Schwern and others told me &quot;the module name stinked&quot; - it was called <code>Carp::Indeed</code>. After thinking long and not getting nowhere, I went with nuffin&#39;s suggestion and now it is called <code>Carp::Always</code>. <code>Carp::Indeed</code> which is now deprecate lives in its own distribution (which won&#39;t go anywhere but will stay there as a redirection to this module).</p>
 
-<h1 id="SEE_ALSO">SEE ALSO <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="SEE-ALSO">SEE ALSO</h1>
 
 <ul>
-	<li>&lt;Carp&gt;</li>
-	<li><a href="https://metacpan.org/pod/Acme%3A%3AJavaTrace">Acme::JavaTrace</a> and <a href="https://metacpan.org/pod/Devel%3A%3ASimpleTrace">Devel::SimpleTrace</a></li>
+
+<li><p>&lt;Carp&gt;</p>
+
+</li>
+<li><p><a href="http://metacpan.org/module/Acme::JavaTrace">Acme::JavaTrace</a> and <a href="http://metacpan.org/module/Devel::SimpleTrace">Devel::SimpleTrace</a></p>
+
+</li>
 </ul>
 
-<p>Please report bugs via CPAN RT
-http://rt.cpan.org/NoAuth/Bugs.html?Dist=Carp-Always.</p>
+<p>Please report bugs via CPAN RT http://rt.cpan.org/NoAuth/Bugs.html?Dist=Carp-Always.</p>
 
-<h1 id="BUGS">BUGS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="BUGS">BUGS</h1>
 
 <p>Every (un)deserving module has its own pet bugs.</p>
 
-<p>This module does not play well with other modules which fusses
-around with <code>warn</code>, <code>die</code>, <code>$SIG{'__WARN__'}</code>,
-<code>$SIG{'__DIE__'}</code>.</p>
-
 <ul>
-	<li>Test scripts are good. I should write more of these.</li>
-	<li>I don't know if this module name is still a bug as it was
-at the time of <code>Carp::Indeed</code>.</li>
+
+<p>This module does not play well with other modules which fusses around with <code>warn</code>, <code>die</code>, <code>$SIG{&#39;__WARN__&#39;}</code>, <code>$SIG{&#39;__DIE__&#39;}</code>.</p>
+
+<p>*</p>
+
+<p>Test scripts are good. I should write more of these.</p>
+
+<p>*</p>
+
+<p>I don&#39;t know if this module name is still a bug as it was at the time of <code>Carp::Indeed</code>.</p>
+
 </ul>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Adriano Ferreira, &lt;ferreira@cpan.org&gt;</p>
 
-<h1 id="COPYRIGHT_AND_LICENSE">COPYRIGHT AND LICENSE <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="COPYRIGHT-AND-LICENSE">COPYRIGHT AND LICENSE</h1>
 
 <p>Carp::Always is Copyright (C) 2005-2007 by Adriano R. Ferreira</p>
 
 <p>ANSIColor addition by Bruce Ravel 2014</p>
 
-<p>This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.</p>
+<p>This library is free software; you can redistribute it and/or modify it under the same terms as Perl itself.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

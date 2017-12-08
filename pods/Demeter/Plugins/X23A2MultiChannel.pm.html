@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::Plugin::X23A2MultiChannel</title>
-<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::Plugins::X23A2MultiChannel &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,60 +15,93 @@
 </div>
 <div class="path">
   <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-Plugins-X23A2MultiChannel
+  Demeter::Plugins::X23A2MultiChannel
 </div>
 <div>
 <a href="../../src/Demeter/Plugins/X23A2MultiChannel.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#METHODS">METHODS</a></li>
+  <li><a href="#BUGS-AND-SHORTCOMINGS">BUGS AND SHORTCOMINGS</a></li>
+  <li><a href="#REVISIONS">REVISIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::Plugin::X23A2MultiChannel - filetype plugin for X23A2 multi-channel data files</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<p>This plugin converts data from X23A2 multi-channel ion chambers to an
-Athena project file.</p>
+<p>This plugin converts data from X23A2 multi-channel ion chambers to an Athena project file.</p>
 
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="METHODS">METHODS</h1>
 
 <dl>
-	<dt><code>is</code></dt>
-		<dd><p>The multichannel file is recognized by &quot;XDAC&quot; in the first header line and</p></dd>
-<dd><pre>  I0   I02  I03  I04  It1  It2  It3  It4
 
-</pre></dd>		<dd><p>in that order as column headers.</p></dd>
-	<dt><code>fix</code></dt>
-		<dd><p>The column data file is converted into an Athena project file using
-the <a href="../Data/MultiChannel.pm.html">Demeter::Data::MultiChannel</a> object.</p></dd>
+<dt id="is"><code>is</code></dt>
+<dd>
+
+<p>The multichannel file is recognized by &quot;XDAC&quot; in the first header line and</p>
+
+<pre><code>  I0   I02  I03  I04  It1  It2  It3  It4</code></pre>
+
+<p>in that order as column headers.</p>
+
+</dd>
+<dt id="fix"><code>fix</code></dt>
+<dd>
+
+<p>The column data file is converted into an Athena project file using the <a href="../Data/MultiChannel.pm.html">Demeter::Data::MultiChannel</a> object.</p>
+
+</dd>
 </dl>
-<h1 id="BUGS_AND_SHORTCOMINGS">BUGS AND SHORTCOMINGS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<h1 id="BUGS-AND-SHORTCOMINGS">BUGS AND SHORTCOMINGS</h1>
 
 <ul>
-	<li>Need to prompt for label columns</li>
-	<li>Tie all four channels</li>
-	<li>Prompt whether to import reference, whether to use all 4 It channels
-in the numerator, tie reference to all four groups</li>
-	<li>Need a persistance file for label columns and reference</li>
+
+<li><p>Need to prompt for label columns</p>
+
+</li>
+<li><p>Tie all four channels</p>
+
+</li>
+<li><p>Prompt whether to import reference, whether to use all 4 It channels in the numerator, tie reference to all four groups</p>
+
+</li>
+<li><p>Need a persistance file for label columns and reference</p>
+
+</li>
 </ul>
 
-<h1 id="REVISIONS">REVISIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="REVISIONS">REVISIONS</h1>
 
 <dl>
-	<dt>0.1</dt>
-		<dd><p>Initial version</p></dd>
+
+<dt id="pod0.1">0.1</dt>
+<dd>
+
+<p>Initial version</p>
+
+</dd>
 </dl>
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<pre>  Bruce Ravel, L&lt;http://bruceravel.github.io/home&gt;
-  http://bruceravel.github.io/demeter
+<h1 id="AUTHOR">AUTHOR</h1>
 
-</pre>
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>
+<pre><code>  Bruce Ravel, L&lt;http://bruceravel.github.io/home&gt;
+  http://bruceravel.github.io/demeter</code></pre>
+
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
+

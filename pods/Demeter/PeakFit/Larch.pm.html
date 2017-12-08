@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::PeakFit::Larch</title>
-<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::PeakFit::Larch &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,113 +15,157 @@
 </div>
 <div class="path">
   <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-PeakFit-Larch
+  Demeter::PeakFit::Larch
 </div>
 <div>
 <a href="../../src/Demeter/PeakFit/Larch.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>Demeter::PeakFit::Larch - Larch backend to Demeter's peak fitting tool</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a></li>
+  <li><a href="#LINESHAPES">LINESHAPES</a></li>
+  <li><a href="#CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Demeter::PeakFit::Larch - Larch backend to Demeter&#39;s peak fitting tool</p>
+
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="METHODS">METHODS</h1>
 
+<h1 id="LINESHAPES">LINESHAPES</h1>
 
-
-
-<h1 id="LINESHAPES">LINESHAPES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
-
-<p>These are Larch's available lineshapes.  Note that the format of this
-document section is parsed by the reporting methods of this object.</p>
+<p>These are Larch&#39;s available lineshapes. Note that the format of this document section is parsed by the reporting methods of this object.</p>
 
 <dl>
-	<dt>linear(yint, slope)</dt>
-<dd><pre> yint + slope * x
 
-</pre></dd>	<dt>gaussian(height, center, sigma)</dt>
-<dd><pre> height*exp(-1*((x-center)/(2*sigma))^2) / (sigma*sqrt(2*pi)
+<dt id="linear-yint-slope">linear(yint, slope)</dt>
+<dd>
 
-</pre></dd>	<dt>lorentzian(height, center, sigma)</dt>
-<dd><pre> (height*sigma/(2*pi)) / ((x-center)^2 * (sigma/2)^2)
+<pre><code> yint + slope * x</code></pre>
 
-</pre></dd>	<dt>voigt(height, center, hwhm, gamma)</dt>
-<dd><pre> convolution of Lorentzian and Gaussian functions
+</dd>
+<dt id="gaussian-height-center-sigma">gaussian(height, center, sigma)</dt>
+<dd>
 
-</pre></dd>	<dt>pvoigt(height, center, hwhm, frac)</dt>
-<dd><pre> eta*loren + (1-eta)*gauss
+<pre><code> height*exp(-1*((x-center)/(2*sigma))^2) / (sigma*sqrt(2*pi)</code></pre>
 
-</pre></dd>	<dt>atan(step, e0, width)</dt>
-<dd><pre> step*[atan((x-E0)/width)/pi + 0.5]
+</dd>
+<dt id="lorentzian-height-center-sigma">lorentzian(height, center, sigma)</dt>
+<dd>
 
-</pre></dd>	<dt>erf(step, e0, width)</dt>
-<dd><pre> step*(erf((x-e0)/width) + 1)
+<pre><code> (height*sigma/(2*pi)) / ((x-center)^2 * (sigma/2)^2)</code></pre>
 
-</pre></dd>	<dt>pearson7(height, center, sigma, exponent)</dt>
-<dd><pre> Pearson7 lineshape
+</dd>
+<dt id="voigt-height-center-hwhm-gamma">voigt(height, center, hwhm, gamma)</dt>
+<dd>
 
-</pre></dd>	<dt>breit_wigner(height, center, sigma, q)</dt>
-<dd><pre> height*(q*sigma/2 + x - center)**2 / ( (sigma/2)**2 + (x - center)**2 )
+<pre><code> convolution of Lorentzian and Gaussian functions</code></pre>
 
-</pre></dd>	<dt>logistic(height, center, sigma)</dt>
-<dd><pre> height*(1 - 1 / (1 + exp((x-center)/sigma)))
+</dd>
+<dt id="pvoigt-height-center-hwhm-frac">pvoigt(height, center, hwhm, frac)</dt>
+<dd>
 
-</pre></dd>	<dt>lognormal(height, center, sigma)</dt>
-<dd><pre> (height/x) * exp(-(ln(x) - center)/ (2* sigma**2))
+<pre><code> eta*loren + (1-eta)*gauss</code></pre>
 
-</pre></dd>	<dt>students_t(height, center, sigma)</dt>
-<dd><pre> height*gamma((sigma+1)/2) * (1 + (x-center)**2/sigma)^(-(sigma+1)/2) / (sqrt(sigma*pi)gamma(sigma/2))
+</dd>
+<dt id="atan-step-e0-width">atan(step, e0, width)</dt>
+<dd>
 
-</pre></dd></dl>
-<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<pre><code> step*[atan((x-E0)/width)/pi + 0.5]</code></pre>
+
+</dd>
+<dt id="erf-step-e0-width">erf(step, e0, width)</dt>
+<dd>
+
+<pre><code> step*(erf((x-e0)/width) + 1)</code></pre>
+
+</dd>
+<dt id="pearson7-height-center-sigma-exponent">pearson7(height, center, sigma, exponent)</dt>
+<dd>
+
+<pre><code> Pearson7 lineshape</code></pre>
+
+</dd>
+<dt id="breit_wigner-height-center-sigma-q">breit_wigner(height, center, sigma, q)</dt>
+<dd>
+
+<pre><code> height*(q*sigma/2 + x - center)**2 / ( (sigma/2)**2 + (x - center)**2 )</code></pre>
+
+</dd>
+<dt id="logistic-height-center-sigma">logistic(height, center, sigma)</dt>
+<dd>
+
+<pre><code> height*(1 - 1 / (1 + exp((x-center)/sigma)))</code></pre>
+
+</dd>
+<dt id="lognormal-height-center-sigma">lognormal(height, center, sigma)</dt>
+<dd>
+
+<pre><code> (height/x) * exp(-(ln(x) - center)/ (2* sigma**2))</code></pre>
+
+</dd>
+<dt id="students_t-height-center-sigma">students_t(height, center, sigma)</dt>
+<dd>
+
+<pre><code> height*gamma((sigma+1)/2) * (1 + (x-center)**2/sigma)^(-(sigma+1)/2) / (sqrt(sigma*pi)gamma(sigma/2))</code></pre>
+
+</dd>
+</dl>
+
+<h1 id="CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</h1>
 
 <p>See <a href="../Config.pm.html">Demeter::Config</a> for a description of the configuration system.</p>
 
-<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
 
-<p>Demeter's dependencies are in the <cite>Build.PL</cite> file.</p>
+<p>Demeter&#39;s dependencies are in the <i>Build.PL</i> file.</p>
 
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
 <ul>
-	<li>???</li>
+
+<li><p>???</p>
+
+</li>
 </ul>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel, <a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a></p>
 
 <p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
-
-
-
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

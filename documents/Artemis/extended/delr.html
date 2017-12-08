@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>15.3. Geometric parametrization of bond length &mdash; Artemis 0.9.26 documentation</title>
+    <title>15.3. Geometric parametrization of bond length &#8212; Artemis 0.9.26 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -17,15 +17,15 @@
         VERSION:     '0.9.26',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Artemis 0.9.26 documentation" href="../index.html" />
-    <link rel="up" title="15. Extended discussions" href="index.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="15.4. Modeling disorder" href="ss.html" />
     <link rel="prev" title="15.2. Characteristic value" href="cv.html" />
 
@@ -44,8 +44,8 @@
         <li class="right" >
           <a href="cv.html" title="15.2. Characteristic value"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">15. Extended discussions</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">15. Extended discussions</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -59,16 +59,16 @@
 <div class="section" id="volumetric-expansion-coefficient">
 <h2>15.3.1. Volumetric expansion coefficient<a class="headerlink" href="#volumetric-expansion-coefficient" title="Permalink to this headline">¶</a></h2>
 <p>FeS<sub>2</sub> is a cubic crystal. Here is the crystal data</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>title name:     Iron sulfide (pyrite)
-title formula:  FeS_2
-title refer1:   Elliot (1960) J.Chem. Phys. 33(3), 903.
-space  P a 3
-a    = 5.404
-rmax = 9.00     rpath = 6.00
-core = Fe
-atoms
-  Fe     0.00000   0.00000   0.00000  Fe
-  S      0.38400   0.38400   0.38400  S
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="n">name</span><span class="p">:</span>     <span class="n">Iron</span> <span class="n">sulfide</span> <span class="p">(</span><span class="n">pyrite</span><span class="p">)</span>
+<span class="n">title</span> <span class="n">formula</span><span class="p">:</span>  <span class="n">FeS_2</span>
+<span class="n">title</span> <span class="n">refer1</span><span class="p">:</span>   <span class="n">Elliot</span> <span class="p">(</span><span class="mi">1960</span><span class="p">)</span> <span class="n">J</span><span class="o">.</span><span class="n">Chem</span><span class="o">.</span> <span class="n">Phys</span><span class="o">.</span> <span class="mi">33</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="mf">903.</span>
+<span class="n">space</span>  <span class="n">P</span> <span class="n">a</span> <span class="mi">3</span>
+<span class="n">a</span>    <span class="o">=</span> <span class="mf">5.404</span>
+<span class="n">rmax</span> <span class="o">=</span> <span class="mf">9.00</span>     <span class="n">rpath</span> <span class="o">=</span> <span class="mf">6.00</span>
+<span class="n">core</span> <span class="o">=</span> <span class="n">Fe</span>
+<span class="n">atoms</span>
+  <span class="n">Fe</span>     <span class="mf">0.00000</span>   <span class="mf">0.00000</span>   <span class="mf">0.00000</span>  <span class="n">Fe</span>
+  <span class="n">S</span>      <span class="mf">0.38400</span>   <span class="mf">0.38400</span>   <span class="mf">0.38400</span>  <span class="n">S</span>
 </pre></div>
 </div>
 <p>In this case, there are only two parameters that determine the locations
@@ -130,7 +130,7 @@ O atoms lie near the centers of the faces.</p>
 <p>In a setting which places the Pb atoms at positions of high symmetry,
 i.e. right on the cell corners, the other atoms are displaced from
 sites of symmetry c-direction. Here is the crystal data:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>title PbTiO3 25C
+<div class="highlight-default"><div class="highlight"><pre><span></span>title PbTiO3 25C
 title Glazer and Mabud, Acta Cryst. B34, 1065-1070 (1978)
 core = ti    Space = P 4 m m
 a = 3.905    c = 4.156
@@ -150,19 +150,19 @@ z-displacement of the Ti away from z=0, the z-displacement of the
 axial oxygen atom away from z=0.5, and the z-displacement of the
 planar oxygen atom away from z=0.5.</p>
 <p>We set up a set of guess, def, and set parameters to encode this:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>set   a0     = 3.905
-guess dela   = 0
-def   a      = a0 + dela
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">set</span>   <span class="n">a0</span>     <span class="o">=</span> <span class="mf">3.905</span>
+<span class="n">guess</span> <span class="n">dela</span>   <span class="o">=</span> <span class="mi">0</span>
+<span class="k">def</span>   <span class="nf">a</span>      <span class="o">=</span> <span class="n">a0</span> <span class="o">+</span> <span class="n">dela</span>
 
-set   c0     = 4.156
-guess delc   = 0
-def   c      = c0 + delc
+<span class="nb">set</span>   <span class="n">c0</span>     <span class="o">=</span> <span class="mf">4.156</span>
+<span class="n">guess</span> <span class="n">delc</span>   <span class="o">=</span> <span class="mi">0</span>
+<span class="k">def</span>   <span class="nf">c</span>      <span class="o">=</span> <span class="n">c0</span> <span class="o">+</span> <span class="n">delc</span>
 
-guess dti    = 0.039
-guess doax   = 0.1138
-guess dopl   = 0.1169
+<span class="n">guess</span> <span class="n">dti</span>    <span class="o">=</span> <span class="mf">0.039</span>
+<span class="n">guess</span> <span class="n">doax</span>   <span class="o">=</span> <span class="mf">0.1138</span>
+<span class="n">guess</span> <span class="n">dopl</span>   <span class="o">=</span> <span class="mf">0.1169</span>
 
-after volume = a*a*c
+<span class="n">after</span> <span class="n">volume</span> <span class="o">=</span> <span class="n">a</span><span class="o">*</span><span class="n">a</span><span class="o">*</span><span class="n">c</span>
 </pre></div>
 </div>
 <div class="figure align-center" id="id1">
@@ -182,16 +182,16 @@ Ti-O distance and long one. In the buckled plane, there are four
 equivalent Ti-O distances.</p>
 <p>Computing these distances requires some simple geometry, with the
 planar distance being just a bit more complicated.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>def    rtio_sh = (0.5 - (doax-dti)) * c
-def    rtio_lo = (0.5 - (doax+dti)) * c
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span>    <span class="nf">rtio_sh</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">-</span> <span class="p">(</span><span class="n">doax</span><span class="o">-</span><span class="n">dti</span><span class="p">))</span> <span class="o">*</span> <span class="n">c</span>
+<span class="k">def</span>    <span class="nf">rtio_lo</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">-</span> <span class="p">(</span><span class="n">doax</span><span class="o">+</span><span class="n">dti</span><span class="p">))</span> <span class="o">*</span> <span class="n">c</span>
 
-def    rtio_pl = sqrt( (a/2)^2 + ((dopl+dti)*c)^2 )
+<span class="k">def</span>    <span class="nf">rtio_pl</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span> <span class="p">(</span><span class="n">a</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="p">((</span><span class="n">dopl</span><span class="o">+</span><span class="n">dti</span><span class="p">)</span><span class="o">*</span><span class="n">c</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span> <span class="p">)</span>
 </pre></div>
 </div>
 <p>The second shell Pb atoms are similarly computed using trigonometry
 and the appropriate structural parameters.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>def    rtipb_sh = sqrt( (a/2)^2 + c^2*(0.5 - dti)^2 )
-def    rtipb_lo = sqrt( (a/2)^2 + c^2*(0.5 + dti)^2 )
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span>    <span class="nf">rtipb_sh</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span> <span class="p">(</span><span class="n">a</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="n">c</span><span class="o">^</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">-</span> <span class="n">dti</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span> <span class="p">)</span>
+<span class="k">def</span>    <span class="nf">rtipb_lo</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span> <span class="p">(</span><span class="n">a</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="n">c</span><span class="o">^</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">+</span> <span class="n">dti</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span> <span class="p">)</span>
 </pre></div>
 </div>
 <p>Finally, the Ti-Ti distances in the thrid coordination shell are
@@ -207,26 +207,26 @@ of easily intepretable parameters of the crystal structure.</p>
 <p>Now, encoding the ΔR path parameter for each of these paths is
 simple.  We just subtract R<sub>eff</sub> from the corresponding math
 expression.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>path short axial oxygen:
-   delr = rtio_sh - reff
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">path</span> <span class="n">short</span> <span class="n">axial</span> <span class="n">oxygen</span><span class="p">:</span>
+   <span class="n">delr</span> <span class="o">=</span> <span class="n">rtio_sh</span> <span class="o">-</span> <span class="n">reff</span>
 
-path planar oxygen:
-   delr = rtio_pl - reff
+<span class="n">path</span> <span class="n">planar</span> <span class="n">oxygen</span><span class="p">:</span>
+   <span class="n">delr</span> <span class="o">=</span> <span class="n">rtio_pl</span> <span class="o">-</span> <span class="n">reff</span>
 
-path long axial oxygen:
-   delr = rtio_lo - reff
+<span class="n">path</span> <span class="n">long</span> <span class="n">axial</span> <span class="n">oxygen</span><span class="p">:</span>
+   <span class="n">delr</span> <span class="o">=</span> <span class="n">rtio_lo</span> <span class="o">-</span> <span class="n">reff</span>
 
-path short lead:
-   delr = rtipb_sh - reff
+<span class="n">path</span> <span class="n">short</span> <span class="n">lead</span><span class="p">:</span>
+   <span class="n">delr</span> <span class="o">=</span> <span class="n">rtipb_sh</span> <span class="o">-</span> <span class="n">reff</span>
 
-path long lead:
-   delr = rtipb_lo - reff
+<span class="n">path</span> <span class="n">long</span> <span class="n">lead</span><span class="p">:</span>
+   <span class="n">delr</span> <span class="o">=</span> <span class="n">rtipb_lo</span> <span class="o">-</span> <span class="n">reff</span>
 
-path short titanium:
-   delr = a - reff
+<span class="n">path</span> <span class="n">short</span> <span class="n">titanium</span><span class="p">:</span>
+   <span class="n">delr</span> <span class="o">=</span> <span class="n">a</span> <span class="o">-</span> <span class="n">reff</span>
 
-path long titanium:
-   delr = c - reff
+<span class="n">path</span> <span class="n">long</span> <span class="n">titanium</span><span class="p">:</span>
+   <span class="n">delr</span> <span class="o">=</span> <span class="n">c</span> <span class="o">-</span> <span class="n">reff</span>
 </pre></div>
 </div>
 <p>There are important collinear or nearly-collinear multiple scattering
@@ -239,11 +239,11 @@ ẑ direction, so those MS paths must have the same length as the
 corresponding SS paths.</p>
 <p>In the planar direction, you need to add up the lengths of the legs
 and subtract R<sub>eff</sub> for their ΔR parameters:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>path planar double scattering:
-   delr = (a + 2*rtio_pl)/2  - reff
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">path</span> <span class="n">planar</span> <span class="n">double</span> <span class="n">scattering</span><span class="p">:</span>
+   <span class="n">delr</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">rtio_pl</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>  <span class="o">-</span> <span class="n">reff</span>
 
-path planar triple scattering:
-   delr = 2*rtio_pl - reff
+<span class="n">path</span> <span class="n">planar</span> <span class="n">triple</span> <span class="n">scattering</span><span class="p">:</span>
+   <span class="n">delr</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">rtio_pl</span> <span class="o">-</span> <span class="n">reff</span>
 </pre></div>
 </div>
 <p>This strategy of adding up leg lengths works for any kind of multiple
@@ -279,9 +279,9 @@ functions of a small number of guess parameters.</p>
 <hr class="docutils" />
 <p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
 copyright © 2016 Bruce Ravel</p>
-<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>This document is licensed under <a class="reference external" href="https://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
 <p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
-consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+consider <a class="reference external" href="https://creativecommons.org/donate/">supporting The Creative Commons</a>.</p>
 </div>
 </div>
 
@@ -313,7 +313,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">15. Extended discussions</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="qfs.html">15.1. Quick first shell</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cv.html">15.2. Characteristic value</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">15.3. Geometric parametrization of bond length</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">15.3. Geometric parametrization of bond length</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ss.html">15.4. Modeling disorder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="constraints.html">15.5. Constraints and restraints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bvs.html">15.6. Bond valence sums</a></li>
@@ -326,7 +326,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 </li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.26</b></p>
+<p>Current Demeter version: <b>0.9.26</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
@@ -334,6 +334,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/XAS-Education/">Bruce's XAS Education page</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -347,20 +348,17 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/extended/delr.txt"
+      <li><a href="../_sources/extended/delr.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -377,13 +375,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="cv.html" title="15.2. Characteristic value"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >15. Extended discussions</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >15. Extended discussions</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, Bruce Ravel.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+        &#169; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
     </div>
   </body>
 </html>

@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::Tools</title>
-<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::Tools &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,237 +15,309 @@
 </div>
 <div class="path">
   <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-Tools
+  Demeter::Tools
 </div>
 <div>
 <a href="../src/Demeter/Tools.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a></li>
+  <li><a href="#CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::Tools - Utility methods for the Demeter class</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This module contains a number of methods that work better (in Bruce's
-opinion) as class methods than as object methods.</p>
+<p>This module contains a number of methods that work better (in Bruce&#39;s opinion) as class methods than as object methods.</p>
 
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="METHODS">METHODS</h1>
 
 <dl>
-	<dt><code>simpleGDS</code></dt>
-		<dd><p>This is syntactic sugar for the GDS object constructor.  The following are
-equivalent:</p></dd>
-<dd><pre>  $gdsobject = Demeter::GDS -&gt;
-                  new(type    =&gt; 'guess',
-		      name    =&gt; 'alpha',
-		      mathexp =&gt; 0,
-		     );
+
+<dt id="simpleGDS"><code>simpleGDS</code></dt>
+<dd>
+
+<p>This is syntactic sugar for the GDS object constructor. The following are equivalent:</p>
+
+<pre><code>  $gdsobject = Demeter::GDS -&gt;
+                  new(type    =&gt; &#39;guess&#39;,
+                      name    =&gt; &#39;alpha&#39;,
+                      mathexp =&gt; 0,
+                     );
   #
-  $gdsobject = $demeter_object -&gt; simpleGDS(&quot;guess alpha = 0&quot;);
+  $gdsobject = $demeter_object -&gt; simpleGDS(&quot;guess alpha = 0&quot;);</code></pre>
 
-</pre></dd>		<dd><p>The text string that is the argument for this wrapper is parsed
-identically to how a guess parameter in a <cite>feffit.inp</cite> file is
-parsed.</p></dd>
-	<dt><code>distance</code></dt>
-		<dd><p>This returns the Cartesian distance between two points.</p></dd>
-<dd><pre>   my $d = distance(@point1, @point2);
+<p>The text string that is the argument for this wrapper is parsed identically to how a guess parameter in a <i>feffit.inp</i> file is parsed.</p>
 
-</pre></dd>		<dd><p>Each of the arrays passed to this function must be exactly three
-elements long and are assumed to contain the x, y, and z Cartesian
-coordinates, in that order.</p></dd>
-	<dt><code>now</code></dt>
-		<dd><p>This returns a string with the current date and time in a convenient,
-human-readable format.</p></dd>
-<dd><pre>   print &quot;The time is: &quot;, $demeter_object -&gt; now, $/;
+</dd>
+<dt id="distance"><code>distance</code></dt>
+<dd>
 
-</pre></dd>	<dt><code>howlong</code></dt>
-		<dd><p>This returns a string used for indicating an amount of elapsed time.
-The argument is a DataTime object made at the beginning of the event
-whose elapsed time is being measured.</p></dd>
-<dd><pre>   my $start = DateTime-&gt;now( time_zone =&gt; 'floating' );
+<p>This returns the Cartesian distance between two points.</p>
+
+<pre><code>   my $d = distance(@point1, @point2);</code></pre>
+
+<p>Each of the arrays passed to this function must be exactly three elements long and are assumed to contain the x, y, and z Cartesian coordinates, in that order.</p>
+
+</dd>
+<dt id="now"><code>now</code></dt>
+<dd>
+
+<p>This returns a string with the current date and time in a convenient, human-readable format.</p>
+
+<pre><code>   print &quot;The time is: &quot;, $demeter_object -&gt; now, $/;</code></pre>
+
+</dd>
+<dt id="howlong"><code>howlong</code></dt>
+<dd>
+
+<p>This returns a string used for indicating an amount of elapsed time. The argument is a DataTime object made at the beginning of the event whose elapsed time is being measured.</p>
+
+<pre><code>   my $start = DateTime-&gt;now( time_zone =&gt; &#39;floating&#39; );
    #  ... do something
-   my $text = Demeter-&gt;howlong($start);
+   my $text = Demeter-&gt;howlong($start);</code></pre>
 
-</pre></dd>		<dd><p>returns</p></dd>
-<dd><pre>   That took NN seconds.
+<p>returns</p>
 
-</pre></dd>		<dd><p>It can be customized:</p></dd>
-<dd><pre>   my $text = Demeter-&gt;howlong($start, &quot;Your fit&quot;);
+<pre><code>   That took NN seconds.</code></pre>
 
-</pre></dd>		<dd><p>returns</p></dd>
-<dd><pre>   Your fit took NN seconds.
+<p>It can be customized:</p>
 
-</pre></dd>		<dd><p>For something longer than a minute, it would return</p></dd>
-<dd><pre>   Your fit took MM minutes and NN seconds.
+<pre><code>   my $text = Demeter-&gt;howlong($start, &quot;Your fit&quot;);</code></pre>
 
-</pre></dd>	<dt><code>environment</code></dt>
-		<dd><p>This returns a string showing the version numbers of Demeter and perl,
-and the identifier string for your operating system.</p></dd>
-<dd><pre>   print &quot;You are running: &quot;, $demeter_object -&gt; environment, $/;
+<p>returns</p>
 
-</pre></dd>	<dt><code>who</code></dt>
-		<dd><p>This makes a halfhearted attempt to figure out who you are.  On a unix
-machine, it returns a concatination of the USER and HOST environment
-variables.  On Windows it currently returns the fairly stupid
-&quot;you@your.computer&quot;.</p></dd>
-<dd><pre>   print &quot;You are: &quot;, $demeter_object -&gt; who, $/;
+<pre><code>   Your fit took NN seconds.</code></pre>
 
-</pre></dd><dd>
+<p>For something longer than a minute, it would return</p>
 
+<pre><code>   Your fit took MM minutes and NN seconds.</code></pre>
 
-</dd>	<dt><code>check_parens</code></dt>
-		<dd><p>Return 0 if a string has matching round braces (parentheses).  A positive
-(negative) return value indicates the number of excess open (close) round
-braces.  This can be used a boolean check on a string.</p></dd>
-<dd><pre>  $is_mismatched = $demeter_object-&gt;check_parens($string);
+</dd>
+<dt id="environment"><code>environment</code></dt>
+<dd>
 
-</pre></dd>		<dd><p>This only matches round braces.  It ignores square, curly, or angle braces,
-none of which serve a purpose in Ifeffit math expressions.</p></dd>
-	<dt><code>is_windows</code></dt>
-		<dd><p>Return true if running on a Windows machine.</p></dd>
-<dd><pre>  my $is_win = $demeter_object -&gt; is_windows;
+<p>This returns a string showing the version numbers of Demeter and perl, and the identifier string for your operating system.</p>
 
-</pre></dd>	<dt><code>is_osx</code></dt>
-		<dd><p>Return true if running on a Macintosh OSX machine.</p></dd>
-<dd><pre>  my $is_mac = $demeter_object -&gt; is_osx;
+<pre><code>   print &quot;You are running: &quot;, $demeter_object -&gt; environment, $/;</code></pre>
 
-</pre></dd>	<dt><code>halflength</code></dt>
-		<dd><p>Given a list of references to arrays -- each of which contains the x,
-y, and z coordinates of an atom -- return the half length of the
-path. The half length is the sum of the individual legs divided by
-2. The first item in the list is assumed to the absorber at and is
-tacked onto the end of the list to close the path.</p></dd>
-<dd><pre>  my $hl = $demeter_object -&gt;
-         halflength(\@coords1, \@coords2, ... \@coordsN);
+</dd>
+<dt id="who"><code>who</code></dt>
+<dd>
 
-</pre></dd>	<dt><code>euclid</code></dt>
-		<dd><p>Return the greatest common denominator of two numbers.</p></dd>
-<dd><pre>  my $gcd = $demeter_object-&gt;euclid(1071, 462);
-  ## $gcd is 21
+<p>This makes a halfhearted attempt to figure out who you are. On a unix machine, it returns a concatination of the USER and HOST environment variables. On Windows it currently returns the fairly stupid &quot;you@your.computer&quot;.</p>
 
-</pre></dd>		<dd><p>This is used by Demeter::Atoms to determine stoichiometry for the
-feff8 input file's potentials list.</p></dd>
-	<dt><code>fract</code></dt>
-		<dd><p>Returns a fraction of rational numbers given an input float,using 5
-significant digits beyond the decimal.</p></dd>
-<dd><pre>  my $frac = $demeter_object -&gt; fract(0.5);
-  ## will print as &quot;1/2&quot;
+<pre><code>   print &quot;You are: &quot;, $demeter_object -&gt; who, $/;</code></pre>
 
-</pre></dd>	<dt><code>slurp</code></dt>
-		<dd><p>Slurp a file into a scalar.</p></dd>
-<dd><pre>  my $string = $demeter_object -&gt; slurp('/path/to/file');
+</dd>
+<dt id="check_parens"><code>check_parens</code></dt>
+<dd>
 
-</pre></dd>	<dt><code>write_file</code></dt>
-		<dd><p>Dump a string into a file.</p></dd>
-<dd><pre>  $demeter_object -&gt; write_file($file, $string);
+<p>Return 0 if a string has matching round braces (parentheses). A positive (negative) return value indicates the number of excess open (close) round braces. This can be used a boolean check on a string.</p>
 
-</pre></dd>	<dt><code>randomstring</code></dt>
-		<dd><p>Return a rendom character string using random numbers from <a href="https://metacpan.org/pod/Math%3A%3ARandom">Math::Random</a></p></dd>
-<dd><pre>  $string = Demeter-&gt;randomstring($length);
+<pre><code>  $is_mismatched = $demeter_object-&gt;check_parens($string);</code></pre>
 
-</pre></dd>		<dd><p>The resulting string will be <code>$length</code> characters long.  If not
-specified, it will be 6 characters long.</p></dd>
-	<dt><code>Dump</code></dt>
-		<dd><p>This is just a wrapper around <a href="https://metacpan.org/pod/Data%3A%3ADump%3A%3AColor">Data::Dump::Color</a>, <a href="https://metacpan.org/pod/Data%3A%3ADump">Data::Dump</a> or
-<a href="https://metacpan.org/pod/Data%3A%3ADumper">Data::Dumper</a>, whichever is installed.  Pass it a reference and it
-will be pretty-printed;</p></dd>
-<dd><pre>  print $any_object -&gt; Dump(\@some_array);
+<p>This only matches round braces. It ignores square, curly, or angle braces, none of which serve a purpose in Ifeffit math expressions.</p>
 
-</pre></dd>	<dt><code>trace</code></dt>
-		<dd><p>Print an ANSI-colorized stack trace to STDOUT from any location.</p></dd>
-<dd><pre>  $any_object -&gt; trace;
+</dd>
+<dt id="is_windows"><code>is_windows</code></dt>
+<dd>
 
-</pre></dd>	<dt><code>pjoin</code></dt>
-		<dd><p>Write stuff to the screen in an ugly but easy to read manner.</p></dd>
-<dd><pre>  Demeter-&gt;pjoin($this, $that, @and_the_other);
+<p>Return true if running on a Windows machine.</p>
 
-</pre></dd>	<dt><code>unistrip</code></dt>
-		<dd><p>Remove non-ASCII characters from a string.  This simple, blunt hammer
-is used to save just the text without the coloration from Athena's
-status bar buffer.</p></dd>
-<dd><pre>  my $no_utf = Demeter-&gt;unistrip($text);
+<pre><code>  my $is_win = $demeter_object -&gt; is_windows;</code></pre>
 
-</pre></dd>	<dt><code>Touch</code></dt>
-		<dd><p>This is a wrapper around the <code>touch</code> method from <a href="https://metacpan.org/pod/File%3A%3ATouch">File::Touch</a>.</p></dd>
-<dd><pre>  Demeter-&gt;Touch($some_file);
+</dd>
+<dt id="is_osx"><code>is_osx</code></dt>
+<dd>
 
-</pre></dd>	<dt><code>feffdocversion</code></dt>
-		<dd><p>This method attempts to determine the appropriate version of the Feff
-document to show.  If the version is not specified, it will be
-determined from the value of the <code>feff-&gt;feff-executable</code>
-configuration parameter.</p></dd>
-<dd><pre>  $version = Demeter-&gt;feffdocversion;
+<p>Return true if running on a Macintosh OSX machine.</p>
 
-</pre></dd>		<dd><p>The only two options currently supported are 6 and 9.</p></dd>
-	<dt><code>feffdoc</code></dt>
-		<dd><p>This returns the URL of the main page of the Feff documentation for
-either version 6 or 9, depending on which is requested or determined
-via the <code>feffdocversion</code> method.</p></dd>
-<dd><pre>  $url = Demeter-&gt;feffdoc;
+<pre><code>  my $is_mac = $demeter_object -&gt; is_osx;</code></pre>
 
-</pre></dd>	<dt><code>feffcardpage</code></dt>
-		<dd><p>This returns the URL for the page documenting a specific card in the
-Feff6 or Feff9 input file.</p></dd>
-<dd><pre>  $url = Demeter-&gt;feffcardpage($card, $version);
+</dd>
+<dt id="halflength"><code>halflength</code></dt>
+<dd>
 
-</pre></dd>		<dd><p>Specifying the Feff version is optional.  If not specified, it will
-use the value returned by the <code>feffdocversion</code> method.</p></dd>
+<p>Given a list of references to arrays -- each of which contains the x, y, and z coordinates of an atom -- return the half length of the path. The half length is the sum of the individual legs divided by 2. The first item in the list is assumed to the absorber at and is tacked onto the end of the list to close the path.</p>
+
+<pre><code>  my $hl = $demeter_object -&gt;
+         halflength(\@coords1, \@coords2, ... \@coordsN);</code></pre>
+
+</dd>
+<dt id="euclid"><code>euclid</code></dt>
+<dd>
+
+<p>Return the greatest common denominator of two numbers.</p>
+
+<pre><code>  my $gcd = $demeter_object-&gt;euclid(1071, 462);
+  ## $gcd is 21</code></pre>
+
+<p>This is used by Demeter::Atoms to determine stoichiometry for the feff8 input file&#39;s potentials list.</p>
+
+</dd>
+<dt id="fract"><code>fract</code></dt>
+<dd>
+
+<p>Returns a fraction of rational numbers given an input float,using 5 significant digits beyond the decimal.</p>
+
+<pre><code>  my $frac = $demeter_object -&gt; fract(0.5);
+  ## will print as &quot;1/2&quot;</code></pre>
+
+</dd>
+<dt id="slurp"><code>slurp</code></dt>
+<dd>
+
+<p>Slurp a file into a scalar.</p>
+
+<pre><code>  my $string = $demeter_object -&gt; slurp(&#39;/path/to/file&#39;);</code></pre>
+
+</dd>
+<dt id="write_file"><code>write_file</code></dt>
+<dd>
+
+<p>Dump a string into a file.</p>
+
+<pre><code>  $demeter_object -&gt; write_file($file, $string);</code></pre>
+
+</dd>
+<dt id="randomstring"><code>randomstring</code></dt>
+<dd>
+
+<p>Return a rendom character string using random numbers from <a href="http://metacpan.org/module/Math::Random">Math::Random</a></p>
+
+<pre><code>  $string = Demeter-&gt;randomstring($length);</code></pre>
+
+<p>The resulting string will be <code>$length</code> characters long. If not specified, it will be 6 characters long.</p>
+
+</dd>
+<dt id="Dump"><code>Dump</code></dt>
+<dd>
+
+<p>This is just a wrapper around <a href="http://metacpan.org/module/Data::Dump::Color">Data::Dump::Color</a>, <a href="http://metacpan.org/module/Data::Dump">Data::Dump</a> or <a href="http://metacpan.org/module/Data::Dumper">Data::Dumper</a>, whichever is installed. Pass it a reference and it will be pretty-printed;</p>
+
+<pre><code>  print $any_object -&gt; Dump(\@some_array);</code></pre>
+
+</dd>
+<dt id="trace"><code>trace</code></dt>
+<dd>
+
+<p>Print an ANSI-colorized stack trace to STDOUT from any location.</p>
+
+<pre><code>  $any_object -&gt; trace;</code></pre>
+
+</dd>
+<dt id="pjoin"><code>pjoin</code></dt>
+<dd>
+
+<p>Write stuff to the screen in an ugly but easy to read manner.</p>
+
+<pre><code>  Demeter-&gt;pjoin($this, $that, @and_the_other);</code></pre>
+
+</dd>
+<dt id="unistrip"><code>unistrip</code></dt>
+<dd>
+
+<p>Remove non-ASCII characters from a string. This simple, blunt hammer is used to save just the text without the coloration from Athena&#39;s status bar buffer.</p>
+
+<pre><code>  my $no_utf = Demeter-&gt;unistrip($text);</code></pre>
+
+</dd>
+<dt id="Touch"><code>Touch</code></dt>
+<dd>
+
+<p>This is a wrapper around the <code>touch</code> method from <a href="http://metacpan.org/module/File::Touch">File::Touch</a>.</p>
+
+<pre><code>  Demeter-&gt;Touch($some_file);</code></pre>
+
+</dd>
+<dt id="feffdocversion"><code>feffdocversion</code></dt>
+<dd>
+
+<p>This method attempts to determine the appropriate version of the Feff document to show. If the version is not specified, it will be determined from the value of the <code>feff-&gt;feff-executable</code> configuration parameter.</p>
+
+<pre><code>  $version = Demeter-&gt;feffdocversion;</code></pre>
+
+<p>The only two options currently supported are 6 and 9.</p>
+
+</dd>
+<dt id="feffdoc"><code>feffdoc</code></dt>
+<dd>
+
+<p>This returns the URL of the main page of the Feff documentation for either version 6 or 9, depending on which is requested or determined via the <code>feffdocversion</code> method.</p>
+
+<pre><code>  $url = Demeter-&gt;feffdoc;</code></pre>
+
+</dd>
+<dt id="feffcardpage"><code>feffcardpage</code></dt>
+<dd>
+
+<p>This returns the URL for the page documenting a specific card in the Feff6 or Feff9 input file.</p>
+
+<pre><code>  $url = Demeter-&gt;feffcardpage($card, $version);</code></pre>
+
+<p>Specifying the Feff version is optional. If not specified, it will use the value returned by the <code>feffdocversion</code> method.</p>
+
+</dd>
 </dl>
 
-
-
-<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</h1>
 
 <p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration system.</p>
 
-<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
 
-<p>The dependencies of the Demeter system are listed in the
-<cite>Build.PL</cite> file.</p>
+<p>The dependencies of the Demeter system are listed in the <i>Build.PL</i> file.</p>
 
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
 <ul>
-	<li>The <code>who</code> method should poke at the registry on Windows.</li>
-	<li>The <code>fract</code> method should define what a small integer is and return a
-decimal representation when the ratio is not of small numbers.</li>
+
+<li><p>The <code>who</code> method should poke at the registry on Windows.</p>
+
+</li>
+<li><p>The <code>fract</code> method should define what a small integer is and return a decimal representation when the ratio is not of small numbers.</p>
+
+</li>
 </ul>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
-<p>The euclid method was swiped from Math::Numbers by David Moreno Garza
-and is Copyright (C) 2007 and is licensed like Perl itself.</p>
+<p>The euclid method was swiped from Math::Numbers by David Moreno Garza and is Copyright (C) 2007 and is licensed like Perl itself.</p>
 
 <p>Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>)</p>
 
 <p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
-
-
-
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

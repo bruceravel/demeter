@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::UI::Wx::EchoArea</title>
-<link rel="stylesheet" type="text/css" href="../../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::UI::Wx::EchoArea &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,110 +15,138 @@
 </div>
 <div class="path">
   <a href="../../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-UI-Wx-EchoArea
+  Demeter::UI::Wx::EchoArea
 </div>
 <div>
 <a href="../../../src/Demeter/UI/Wx/EchoArea.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a></li>
+  <li><a href="#CONFIGURATION">CONFIGURATION</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::UI::Wx::EchoArea - A run-time feedback widget</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
 <p>An echo area an be added to a Wx application:</p>
 
-<pre>  my $echoarea = Demeter::UI::Wx::EchoArea-&gt;new($self);
-  $sizer -&gt; Add($echoarea, 0, wxEXPAND|wxALL, 3);
+<pre><code>  my $echoarea = Demeter::UI::Wx::EchoArea-&gt;new($self);
+  $sizer -&gt; Add($echoarea, 0, wxEXPAND|wxALL, 3);</code></pre>
 
-</pre><p>The argument to the constructor method is a reference to the parent in
-which this is placed.  This is used as the echo area for all
-Hephaestus utilities.</p>
+<p>The argument to the constructor method is a reference to the parent in which this is placed. This is used as the echo area for all Hephaestus utilities.</p>
 
-<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This is derived from Wx::TextCrtl and is intended to serve as an echo
-area in a Wx application in much the similar fashion as Emacs' echo
-area.</p>
+<p>This is derived from Wx::TextCrtl and is intended to serve as an echo area in a Wx application in much the similar fashion as Emacs&#39; echo area.</p>
 
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="METHODS">METHODS</h1>
 
 <dl>
-	<dt><code>echo</code></dt>
-		<dd><p>Insert text into the echo area and push that text onto the echo buffer.</p></dd>
-<dd><pre>  $echoarea-&gt;echo(&quot;Hi there!&quot;);
 
-</pre></dd>		<dd><p>To clear the echo area without clearing the echo buffer, give this
-method an empty string:</p></dd>
-<dd><pre>  $echoarea-&gt;echo(q{});
+<dt id="echo"><code>echo</code></dt>
+<dd>
 
-</pre></dd>		<dd><p>This method returns the reference to the EchoArea widget.</p></dd>
-	<dt><code>buffer</code></dt>
-		<dd><p>Return the contents of the echo buffer as an array.</p></dd>
-<dd><pre>  @contents = $echoarea-&gt;buffer;
+<p>Insert text into the echo area and push that text onto the echo buffer.</p>
 
-</pre></dd>	<dt><code>buffer_as_text</code></dt>
-		<dd><p>Return the contents of the echo buffer as a simply formatted text string.</p></dd>
-<dd><pre>  $contents = $echoarea-&gt;buffer_as_text;
+<pre><code>  $echoarea-&gt;echo(&quot;Hi there!&quot;);</code></pre>
 
-</pre></dd>	<dt><code>Length</code></dt>
-		<dd><p>Return the length of echo buffer.</p></dd>
-<dd><pre>  $len = $echoarea-&gt;Length
+<p>To clear the echo area without clearing the echo buffer, give this method an empty string:</p>
 
-</pre></dd>	<dt><code>clear</code></dt>
-		<dd><p>Clear the echo area and empty the echo buffer.</p></dd>
-<dd><pre>  $echoarea-&gt;clear;
+<pre><code>  $echoarea-&gt;echo(q{});</code></pre>
 
-</pre></dd>		<dd><p>This method returns the reference to the EchoArea widget.</p></dd>
+<p>This method returns the reference to the EchoArea widget.</p>
+
+</dd>
+<dt id="buffer"><code>buffer</code></dt>
+<dd>
+
+<p>Return the contents of the echo buffer as an array.</p>
+
+<pre><code>  @contents = $echoarea-&gt;buffer;</code></pre>
+
+</dd>
+<dt id="buffer_as_text"><code>buffer_as_text</code></dt>
+<dd>
+
+<p>Return the contents of the echo buffer as a simply formatted text string.</p>
+
+<pre><code>  $contents = $echoarea-&gt;buffer_as_text;</code></pre>
+
+</dd>
+<dt id="Length"><code>Length</code></dt>
+<dd>
+
+<p>Return the length of echo buffer.</p>
+
+<pre><code>  $len = $echoarea-&gt;Length</code></pre>
+
+</dd>
+<dt id="clear"><code>clear</code></dt>
+<dd>
+
+<p>Clear the echo area and empty the echo buffer.</p>
+
+<pre><code>  $echoarea-&gt;clear;</code></pre>
+
+<p>This method returns the reference to the EchoArea widget.</p>
+
+</dd>
 </dl>
-<h1 id="CONFIGURATION">CONFIGURATION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
 
+<h1 id="CONFIGURATION">CONFIGURATION</h1>
 
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
 
+<p>Demeter&#39;s dependencies are in the <i>Build.PL</i> file.</p>
 
-<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
-
-<p>Demeter's dependencies are in the <cite>Build.PL</cite> file.</p>
-
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
 <ul>
-	<li>Artemis &amp; Athena will require a data entry mode.  That could be done
-by liftingt he readonly flag, changing the background color, and
-grabbing focus until carriage return is pressed.</li>
-	<li>Need configurable text color and max length.  Need warn and error
-modes and configurable colors for those.</li>
+
+<li><p>Artemis &amp; Athena will require a data entry mode. That could be done by liftingt he readonly flag, changing the background color, and grabbing focus until carriage return is pressed.</p>
+
+</li>
+<li><p>Need configurable text color and max length. Need warn and error modes and configurable colors for those.</p>
+
+</li>
 </ul>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>)</p>
 
 <p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

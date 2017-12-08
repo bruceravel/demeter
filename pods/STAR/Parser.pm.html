@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>STAR::Parser</title>
-<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>STAR::Parser &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,370 +15,130 @@
 </div>
 <div class="path">
   <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
-  STAR-Parser
+  STAR::Parser
 </div>
 <div>
 <a href="../src/STAR/Parser.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>STAR::Parser - Perl extension for parsing STAR compliant files (with no 
-nested loops).</p>
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a>
+    <ul>
+      <li><a href="#Version">Version</a></li>
+    </ul>
+  </li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CLASS-METHODS">CLASS METHODS</a>
+    <ul>
+      <li><a href="#parse">parse</a></li>
+    </ul>
+  </li>
+  <li><a href="#COMMENTS">COMMENTS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a>
+    <ul>
+      <li><a href="#Acknowledgments">Acknowledgments</a></li>
+    </ul>
+  </li>
+  <li><a href="#COPYRIGHT">COPYRIGHT</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>STAR::Parser - Perl extension for parsing STAR compliant files (with no nested loops).</p>
 
 <h2 id="Version">Version</h2>
 
 <p>This documentation refers to version 0.59 of this module.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<pre>  use STAR::Parser;
+<pre><code>  use STAR::Parser;
+  
+  ($data) = STAR::Parser-&gt;parse(&#39;1fbm.cif&#39;);
 
-  ($data) = STAR::Parser-&gt;parse('1fbm.cif');
-
-  ($dict) = STAR::Parser-&gt;parse(-file=&gt;'mmcif_dict',
+  ($dict) = STAR::Parser-&gt;parse(-file=&gt;&#39;mmcif_dict&#39;,
                                 -dict=&gt;1,
-                                -options=&gt;'l');  #logs activity
+                                -options=&gt;&#39;l&#39;);  #logs activity</code></pre>
 
-</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>STAR::Parser is one of several related Perl modules for parsing
-STAR compliant files (such as CIF and mmCIF files). Currently, 
-these modules include STAR::Parser, STAR::DataBlock, STAR::Dictionary,
-STAR::Writer, STAR::Checker, and STAR::Filter.</p>
+<p>STAR::Parser is one of several related Perl modules for parsing STAR compliant files (such as CIF and mmCIF files). Currently, these modules include STAR::Parser, STAR::DataBlock, STAR::Dictionary, STAR::Writer, STAR::Checker, and STAR::Filter.</p>
 
-<p>STAR::Parser is the parsing module, with the class method parse 
-for parsing any STAR compliant files or dictionaries, as long 
-as they do <strong>not</strong> contain nested loops (i.e., only <strong>one</strong> level of 
-loop is supported). 
-Upon parsing of a file, an array of DataBlock objects is returned (one 
-for each data_ entry in the file).  
-The class 
-STAR::DataBlock contains object methods for these objects.
-STAR::DataBlock is automatically accessible through STAR::Parser.
-Upon parsing of a dictionary (indicated with the <code>-dict=&gt;1</code> parameter), 
-an array of Dictionary objects is returned. STAR::Dictionary is a sub-class 
-of STAR::DataBlock.</p>
+<p>STAR::Parser is the parsing module, with the class method parse for parsing any STAR compliant files or dictionaries, as long as they do <b>not</b> contain nested loops (i.e., only <b>one</b> level of loop is supported). Upon parsing of a file, an array of DataBlock objects is returned (one for each data_ entry in the file). The class STAR::DataBlock contains object methods for these objects. STAR::DataBlock is automatically accessible through STAR::Parser. Upon parsing of a dictionary (indicated with the <code>-dict=&gt;1</code> parameter), an array of Dictionary objects is returned. STAR::Dictionary is a sub-class of STAR::DataBlock.</p>
 
-<p>The methods of this module and the accompanying modules 
-(STAR::DataBlock, STAR::Checker, etc.) support 
-&quot;named parameters&quot; style for passing arguments. If 
-only one argument is mandatory, then it may be passed in either a 
-&quot;named parameters&quot; or &quot;unnamed parameters&quot; style, for example:</p>
+<p>The methods of this module and the accompanying modules (STAR::DataBlock, STAR::Checker, etc.) support &quot;named parameters&quot; style for passing arguments. If only one argument is mandatory, then it may be passed in either a &quot;named parameters&quot; or &quot;unnamed parameters&quot; style, for example:</p>
 
-<pre>       @objs = STAR::Parser-&gt;parse( -file=&gt;$file, -options=&gt;'d' );  #debugging
+<pre><code>       @objs = STAR::Parser-&gt;parse( -file=&gt;$file, -options=&gt;&#39;d&#39; );  #debugging
 
        @objs = STAR::Parser-&gt;parse( -file=&gt;$file );  #no options
-   or: @objs = STAR::Parser-&gt;parse( $file );
+   or: @objs = STAR::Parser-&gt;parse( $file );</code></pre>
 
-</pre><h1 id="CLASS_METHODS">CLASS METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="CLASS-METHODS">CLASS METHODS</h1>
 
 <h2 id="parse">parse</h2>
 
-<p><a href="#" onclick="toggleCode('method_parse');return false;">[Source]</a></p>
-                                        <div class="method-source-code" id="method_parse">
-                                        <pre>
-
-sub parse {
-
-    my ($self,@parameters) = @_;      
-    my ($file,$dict,$options);
-    $options = '';
-        
-    $file = shift @parameters unless $#parameters;
-    while ($_ = shift @parameters) {
-       $file = shift @parameters if /-file/;
-       $dict = shift @parameters if /-dict/;
-       $options = shift @parameters if /-options/;
-    }
-    
-    my ($d, $s, $c, $i);  # data and save blocks
-                          # category, item
-    my ($n, $m);          # loop counters
-    my ($flag);
-    my ($debug, $log);
-    my (@entries, $entry);
-    my (@cats_in_loop, @items_in_loop);
-    my ($line_nums_ref, $flags_ref, $tokens_ref);
-
-    my $token;      # Here, "token" shall mean an item name (e.g. _atom.id),
-                    # or an item value, (5 examples: 1 value 'a value' . ? )
-                    # or a value over several lines delimited by semicolons.
-
-    $d = 'untitled';  # default (if no data block)
-    $s = '-';         # default (if not in save block)
-        
-    $debug = 1      if ( $options =~ /d/ );
-    $log =1         if ( $options =~ /l/ );
-
-
-    ##################
-    ### tokenizing ###
-    ##################
-
-    print STDERR "tokenizing complete file\n" if ( $log );
-
-    ($line_nums_ref, $flags_ref, $tokens_ref) = STAR::Parser->_all_tokens(-file=>$file);          
-
-    ### check integrity of token list -- pre-parsing check ###
-    # this had not been implemented yet, but
-    # would now have to be a class method in STAR::Parser
-
-    if ($debug) {
-        print STDERR "Start of tokens\n";
-        foreach $n (0.. $#$tokens_ref) {
-            print STDERR "next token: ",$$flags_ref[$n],
-                        " ",$$tokens_ref[$n],"\n";
-        }
-        print STDERR "End of tokens\n";
-    }        
-
-    # default data block (if no data_ in file, e.g. for ERF files)
-
-    $entry = STAR::DataBlock->new;
-    $entry->file_name($file);
-    $entry->type('data');
-    $entry->title('untitled');
-    $entry->starting_line(1);
-    push @entries, $entry;
-
-
-    ###############
-    ### parsing ###
-    ###############
-
-    until ( (shift @$flags_ref) eq 'eof' ) {                
-    
-        $token = shift @$tokens_ref;
-        print STDERR "next token: $token\n" if ($debug);
-                            
-        if ( $token =~ /^data_(.*)/ ) {        #data block 
-
-            $d = $1;
-            $s = '-';    # default (if not in save block)
-            print STDERR "New data block: $token\n"  if ($debug);
-
-            # create new "entry object" (DataBlock or Dictionary)
-            # ---------------------------------------------------
-
-            if ( $dict ) {
-                $entry = STAR::Dictionary->new;
-                $entry->type('dictionary');
-            }
-            else {
-                $entry = STAR::DataBlock->new;
-                $entry->type('data');
-            }
-            $entry->file_name($file);
-            $entry->title($1);
-            $entry->starting_line( shift @$line_nums_ref );   # next data block line number
-            push @entries, $entry;
-
-            print STDERR "parsing ",$entry->{TITLE},"\n" if ( $log );
-
-            next;
-        }
-
-        if ( $token =~ /^save_(\S+)/ ) {       #save block
-            $s = $1;
-            print STDERR "save block: $s\n" if ($debug);
-        }
-        elsif ( $token =~ /^save_$/ ) {        #end of save block
-            $s = '-';
-        } 
-
-        if ( $token =~ /^loop_/ ) {            #loop block
-      
-            print STDERR "started loop\n" if ($debug);
-            $flag = shift @$flags_ref;
-            $token = shift @$tokens_ref;
-            @cats_in_loop = ();
-            @items_in_loop = ();
-            
-            while ( $flag eq 'i' ) {  # need to check for $flag since _something could have 
-                                      # also been a value (in quotes)
-
-                if ( $token =~ /^(_\S+?)\.\S+/ ) {     # DDL2: _category.item
-                    $c = $1;
-                }
-                else {                                 # DDL1: no notion of category
-                    $c = '-';      
-                }
-                print STDERR "token (item) in loop: ", "$token\n" if ($debug);
-                push @cats_in_loop, $c;
-                push @items_in_loop, $token;
-                $flag = shift @$flags_ref;
-                $token = shift @$tokens_ref;
-            }
-            
-            $m=0;                 
-            until ( $flag ) {   #if it's NOT a value, it's got a flag
-
-                foreach $n (0..$#items_in_loop) {
-                    print STDERR "token (value) in loop: ",
-                                 "$token\n" if ($debug);
-                    $entry->{DATA}{$d}{$s}{$cats_in_loop[$n]}
-                                          {$items_in_loop[$n]}[$m]
-                          = $token;
-                    $flag = shift @$flags_ref;     
-                    if ( $flag && ( $n < $#items_in_loop ) ) {
-                        die "fatal parsing error in category $cats_in_loop[$n]\n";
-                    }
-                    $token = shift @$tokens_ref;
-                }
-                $m++;
-            }
-            
-            print STDERR "finished loop\n" if ($debug);
-            print STDERR "last token (to be recycled): ",
-                         "$token\n" if ($debug);
-                        
-            # the last token was out of 'loop_' 
-            # and needs to be recycled at the top
-            unshift @$flags_ref, $flag;
-            unshift @$tokens_ref,$token;
-        }
-         
-        elsif ( $token =~ /^_\S+/ ) {
-            $i = $token;
-            if ( $token =~ /^(_\S+?)\.\S+/ ) {     # DDL2: _category.item
-                $c = $1;
-            }
-            else {                                 # DDL1: no notion of category
-                $c = '-';      
-            }
-            $flag = shift @$flags_ref;
-            if ( $flag ) {
-                die "fatal parsing error in category $c\n";
-            }
-            $token = shift @$tokens_ref;     #this one must be a value!
-            print STDERR "next token (value): ",
-                         "$token\n" if ($debug);
-            $entry->{DATA}{$d}{$s}{$c}{$i}[0] = $token;
-        }
-    }
-    
-    if ($#entries > 0) {   # if there is more than one entry
-        shift @entries;     # discard the default "untitled" entry
-    }
-
-    # add ending line number attributes
-
-    my @ending_lines;
-
-    foreach $entry ( @entries ) {
-        push @ending_lines, ( $entry->starting_line() - 1 );
-    }
-
-    shift @ending_lines;                              # first one didn't make sense
-    push @ending_lines, ( shift @$line_nums_ref );    # last one is last line number
-
-    foreach $entry ( @entries ) {
-        $entry->ending_line( shift @ending_lines );
-    }
-
-    if ( $log ) {
-        foreach $entry ( @entries ) {
-            print STDERR $entry->get_attributes;
-        }
-    }
-
-    return @entries;
-}
-</pre></div>
-
-<pre>  Usage:  @objs = STAR::Parser-&gt;parse(-file=&gt;$file[,
+<pre><code>  Usage:  @objs = STAR::Parser-&gt;parse(-file=&gt;$file[,
                                       -dict=&gt;1,
                                       -options=&gt;$options]);
 
      or:  @objs = STAR::Parser-&gt;parse($file);
-
+                                    
   Examples: 
-
-  1)  @objs = STAR::Parser-&gt;parse('1fbm.cif');
+  
+  1)  @objs = STAR::Parser-&gt;parse(&#39;1fbm.cif&#39;);
       $data = $objs[0];
 
       OR:
 
-      ($data) = STAR::Parser-&gt;parse('1fbm.cif');
+      ($data) = STAR::Parser-&gt;parse(&#39;1fbm.cif&#39;);
 
-  2)  @objs = STAR::Parser-&gt;parse('7files.txt');
+  2)  @objs = STAR::Parser-&gt;parse(&#39;7files.txt&#39;);
       foreach $obj (@objs) {
           # do something, see STAR::DataBlock
       }
 
-  3)  @objs = STAR::Parser-&gt;parse(-file=&gt;'mmcif_dict',
+  3)  @objs = STAR::Parser-&gt;parse(-file=&gt;&#39;mmcif_dict&#39;,
                                   -dict=&gt;1,
-                                  -options=&gt;'l'); #logs activity
-      $dict = @objs[0];
+                                  -options=&gt;&#39;l&#39;); #logs activity
+      $dict = @objs[0];</code></pre>
 
-</pre><p>This method first searches the file and creates a DataBlock object 
-for each data_ identifier found in the file. If no data_ identifier 
-is found, then only one DataBlock object 
-will be created (with <code>$d='untitled'</code>, 
-see below). If parse is invoked with the <code>-dict=&gt;1</code> option,
-then a Dictionary object is created for each data_ identifier found.</p>
+<p>This method first searches the file and creates a DataBlock object for each data_ identifier found in the file. If no data_ identifier is found, then only one DataBlock object will be created (with <code>$d=&#39;untitled&#39;</code>, see below). If parse is invoked with the <code>-dict=&gt;1</code> option, then a Dictionary object is created for each data_ identifier found.</p>
 
-<p>Next, the method populates 
-the data structure of each DataBlock or Dictionary object. 
-The parsed data may be queried or accessed by 
-object methods of the STAR::DataBlock and STAR::Dictionary modules. 
-See the documentation for STAR::DataBlock and STAR::Dictionary.</p>
+<p>Next, the method populates the data structure of each DataBlock or Dictionary object. The parsed data may be queried or accessed by object methods of the STAR::DataBlock and STAR::Dictionary modules. See the documentation for STAR::DataBlock and STAR::Dictionary.</p>
 
-<p>The method always returns an array of objects, even if it contains only 
-one object (if there is only one data_ block in the file). </p>
+<p>The method always returns an array of objects, even if it contains only one object (if there is only one data_ block in the file).</p>
 
-<p>Internally, the parsed data is stored in a multidimensional 
-hash with keys for data blocks (<code>$d</code>), save blocks (<code>$s</code>),
-categories (<code>$c</code>), and items (<code>$i</code>). 
-For a file, <code>$s</code> will always be <code>'-'</code>, since there are no 
-save blocks in files. 
-For a dictionary, <code>$s</code> will be <code>'-'</code> outside of save_ blocks, 
-and <code>'CATEGORY'</code> or <code>'_item'</code> inside save_CATEGORY or save__item blocks 
-(capitalization depends on the user's dictionary.)
-If a file is parsed that contains no data_ identifier, then <code>$d</code> becomes 
-<code>'untitled'</code>. <code>$c</code> refers to a category, such as _atom_site and 
-<code>$i</code> refers to an item, such as _atom_site.id.</p>
+<p>Internally, the parsed data is stored in a multidimensional hash with keys for data blocks (<code>$d</code>), save blocks (<code>$s</code>), categories (<code>$c</code>), and items (<code>$i</code>). For a file, <code>$s</code> will always be <code>&#39;-&#39;</code>, since there are no save blocks in files. For a dictionary, <code>$s</code> will be <code>&#39;-&#39;</code> outside of save_ blocks, and <code>&#39;CATEGORY&#39;</code> or <code>&#39;_item&#39;</code> inside save_CATEGORY or save__item blocks (capitalization depends on the user&#39;s dictionary.) If a file is parsed that contains no data_ identifier, then <code>$d</code> becomes <code>&#39;untitled&#39;</code>. <code>$c</code> refers to a category, such as _atom_site and <code>$i</code> refers to an item, such as _atom_site.id.</p>
 
-<p>The method may be invoked with an $options string. These options 
-are the following letters which may be concatenated in any order:</p>
+<p>The method may be invoked with an $options string. These options are the following letters which may be concatenated in any order:</p>
 
-<pre>  d  writes debugging output to STDERR 
-  l  writes program activity log to STDERR
+<pre><code>  d  writes debugging output to STDERR 
+  l  writes program activity log to STDERR</code></pre>
 
-</pre><h1 id="COMMENTS">COMMENTS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="COMMENTS">COMMENTS</h1>
 
-<p>This module provides no error checking of files or objects, 
-either against the dictionary, or otherwise. While 
-the module is applicable to parsing either a 
-file or a dictionary, dictionary 
-information is not currently used in the parsing 
-of files. So, for example, information about 
-parent-child relationships between items is not 
-present in a DataBlock object. Functionality related to these 
-issues is being provided in additional modules such as STAR::Checker, 
-and STAR::Filter.</p>
+<p>This module provides no error checking of files or objects, either against the dictionary, or otherwise. While the module is applicable to parsing either a file or a dictionary, dictionary information is not currently used in the parsing of files. So, for example, information about parent-child relationships between items is not present in a DataBlock object. Functionality related to these issues is being provided in additional modules such as STAR::Checker, and STAR::Filter.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Wolfgang Bluhm, mail@wbluhm.com</p>
 
 <h2 id="Acknowledgments">Acknowledgments</h2>
 
-<p>Thanks to Phil Bourne, Helge Weissig, Anne Kuller, Doug Greer, 
-Michele Bluhm, and others for support, help, and comments.</p>
+<p>Thanks to Phil Bourne, Helge Weissig, Anne Kuller, Doug Greer, Michele Bluhm, and others for support, help, and comments.</p>
 
-<h1 id="COPYRIGHT">COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="COPYRIGHT">COPYRIGHT</h1>
 
-<p>A full copyright statement is provided with the distribution
-Copyright (c) 2000 University of California, San Diego</p>
+<p>A full copyright statement is provided with the distribution Copyright (c) 2000 University of California, San Diego</p>
 
-<h1 id="SEE_ALSO">SEE ALSO <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="SEE-ALSO">SEE ALSO</h1>
 
 <p>STAR::DataBlock, STAR::Dictionary.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

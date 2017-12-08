@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::FSPath</title>
-<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::FSPath &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,28 +15,43 @@
 </div>
 <div class="path">
   <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-FSPath
+  Demeter::FSPath
 </div>
 <div>
 <a href="../src/Demeter/FSPath.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#ATTRIBUTES">ATTRIBUTES</a></li>
+  <li><a href="#METHODS">METHODS</a></li>
+  <li><a href="#SERIALIZATION-AND-DESERIALIZATION">SERIALIZATION AND DESERIALIZATION</a></li>
+  <li><a href="#CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::FSPath - Path for a quick first shell fit</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<p>Build a single scattering path of a given length for use in a quick
-first shell fit.</p>
+<p>Build a single scattering path of a given length for use in a quick first shell fit.</p>
 
-<pre>  my $fspath = Demeter::FSPath-&gt;new(abs	      =&gt; $absorber_element,
+<pre><code>  my $fspath = Demeter::FSPath-&gt;new(abs       =&gt; $absorber_element,
                                     scat      =&gt; $scatterer_element,
                                     edge      =&gt; $edge,
                                     distance  =&gt; 2.0,
@@ -70,161 +63,157 @@ first shell fit.</p>
   ##
   my $fit = Demeter::Fit-&gt;new(data  =&gt; [$data_object],
                               paths =&gt; [$fspath],
-                              gds   =&gt; $fspath-&gt;gds);
+                              gds   =&gt; $fspath-&gt;gds);</code></pre>
 
-</pre><p>Once defined, the FSpath object behaves exactly like a normal Path
-oject.  For instance, plotting:</p>
+<p>Once defined, the FSpath object behaves exactly like a normal Path oject. For instance, plotting:</p>
 
-<pre>  $fspath -&gt; plot('R');
+<pre><code>  $fspath -&gt; plot(&#39;R&#39;);</code></pre>
 
-</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This object is rather like an SSPath except that it is not built from
-an existing Feff object.  The purpose of this object is to streamline
-a simple first shell fit by requiring only the element symbols of an
-absorber/scatterer pair and their approximate distance apart.  The
-generation of a Feff object, including the Feff calculation will be
-handled automatically.  Once made, this can be treated like a normal
-Path object, which it extends (in the Moose sense).</p>
+<p>This object is rather like an SSPath except that it is not built from an existing Feff object. The purpose of this object is to streamline a simple first shell fit by requiring only the element symbols of an absorber/scatterer pair and their approximate distance apart. The generation of a Feff object, including the Feff calculation will be handled automatically. Once made, this can be treated like a normal Path object, which it extends (in the Moose sense).</p>
 
-<p>To further simplify a first shell fit, the FSPath also autogenerates a
-set of four GDS parameters, which get stored in the <code>gds</code> attribute.
-The <code>s02</code>, <code>e0</code>, <code>delr</code>, and <code>sigma2</code> attributes which are
-inherited from the Path object get set appropriately.  There are flags
-for optionally including 3rd or 4th cumulants in the fit.</p>
+<p>To further simplify a first shell fit, the FSPath also autogenerates a set of four GDS parameters, which get stored in the <code>gds</code> attribute. The <code>s02</code>, <code>e0</code>, <code>delr</code>, and <code>sigma2</code> attributes which are inherited from the Path object get set appropriately. There are flags for optionally including 3rd or 4th cumulants in the fit.</p>
 
-<p>The FSPath object can be used in a fit along with ordinary Path
-objects.  Like with an <a href="SSPath.pm.html">Demeter::SSPath</a> object, just include the
-FSPath object in the list of paths when setting up a <a href="Fit.pm.html">Demeter::Fit</a>
-object.  The one caveat is that you have to explicitly include the
-automatically generated guess parameters in the Fit object's GDS list.
-This is most easily done using the <code>gds</code> method of the FSPath object,
-as explained below.  There is no way provided (and this is an
-intentional design decision) for the Fit object to regognize a FSPath
-object and automaticalluy include its associated GDS objects in the
-fit.</p>
+<p>The FSPath object can be used in a fit along with ordinary Path objects. Like with an <a href="SSPath.pm.html">Demeter::SSPath</a> object, just include the FSPath object in the list of paths when setting up a <a href="Fit.pm.html">Demeter::Fit</a> object. The one caveat is that you have to explicitly include the automatically generated guess parameters in the Fit object&#39;s GDS list. This is most easily done using the <code>gds</code> method of the FSPath object, as explained below. There is no way provided (and this is an intentional design decision) for the Fit object to regognize a FSPath object and automaticalluy include its associated GDS objects in the fit.</p>
 
-<p>Note that this object does nothing to examine or modify the attributes
-of its associated Data object.  You need to set Fourier transform and
-fitting ranges appropriately for a fit using an FSPath object.  One
-way of doing this is to read from an Athena project file that has
-those parameters sets appropriately.  The other, of course, is to
-manipulate the Data object in your script.</p>
+<p>Note that this object does nothing to examine or modify the attributes of its associated Data object. You need to set Fourier transform and fitting ranges appropriately for a fit using an FSPath object. One way of doing this is to read from an Athena project file that has those parameters sets appropriately. The other, of course, is to manipulate the Data object in your script.</p>
 
-<h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="ATTRIBUTES">ATTRIBUTES</h1>
 
-<p>As with any Moose object, the attribute names are the name of the
-accessor methods.  FSPath extends Path, so it has all of Path's
-attributes.</p>
+<p>As with any Moose object, the attribute names are the name of the accessor methods. FSPath extends Path, so it has all of Path&#39;s attributes.</p>
 
-<p>Along with the standard attributes of any Demeter object (<code>name</code>,
-<code>plottable</code>, <code>data</code>, and so on), an FSPath has the following:</p>
+<p>Along with the standard attributes of any Demeter object (<code>name</code>, <code>plottable</code>, <code>data</code>, and so on), an FSPath has the following:</p>
 
 <dl>
-	<dt><code>abs</code></dt>
-		<dd><p>The element symbol, name, or number of the absorbing atom.</p></dd>
-	<dt><code>scat</code></dt>
-		<dd><p>The element symbol, name, or number of the scattering atom.</p></dd>
-	<dt><code>edge</code></dt>
-		<dd><p>The edge at which to make the Feff calculation.</p></dd>
-	<dt><code>distance</code></dt>
-		<dd><p>The separation in Angstroms between the absorber and scatterer.</p></dd>
-	<dt><code>workspace</code></dt>
-		<dd><p>You must supply a space on disk for the Feff calculation to use.  None
-is assumed and not providing a workspace will result in an error and
-exit.</p></dd>
-	<dt><code>use_third</code> and <code>use_fourth</code></dt>
-		<dd><p>These are boolean flags which tell the FSPath object whether to define
-and use third and/or fourth cumulant parameters in the fit.  For
-instance:</p></dd>
-<dd><pre>  $fspath -&gt; use_third(1);
 
-</pre></dd>		<dd><p>or</p></dd>
-<dd><pre>  $fspath -&gt; set(use_third=&gt;1, use_fourth=&gt;1);
+<dt id="abs"><code>abs</code></dt>
+<dd>
 
-</pre></dd>	<dt><code>gds</code></dt>
-		<dd><p>This contains a reference to the list of 4 (or 5 or 6, depending on
-whether 3rd and 4th cumulants are used) GDS parameters which were
-autogenerated as part of the FSPath object.  This is intended for use
-in defining a Fit object:</p></dd>
-<dd><pre>  my $fit = Demeter::Fit-&gt;new(data  =&gt; [$data],
+<p>The element symbol, name, or number of the absorbing atom.</p>
+
+</dd>
+<dt id="scat"><code>scat</code></dt>
+<dd>
+
+<p>The element symbol, name, or number of the scattering atom.</p>
+
+</dd>
+<dt id="edge"><code>edge</code></dt>
+<dd>
+
+<p>The edge at which to make the Feff calculation.</p>
+
+</dd>
+<dt id="distance"><code>distance</code></dt>
+<dd>
+
+<p>The separation in Angstroms between the absorber and scatterer.</p>
+
+</dd>
+<dt id="workspace"><code>workspace</code></dt>
+<dd>
+
+<p>You must supply a space on disk for the Feff calculation to use. None is assumed and not providing a workspace will result in an error and exit.</p>
+
+</dd>
+<dt id="use_third-and-use_fourth"><code>use_third</code> and <code>use_fourth</code></dt>
+<dd>
+
+<p>These are boolean flags which tell the FSPath object whether to define and use third and/or fourth cumulant parameters in the fit. For instance:</p>
+
+<pre><code>  $fspath -&gt; use_third(1);</code></pre>
+
+<p>or</p>
+
+<pre><code>  $fspath -&gt; set(use_third=&gt;1, use_fourth=&gt;1);</code></pre>
+
+</dd>
+<dt id="gds"><code>gds</code></dt>
+<dd>
+
+<p>This contains a reference to the list of 4 (or 5 or 6, depending on whether 3rd and 4th cumulants are used) GDS parameters which were autogenerated as part of the FSPath object. This is intended for use in defining a Fit object:</p>
+
+<pre><code>  my $fit = Demeter::Fit-&gt;new(data  =&gt; [$data],
                               paths =&gt; [$fspath],
-                              gds   =&gt; $fspath-&gt;gds);
+                              gds   =&gt; $fspath-&gt;gds);</code></pre>
 
-</pre></dd></dl>
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+</dd>
+</dl>
+
+<h1 id="METHODS">METHODS</h1>
 
 <dl>
-	<dt><code>parameter</code></dt>
-		<dd><p>This is a convenience methods for accessing the GDS objects that get
-auto-generated by the FSPath object.  It returns the specified GDS
-object.</p></dd>
-<dd><pre>  my $amp_gds    = $fspath-&gt;parameter('s02');
-  my $e0_gds     = $fspath-&gt;parameter('e0');
-  my $delr_gds   = $fspath-&gt;parameter('delr');
-  my $sigma2_gds = $fspath-&gt;parameter('sigma2');
-  my $third_gds  = $fspath-&gt;parameter('third');
-  my $fourth_gds = $fspath-&gt;parameter('fourth');
 
-</pre></dd>	<dt><code>unset_parameters</code></dt>
-		<dd><p>This clears the autogenerated path parameters, setting them all
-literally to 0, except for <code>s02</code>, which is set literally to 1.</p></dd>
-		<dd><p>This is useful in a situation where you wish to use the quick first
-shell scattering path in some other context than the quick first shell
-fit shown in the Synopsis above.  An example might be to use the path
-as the basis of a histogram (see
-<a href="https://metacpan.org/pod/Demeter%3A%3AScatteringPath%3A%3AHistogram">Demeter::ScatteringPath::Histogram</a>).  In that case you might do
-something like:</p></dd>
-<dd><pre>  my ($rx, $ry, $rz) = $fspath -&gt; sp -&gt; histogram_gamma(1.8, 3.0, 0.1);
+<dt id="parameter"><code>parameter</code></dt>
+<dd>
 
-</pre></dd></dl>
-<h1 id="SERIALIZATION_AND_DESERIALIZATION">SERIALIZATION AND DESERIALIZATION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<p>This is a convenience methods for accessing the GDS objects that get auto-generated by the FSPath object. It returns the specified GDS object.</p>
+
+<pre><code>  my $amp_gds    = $fspath-&gt;parameter(&#39;s02&#39;);
+  my $e0_gds     = $fspath-&gt;parameter(&#39;e0&#39;);
+  my $delr_gds   = $fspath-&gt;parameter(&#39;delr&#39;);
+  my $sigma2_gds = $fspath-&gt;parameter(&#39;sigma2&#39;);
+  my $third_gds  = $fspath-&gt;parameter(&#39;third&#39;);
+  my $fourth_gds = $fspath-&gt;parameter(&#39;fourth&#39;);</code></pre>
+
+</dd>
+<dt id="unset_parameters"><code>unset_parameters</code></dt>
+<dd>
+
+<p>This clears the autogenerated path parameters, setting them all literally to 0, except for <code>s02</code>, which is set literally to 1.</p>
+
+<p>This is useful in a situation where you wish to use the quick first shell scattering path in some other context than the quick first shell fit shown in the Synopsis above. An example might be to use the path as the basis of a histogram (see <a href="http://metacpan.org/module/Demeter::ScatteringPath::Histogram">Demeter::ScatteringPath::Histogram</a>). In that case you might do something like:</p>
+
+<pre><code>  my ($rx, $ry, $rz) = $fspath -&gt; sp -&gt; histogram_gamma(1.8, 3.0, 0.1);</code></pre>
+
+</dd>
+</dl>
+
+<h1 id="SERIALIZATION-AND-DESERIALIZATION">SERIALIZATION AND DESERIALIZATION</h1>
 
 <p>Good question ...</p>
 
-<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</h1>
 
-<p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration system.
-There is an fspath group that can be adjusted to modify the default
-behavior of the FSPath object.</p>
+<p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration system. There is an fspath group that can be adjusted to modify the default behavior of the FSPath object.</p>
 
-<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
 
-<p>Demeter's dependencies are in the <cite>Build.PL</cite> file.</p>
+<p>Demeter&#39;s dependencies are in the <i>Build.PL</i> file.</p>
 
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
 <ul>
-	<li><code>n</code> and <code>label</code> don't get reset correctly</li>
-	<li>Serialization</li>
-	<li>Warn about weird absorber/edge combinations</li>
+
+<li><p><code>n</code> and <code>label</code> don&#39;t get reset correctly</p>
+
+</li>
+<li><p>Serialization</p>
+
+</li>
+<li><p>Warn about weird absorber/edge combinations</p>
+
+</li>
 </ul>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel, <a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a></p>
 
 <p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
-
-
-
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

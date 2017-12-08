@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::LogRatio</title>
-<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::LogRatio &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,131 +15,181 @@
 </div>
 <div class="path">
   <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-LogRatio
+  Demeter::LogRatio
 </div>
 <div>
 <a href="../src/Demeter/LogRatio.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#ATTRIBUTES">ATTRIBUTES</a></li>
+  <li><a href="#METHODS">METHODS</a></li>
+  <li><a href="#SERIALIZATION-AND-DESERIALIZATION">SERIALIZATION AND DESERIALIZATION</a></li>
+  <li><a href="#CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::LogRatio - Log-ratio/phase-difference analysis</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<pre>  #!/usr/bin/perl
+<pre><code>  #!/usr/bin/perl
   use Demeter qw(:ui=screen :plotwith=gnuplot);
 
-  my $standard = Demeter::Data-&gt;new(file=&gt;'../../data/fe.060.xmu', name =&gt; 'Fe 60K');
-  my $data     = Demeter::Data-&gt;new(file=&gt;'../../data/fe.300.xmu', name =&gt; 'Fe 60K');
+  my $standard = Demeter::Data-&gt;new(file=&gt;&#39;../../data/fe.060.xmu&#39;, name =&gt; &#39;Fe 60K&#39;);
+  my $data     = Demeter::Data-&gt;new(file=&gt;&#39;../../data/fe.300.xmu&#39;, name =&gt; &#39;Fe 60K&#39;);
   my $lrpd     = Demeter::LogRatio-&gt;new(standard=&gt;$standard, data=&gt;$data, qmax=&gt;11);
   $lrpd-&gt;fit;
   print $lrpd-&gt;report;
   $lrpd-&gt;plot_odd;
-  $lrpd-&gt;data-&gt;pause;
+  $lrpd-&gt;data-&gt;pause;</code></pre>
 
-</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>Perform a log-ratio/phase difference analysis of two spectra in the
-manner of âApplication of the Ratio Method of EXAFS Analysis to
-Disordered Systemsâ, G. Bunker, Nucl. Inst. Meth., 207, (1983)
-p. 437-444.</p>
+<p>Perform a log-ratio/phase difference analysis of two spectra in the manner of “Application of the Ratio Method of EXAFS Analysis to Disordered Systems”, G. Bunker, Nucl. Inst. Meth., 207, (1983) p. 437-444.</p>
 
-<h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="ATTRIBUTES">ATTRIBUTES</h1>
 
 <dl>
-	<dt><code>data</code></dt>
-		<dd><p>The unknown Data object.</p></dd>
-	<dt><code>standard</code></dt>
-		<dd><p>The standard Data object.</p></dd>
-	<dt><code>cumulants</code></dt>
-		<dd><p>After the fit, this gets filled with a reference to an array of the
-cumulants in order from zeroth to fourth.</p></dd>
-	<dt><code>errorbars</code></dt>
-		<dd><p>After the fit, this gets filled with a reference to an array of the
-uncertainties on the cumulants in order from zeroth to fourth.</p></dd>
-	<dt><code>qmin</code> [3]</dt>
-		<dd><p>The lower end in q of the fitting range.</p></dd>
-	<dt><code>qmax</code> [12]</dt>
-		<dd><p>The upper end in q of the fitting range.</p></dd>
-	<dt><code>twopi</code> [0]</dt>
-		<dd><p>Manually add an integer number of two-pi jumps to the phase-difference
-spectrum.</p></dd>
+
+<dt id="data"><code>data</code></dt>
+<dd>
+
+<p>The unknown Data object.</p>
+
+</dd>
+<dt id="standard"><code>standard</code></dt>
+<dd>
+
+<p>The standard Data object.</p>
+
+</dd>
+<dt id="cumulants"><code>cumulants</code></dt>
+<dd>
+
+<p>After the fit, this gets filled with a reference to an array of the cumulants in order from zeroth to fourth.</p>
+
+</dd>
+<dt id="errorbars"><code>errorbars</code></dt>
+<dd>
+
+<p>After the fit, this gets filled with a reference to an array of the uncertainties on the cumulants in order from zeroth to fourth.</p>
+
+</dd>
+<dt id="qmin-3"><code>qmin</code> [3]</dt>
+<dd>
+
+<p>The lower end in q of the fitting range.</p>
+
+</dd>
+<dt id="qmax-12"><code>qmax</code> [12]</dt>
+<dd>
+
+<p>The upper end in q of the fitting range.</p>
+
+</dd>
+<dt id="twopi-0"><code>twopi</code> [0]</dt>
+<dd>
+
+<p>Manually add an integer number of two-pi jumps to the phase-difference spectrum.</p>
+
+</dd>
 </dl>
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<h1 id="METHODS">METHODS</h1>
 
 <dl>
-	<dt><code>fit</code></dt>
-		<dd><p>Perform the log-ratio and phase-difference fits.</p></dd>
-<dd><pre>  $lr -&gt; fit;
 
-</pre></dd>		<dd><p>Note that the forward and backward Fourier transform parameters of the
-data are set to those of the standard before the fit is performed.
-They are not restored, thus performing a fit might modify the
-attributes of the unknown data.</p></dd>
-	<dt><code>report</code></dt>
-		<dd><p>Return a text string reporting on the cumulant values.</p></dd>
-<dd><pre>  print $lr-&gt;report;
+<dt id="fit"><code>fit</code></dt>
+<dd>
 
-</pre></dd>	<dt><code>plot_even</code></dt>
-		<dd><p>Make a plot of the log-ratio along with its polynomial fit.</p></dd>
-<dd><pre>  $lr-&gt;plot_even;
+<p>Perform the log-ratio and phase-difference fits.</p>
 
-</pre></dd>	<dt><code>plot_odd</code></dt>
-		<dd><p>Make a plot of the phase-difference along with its polynomial fit.</p></dd>
-<dd><pre>  $lr-&gt;plot_odd;
+<pre><code>  $lr -&gt; fit;</code></pre>
 
-</pre></dd></dl>
-<h1 id="SERIALIZATION_AND_DESERIALIZATION">SERIALIZATION AND DESERIALIZATION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<p>Note that the forward and backward Fourier transform parameters of the data are set to those of the standard before the fit is performed. They are not restored, thus performing a fit might modify the attributes of the unknown data.</p>
+
+</dd>
+<dt id="report"><code>report</code></dt>
+<dd>
+
+<p>Return a text string reporting on the cumulant values.</p>
+
+<pre><code>  print $lr-&gt;report;</code></pre>
+
+</dd>
+<dt id="plot_even"><code>plot_even</code></dt>
+<dd>
+
+<p>Make a plot of the log-ratio along with its polynomial fit.</p>
+
+<pre><code>  $lr-&gt;plot_even;</code></pre>
+
+</dd>
+<dt id="plot_odd"><code>plot_odd</code></dt>
+<dd>
+
+<p>Make a plot of the phase-difference along with its polynomial fit.</p>
+
+<pre><code>  $lr-&gt;plot_odd;</code></pre>
+
+</dd>
+</dl>
+
+<h1 id="SERIALIZATION-AND-DESERIALIZATION">SERIALIZATION AND DESERIALIZATION</h1>
 
 <p>Good question ...</p>
 
-<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</h1>
 
-<p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration system.
-See the lcf configuration group for the relevant parameters.</p>
+<p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration system. See the lcf configuration group for the relevant parameters.</p>
 
-<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
 
-<p>Demeter's dependencies are in the <cite>Build.PL</cite> file.</p>
+<p>Demeter&#39;s dependencies are in the <i>Build.PL</i> file.</p>
 
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
 <ul>
-	<li>Better error checking</li>
+
+<li><p>Better error checking</p>
+
+</li>
 </ul>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel, <a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a></p>
 
 <p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
-
-
-
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

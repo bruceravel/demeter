@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::Get</title>
-<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::Get &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,104 +15,142 @@
 </div>
 <div class="path">
   <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-Get
+  Demeter::Get
 </div>
 <div>
 <a href="../src/Demeter/Get.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#Methods-for-getting-data">Methods for getting data</a></li>
+      <li><a href="#Methods-for-putting-data">Methods for putting data</a></li>
+    </ul>
+  </li>
+  <li><a href="#CONFIGURATION">CONFIGURATION</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::Get - Choke point for probing Ifeffit, Larch, or other backends</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<pre>  $number = $object -&gt; fetch_scalar('foo');
-  $string = $object -&gt; fetch_string('bar');
-  @array  = $object -&gt; fetch_array('blah.x');
+<pre><code>  $number = $object -&gt; fetch_scalar(&#39;foo&#39;);
+  $string = $object -&gt; fetch_string(&#39;bar&#39;);
+  @array  = $object -&gt; fetch_array(&#39;blah.x&#39;);
 
-  $object -&gt; place_scalar('foo', 5);
-  $object -&gt; place_string('bar', 'Fred');
-  $object -&gt; place_array('blah.x', \@list);
+  $object -&gt; place_scalar(&#39;foo&#39;, 5);
+  $object -&gt; place_string(&#39;bar&#39;, &#39;Fred&#39;);
+  $object -&gt; place_array(&#39;blah.x&#39;, \@list);</code></pre>
 
-</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This module provides a single choke point for retrieving data from
-Ifeffit, Larch, or other data processing backeeeends.  Based on the
-value of the Mode objects &quot;template_process&quot; attribute, the correct
-thing will be done to obtain scalar, string, array, or other data from
-the backend.</p>
+<p>This module provides a single choke point for retrieving data from Ifeffit, Larch, or other data processing backeeeends. Based on the value of the Mode objects &quot;template_process&quot; attribute, the correct thing will be done to obtain scalar, string, array, or other data from the backend.</p>
 
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="METHODS">METHODS</h1>
 
-<h2 id="Methods_for_getting_data">Methods for getting data</h2>
+<h2 id="Methods-for-getting-data">Methods for getting data</h2>
 
 <dl>
-	<dt><code>fetch_scalar</code></dt>
-		<dd><p>Return a scalar value from a named variable in the backend's memory.</p></dd>
-	<dt><code>fetch_string</code></dt>
-		<dd><p>Return a string value from a named variable in the backend's memory.</p></dd>
-	<dt><code>fetch_array</code></dt>
-		<dd><p>Return an array value from a named variable in the backend's memory.
-Note that this returns an array, not an array reference.</p></dd>
+
+<dt id="fetch_scalar"><code>fetch_scalar</code></dt>
+<dd>
+
+<p>Return a scalar value from a named variable in the backend&#39;s memory.</p>
+
+</dd>
+<dt id="fetch_string"><code>fetch_string</code></dt>
+<dd>
+
+<p>Return a string value from a named variable in the backend&#39;s memory.</p>
+
+</dd>
+<dt id="fetch_array"><code>fetch_array</code></dt>
+<dd>
+
+<p>Return an array value from a named variable in the backend&#39;s memory. Note that this returns an array, not an array reference.</p>
+
+</dd>
 </dl>
-<h2 id="Methods_for_putting_data">Methods for putting data</h2>
+
+<h2 id="Methods-for-putting-data">Methods for putting data</h2>
 
 <dl>
-	<dt><code>place_scalar</code></dt>
-		<dd><p>Push a scalar value to a named variable the backend.</p></dd>
-	<dt><code>place_string</code></dt>
-		<dd><p>Push a string value to a named variable the backend.</p></dd>
-	<dt><code>place_array</code></dt>
-		<dd><p>Push an array value to a named variable the backend.  Note that this
-takes an array reference as its argument.</p></dd>
+
+<dt id="place_scalar"><code>place_scalar</code></dt>
+<dd>
+
+<p>Push a scalar value to a named variable the backend.</p>
+
+</dd>
+<dt id="place_string"><code>place_string</code></dt>
+<dd>
+
+<p>Push a string value to a named variable the backend.</p>
+
+</dd>
+<dt id="place_array"><code>place_array</code></dt>
+<dd>
+
+<p>Push an array value to a named variable the backend. Note that this takes an array reference as its argument.</p>
+
+</dd>
 </dl>
-<h1 id="CONFIGURATION">CONFIGURATION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<h1 id="CONFIGURATION">CONFIGURATION</h1>
 
 <p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration system.</p>
 
-<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
 
-<p>Demeter's dependencies are in the <cite>Build.PL</cite> file.</p>
+<p>Demeter&#39;s dependencies are in the <i>Build.PL</i> file.</p>
 
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
 <ul>
-	<li>Demeter and feffit backends ...</li>
-	<li>Larch backend not written....</li>
+
+<li><p>Demeter and feffit backends ...</p>
+
+</li>
+<li><p>Larch backend not written....</p>
+
+</li>
 </ul>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel, <a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a></p>
 
 <p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
-
-
-
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

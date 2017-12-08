@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::Plugin::SPEC</title>
-<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::Plugins::SPEC &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,64 +15,77 @@
 </div>
 <div class="path">
   <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-Plugins-SPEC
+  Demeter::Plugins::SPEC
 </div>
 <div>
 <a href="../../src/Demeter/Plugins/SPEC.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#Methods">Methods</a></li>
+  <li><a href="#USAGE-NOTES">USAGE NOTES</a></li>
+  <li><a href="#ACKNOWLEDGMENTS">ACKNOWLEDGMENTS</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::Plugin::SPEC - Import SPEC data from beamlines at ESRF</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.16.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<p>This plugin splits multi-scan SPEC files into separate scans that can be 
-loaded by athena. Orginal plugin for SPEC data from BM23 has been integrated.</p>
+<p>This plugin splits multi-scan SPEC files into separate scans that can be loaded by athena. Orginal plugin for SPEC data from BM23 has been integrated.</p>
 
-
-
-
-<h1 id="Methods">Methods <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="Methods">Methods</h1>
 
 <dl>
-	<dt><code>is</code></dt>
-		<dd><p>Recognize the SPEC files by the zapmono command line, which contains lines 
-starting with the string &quot;#S 1  zapline mono&quot;</p></dd>
-	<dt><code>fix</code></dt>
-		<dd><p>Split different scans into separate files. Cleanup SPEC headers that can be quite messy.</p></dd>
+
+<dt id="is"><code>is</code></dt>
+<dd>
+
+<p>Recognize the SPEC files by the zapmono command line, which contains lines starting with the string &quot;#S 1 zapline mono&quot;</p>
+
+</dd>
+<dt id="fix"><code>fix</code></dt>
+<dd>
+
+<p>Split different scans into separate files. Cleanup SPEC headers that can be quite messy.</p>
+
+</dd>
 </dl>
-<h1 id="USAGE_NOTES">USAGE NOTES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>Transmission data from SNBL uses column 13 (zapenergy) for the energy
-column.  For transmission data, use column 10 (ion1) as the numerator
-and column 8 (ion2) as the denominator.</p>
+<h1 id="USAGE-NOTES">USAGE NOTES</h1>
 
-<h1 id="ACKNOWLEDGMENTS">ACKNOWLEDGMENTS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<p>Transmission data from SNBL uses column 13 (zapenergy) for the energy column. For transmission data, use column 10 (ion1) as the numerator and column 8 (ion2) as the denominator.</p>
+
+<h1 id="ACKNOWLEDGMENTS">ACKNOWLEDGMENTS</h1>
 
 <p>Thanks to Bruce Ravel for writing the file-array import interface and the original BM23 plugin.</p>
 
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
 <ul>
-	<li>This plugin is in alfa-stage and should tested against SPEC generated datafiles from additional
-beamlines. 
-Tested: SBNL@ESRF
-To be tested: BM23@ESRF</li>
+
+<li><p>This plugin is in alfa-stage and should tested against SPEC generated datafiles from additional beamlines. Tested: SBNL@ESRF To be tested: BM23@ESRF</p>
+
+</li>
 </ul>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
-<pre>  Eric Breynaert 
-  Athena copyright (c) 2001-2017
+<pre><code>  Eric Breynaert 
+  Athena copyright (c) 2001-2017</code></pre>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</pre>
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

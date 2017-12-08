@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>2.3. Column data files &mdash; Demeter Programming Guide 0.9.26 documentation</title>
+    <title>2.3. Column data files &#8212; Demeter Programming Guide 0.9.26 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -17,15 +17,15 @@
         VERSION:     '0.9.26',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Demeter Programming Guide 0.9.26 documentation" href="../index.html" />
-    <link rel="up" title="2. The basics of data processing" href="index.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="2.4. Athena project files" href="athena.html" />
     <link rel="prev" title="2.2. χ(k) data files" href="chi.html" />
 
@@ -44,8 +44,8 @@
         <li class="right" >
           <a href="chi.html" title="2.2. χ(k) data files"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">2. The basics of data processing</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">2. The basics of data processing</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -77,9 +77,9 @@ define the Data object.</p>
 10
 11
 12</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
- <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+ <span class="k">use</span> <span class="nn">Demeter</span><span class="p">;</span>
 
- <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
+ <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
  <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">file</span>        <span class="o">=&gt;</span> <span class="s">&quot;data/fe.060.dat&quot;</span><span class="p">,</span>
               <span class="n">name</span>        <span class="o">=&gt;</span> <span class="s">&#39;Fe 60K&#39;</span><span class="p">,</span>
               <span class="n">energy</span>      <span class="o">=&gt;</span> <span class="s">&#39;$1&#39;</span><span class="p">,</span> <span class="c1"># column 1 is energy</span>
@@ -114,9 +114,9 @@ like so:</p>
  9
 10
 11</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
- <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+ <span class="k">use</span> <span class="nn">Demeter</span><span class="p">;</span>
 
- <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
+ <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
  <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">file</span>        <span class="o">=&gt;</span> <span class="s">&quot;data/fe.060.dat&quot;</span><span class="p">,</span>
               <span class="n">name</span>        <span class="o">=&gt;</span> <span class="s">&#39;Fe 60K&#39;</span><span class="p">,</span>
               <span class="n">energy</span>      <span class="o">=&gt;</span> <span class="sx">q{$1}</span><span class="p">,</span> <span class="c1"># column 1 is energy</span>
@@ -152,9 +152,9 @@ file and the I<sub>t</sub> detector is in column 3.</p>
  9
 10
 11</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
- <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+ <span class="k">use</span> <span class="nn">Demeter</span><span class="p">;</span>
 
- <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
+ <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
  <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">file</span>        <span class="o">=&gt;</span> <span class="s">&#39;soil.dat&#39;</span><span class="p">,</span>
               <span class="n">name</span>        <span class="o">=&gt;</span> <span class="s">&#39;dilute soil sample&#39;</span><span class="p">,</span>
               <span class="n">energy</span>      <span class="o">=&gt;</span> <span class="s">&#39;$1&#39;</span><span class="p">,</span>  <span class="c1"># column 1 is energy</span>
@@ -187,9 +187,9 @@ attribute:</p>
  9
 10
 11</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
- <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+ <span class="k">use</span> <span class="nn">Demeter</span><span class="p">;</span>
 
- <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
+ <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
  <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">file</span>        <span class="o">=&gt;</span> <span class="s">&#39;soil.dat&#39;</span><span class="p">,</span>
               <span class="n">name</span>        <span class="o">=&gt;</span> <span class="s">&#39;dilute soil sample&#39;</span><span class="p">,</span>
               <span class="n">energy</span>      <span class="o">=&gt;</span> <span class="s">&#39;$1&#39;</span><span class="p">,</span>
@@ -229,10 +229,10 @@ constants.  This can be implemented in <font size=-1 color="#8C4112">DEMETER</fo
 11
 12
 13</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
- <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+ <span class="k">use</span> <span class="nn">Demeter</span><span class="p">;</span>
 
  <span class="c1">## d-spacing = 1.92017    steps/deg = 4000    hc = 12398.61    rads-&gt;degs = 57.29577951</span>
- <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
+ <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
  <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">file</span>        <span class="o">=&gt;</span> <span class="s">&quot;lytle.dat&quot;</span><span class="p">,</span>
               <span class="n">name</span>        <span class="o">=&gt;</span> <span class="s">&#39;some weird old data&#39;</span><span class="p">,</span>
               <span class="n">energy</span>      <span class="o">=&gt;</span> <span class="s">&#39;12398.61 / (2*1.92017) / sin($1/(57.29577951*4000))&#39;</span><span class="p">,</span>
@@ -267,9 +267,9 @@ for a single channel like so:</p>
  9
 10
 11</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
- <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+ <span class="k">use</span> <span class="nn">Demeter</span><span class="p">;</span>
 
- <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
+ <span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
  <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">file</span>        <span class="o">=&gt;</span> <span class="s">&#39;soil.dat&#39;</span><span class="p">,</span>
               <span class="n">name</span>        <span class="o">=&gt;</span> <span class="s">&#39;dilute soil sample, DT corrected&#39;</span><span class="p">,</span>
               <span class="n">energy</span>      <span class="o">=&gt;</span> <span class="s">&#39;$1&#39;</span><span class="p">,</span>
@@ -315,7 +315,7 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">2. The basics of data processing</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="mue.html">2.1. μ(E) data files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chi.html">2.2. χ(k) data files</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">2.3. Column data files</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">2.3. Column data files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="athena.html">2.4. Athena project files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mc.html">2.5. Multichannel data files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="special.html">2.6. Special data types</a></li>
@@ -339,7 +339,7 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.26</b></p>
+<p>Current Demeter version: <b>0.9.26</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
@@ -347,6 +347,7 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/XAS-Education/">Bruce's XAS Education page</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -360,20 +361,17 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/data/columns.txt"
+      <li><a href="../_sources/data/columns.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -390,13 +388,13 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
         <li class="right" >
           <a href="chi.html" title="2.2. χ(k) data files"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >2. The basics of data processing</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >2. The basics of data processing</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, Bruce Ravel.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+        &#169; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
     </div>
   </body>
 </html>

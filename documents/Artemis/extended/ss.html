@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>15.4. Modeling disorder &mdash; Artemis 0.9.26 documentation</title>
+    <title>15.4. Modeling disorder &#8212; Artemis 0.9.26 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -17,15 +17,15 @@
         VERSION:     '0.9.26',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Artemis 0.9.26 documentation" href="../index.html" />
-    <link rel="up" title="15. Extended discussions" href="index.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="15.5. Constraints and restraints" href="constraints.html" />
     <link rel="prev" title="15.3. Geometric parametrization of bond length" href="delr.html" />
 
@@ -44,8 +44,8 @@
         <li class="right" >
           <a href="delr.html" title="15.3. Geometric parametrization of bond length"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">15. Extended discussions</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">15. Extended discussions</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -97,8 +97,8 @@ motion. The function for computing σ<sup>2</sup> from the
 Einstein is a function of the measurement temperature, an Einstein
 temperature, and the reduced mass of the absorber/scatterer
 pair. In <font size=-1 color="#8C4112">ARTEMIS</font> one writes:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>path:
-    sigma2 = eins(temperature, thetae)
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">path</span><span class="p">:</span>
+    <span class="n">sigma2</span> <span class="o">=</span> <span class="n">eins</span><span class="p">(</span><span class="n">temperature</span><span class="p">,</span> <span class="n">thetae</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Typically, <code class="docutils literal"><span class="pre">temeprature</span></code> is a set parameter whise value is the
@@ -123,8 +123,8 @@ spectrum. That is, a single charcteristic energy – the same
 Debye temperature, , that is determined from the heat capacity of
 the material – can be used to compute σ<sup>2</sup> for any
 path in the material. In <font size=-1 color="#8C4112">ARTEMIS</font> one writes:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>path:
-    sigma2 = debye(temperature, thetae)
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">path</span><span class="p">:</span>
+    <span class="n">sigma2</span> <span class="o">=</span> <span class="n">debye</span><span class="p">(</span><span class="n">temperature</span><span class="p">,</span> <span class="n">thetae</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This is a very powerful concept. All σ<sup>2</sup> parameters
@@ -148,7 +148,7 @@ form with either backend and the correct thing will happen.</p>
 <p>This valuable paper explains the relationships between σ<sup>2</sup> parameters for single scattering paths and certain multiple
 scattering paths:</p>
 <ul class="simple" id="bibtex-bibliography-extended/ss-1">
-<li>E.&nbsp;A. Hudson, P.&nbsp;G. Allen, L.&nbsp;J. Terminello, M.&nbsp;A. Denecke, and T.&nbsp;Reich. Polarized x-ray-absorption spectroscopy of the uranyl ion: Comparison of experiment and theory. <em>Phys. Rev. B</em>, 54:156–165, Jul 1996. <a class="reference external" href="https://doi.org/10.1103/PhysRevB.54.156">doi:10.1103/PhysRevB.54.156</a>.</li>
+<li>E.&nbsp;A. Hudson, P.&nbsp;G. Allen, L.&nbsp;J. Terminello, M.&nbsp;A. Denecke, and T.&nbsp;Reich. Polarized x-ray-absorption spectroscopy of the uranyl ion: comparison of experiment and theory. <em>Phys. Rev. B</em>, 54:156–165, Jul 1996. <a class="reference external" href="https://doi.org/10.1103/PhysRevB.54.156">doi:10.1103/PhysRevB.54.156</a>.</li>
 </ul>
 <div class="figure align-center" id="id1">
 <span id="fig-colinear"></span><a class="reference external image-reference" href="../_images/collinear.png"><img alt="../_images/collinear.png" src="../_images/collinear.png" /></a>
@@ -157,8 +157,8 @@ and how they relate to the corresponding SS path.</span></p>
 </div>
 <p>To begin, we define guess parameters for the σ<sup>2</sup> of the
 SS paths to atoms 1 and 2.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>guess  ss1 = 0.003
-guess  ss2 = 0.003
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">guess</span>  <span class="n">ss1</span> <span class="o">=</span> <span class="mf">0.003</span>
+<span class="n">guess</span>  <span class="n">ss2</span> <span class="o">=</span> <span class="mf">0.003</span>
 </pre></div>
 </div>
 <p>The next two paths are double and triple scattering paths that scatter
@@ -193,8 +193,8 @@ vairation in path length along those two legs of the path <strong>is</strong> th
 half the fourth shell path.</p>
 <p>The math epression for the σ<sup>2</sup> of this triangle path was
 set as</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>path Fe-S triangle:
-    sigma2 = ss1 + ss_fe/2
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">path</span> <span class="n">Fe</span><span class="o">-</span><span class="n">S</span> <span class="n">triangle</span><span class="p">:</span>
+    <span class="n">sigma2</span> <span class="o">=</span> <span class="n">ss1</span> <span class="o">+</span> <span class="n">ss_fe</span><span class="o">/</span><span class="mi">2</span>
 </pre></div>
 </div>
 <p>This approximation of σ<sup>2</sup> has the great virtue of not
@@ -239,7 +239,7 @@ its own floating parameter. I assert that value of σ<sup>2</sup>
 that is “a bit more than the first shell” is reasonable.</p>
 <p>This is discussed in more detail in Scott Calvin's book,</p>
 <ul class="simple" id="bibtex-bibliography-extended/ss-2">
-<li>Scott Calvin. <em>XAFS for Everyone</em>. CRC Press, Boca Raton, 2013. <a class="reference external" href="https://www.crcpress.com/XAFS-for-Everyone/Calvin/9781439878637">URL: https://www.crcpress.com/XAFS-for-Everyone/Calvin/9781439878637</a>.</li>
+<li>Scott Calvin. <em>XAFS for Everyone</em>. CRC Press, Boca Raton, 2013. ISBN 1439878633. URL: <a class="reference external" href="https://www.crcpress.com/XAFS-for-Everyone/Calvin/p/book/9781439878637">https://www.crcpress.com/XAFS-for-Everyone/Calvin/p/book/9781439878637</a>.</li>
 </ul>
 
 <br>
@@ -248,9 +248,9 @@ that is “a bit more than the first shell” is reasonable.</p>
 <hr class="docutils" />
 <p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
 copyright © 2016 Bruce Ravel</p>
-<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>This document is licensed under <a class="reference external" href="https://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
 <p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
-consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+consider <a class="reference external" href="https://creativecommons.org/donate/">supporting The Creative Commons</a>.</p>
 </div>
 </div>
 
@@ -283,7 +283,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l2"><a class="reference internal" href="qfs.html">15.1. Quick first shell</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cv.html">15.2. Characteristic value</a></li>
 <li class="toctree-l2"><a class="reference internal" href="delr.html">15.3. Geometric parametrization of bond length</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">15.4. Modeling disorder</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">15.4. Modeling disorder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="constraints.html">15.5. Constraints and restraints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bvs.html">15.6. Bond valence sums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="empirical.html">15.7. Empirical standards</a></li>
@@ -295,7 +295,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 </li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.26</b></p>
+<p>Current Demeter version: <b>0.9.26</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
@@ -303,6 +303,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/XAS-Education/">Bruce's XAS Education page</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -316,20 +317,17 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/extended/ss.txt"
+      <li><a href="../_sources/extended/ss.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -346,13 +344,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="delr.html" title="15.3. Geometric parametrization of bond length"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >15. Extended discussions</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >15. Extended discussions</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, Bruce Ravel.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+        &#169; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
     </div>
   </body>
 </html>

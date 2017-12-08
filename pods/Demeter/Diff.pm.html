@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::Diff</title>
-<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::Diff &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,129 +15,181 @@
 </div>
 <div class="path">
   <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-Diff
+  Demeter::Diff
 </div>
 <div>
 <a href="../src/Demeter/Diff.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#ATTRIBUTES">ATTRIBUTES</a></li>
+  <li><a href="#METHODS">METHODS</a></li>
+  <li><a href="#SERIALIZATION-AND-DESERIALIZATION">SERIALIZATION AND DESERIALIZATION</a></li>
+  <li><a href="#CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::Diff - Difference spectra</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<pre>  my $prj = Demeter::Data::Prj-&gt;new(file=&gt;'athena.prj');
+<pre><code>  my $prj = Demeter::Data::Prj-&gt;new(file=&gt;&#39;athena.prj&#39;);
   my $stan = $prj-&gt;record(1);
   my $data = $prj-&gt;record(2);
   my $diff = Demeter::Diff-&gt;new(data=&gt;$data, standard=&gt;$stan);
   $diff-&gt;diff;
   $diff-&gt;plot;
-  $diff-&gt;pause;
+  $diff-&gt;pause;</code></pre>
 
-</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>Compute the difference spectrum between two <a href="Data.pm.html">Demeter::Data</a> objects
-and compute the integrated area of a region of the difference
-spectrum.</p>
+<p>Compute the difference spectrum between two <a href="Data.pm.html">Demeter::Data</a> objects and compute the integrated area of a region of the difference spectrum.</p>
 
-<h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="ATTRIBUTES">ATTRIBUTES</h1>
 
 <dl>
-	<dt><code>data</code></dt>
-		<dd><p>The Data group from which this difference spectrum is made.</p></dd>
-	<dt><code>standard</code></dt>
-		<dd><p>The Data group subtracted from the <code>data</code>.</p></dd>
-	<dt><code>xmin</code></dt>
-		<dd><p>The lower bound of the integration range.  For a difference in energy,
-this number is relative to E0.</p></dd>
-	<dt><code>xmax</code></dt>
-		<dd><p>The upper bound of the integration range.  For a difference in energy,
-this number is relative to E0.</p></dd>
-	<dt><code>invert</code></dt>
-		<dd><p>When true, swap the <code>data</code> and <code>standard</code> when calculating the
-difference spectrum.</p></dd>
-	<dt><code>plotspectra</code></dt>
-		<dd><p>When true, include the <code>data</code> and <code>standard</code> in the plot when
-calling the <code>plot</code> method.</p></dd>
-	<dt><code>area</code></dt>
-		<dd><p>After the difference is made, the integrated area between <code>xmin</code> and
-<code>xmax</code> will be stored in this attribute.</p></dd>
+
+<dt id="data"><code>data</code></dt>
+<dd>
+
+<p>The Data group from which this difference spectrum is made.</p>
+
+</dd>
+<dt id="standard"><code>standard</code></dt>
+<dd>
+
+<p>The Data group subtracted from the <code>data</code>.</p>
+
+</dd>
+<dt id="xmin"><code>xmin</code></dt>
+<dd>
+
+<p>The lower bound of the integration range. For a difference in energy, this number is relative to E0.</p>
+
+</dd>
+<dt id="xmax"><code>xmax</code></dt>
+<dd>
+
+<p>The upper bound of the integration range. For a difference in energy, this number is relative to E0.</p>
+
+</dd>
+<dt id="invert"><code>invert</code></dt>
+<dd>
+
+<p>When true, swap the <code>data</code> and <code>standard</code> when calculating the difference spectrum.</p>
+
+</dd>
+<dt id="plotspectra"><code>plotspectra</code></dt>
+<dd>
+
+<p>When true, include the <code>data</code> and <code>standard</code> in the plot when calling the <code>plot</code> method.</p>
+
+</dd>
+<dt id="area"><code>area</code></dt>
+<dd>
+
+<p>After the difference is made, the integrated area between <code>xmin</code> and <code>xmax</code> will be stored in this attribute.</p>
+
+</dd>
 </dl>
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<h1 id="METHODS">METHODS</h1>
 
 <dl>
-	<dt><code>diff</code></dt>
-		<dd><p>Compute the difference spectrum and integrated area.</p></dd>
-<dd><pre>  $diff_object -&gt; diff;
 
-</pre></dd>	<dt><code>plot</code></dt>
-		<dd><p>Make a plot of the difference spectrum.</p></dd>
-<dd><pre>  $diff_object -&gt; plot;
+<dt id="diff"><code>diff</code></dt>
+<dd>
 
-</pre></dd>	<dt><code>make_name</code></dt>
-		<dd><p>A method for dynamically generating the <code>name</code> attribute of the Data
-object made from the Diff object.</p></dd>
-<dd><pre>  d = name of data
+<p>Compute the difference spectrum and integrated area.</p>
+
+<pre><code>  $diff_object -&gt; diff;</code></pre>
+
+</dd>
+<dt id="plot"><code>plot</code></dt>
+<dd>
+
+<p>Make a plot of the difference spectrum.</p>
+
+<pre><code>  $diff_object -&gt; plot;</code></pre>
+
+</dd>
+<dt id="make_name"><code>make_name</code></dt>
+<dd>
+
+<p>A method for dynamically generating the <code>name</code> attribute of the Data object made from the Diff object.</p>
+
+<pre><code>  d = name of data
   s = name of standard
   f = the form of the data from which the difference is made
   n = the xmin value
   x = the xmax value
   a = the integrated are
-  % = a literal % sign
+  % = a literal % sign</code></pre>
 
-</pre></dd>		<dd><p>The default value is <code>diff %d - %s</code>, which expands into something like</p></dd>
-<dd><pre>   diff dataname - standardname
+<p>The default value is <code>diff %d - %s</code>, which expands into something like</p>
 
-</pre></dd></dl>
-<h1 id="SERIALIZATION_AND_DESERIALIZATION">SERIALIZATION AND DESERIALIZATION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<pre><code>   diff dataname - standardname</code></pre>
+
+</dd>
+</dl>
+
+<h1 id="SERIALIZATION-AND-DESERIALIZATION">SERIALIZATION AND DESERIALIZATION</h1>
 
 <p>Good question ...</p>
 
-<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</h1>
 
-<p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration system.
-See the lcf configuration group for the relevant parameters.</p>
+<p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration system. See the lcf configuration group for the relevant parameters.</p>
 
-<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
 
-<p>Demeter's dependencies are in the <cite>Build.PL</cite> file.</p>
+<p>Demeter&#39;s dependencies are in the <i>Build.PL</i> file.</p>
 
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
 <ul>
-	<li>Need better error checking</li>
-	<li>Difference spectra of things other than norm(E); <code>space</code> attribute</li>
+
+<li><p>Need better error checking</p>
+
+</li>
+<li><p>Difference spectra of things other than norm(E); <code>space</code> attribute</p>
+
+</li>
 </ul>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel, <a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a></p>
 
 <p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

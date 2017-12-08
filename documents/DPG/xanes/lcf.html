@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.1. Linear Combination Fitting &mdash; Demeter Programming Guide 0.9.26 documentation</title>
+    <title>5.1. Linear Combination Fitting &#8212; Demeter Programming Guide 0.9.26 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -17,15 +17,15 @@
         VERSION:     '0.9.26',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Demeter Programming Guide 0.9.26 documentation" href="../index.html" />
-    <link rel="up" title="5. Analysis of XANES data" href="index.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="5.2. Peak Fitting" href="peak.html" />
     <link rel="prev" title="5. Analysis of XANES data" href="index.html" />
 
@@ -44,8 +44,8 @@
         <li class="right" >
           <a href="index.html" title="5. Analysis of XANES data"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">5. Analysis of XANES data</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">5. Analysis of XANES data</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -79,10 +79,10 @@
 20
 21
 22</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
- <span class="k">use</span> <span class="n">Demeter</span> <span class="sx">qw(:ui=screen :plotwith=gnuplot)</span><span class="p">;</span>
+ <span class="k">use</span> <span class="nn">Demeter</span> <span class="sx">qw(:ui=screen :plotwith=gnuplot)</span><span class="p">;</span>
 
- <span class="k">my</span> <span class="nv">$prj</span> <span class="o">=</span> <span class="nn">Demeter::Data::</span><span class="n">Prj</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span><span class="o">=&gt;</span><span class="s">&#39;../../cyanobacteria.prj&#39;</span><span class="p">);</span>
- <span class="k">my</span> <span class="nv">$lcf</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">LCF</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">space</span><span class="o">=&gt;</span><span class="s">&#39;nor&#39;</span><span class="p">,</span> <span class="n">plot_difference</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">,</span> <span class="n">plot_components</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$prj</span> <span class="o">=</span> <span class="nn">Demeter::Data::Prj</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span><span class="o">=&gt;</span><span class="s">&#39;../../cyanobacteria.prj&#39;</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$lcf</span> <span class="o">=</span> <span class="nn">Demeter::LCF</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">space</span><span class="o">=&gt;</span><span class="s">&#39;nor&#39;</span><span class="p">,</span> <span class="n">plot_difference</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">,</span> <span class="n">plot_components</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">);</span>
 
  <span class="nv">$prj</span> <span class="o">-&gt;</span> <span class="n">set_mode</span><span class="p">(</span><span class="s">&#39;screen&#39;</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">);</span>
 
@@ -94,9 +94,9 @@
 
  <span class="nv">$lcf</span><span class="o">-&gt;</span><span class="n">xmin</span><span class="p">(</span><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">bkg_e0</span><span class="o">-</span><span class="mi">20</span><span class="p">);</span>
  <span class="nv">$lcf</span><span class="o">-&gt;</span><span class="n">xmax</span><span class="p">(</span><span class="nv">$data</span><span class="o">-&gt;</span><span class="n">bkg_e0</span><span class="o">+</span><span class="mi">60</span><span class="p">);</span>
- <span class="nv">$lcf</span><span class="o">-&gt;</span><span class="n">po</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="n">emin</span><span class="o">=&gt;-</span><span class="mi">30</span><span class="p">,</span> <span class="n">emax</span><span class="o">=&gt;</span><span class="mi">80</span><span class="p">);</span>
+ <span class="nv">$lcf</span><span class="o">-&gt;</span><span class="nn">po</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="n">emin</span><span class="o">=&gt;-</span><span class="mi">30</span><span class="p">,</span> <span class="n">emax</span><span class="o">=&gt;</span><span class="mi">80</span><span class="p">);</span>
 
- <span class="nv">$lcf</span> <span class="o">-&gt;</span> <span class="n">fit</span> <span class="o">-&gt;</span> <span class="n">plot</span> <span class="o">-&gt;</span> <span class="n">save</span><span class="p">(</span><span class="s">&#39;lcf_fit_result.dat&#39;</span><span class="p">);</span>
+ <span class="nv">$lcf</span> <span class="o">-&gt;</span> <span class="nn">fit</span> <span class="o">-&gt;</span> <span class="nn">plot</span> <span class="o">-&gt;</span> <span class="n">save</span><span class="p">(</span><span class="s">&#39;lcf_fit_result.dat&#39;</span><span class="p">);</span>
  <span class="nv">$lcf</span><span class="o">-&gt;</span><span class="n">pause</span><span class="p">;</span>
 
  <span class="nv">$lcf</span><span class="o">-&gt;</span><span class="n">clean</span><span class="p">;</span>
@@ -109,9 +109,9 @@
 <hr class="docutils" />
 <p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
 copyright © 2016 Bruce Ravel</p>
-<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>This document is licensed under <a class="reference external" href="https://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
 <p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
-consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+consider <a class="reference external" href="https://creativecommons.org/donate/">supporting The Creative Commons</a>.</p>
 </div>
 
 
@@ -130,7 +130,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../mue/index.html">3. Processing μ(E) data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../highlevel/index.html">4. High level actions of the object model</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">5. Analysis of XANES data</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="">5.1. Linear Combination Fitting</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.1. Linear Combination Fitting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="peak.html">5.2. Peak Fitting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pca.html">5.3. Principle Components Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diff.html">5.4. Difference spectra</a></li>
@@ -149,7 +149,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.26</b></p>
+<p>Current Demeter version: <b>0.9.26</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
@@ -157,6 +157,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/XAS-Education/">Bruce's XAS Education page</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -170,20 +171,17 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/xanes/lcf.txt"
+      <li><a href="../_sources/xanes/lcf.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -200,13 +198,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="index.html" title="5. Analysis of XANES data"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >5. Analysis of XANES data</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >5. Analysis of XANES data</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, Bruce Ravel.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+        &#169; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
     </div>
   </body>
 </html>

@@ -103,6 +103,17 @@ sub write_athena {
     };
   };
 
+  ## a Metis-specific, "it's good to be charge" block of code
+  if (defined($::app->{Data}->{npixdata})) {
+    if (Demeter->co->default('athena', 'project_format') eq 'json') {
+      $gzout->gzwrite("\n\"_____npixdata\": " . encode_json($::app->{Data}->{npixdata}) . ",\n");
+    } else {
+      local $Data::Dumper::Indent = 0;
+      $gzout->gzwrite(Data::Dumper->Dump([$::app->{Data}->{npixdata}], [qw/*npixdata/]) . "\n\n");
+    };
+  };
+
+
   if ($journal) {
     my @journal = split(/\n/, $journal->text);
     if (Demeter->co->default('athena', 'project_format') eq 'json') {

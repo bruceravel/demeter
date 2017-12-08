@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Xray::Absorption::Shaltout</title>
-<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Xray::Absorption::Shaltout &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,75 +15,77 @@
 </div>
 <div class="path">
   <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Xray-Absorption-Shaltout
+  Xray::Absorption::Shaltout
 </div>
 <div>
 <a href="../../src/Xray/Absorption/Shaltout.pm">Source</a>
 </div>
 
-
 <div class="pod">
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#EDGE-AND-LINE-ENERGIES">EDGE AND LINE ENERGIES</a></li>
+  <li><a href="#BUGS-AND-THINGS-TO-DO">BUGS AND THINGS TO DO</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+</ul>
+
 <dl>
-	<dt><code>cross_section</code></dt>
-		<dd><p>Example:</p></dd>
-<dd><pre>   $xsec = Xray::Absorption -&gt; cross_section($elem, $energy, $mode);
 
-</pre></dd><dd><pre>   @xsec = Xray::Absorption -&gt; cross_section($elem, \@energy, $mode);
+<dt id="cross_section"><code>cross_section</code></dt>
+<dd>
 
-</pre></dd>		<dd><p>The <code>$mode</code> argument is different here than for the other resources.
-The options are &quot;xsec&quot;, &quot;photo&quot;, &quot;coherent&quot; and &quot;incoherent&quot;, telling
-this method to return the full cross-section or just the
-photoelectric, coherent, or incoherent portions.</p></dd>
-		<dd><p>The values for all cross-sections are computed as log-log polynomials
-as described in the original paper by Shaltout et al.</p></dd>
+<p>Example:</p>
+
+<pre><code>   $xsec = Xray::Absorption -&gt; cross_section($elem, $energy, $mode);
+
+   @xsec = Xray::Absorption -&gt; cross_section($elem, \@energy, $mode);</code></pre>
+
+<p>The <code>$mode</code> argument is different here than for the other resources. The options are &quot;xsec&quot;, &quot;photo&quot;, &quot;coherent&quot; and &quot;incoherent&quot;, telling this method to return the full cross-section or just the photoelectric, coherent, or incoherent portions.</p>
+
+<p>The values for all cross-sections are computed as log-log polynomials as described in the original paper by Shaltout et al.</p>
+
+</dd>
 </dl>
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Xray::Absorption::Shaltout - Perl interface to the Shaltout tables</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<pre>   use Xray::Absorption;
-   Xray::Absorption -&gt; load(&quot;shaltout&quot;);
+<pre><code>   use Xray::Absorption;
+   Xray::Absorption -&gt; load(&quot;shaltout&quot;);</code></pre>
 
-</pre><p>See the documentation for Xray::Absorption for details.</p>
+<p>See the documentation for Xray::Absorption for details.</p>
 
-<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This module is inherited by the Xray::Absorption module and provides
-access to the data contained in</p>
+<p>This module is inherited by the Xray::Absorption module and provides access to the data contained in</p>
 
-<pre>  Update of photoelectric absorption coefficients in the tables of McMaster
+<pre><code>  Update of photoelectric absorption coefficients in the tables of McMaster
   Abdallah Shaltout, Horst Ebel, and Robert Svagera
-  X-Ray Spectrometry (2006) vol. 35, p. 52-56
+  X-Ray Spectrometry (2006) vol. 35, p. 52-56</code></pre>
 
-</pre><p>The data is contained in a database file called <cite>shaltout.db</cite> which
-is generated at install time from a flat text database of the data
-which can be found at
-<a href="http://www.ifp.tuwien.ac.at/forschung/abdallah.shaltout/">http://www.ifp.tuwien.ac.at/forschung/abdallah.shaltout/</a> as
-explained in the reference.</p>
+<p>The data is contained in a database file called <i>shaltout.db</i> which is generated at install time from a flat text database of the data which can be found at <a href="http://www.ifp.tuwien.ac.at/forschung/abdallah.shaltout/">http://www.ifp.tuwien.ac.at/forschung/abdallah.shaltout/</a> as explained in the reference.</p>
 
-<p>The required Chemistry::Elements module is available from CPAN in the
-miscellaneous modules section.</p>
+<p>The required Chemistry::Elements module is available from CPAN in the miscellaneous modules section.</p>
 
+<h1 id="EDGE-AND-LINE-ENERGIES">EDGE AND LINE ENERGIES</h1>
 
+<p>The Shaltout data resource includes all K, L, M, and N edges but does not provide any of the line energies. An minimal set of line energies is imported from the McMaster data resource.</p>
 
-
-<h1 id="EDGE_AND_LINE_ENERGIES">EDGE AND LINE ENERGIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
-
-<p>The Shaltout data resource includes all K, L, M, and N edges but does
-not provide any of the line energies.  An minimal set of line energies
-is imported from the McMaster data resource.</p>
-
-<h1 id="BUGS_AND_THINGS_TO_DO">BUGS AND THINGS TO DO <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="BUGS-AND-THINGS-TO-DO">BUGS AND THINGS TO DO</h1>
 
 <p>This module has not be tested sufficiently.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
-<pre>  Bruce Ravel, L&lt;http://bruceravel.github.io/home&gt;
-  http://bruceravel.github.io/demeter/Absorption/
+<pre><code>  Bruce Ravel, L&lt;http://bruceravel.github.io/home&gt;
+  http://bruceravel.github.io/demeter/Absorption/</code></pre>
 
-</pre>
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
+

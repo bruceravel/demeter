@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Xray::Absorption::Henke</title>
-<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Xray::Absorption::Henke &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,122 +15,118 @@
 </div>
 <div class="path">
   <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Xray-Absorption-Henke
+  Xray::Absorption::Henke
 </div>
 <div>
 <a href="../../src/Xray/Absorption/Henke.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a></li>
+  <li><a href="#EDGE-AND-LINE-ENERGIES">EDGE AND LINE ENERGIES</a></li>
+  <li><a href="#BUGS-AND-THINGS-TO-DO">BUGS AND THINGS TO DO</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Xray::Absorption::Henke - Perl interface to the Henke tables</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<pre>   use Xray::Absorption;
-   Xray::Absorption -&gt; load(&quot;henke&quot;);
+<pre><code>   use Xray::Absorption;
+   Xray::Absorption -&gt; load(&quot;henke&quot;);</code></pre>
 
-</pre><p>See the documentation for Xray::Absorption for details.</p>
+<p>See the documentation for Xray::Absorption for details.</p>
 
-<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This module is inherited by the Xray::Absorption module and provides
-access to the data contained in the Henke tables of anomalous
-scattering factors and line and edge energies.</p>
+<p>This module is inherited by the Xray::Absorption module and provides access to the data contained in the Henke tables of anomalous scattering factors and line and edge energies.</p>
 
-<p>The data in this module, referred to as &quot;The Henke Tables&quot;, was
-published as</p>
+<p>The data in this module, referred to as &quot;The Henke Tables&quot;, was published as</p>
 
-<pre>  B. L. Henke, E. M. Gullikson, and J. C. Davis,
-  Atomic Data and Nuclear Data Tables Vol. 54 No. 2 (July 1993).
+<pre><code>  B. L. Henke, E. M. Gullikson, and J. C. Davis,
+  Atomic Data and Nuclear Data Tables Vol. 54 No. 2 (July 1993).</code></pre>
 
-</pre><p>The Henke data is available on the web at
-http://www-cxro.lbl.gov/optical_constants/ and more information about
-the data can be obtained from Eric Gullikson &lt;EMGullikson@lbl.gov&gt;.</p>
+<p>The Henke data is available on the web at http://www-cxro.lbl.gov/optical_constants/ and more information about the data can be obtained from Eric Gullikson &lt;EMGullikson@lbl.gov&gt;.</p>
 
-<p>The data is contained in a database file called <cite>henke.db</cite> which is
-generated at install time from the flat text files of the Henke data.
-The data is stored in a Storable archive using &quot;network&quot; ordering.
-This allows speedy disk and memory access along with network and
-platform portability.</p>
+<p>The data is contained in a database file called <i>henke.db</i> which is generated at install time from the flat text files of the Henke data. The data is stored in a Storable archive using &quot;network&quot; ordering. This allows speedy disk and memory access along with network and platform portability.</p>
 
-<p>The required <code>File::Spec</code>, <code>Chemistry::Elements</code>, <code>Storable</code>,
-modules are available from CPAN.</p>
+<p>The required <code>File::Spec</code>, <code>Chemistry::Elements</code>, <code>Storable</code>, modules are available from CPAN.</p>
 
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="METHODS">METHODS</h1>
 
-<p>The behaviour of the methods in this module is a bit different from
-other modules used by <code>Xray::Absorption</code>.  This section describes
-methods which behave differently for this data resource.</p>
+<p>The behaviour of the methods in this module is a bit different from other modules used by <code>Xray::Absorption</code>. This section describes methods which behave differently for this data resource.</p>
 
 <dl>
-	<dt><code>get_energy</code></dt>
-		<dd><p>Example:</p></dd>
-<dd><pre>   $energy = Xray::Absorption -&gt; get_energy($elem, $edge);
 
-</pre></dd>		<dd><p>This behaves similarly to the <code>get_energy</code> method of the other
-resources.  When using the Henke data resource, <code>$edge</code> can be any of
-K, L1-L3, M1-M5, N1-N7, O1-O7, or P1-P3.  Line energies are not
-supplied with the Henke data set.  The line energies from the McMaster
-tables are used.</p></dd>
+<dt id="get_energy"><code>get_energy</code></dt>
+<dd>
+
+<p>Example:</p>
+
+<pre><code>   $energy = Xray::Absorption -&gt; get_energy($elem, $edge);</code></pre>
+
+<p>This behaves similarly to the <code>get_energy</code> method of the other resources. When using the Henke data resource, <code>$edge</code> can be any of K, L1-L3, M1-M5, N1-N7, O1-O7, or P1-P3. Line energies are not supplied with the Henke data set. The line energies from the McMaster tables are used.</p>
+
+</dd>
 </dl>
+
 <dl>
-	<dt><code>cross_section</code></dt>
-		<dd><p>Examples:</p></dd>
-<dd><pre>   $xsec = Xray::Absorption -&gt; cross_section($elem, $energy, $mode);
 
-</pre></dd><dd><pre>   @xsec = Xray::Absorption -&gt; cross_section($elem, \@energy, $mode);
+<dt id="cross_section"><code>cross_section</code></dt>
+<dd>
 
-</pre></dd>		<dd><p>This behaves slightly differently from the similar method for the
-McMaster and Elam resources.  The Henke tables are actually tables of
-anomalous scattering factors and do not come with coherent and
-incoherent scattering cross-sections.  The photo-electric
-cross-section is calculated from the imaginary part of the anomalous
-scattering by the formula</p></dd>
-<dd><pre>     mu = 2 * r_e * lambda * conv * f_2
+<p>Examples:</p>
 
-</pre></dd>		<dd><p>where, <code>r_e</code> is the classical electron radius, lamdba is the photon
-wavelength, and conv is a units conversion factor.</p></dd>
-<dd><pre>     r_e    = 2.817938 x 10^-15 m
+<pre><code>   $xsec = Xray::Absorption -&gt; cross_section($elem, $energy, $mode);
+
+   @xsec = Xray::Absorption -&gt; cross_section($elem, \@energy, $mode);</code></pre>
+
+<p>This behaves slightly differently from the similar method for the McMaster and Elam resources. The Henke tables are actually tables of anomalous scattering factors and do not come with coherent and incoherent scattering cross-sections. The photo-electric cross-section is calculated from the imaginary part of the anomalous scattering by the formula</p>
+
+<pre><code>     mu = 2 * r_e * lambda * conv * f_2</code></pre>
+
+<p>where, <code>r_e</code> is the classical electron radius, lamdba is the photon wavelength, and conv is a units conversion factor.</p>
+
+<pre><code>     r_e    = 2.817938 x 10^-15 m
      lambda = 2 pi hbar c / energy
      hbar*c = 1973.27053324 eV*Angstrom
      conv   = Avagadro / atomic weight
-            = 6.022045e7 / weight in cgs
+            = 6.022045e7 / weight in cgs</code></pre>
 
-</pre></dd>		<dd><p>The <code>$mode</code> argument is different here than for the other resources.
-The options are &quot;xsec&quot;, &quot;f1&quot;, and &quot;f2&quot;, telling this method to return
-the cross-section or the real or imaginary anomalous scattering
-factor, respectively.</p></dd>
-		<dd><p>The values for f1 and f2 are computed by linear interpolation of a
-semi-log scale.  Care is taken to avoid the discontinuities at the
-edges.</p></dd>
-		<dd><p>Because the Henke tables do not include the coherent and incoherent
-scattering terms, the value returned by <code>get_energy</code> may be a bit
-smaller using the Henke tables than that from the McMaster tables.</p></dd>
+<p>The <code>$mode</code> argument is different here than for the other resources. The options are &quot;xsec&quot;, &quot;f1&quot;, and &quot;f2&quot;, telling this method to return the cross-section or the real or imaginary anomalous scattering factor, respectively.</p>
+
+<p>The values for f1 and f2 are computed by linear interpolation of a semi-log scale. Care is taken to avoid the discontinuities at the edges.</p>
+
+<p>Because the Henke tables do not include the coherent and incoherent scattering terms, the value returned by <code>get_energy</code> may be a bit smaller using the Henke tables than that from the McMaster tables.</p>
+
+</dd>
 </dl>
-<h1 id="EDGE_AND_LINE_ENERGIES">EDGE AND LINE ENERGIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>The Henke data resource provides a fairly complete set of edge
-energies.  Any edge tabulated on the Gwyn William's Table of Electron
-Binding Energies for the Elements (that's the one published by NSLS
-and on the door of just about every hutch at NSLS) is in the Henke
-data resource.  The Henke data comes with the same, limited set of
-fluorescence energies as McMaster.</p>
+<h1 id="EDGE-AND-LINE-ENERGIES">EDGE AND LINE ENERGIES</h1>
 
-<h1 id="BUGS_AND_THINGS_TO_DO">BUGS AND THINGS TO DO <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<p>The Henke data resource provides a fairly complete set of edge energies. Any edge tabulated on the Gwyn William&#39;s Table of Electron Binding Energies for the Elements (that&#39;s the one published by NSLS and on the door of just about every hutch at NSLS) is in the Henke data resource. The Henke data comes with the same, limited set of fluorescence energies as McMaster.</p>
+
+<h1 id="BUGS-AND-THINGS-TO-DO">BUGS AND THINGS TO DO</h1>
 
 <ul>
-	<li>It would be nice to improve the inter-/extrapolation near absorption
-edges.  As it stands, these tables produce really poor DAFS output.</li>
+
+<li><p>It would be nice to improve the inter-/extrapolation near absorption edges. As it stands, these tables produce really poor DAFS output.</p>
+
+</li>
 </ul>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
-<pre>  Bruce Ravel, http://bruceravel.github.io/home
-  http://bruceravel.github.io/demeter/
+<pre><code>  Bruce Ravel, http://bruceravel.github.io/home
+  http://bruceravel.github.io/demeter/</code></pre>
 
-</pre>
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
+

@@ -3,10 +3,10 @@ package Larch;
 # require Exporter;
 # @ISA = qw(Exporter);
 # @EXPORT_OK = qw(dispose larch decode_data get_data get_messages
-# 		get_larch_scalar put_larch_scalar
-# 		get_larch_array put_larch_array
-# 		create_larch_connection shutdown_larch_connection
-# 		get_client_info set_client_info run_selftest);
+#		get_larch_scalar put_larch_scalar
+#		get_larch_array put_larch_array
+#		create_larch_connection shutdown_larch_connection
+#		get_client_info set_client_info run_selftest);
 
 use strict;
 use warnings;
@@ -16,8 +16,6 @@ use File::Which qw(which);
 use RPC::XML::Client;
 use Time::HiRes qw(usleep);
 
-use Proc::Background;
-
 use vars qw($larch_is_go $larchconn $larch_exe $larch_port);
 $larch_exe = q{};
 
@@ -25,39 +23,47 @@ sub find_larch {
   # search for Python exe and larch_server script,
   # return command to run larch server
   my $osname = lc($^O);
-  my $python_exe = "python";
+  my $pyexec_name  = "python";
   my $pyscript_dir = "";
-  my @dirlist ;
   if (($osname eq 'mswin32') or ($osname eq 'cygwin')) {
-    @dirlist = split /;/, $ENV{'PATH'};
-    push @dirlist,  (File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda3'),
+    $pyexec_name  = "python.exe";
+    $pyscript_dir = "Scripts";
+  }
+
+  # first look on PATH
+  my $py_exe = which($pyexec_name);
+  my $larch_exe = which("larch_server");
+  if (defined($py_exe) && (-e $py_exe) && defined($larch_exe) && (-e $larch_exe))  {
+      return $larch_exe;
+  }
+  # if larch is not found on PATH, look in typical Python / Anaconda places
+  # build list of typical Python / Anaconda install directories
+  my @dirlist = split /;/, $ENV{'PATH'};
+  if (($osname eq 'mswin32') or ($osname eq 'cygwin')) {
+    push @dirlist,  (File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'xraylarch'),
+		     File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda3'),
 		     File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda2'),
 		     File::Spec->catfile($ENV{LOCALAPPDATA}, 'Continuum', 'Anaconda'),
+		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'xraylarch'),
 		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda3'),
 		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda2'),
 		     File::Spec->catfile($ENV{APPDATA}, 'Continuum', 'Anaconda'),
-		     'C:\Python27', 'C:\Python35');
-    $python_exe = "python.exe";
-    $pyscript_dir = "Scripts";
+		     'C:\Python37', 'C:\Python36', 'C:\Python35', 'C:\Python27');
   } else {
-    @dirlist = split /:/, $ENV{'PATH'};
-    push @dirlist,  (File::Spec->catfile($ENV{HOME}, 'anaconda3', 'bin'),
+    push @dirlist,  (File::Spec->catfile($ENV{HOME}, 'xraylarch', 'bin'),
+		     File::Spec->catfile($ENV{HOME}, 'anaconda3', 'bin'),
 		     File::Spec->catfile($ENV{HOME}, 'anaconda2', 'bin'),
-		     File::Spec->catfile($ENV{HOME}, 'anaconda', 'bin'));
-
-  }
-  my $pyexe_ = which($python_exe);
-  my $larch_ = which("larch_server");
-  if (defined($pyexe_) && (-e $pyexe_) && defined($larch_) && (-e $larch_))  {
-    $larch_exe = "$pyexe_ $larch_";
-    return $larch_exe;
+		     File::Spec->catfile($ENV{HOME}, 'anaconda', 'bin'),
+		     File::Spec->catfile('/', 'anaconda3', 'bin'),
+		     File::Spec->catfile('/', 'anaconda2', 'bin'),
+		     File::Spec->catfile('/', 'anaconda', 'bin'),
+		    );
   }
   foreach my $d (@dirlist) {
-    my $pyexe_ =  File::Spec->catfile($d, $python_exe);
-    my $larch_ =  File::Spec->catfile($d, $pyscript_dir, 'larch_server');
-    if ((-e $pyexe_) && (-e $larch_))  {
-      $larch_exe = "$pyexe_ $larch_";
-      last;
+    my $py_exe =  File::Spec->catfile($d, $pyexec_name);
+    my $larch_exe =  File::Spec->catfile($d, $pyscript_dir, 'larch_server');
+    if ((-e $py_exe) && (-e $larch_exe))  {
+	return $larch_exe;
     }
   }
   return $larch_exe;
@@ -68,10 +74,10 @@ sub find_larch {
 # this will avoid multiple clients using the same port
 sub get_next_larch_port {
   # find next available port to run on
-  my ($lexe) = @_;
-  my $s = `$lexe -n`;
-  $s =~ s/[^\d.]/ /g ;
-  my @w = split /\s+/, $s;
+  my ($larch_exe) = @_;
+  my $out = `$larch_exe -n`;
+  $out =~ s/[^\d.]/ /g ;
+  my @w = split /\s+/, $out;
   return $w[-1];
 };
 
@@ -79,7 +85,7 @@ our $proc;
 sub start_larch_server {
   $larch_port = -1;
   $larch_exe = find_larch();
-  if (length $larch_exe > 10) {
+  if (defined($larch_exe) and (length $larch_exe > 10)) {
     # find next available port to run on
     # print STDOUT "Larch exe $larch_exe\n";
     $larch_port = get_next_larch_port($larch_exe);
@@ -101,7 +107,8 @@ sub start_larch_server {
       }
     }
   } else {
-    print STDOUT "\nCould not find Larch Server";
+    1;
+    #print STDOUT "\nCould not find Larch Server";
   }
   return $larch_port;
 };
@@ -277,8 +284,10 @@ END {
   system "$larch_exe -p $larch_port stop";
 }
 
+
 $larch_is_go;
 
+__END__
 
 
 =head1 NAME

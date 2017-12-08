@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::UI::Screen::Pause</title>
-<link rel="stylesheet" type="text/css" href="../../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::UI::Screen::Pause &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,112 +15,116 @@
 </div>
 <div class="path">
   <a href="../../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-UI-Screen-Pause
+  Demeter::UI::Screen::Pause
 </div>
 <div>
 <a href="../../../src/Demeter/UI/Screen/Pause.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#ATTRIBUTES">ATTRIBUTES</a></li>
+  <li><a href="#METHODS">METHODS</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::UI::Screen::Pause - A generic pause method for the screen UI</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<pre>   $fitobject-&gt;pause(-1);
+<pre><code>   $fitobject-&gt;pause(-1);</code></pre>
 
-</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This role for a Demeter object provides a generic and easy-to-use
-pause when using the terminal.  This role is imported when the UI mode
-is set to &quot;screen&quot;.  See <a href="../../../Demeter.pm.html#PRAGMATA">PRAGMATA in Demeter</a>.</p>
+<p>This role for a Demeter object provides a generic and easy-to-use pause when using the terminal. This role is imported when the UI mode is set to &quot;screen&quot;. See <a href="../../../Demeter.pm.html#PRAGMATA">&quot;PRAGMATA&quot; in Demeter</a>.</p>
 
-<p>Trying to use the <code>pause</code> method without being in screen mode will do
-nothing.  That is because there is a pause method in the base class
-that does nothing.  That no-op gets overridden when in screen mode
-with this more useful method.  Note, however, that the attributes
-documented below do not exist in the base class and will return the
-&quot;Can't locate object method&quot; error when you attempt to access them
-outside of screen mode.</p>
+<p>Trying to use the <code>pause</code> method without being in screen mode will do nothing. That is because there is a pause method in the base class that does nothing. That no-op gets overridden when in screen mode with this more useful method. Note, however, that the attributes documented below do not exist in the base class and will return the &quot;Can&#39;t locate object method&quot; error when you attempt to access them outside of screen mode.</p>
 
-<h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="ATTRIBUTES">ATTRIBUTES</h1>
 
 <dl>
-	<dt><code>prompt</code></dt>
-		<dd><p>The text of the carriage return prompt which is displayed when not
-pausing for specified amount of time.  The default is</p></dd>
-<dd><pre>  Hit return to continue&gt;
 
-</pre></dd>		<dd><p>If ANSI colors are available, the prompt will be displayed in reverse
-colors (usually black on white).  The ANSI colors control sequences
-are part of the default value of this attribute and so can be
-overriden by resetting its value.</p></dd>
-	<dt><code>highlight</code></dt>
-		<dd><p>This sets the form of highlighting of the prompt.  The possible values
-are underline and reverse, which will cause the prompt text to be
-either underlined or reverse video in the sense of <code>Term::ANSIColor</code>.
-Any other value for this attribute will result in no highlighting of
-the prompt string.</p></dd>
+<dt id="prompt"><code>prompt</code></dt>
+<dd>
+
+<p>The text of the carriage return prompt which is displayed when not pausing for specified amount of time. The default is</p>
+
+<pre><code>  Hit return to continue&gt;</code></pre>
+
+<p>If ANSI colors are available, the prompt will be displayed in reverse colors (usually black on white). The ANSI colors control sequences are part of the default value of this attribute and so can be overriden by resetting its value.</p>
+
+</dd>
+<dt id="highlight"><code>highlight</code></dt>
+<dd>
+
+<p>This sets the form of highlighting of the prompt. The possible values are underline and reverse, which will cause the prompt text to be either underlined or reverse video in the sense of <code>Term::ANSIColor</code>. Any other value for this attribute will result in no highlighting of the prompt string.</p>
+
+</dd>
 </dl>
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<h1 id="METHODS">METHODS</h1>
 
 <dl>
-	<dt><code>pause</code></dt>
-		<dd><p>This pauses either for the amount of time indicated in seconds or, if
-the argument is zero or negative, until the enter key is pressed.</p></dd>
-<dd><pre>   $object-&gt;pause(-1);
 
-</pre></dd>		<dd><p>This method returns whatever string is entered before return is hit.
-So this method could be used, for example, to prompt for the answer
-with a question.</p></dd>
-<dd><pre>   $object-&gt;prompt(&quot;What is 2+2? &quot;);
+<dt id="pause"><code>pause</code></dt>
+<dd>
+
+<p>This pauses either for the amount of time indicated in seconds or, if the argument is zero or negative, until the enter key is pressed.</p>
+
+<pre><code>   $object-&gt;pause(-1);</code></pre>
+
+<p>This method returns whatever string is entered before return is hit. So this method could be used, for example, to prompt for the answer with a question.</p>
+
+<pre><code>   $object-&gt;prompt(&quot;What is 2+2? &quot;);
    my $answer = $object-&gt;pause;
    chomp $answer;
-   if ($answer eq '4') {
-      print &quot;You're a math genius!\n&quot;;
+   if ($answer eq &#39;4&#39;) {
+      print &quot;You&#39;re a math genius!\n&quot;;
    } else {
-      print &quot;Sigh. I don't know why I even bother....\n&quot;;
-   };
+      print &quot;Sigh. I don&#39;t know why I even bother....\n&quot;;
+   };</code></pre>
 
-</pre></dd></dl>
-<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+</dd>
+</dl>
 
-<p>Demeter's dependencies are in the <cite>Build.PL</cite> file.
-This module uses <a href="https://metacpan.org/pod/Term%3A%3AANSIColor">Term::ANSIColor</a> if it is available.</p>
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
 
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<p>Demeter&#39;s dependencies are in the <i>Build.PL</i> file. This module uses <a href="http://metacpan.org/module/Term::ANSIColor">Term::ANSIColor</a> if it is available.</p>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
+
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>)</p>
 
 <p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
-
-
-
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>15.9. Fuzzy degeneracy &mdash; Artemis 0.9.26 documentation</title>
+    <title>15.9. Fuzzy degeneracy &#8212; Artemis 0.9.26 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -17,15 +17,15 @@
         VERSION:     '0.9.26',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Artemis 0.9.26 documentation" href="../index.html" />
-    <link rel="up" title="15. Extended discussions" href="index.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="15.10. Handling dopants" href="dopants.html" />
     <link rel="prev" title="15.8. Unique potential styles" href="ipots.html" />
 
@@ -44,8 +44,8 @@
         <li class="right" >
           <a href="ipots.html" title="15.8. Unique potential styles"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">15. Extended discussions</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">15. Extended discussions</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -74,12 +74,12 @@ guaranteed to be the shortest path.  For more details, see</p>
 <ol class="arabic simple">
 <li>Find all paths (<span class="blueatom">0</span> <span class="redatom">i</span> <span class="blueatom">0</span>),
 <span class="redatom">i</span> ≠ <span class="blueatom">0</span> in the cluster. These paths are
-represented by the two-leg diagram in <a class="reference internal" href="#fig-pathfinder"><span>Fig. 15.32</span></a>.  Put each such path in a heap.</li>
+represented by the two-leg diagram in <a class="reference internal" href="#fig-pathfinder"><span class="std std-numref">Fig. 15.32</span></a>.  Put each such path in a heap.</li>
 <li>For each such path, add a leg with <span class="yellowatom">j</span> ≠
 <span class="redatom">i</span> and <span class="yellowatom">j</span> ≠ <span class="blueatom">0</span>. Put all
 (<span class="blueatom">0</span> <span class="redatom">i</span> <span class="yellowatom">j</span> <span class="blueatom">0</span>) in the
 heap. These paths are represented by the three-leg diagram in
-<a class="reference internal" href="#fig-pathfinder"><span>Fig. 15.32</span></a>.</li>
+<a class="reference internal" href="#fig-pathfinder"><span class="std std-numref">Fig. 15.32</span></a>.</li>
 <li>Up to some order of scattering, populate the heap with
 (<span class="blueatom">0</span> <span class="redatom">i</span> ... x <span class="blueatom">0</span>)</li>
 <li>Test each path (<span class="blueatom">0</span> <span class="redatom">i</span> ... x <span class="blueatom">0</span>)
@@ -157,56 +157,56 @@ paths whose lengths are within a small margin will be considered
 degenerate. The width of this bin is set by the
 <font color="#636A24">♦Pathfinder→fuzz</font> preference.</p>
 <p>Consider this <code class="file docutils literal"><span class="pre">feff.inp</span></code> file (made from <a class="reference external" href="https://raw.githubusercontent.com/bruceravel/XAS-Education/master/Examples/Xtal/PbFe12O19.inp">this crystal data</a>):</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>TITLE magnetoplumbite  PbFe_12O_19
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">TITLE</span> <span class="n">magnetoplumbite</span>  <span class="n">PbFe_12O_19</span>
 
-HOLE      4   1.0   * FYI: (Pb L3 edge @ 13035 eV, second number is S0^2)
-*         mphase,mpath,mfeff,mchi
-CONTROL   1      1     1     1
-PRINT     1      0     0     0
+<span class="n">HOLE</span>      <span class="mi">4</span>   <span class="mf">1.0</span>   <span class="o">*</span> <span class="n">FYI</span><span class="p">:</span> <span class="p">(</span><span class="n">Pb</span> <span class="n">L3</span> <span class="n">edge</span> <span class="o">@</span> <span class="mi">13035</span> <span class="n">eV</span><span class="p">,</span> <span class="n">second</span> <span class="n">number</span> <span class="ow">is</span> <span class="n">S0</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span>
+<span class="o">*</span>         <span class="n">mphase</span><span class="p">,</span><span class="n">mpath</span><span class="p">,</span><span class="n">mfeff</span><span class="p">,</span><span class="n">mchi</span>
+<span class="n">CONTROL</span>   <span class="mi">1</span>      <span class="mi">1</span>     <span class="mi">1</span>     <span class="mi">1</span>
+<span class="n">PRINT</span>     <span class="mi">1</span>      <span class="mi">0</span>     <span class="mi">0</span>     <span class="mi">0</span>
 
-RMAX      5.0
-*NLEG      4
+<span class="n">RMAX</span>      <span class="mf">5.0</span>
+<span class="o">*</span><span class="n">NLEG</span>      <span class="mi">4</span>
 
-POTENTIALS
- * ipot   Z      tag
-    0     82     Pb
-    1     82     Pb
-    2     26     Fe
-    3     8      O
+<span class="n">POTENTIALS</span>
+ <span class="o">*</span> <span class="n">ipot</span>   <span class="n">Z</span>      <span class="n">tag</span>
+    <span class="mi">0</span>     <span class="mi">82</span>     <span class="n">Pb</span>
+    <span class="mi">1</span>     <span class="mi">82</span>     <span class="n">Pb</span>
+    <span class="mi">2</span>     <span class="mi">26</span>     <span class="n">Fe</span>
+    <span class="mi">3</span>     <span class="mi">8</span>      <span class="n">O</span>
 
 
-ATOMS                  * this list contains 84 atoms
-*   x          y          z     ipot tag           distance
-   0.00000    0.00000    0.00000  0  Pb1           0.00000
-   1.65468    0.00003    2.30070  3  O.1           2.83394
-  -0.82737   -1.43298    2.30070  3  O.1           2.83394
-   1.65468    0.00003   -2.30070  3  O.1           2.83394
-  -0.82737   -1.43298   -2.30070  3  O.1           2.83394
-  -0.82737    1.43304    2.30070  3  O.1           2.83397
-  -0.82737    1.43304   -2.30070  3  O.1           2.83397
-   2.63123   -1.31552    0.00000  3  O.2           2.94176
-  -0.17634   -2.93647    0.00000  3  O.2           2.94176
-   2.63123    1.31558    0.00000  3  O.2           2.94179
-  -2.45494   -1.62092    0.00000  3  O.2           2.94179
-  -2.45494    1.62098    0.00000  3  O.2           2.94182
-  -0.17634    2.93653    0.00000  3  O.2           2.94182
-   1.69537   -2.93647    0.00000  2  Fe2.1         3.39074
-  -3.39080    0.00003    0.00000  2  Fe2.1         3.39079
-   1.69537    2.93653    0.00000  2  Fe2.1         3.39079
-   0.83581   -1.44767    3.24399  2  Fe5.1         3.64935
-   0.83581   -1.44767   -3.24399  2  Fe5.1         3.64935
-  -1.67167    0.00003    3.24399  2  Fe5.1         3.64937
-   0.83581    1.44772    3.24399  2  Fe5.1         3.64937
-  -1.67167    0.00003   -3.24399  2  Fe5.1         3.64937
-   0.83581    1.44772   -3.24399  2  Fe5.1         3.64937
-   3.39074    0.00006    1.38042  2  Fe4.1         3.66097
-  -1.69542   -2.93644    1.38042  2  Fe4.1         3.66097
-   3.39074    0.00006   -1.38042  2  Fe4.1         3.66097
-  -1.69542   -2.93644   -1.38042  2  Fe4.1         3.66097
-  -1.69542    2.93656    1.38042  2  Fe4.1         3.66107
-  -1.69542    2.93656   -1.38042  2  Fe4.1         3.66107
-           ... (more atoms follow)
-END
+<span class="n">ATOMS</span>                  <span class="o">*</span> <span class="n">this</span> <span class="nb">list</span> <span class="n">contains</span> <span class="mi">84</span> <span class="n">atoms</span>
+<span class="o">*</span>   <span class="n">x</span>          <span class="n">y</span>          <span class="n">z</span>     <span class="n">ipot</span> <span class="n">tag</span>           <span class="n">distance</span>
+   <span class="mf">0.00000</span>    <span class="mf">0.00000</span>    <span class="mf">0.00000</span>  <span class="mi">0</span>  <span class="n">Pb1</span>           <span class="mf">0.00000</span>
+   <span class="mf">1.65468</span>    <span class="mf">0.00003</span>    <span class="mf">2.30070</span>  <span class="mi">3</span>  <span class="n">O</span><span class="o">.</span><span class="mi">1</span>           <span class="mf">2.83394</span>
+  <span class="o">-</span><span class="mf">0.82737</span>   <span class="o">-</span><span class="mf">1.43298</span>    <span class="mf">2.30070</span>  <span class="mi">3</span>  <span class="n">O</span><span class="o">.</span><span class="mi">1</span>           <span class="mf">2.83394</span>
+   <span class="mf">1.65468</span>    <span class="mf">0.00003</span>   <span class="o">-</span><span class="mf">2.30070</span>  <span class="mi">3</span>  <span class="n">O</span><span class="o">.</span><span class="mi">1</span>           <span class="mf">2.83394</span>
+  <span class="o">-</span><span class="mf">0.82737</span>   <span class="o">-</span><span class="mf">1.43298</span>   <span class="o">-</span><span class="mf">2.30070</span>  <span class="mi">3</span>  <span class="n">O</span><span class="o">.</span><span class="mi">1</span>           <span class="mf">2.83394</span>
+  <span class="o">-</span><span class="mf">0.82737</span>    <span class="mf">1.43304</span>    <span class="mf">2.30070</span>  <span class="mi">3</span>  <span class="n">O</span><span class="o">.</span><span class="mi">1</span>           <span class="mf">2.83397</span>
+  <span class="o">-</span><span class="mf">0.82737</span>    <span class="mf">1.43304</span>   <span class="o">-</span><span class="mf">2.30070</span>  <span class="mi">3</span>  <span class="n">O</span><span class="o">.</span><span class="mi">1</span>           <span class="mf">2.83397</span>
+   <span class="mf">2.63123</span>   <span class="o">-</span><span class="mf">1.31552</span>    <span class="mf">0.00000</span>  <span class="mi">3</span>  <span class="n">O</span><span class="o">.</span><span class="mi">2</span>           <span class="mf">2.94176</span>
+  <span class="o">-</span><span class="mf">0.17634</span>   <span class="o">-</span><span class="mf">2.93647</span>    <span class="mf">0.00000</span>  <span class="mi">3</span>  <span class="n">O</span><span class="o">.</span><span class="mi">2</span>           <span class="mf">2.94176</span>
+   <span class="mf">2.63123</span>    <span class="mf">1.31558</span>    <span class="mf">0.00000</span>  <span class="mi">3</span>  <span class="n">O</span><span class="o">.</span><span class="mi">2</span>           <span class="mf">2.94179</span>
+  <span class="o">-</span><span class="mf">2.45494</span>   <span class="o">-</span><span class="mf">1.62092</span>    <span class="mf">0.00000</span>  <span class="mi">3</span>  <span class="n">O</span><span class="o">.</span><span class="mi">2</span>           <span class="mf">2.94179</span>
+  <span class="o">-</span><span class="mf">2.45494</span>    <span class="mf">1.62098</span>    <span class="mf">0.00000</span>  <span class="mi">3</span>  <span class="n">O</span><span class="o">.</span><span class="mi">2</span>           <span class="mf">2.94182</span>
+  <span class="o">-</span><span class="mf">0.17634</span>    <span class="mf">2.93653</span>    <span class="mf">0.00000</span>  <span class="mi">3</span>  <span class="n">O</span><span class="o">.</span><span class="mi">2</span>           <span class="mf">2.94182</span>
+   <span class="mf">1.69537</span>   <span class="o">-</span><span class="mf">2.93647</span>    <span class="mf">0.00000</span>  <span class="mi">2</span>  <span class="n">Fe2</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">3.39074</span>
+  <span class="o">-</span><span class="mf">3.39080</span>    <span class="mf">0.00003</span>    <span class="mf">0.00000</span>  <span class="mi">2</span>  <span class="n">Fe2</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">3.39079</span>
+   <span class="mf">1.69537</span>    <span class="mf">2.93653</span>    <span class="mf">0.00000</span>  <span class="mi">2</span>  <span class="n">Fe2</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">3.39079</span>
+   <span class="mf">0.83581</span>   <span class="o">-</span><span class="mf">1.44767</span>    <span class="mf">3.24399</span>  <span class="mi">2</span>  <span class="n">Fe5</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">3.64935</span>
+   <span class="mf">0.83581</span>   <span class="o">-</span><span class="mf">1.44767</span>   <span class="o">-</span><span class="mf">3.24399</span>  <span class="mi">2</span>  <span class="n">Fe5</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">3.64935</span>
+  <span class="o">-</span><span class="mf">1.67167</span>    <span class="mf">0.00003</span>    <span class="mf">3.24399</span>  <span class="mi">2</span>  <span class="n">Fe5</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">3.64937</span>
+   <span class="mf">0.83581</span>    <span class="mf">1.44772</span>    <span class="mf">3.24399</span>  <span class="mi">2</span>  <span class="n">Fe5</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">3.64937</span>
+  <span class="o">-</span><span class="mf">1.67167</span>    <span class="mf">0.00003</span>   <span class="o">-</span><span class="mf">3.24399</span>  <span class="mi">2</span>  <span class="n">Fe5</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">3.64937</span>
+   <span class="mf">0.83581</span>    <span class="mf">1.44772</span>   <span class="o">-</span><span class="mf">3.24399</span>  <span class="mi">2</span>  <span class="n">Fe5</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">3.64937</span>
+   <span class="mf">3.39074</span>    <span class="mf">0.00006</span>    <span class="mf">1.38042</span>  <span class="mi">2</span>  <span class="n">Fe4</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">3.66097</span>
+  <span class="o">-</span><span class="mf">1.69542</span>   <span class="o">-</span><span class="mf">2.93644</span>    <span class="mf">1.38042</span>  <span class="mi">2</span>  <span class="n">Fe4</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">3.66097</span>
+   <span class="mf">3.39074</span>    <span class="mf">0.00006</span>   <span class="o">-</span><span class="mf">1.38042</span>  <span class="mi">2</span>  <span class="n">Fe4</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">3.66097</span>
+  <span class="o">-</span><span class="mf">1.69542</span>   <span class="o">-</span><span class="mf">2.93644</span>   <span class="o">-</span><span class="mf">1.38042</span>  <span class="mi">2</span>  <span class="n">Fe4</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">3.66097</span>
+  <span class="o">-</span><span class="mf">1.69542</span>    <span class="mf">2.93656</span>    <span class="mf">1.38042</span>  <span class="mi">2</span>  <span class="n">Fe4</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">3.66107</span>
+  <span class="o">-</span><span class="mf">1.69542</span>    <span class="mf">2.93656</span>   <span class="o">-</span><span class="mf">1.38042</span>  <span class="mi">2</span>  <span class="n">Fe4</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">3.66107</span>
+           <span class="o">...</span> <span class="p">(</span><span class="n">more</span> <span class="n">atoms</span> <span class="n">follow</span><span class="p">)</span>
+<span class="n">END</span>
 </pre></div>
 </div>
 <p>Using the default <font color="#636A24">♦Pathfinder→fuzz</font> parameter of 0.03
@@ -215,21 +215,21 @@ scatterers, which differ by about 0.11 Å, get merged into a single
 scattering path. This path has a value of R<sub>eff</sub> that is the
 average of the constituent paths and a degenaracy that is the sum of
 the constituent paths.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>#     degen   Reff       scattering path    I   Rank  legs   type
- 0001   6    2.834  ----  @ O.1    @        2  100.00  2  single scattering
- 0002   6    2.942  ----  @ O.2    @        2   89.88  2  single scattering
- 0003   3    3.391  ----  @ Fe2.1  @        2   34.83  2  single scattering
- 0004  12    3.655  ----  @ Fe5.1  @        2  100.00  2  single scattering
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1">#     degen   Reff       scattering path    I   Rank  legs   type</span>
+ <span class="mi">0001</span>   <span class="mi">6</span>    <span class="mf">2.834</span>  <span class="o">----</span>  <span class="o">@</span> <span class="n">O</span><span class="o">.</span><span class="mi">1</span>    <span class="o">@</span>        <span class="mi">2</span>  <span class="mf">100.00</span>  <span class="mi">2</span>  <span class="n">single</span> <span class="n">scattering</span>
+ <span class="mi">0002</span>   <span class="mi">6</span>    <span class="mf">2.942</span>  <span class="o">----</span>  <span class="o">@</span> <span class="n">O</span><span class="o">.</span><span class="mi">2</span>    <span class="o">@</span>        <span class="mi">2</span>   <span class="mf">89.88</span>  <span class="mi">2</span>  <span class="n">single</span> <span class="n">scattering</span>
+ <span class="mi">0003</span>   <span class="mi">3</span>    <span class="mf">3.391</span>  <span class="o">----</span>  <span class="o">@</span> <span class="n">Fe2</span><span class="o">.</span><span class="mi">1</span>  <span class="o">@</span>        <span class="mi">2</span>   <span class="mf">34.83</span>  <span class="mi">2</span>  <span class="n">single</span> <span class="n">scattering</span>
+ <span class="mi">0004</span>  <span class="mi">12</span>    <span class="mf">3.655</span>  <span class="o">----</span>  <span class="o">@</span> <span class="n">Fe5</span><span class="o">.</span><span class="mi">1</span>  <span class="o">@</span>        <span class="mi">2</span>  <span class="mf">100.00</span>  <span class="mi">2</span>  <span class="n">single</span> <span class="n">scattering</span>
 </pre></div>
 </div>
 <p>Resetting the <font color="#636A24">♦Pathfinder→fuzz</font> to 0.01 separates those
 two nearly degenerate paths into separate scattering paths.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>#     degen   Reff       scattering path    I   Rank  legs   type
- 0001   6    2.834  ----  @ O.1    @        2  100.00  2  single scattering
- 0002   6    2.942  ----  @ O.2    @        2   89.88  2  single scattering
- 0003   3    3.391  ----  @ Fe2.1  @        2   34.83  2  single scattering
- 0004   6    3.649  ----  @ Fe5.1  @        2   57.63  2  single scattering
- 0005   6    3.661  ----  @ Fe4.1  @        2   57.15  2  single scattering
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1">#     degen   Reff       scattering path    I   Rank  legs   type</span>
+ <span class="mi">0001</span>   <span class="mi">6</span>    <span class="mf">2.834</span>  <span class="o">----</span>  <span class="o">@</span> <span class="n">O</span><span class="o">.</span><span class="mi">1</span>    <span class="o">@</span>        <span class="mi">2</span>  <span class="mf">100.00</span>  <span class="mi">2</span>  <span class="n">single</span> <span class="n">scattering</span>
+ <span class="mi">0002</span>   <span class="mi">6</span>    <span class="mf">2.942</span>  <span class="o">----</span>  <span class="o">@</span> <span class="n">O</span><span class="o">.</span><span class="mi">2</span>    <span class="o">@</span>        <span class="mi">2</span>   <span class="mf">89.88</span>  <span class="mi">2</span>  <span class="n">single</span> <span class="n">scattering</span>
+ <span class="mi">0003</span>   <span class="mi">3</span>    <span class="mf">3.391</span>  <span class="o">----</span>  <span class="o">@</span> <span class="n">Fe2</span><span class="o">.</span><span class="mi">1</span>  <span class="o">@</span>        <span class="mi">2</span>   <span class="mf">34.83</span>  <span class="mi">2</span>  <span class="n">single</span> <span class="n">scattering</span>
+ <span class="mi">0004</span>   <span class="mi">6</span>    <span class="mf">3.649</span>  <span class="o">----</span>  <span class="o">@</span> <span class="n">Fe5</span><span class="o">.</span><span class="mi">1</span>  <span class="o">@</span>        <span class="mi">2</span>   <span class="mf">57.63</span>  <span class="mi">2</span>  <span class="n">single</span> <span class="n">scattering</span>
+ <span class="mi">0005</span>   <span class="mi">6</span>    <span class="mf">3.661</span>  <span class="o">----</span>  <span class="o">@</span> <span class="n">Fe4</span><span class="o">.</span><span class="mi">1</span>  <span class="o">@</span>        <span class="mi">2</span>   <span class="mf">57.15</span>  <span class="mi">2</span>  <span class="n">single</span> <span class="n">scattering</span>
 </pre></div>
 </div>
 <p>To make the pathfinder neglect fuzzy degeneracy, thus behaving like
@@ -285,14 +285,14 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
 <li class="toctree-l2"><a class="reference internal" href="bvs.html">15.6. Bond valence sums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="empirical.html">15.7. Empirical standards</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ipots.html">15.8. Unique potential styles</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">15.9. Fuzzy degeneracy</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">15.9. Fuzzy degeneracy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dopants.html">15.10. Handling dopants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fivesix.html">15.11. 5 &amp; 6 legged paths</a></li>
 </ul>
 </li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.26</b></p>
+<p>Current Demeter version: <b>0.9.26</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
@@ -300,6 +300,7 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/XAS-Education/">Bruce's XAS Education page</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -313,20 +314,17 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/extended/fuzzy.txt"
+      <li><a href="../_sources/extended/fuzzy.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -343,13 +341,13 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
         <li class="right" >
           <a href="ipots.html" title="15.8. Unique potential styles"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >15. Extended discussions</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >15. Extended discussions</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, Bruce Ravel.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+        &#169; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
     </div>
   </body>
 </html>

@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::Data</title>
-<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::Data &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,281 +15,422 @@
 </div>
 <div class="path">
   <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-Data
+  Demeter::Data
 </div>
 <div>
 <a href="../src/Demeter/Data.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#ATTRIBUTES">ATTRIBUTES</a>
+    <ul>
+      <li><a href="#General-Attributes">General Attributes</a></li>
+      <li><a href="#Background-Removal-Attributes">Background Removal Attributes</a></li>
+      <li><a href="#Forward-Transform-Attributes">Forward Transform Attributes</a></li>
+      <li><a href="#Back-Transform-Attributes">Back Transform Attributes</a></li>
+      <li><a href="#Fitting-Attributes">Fitting Attributes</a></li>
+      <li><a href="#Plotting-Attributes">Plotting Attributes</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#I-O-methods">I/O methods</a></li>
+      <li><a href="#Convenience-methods">Convenience methods</a></li>
+    </ul>
+  </li>
+  <li><a href="#DATA-FILES-AND-DATA-PARTS">DATA FILES AND DATA PARTS</a></li>
+  <li><a href="#DIAGNOSTICS">DIAGNOSTICS</a></li>
+  <li><a href="#SERIALIZATION-AND-DESERIALIZATION">SERIALIZATION AND DESERIALIZATION</a></li>
+  <li><a href="#CONFIGURATION">CONFIGURATION</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::Data - Process and analyze EXAFS data with Ifeffit or Larch</p>
 
-
-
-
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-
-
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
-
-<pre>  use Demeter;
+<pre><code>  use Demeter;
   my $data = Demeter::Data -&gt; new;
   $data -&gt; set(file      =&gt; &quot;example/cu/cu10k.chi&quot;,
-	       name      =&gt; 'My copper data',
-	       fft_kmin  =&gt; 3,	       fft_kmax  =&gt; 14,
-	       bft_rmin  =&gt; 1,         bft_rmax  =&gt; 4.3,
-	       fit_k1    =&gt; 1,	       fit_k3    =&gt; 1,
-	      );
-  $data -&gt; plot(&quot;r&quot;);
+               name      =&gt; &#39;My copper data&#39;,
+               fft_kmin  =&gt; 3,         fft_kmax  =&gt; 14,
+               bft_rmin  =&gt; 1,         bft_rmax  =&gt; 4.3,
+               fit_k1    =&gt; 1,         fit_k3    =&gt; 1,
+              );
+  $data -&gt; plot(&quot;r&quot;);</code></pre>
 
-</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This subclass of the <a href="../Demeter.pm.html">Demeter</a> class is inteded to hold information
-pertaining to data for use in data processing and analysis.</p>
+<p>This subclass of the <a href="../Demeter.pm.html">Demeter</a> class is inteded to hold information pertaining to data for use in data processing and analysis.</p>
 
-<h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="ATTRIBUTES">ATTRIBUTES</h1>
 
-<p>The following are the attributes of the Data object.  Attempting to
-access an attribute not on this list will throw an exception.</p>
+<p>The following are the attributes of the Data object. Attempting to access an attribute not on this list will throw an exception.</p>
 
-<p>The type of argument expected in given in parentheses. i.e. number,
-integer, string, and so on.  The default value, if one exists, is
-given in square brackets.</p>
+<p>The type of argument expected in given in parentheses. i.e. number, integer, string, and so on. The default value, if one exists, is given in square brackets.</p>
 
-<p>For a Data object to be included in a fit, it is necessary that it be
-gathered into a Fit object.  See <a href="Fit.pm.html">Demeter::Fit</a> for details.</p>
+<p>For a Data object to be included in a fit, it is necessary that it be gathered into a Fit object. See <a href="Fit.pm.html">Demeter::Fit</a> for details.</p>
 
-<h2 id="General_Attributes">General Attributes</h2>
+<h2 id="General-Attributes">General Attributes</h2>
 
 <dl>
-	<dt><code>group</code> (string) <i>[random 5-letter string]</i></dt>
-		<dd><p>This is the name associated with the data.  It's primary use is as the
-group name for the arrays associated with the data in Ifeffit or
-Larch.  That is, its arrays will be called <i>group</i>.k, <i>group</i>.chi,
-and so on.  It is best if this is a reasonably short word and it
-<strong>must</strong> follow the conventions of a valid group name in Ifeffit or
-Larch.  The default group is a random five-letter string generated
-automatically when the object is created.</p></dd>
-	<dt><code>tag</code> (string) <i>[same random 5-letter string as group]</i></dt>
-		<dd><p>Use to disambiguate guess parameter names when doing variable name
-substitution for local parameters.</p></dd>
-	<dt><code>file</code> (filename)</dt>
-		<dd><p>This is the file containing the chi(k) associated with this Data
-object.  It will be an empty string if the data comes from an Athena
-project file or is generated by Demeter.</p></dd>
-	<dt><code>unreadable</code> (boolean)</dt>
-		<dd><p>This is set to a true value if any error is seen while trying to
-import the data.  This allows a GUI to bail out of processing the data
-file before running into a problem that might cause a crash.</p></dd>
-	<dt><code>prjrecord</code> (project filename and record number)</dt>
-		<dd><p>This is the Athena project file from which the data associated with
-this Data object.  It will be an empty string if the data comes from a
-normal file or is generated by Demeter.  The format of this string is
-the project file name and the record number separated by a comma:</p></dd>
-<dd><pre>  print $data-&gt;prjrecord, $/;
+
+<dt id="group-string-random-5-letter-string"><code>group</code> (string) <i>[random 5-letter string]</i></dt>
+<dd>
+
+<p>This is the name associated with the data. It&#39;s primary use is as the group name for the arrays associated with the data in Ifeffit or Larch. That is, its arrays will be called <i>group</i>.k, <i>group</i>.chi, and so on. It is best if this is a reasonably short word and it <b>must</b> follow the conventions of a valid group name in Ifeffit or Larch. The default group is a random five-letter string generated automatically when the object is created.</p>
+
+</dd>
+<dt id="tag-string-same-random-5-letter-string-as-group"><code>tag</code> (string) <i>[same random 5-letter string as group]</i></dt>
+<dd>
+
+<p>Use to disambiguate guess parameter names when doing variable name substitution for local parameters.</p>
+
+</dd>
+<dt id="file-filename"><code>file</code> (filename)</dt>
+<dd>
+
+<p>This is the file containing the chi(k) associated with this Data object. It will be an empty string if the data comes from an Athena project file or is generated by Demeter.</p>
+
+</dd>
+<dt id="unreadable-boolean"><code>unreadable</code> (boolean)</dt>
+<dd>
+
+<p>This is set to a true value if any error is seen while trying to import the data. This allows a GUI to bail out of processing the data file before running into a problem that might cause a crash.</p>
+
+</dd>
+<dt id="prjrecord-project-filename-and-record-number"><code>prjrecord</code> (project filename and record number)</dt>
+<dd>
+
+<p>This is the Athena project file from which the data associated with this Data object. It will be an empty string if the data comes from a normal file or is generated by Demeter. The format of this string is the project file name and the record number separated by a comma:</p>
+
+<pre><code>  print $data-&gt;prjrecord, $/;
    ==prints==&gt;
-     whatever.prj, 5
+     whatever.prj, 5</code></pre>
 
-</pre></dd>		<dd><p>This will be set automatically by the Data::Prj <code>record</code> method.
-Setting it by hand <i>does not</i> trigger a reading of the record.  So,
-you should pretend that this is a read-only attribute.</p></dd>
-	<dt><code>provenance</code> (string)</dt>
-		<dd><p>This is a short string explaining where the data object came from,
-e.g. from a column data file or an Athena project file.</p></dd>
-	<dt><code>name</code> (string)</dt>
-		<dd><p>This is a text string used to describe this object in a plot ot a user
-interface.  Like the <code>group</code> attribute, this should be short, but it
-can be a bit more verbose.  It should be a single line, unlike the
-<code>title</code> attibute.</p></dd>
-	<dt><code>plotkey</code> (string)</dt>
-		<dd><p>This is a text string used as a temporary override to the name of Data
-object for use in a plot.  It should be reset to an empty string as
-soon as the plot requiring the name override is finished.</p></dd>
-	<dt><code>forcekey</code> (string)</dt>
-		<dd><p>When this is true, it forces the plotting system to use the name of
-the Data group as the legend key regardless of the type of plot.  This
-was needed to force an R123 plot to use the scaling information as the
-key rather than having the key be the part plotted, which is what
-normally happens for a single group R or q space plot.</p></dd>
-	<dt><code>cv</code> (number)</dt>
-		<dd><p>The characteristic value is a number associated with the data object.
-The cv is used to generate guess parameteres from lguess parameters
-and is used as the substitution value in math expressions containing
-the string <code>[cv]</code>.  The default value is a number that is incremented
-as Data objects are created.</p></dd>
-	<dt><code>datatype</code> (string)</dt>
-		<dd><p>This identifies the record type.  It is one of</p></dd>
-<dd><pre>  xmu chi xmudat xanes
+<p>This will be set automatically by the Data::Prj <code>record</code> method. Setting it by hand <i>does not</i> trigger a reading of the record. So, you should pretend that this is a read-only attribute.</p>
 
-</pre></dd>		<dd><p>Earlier versions of Demeter had attributes like <code>is_xmu</code> and
-<code>is_chi</code>.  Those are now obsolete and there use will return an error
-about being unknown attributes.</p></dd>
-	<dt><code>is_col</code> (boolean)</dt>
-		<dd><p>This is true if the file indicated by the <code>file</code> attribute contains
-column data that needs to be converted into mu(E) data.  See the
-description of the <code>read_data</code> method for how this gets set
-automatically and when you may need to set it by hand.</p></dd>
-	<dt><code>is_col</code> (string)</dt>
-		<dd><p>This is an empty string by default.  When a merge group is made, its
-string value is set to themanner in which the merge was made, which is
-one of <code>e</code> for mu(E), <code>n</code> for norm(E&gt;, and <code>k</code> for chi(k).</p></dd>
-	<dt><code>columns</code> (string)</dt>
-		<dd><p>This string contains Ifeffit's <code>$column_label</code> or Larch's <code>...</code>
-string from importing the data file.</p></dd>
-	<dt><code>energy</code> (string)</dt>
-		<dd><p>This string uses gnuplot-like notation to indicate which column in the
-data file contains the energy axis.  As an example, the default is that the
-first column contains the energy and this string is <code>$1</code>.</p></dd>
-	<dt><code>numerator</code> (string)</dt>
-		<dd><p>This string uses gnuplot-like notation to indicate how to convert
-columns from the data file into the numerator of the expression for
-computing mu(E).  For example, the default is that these are
-transmission data and I0 is in the 2nd column and the default for
-this string is <code>$2</code>.</p></dd>
-		<dd><p>If these are fluorescence data measured with a multichannel analyzer
-and the MCA channels are in columns 7 - 10, then this string would be
-<code>$7+$8+$9+$10</code>.</p></dd>
-	<dt><code>denominator</code> (string)</dt>
-		<dd><p>This string uses gnuplot-like notation to indicate how to convert
-columns from the data file into the denominator of the expression for
-computing mu(E).  For example, the default is that these are
-transmission data and transmission is in the 3nd column and the
-default for this string is <code>$3</code>.</p></dd>
-	<dt><code>ln</code> (boolean)</dt>
-		<dd><p>This is true for transmission data, i.e. if conversion from columns to
-mu(E) requires that the natural log be taken.  In fact, the natural
-log of the absolute value of the ratio of the numerator and
-denominator is computed to avoid numerical error in certain situations.</p></dd>
-	<dt><code>ln</code> (boolean)</dt>
-		<dd><p>This flag severely restricts data processing to just what is necessary
-to make a plot of unnormalized mu(E).  It is for use in a GUI's column
-selection dialog so that swift plot updates can be made while columns
-are being selected.</p></dd>
-	<dt><code>display</code> (boolean)</dt>
-		<dd><p>This is a flag used by a GUI while selecting columns.  It severely
-limits the amount of data processing done so that the display updates
-quickly in the GUI.  This should be set back to 0 <strong>as soon as
-possible</strong> so t hat subsequent data processing proceeds properly.</p></dd>
+</dd>
+<dt id="provenance-string"><code>provenance</code> (string)</dt>
+<dd>
+
+<p>This is a short string explaining where the data object came from, e.g. from a column data file or an Athena project file.</p>
+
+</dd>
+<dt id="name-string"><code>name</code> (string)</dt>
+<dd>
+
+<p>This is a text string used to describe this object in a plot ot a user interface. Like the <code>group</code> attribute, this should be short, but it can be a bit more verbose. It should be a single line, unlike the <code>title</code> attibute.</p>
+
+</dd>
+<dt id="plotkey-string"><code>plotkey</code> (string)</dt>
+<dd>
+
+<p>This is a text string used as a temporary override to the name of Data object for use in a plot. It should be reset to an empty string as soon as the plot requiring the name override is finished.</p>
+
+</dd>
+<dt id="forcekey-string"><code>forcekey</code> (string)</dt>
+<dd>
+
+<p>When this is true, it forces the plotting system to use the name of the Data group as the legend key regardless of the type of plot. This was needed to force an R123 plot to use the scaling information as the key rather than having the key be the part plotted, which is what normally happens for a single group R or q space plot.</p>
+
+</dd>
+<dt id="cv-number"><code>cv</code> (number)</dt>
+<dd>
+
+<p>The characteristic value is a number associated with the data object. The cv is used to generate guess parameteres from lguess parameters and is used as the substitution value in math expressions containing the string <code>[cv]</code>. The default value is a number that is incremented as Data objects are created.</p>
+
+</dd>
+<dt id="datatype-string"><code>datatype</code> (string)</dt>
+<dd>
+
+<p>This identifies the record type. It is one of</p>
+
+<pre><code>  xmu chi xmudat xanes</code></pre>
+
+<p>Earlier versions of Demeter had attributes like <code>is_xmu</code> and <code>is_chi</code>. Those are now obsolete and there use will return an error about being unknown attributes.</p>
+
+</dd>
+<dt id="is_col-boolean"><code>is_col</code> (boolean)</dt>
+<dd>
+
+<p>This is true if the file indicated by the <code>file</code> attribute contains column data that needs to be converted into mu(E) data. See the description of the <code>read_data</code> method for how this gets set automatically and when you may need to set it by hand.</p>
+
+</dd>
+<dt id="is_col-string"><code>is_col</code> (string)</dt>
+<dd>
+
+<p>This is an empty string by default. When a merge group is made, its string value is set to themanner in which the merge was made, which is one of <code>e</code> for mu(E), <code>n</code> for norm(E&gt;, and <code>k</code> for chi(k).</p>
+
+</dd>
+<dt id="columns-string"><code>columns</code> (string)</dt>
+<dd>
+
+<p>This string contains Ifeffit&#39;s <code>$column_label</code> or Larch&#39;s <code>...</code> string from importing the data file.</p>
+
+</dd>
+<dt id="energy-string"><code>energy</code> (string)</dt>
+<dd>
+
+<p>This string uses gnuplot-like notation to indicate which column in the data file contains the energy axis. As an example, the default is that the first column contains the energy and this string is <code>$1</code>.</p>
+
+</dd>
+<dt id="numerator-string"><code>numerator</code> (string)</dt>
+<dd>
+
+<p>This string uses gnuplot-like notation to indicate how to convert columns from the data file into the numerator of the expression for computing mu(E). For example, the default is that these are transmission data and I0 is in the 2nd column and the default for this string is <code>$2</code>.</p>
+
+<p>If these are fluorescence data measured with a multichannel analyzer and the MCA channels are in columns 7 - 10, then this string would be <code>$7+$8+$9+$10</code>.</p>
+
+</dd>
+<dt id="denominator-string"><code>denominator</code> (string)</dt>
+<dd>
+
+<p>This string uses gnuplot-like notation to indicate how to convert columns from the data file into the denominator of the expression for computing mu(E). For example, the default is that these are transmission data and transmission is in the 3nd column and the default for this string is <code>$3</code>.</p>
+
+</dd>
+<dt id="ln-boolean"><code>ln</code> (boolean)</dt>
+<dd>
+
+<p>This is true for transmission data, i.e. if conversion from columns to mu(E) requires that the natural log be taken. In fact, the natural log of the absolute value of the ratio of the numerator and denominator is computed to avoid numerical error in certain situations.</p>
+
+</dd>
+<dt id="ln-boolean1"><code>ln</code> (boolean)</dt>
+<dd>
+
+<p>This flag severely restricts data processing to just what is necessary to make a plot of unnormalized mu(E). It is for use in a GUI&#39;s column selection dialog so that swift plot updates can be made while columns are being selected.</p>
+
+</dd>
+<dt id="display-boolean"><code>display</code> (boolean)</dt>
+<dd>
+
+<p>This is a flag used by a GUI while selecting columns. It severely limits the amount of data processing done so that the display updates quickly in the GUI. This should be set back to 0 <b>as soon as possible</b> so t hat subsequent data processing proceeds properly.</p>
+
+</dd>
 </dl>
-<h2 id="Background_Removal_Attributes">Background Removal Attributes</h2>
+
+<h2 id="Background-Removal-Attributes">Background Removal Attributes</h2>
 
 <dl>
-	<dt><code>bkg_e0</code> (number)</dt>
-		<dd><p>The E0 value of mu(E) data.  This is determined from the data when the
-read_data method is called.</p></dd>
-	<dt><code>bkg_e0_fraction</code> (number) <i>[0.5]</i></dt>
-		<dd><p>This is a number between 0 and 1 used for the e0 algorithm which sets
-e0 to a fraction of the edge step.  See <a href="Data/E0.pm.html">Demeter::Data::E0</a>.</p></dd>
-	<dt><code>bkg_eshift</code> (number) <i>[0]</i></dt>
-		<dd><p>An energy shift to apply to the data before doing any further processing.</p></dd>
-	<dt><code>bkg_kw</code> (number) <i>[1]</i></dt>
-		<dd><p>The k-weight to use during the background removal using the Autobk algorithm.</p></dd>
-	<dt><code>bkg_rbkg</code> (number) <i>[1]</i></dt>
-		<dd><p>The Rbkg value in the Autobk algorithm.</p></dd>
-	<dt><code>bkg_dk</code> (number) <i>[0]</i></dt>
-		<dd><p>The dk value to be used in the Fourier transform as part of the Autobk
-algorithm.</p></dd>
-	<dt><code>bkg_pre1</code> (number) <i>[-150]</i></dt>
-		<dd><p>The lower end of the range of the pre-edge regression, relative to E0.</p></dd>
-	<dt><code>bkg_pre2</code> (number) <i>[-30]</i></dt>
-		<dd><p>The upper end of the range of the pre-edge regression, relative to E0.</p></dd>
-	<dt><code>bkg_nor1</code> (number) <i>[100]</i></dt>
-		<dd><p>The lower end of the range of the post-edge regression, relative to E0.</p></dd>
-	<dt><code>bkg_nor2</code> (number) <i>[600]</i></dt>
-		<dd><p>The upper end of the range of the post-edge regression, relative to E0.</p></dd>
-	<dt><code>bkg_spl1</code> (number) <i>[0]</i></dt>
-		<dd><p>The lower end in k of the spline range in the Autobk algorithm.  The value of
-bkg_spl1e is updated whenever this is updated.</p></dd>
-	<dt><code>bkg_spl2</code> (number) <i>[15]</i></dt>
-		<dd><p>The upper end in k of the spline range in the Autobk algorithm.  The value of
-bkg_spl2e is updated whenever this is updated.</p></dd>
-	<dt><code>bkg_spl1e</code> (number) <i>[0]</i></dt>
-		<dd><p>The lower end in energy of the spline range in the Autobk algorithm,
-relative to E0.  The value of bkg_spl1 is updated whenever this is
-updated.</p></dd>
-	<dt><code>bkg_spl2e</code> (number) <i>[857]</i></dt>
-		<dd><p>The upper end in energy of the spline range in the Autobk algorithm,
-relative to E0.  The value of bkg_spl2 is updated whenever this is
-updated.</p></dd>
-	<dt><code>bkg_kwindow</code> (list) <i>[Hanning]</i></dt>
-		<dd><p>This is the functional form of the Fourier transform window used in
-the Autobk algorithm.  It is one of</p></dd>
-<dd><pre>   Kaiser-Bessel Hanning Welch Parzen Sine Gaussian
 
-</pre></dd>	<dt><code>bkg_slope</code> (number)</dt>
-		<dd><p>The slope of the pre-edge line.  This is set as part of the
-<code>normalize</code> method.</p></dd>
-	<dt><code>bkg_int</code> (number)</dt>
-		<dd><p>The intercept of the pre-edge line.  This is set as part of the
-<code>normalize</code> method.</p></dd>
-	<dt><code>bkg_step</code> (number)</dt>
-		<dd><p>The edge step found by the <code>normalize</code> method.  This attribute will
-be overwritten the next time the <code>normalize</code> method is called unless
-the <code>bkg_fixstep</code> atribute is set true.</p></dd>
-	<dt><code>bkg_fitted_step</code> (number)</dt>
-		<dd><p>The value of edge step found by the <code>normalize</code> method, regardless of
-the setting of <code>bkg_fixstep</code>.  This is needed to correctly flatten
-data.</p></dd>
-	<dt><code>bkg_fixstep</code> (boolean) <i>[0]</i></dt>
-		<dd><p>When true, the value of the c&lt;bkg&gt;_step will not be overwritten by the
-c&lt;normalize&gt; method.</p></dd>
-	<dt><code>bkg_nc0</code> (number)</dt>
-		<dd><p>The constant parameter in the post-edge regression.  This is set as part of
-the c&lt;normalize&gt; method.</p></dd>
-	<dt><code>bkg_nc1</code> (number)</dt>
-		<dd><p>The linear parameter in the post-edge regression.  This is set as part of
-the <code>normalize</code> method.</p></dd>
-	<dt><code>bkg_nc2</code> (number)</dt>
-		<dd><p>The cubic parameter in the post-edge regression.  This is set as part of
-the <code>normalize</code> method.</p></dd>
-	<dt><code>bkg_nc3</code> (number)</dt>
-		<dd><p>The quartic parameter in the post-edge regression.  This is set as part of
-the <code>normalize</code> method.  (Larch only)</p></dd>
-	<dt><code>bkg_flatten</code> (boolean) <i>[1]</i></dt>
-		<dd><p>When true, a plot of normalized mu(E) data will be flattened.</p></dd>
-	<dt><code>bkg_funnorm</code> (boolean) <i>[0]</i></dt>
-		<dd><p>When true, a functional normalization is performed to approximately
-remove the effect of quickly varying I0 signal on fluorescence EXAFS.</p></dd>
-		<dd><p>Note that has a bad impact on the display of mu(E).  The
-energy-dependent normalization is made by dividing (post(E)-pre(E))
-from mu(E) right doing the background removal.  Thus the background
-function is computed from something different from mu(E).  This turns
-out to be hard to keep track of when using Demeter's plotting system.
-Athena &quot;solves&quot; this by keeping track of what is being plotted.  A
-plot in k, R, or q uses the corrected mu(E).  A plot in E is made by
-temporarily turning off the energy-dependent normalization flag,
-re-evaluating the background function, then turning the flag back on.
-This is a bit of an efficiency hit.  And the plot in E does not quite
-correspond to the plot in k.  Awkward!</p></dd>
-	<dt><code>bkg_nnorm</code> (integer) <i>[3]</i></dt>
-		<dd><p>This can be either 2 or 3 and specifies the order of the post-edge regression.
-When this is 2, <code>bkg_nc2</code> will be forced to 0 in the regression.  <i>not yet
-implemented</i></p></dd>
-	<dt><code>bkg_stan</code> (Data or Path object)</dt>
-		<dd><p>The background removal standard.  This can be either a Data object or a Path
-object.  <i>not yet implemented</i></p></dd>
-	<dt><code>bkg_clamp1</code> (integer) <i>[0]</i></dt>
-		<dd><p>The value of the low-end spline clamp.</p></dd>
-	<dt><code>bkg_clamp2</code> (integer) <i>[24]</i></dt>
-		<dd><p>The value of the high-end spline clamp.</p></dd>
-	<dt><code>bkg_nclamp</code> (integer) <i>[5]</i></dt>
-		<dd><p>The number of data points to use in evaluating the clamp.</p></dd>
-	<dt><code>bkg_cl</code> (boolean) <i>[0]</i></dt>
-		<dd><p>When true, use Cromer-Liberman normalization rather than the Autobk algorithm.
-<i>not yet implemented</i></p></dd>
-	<dt><code>bkg_z</code> (number)</dt>
-		<dd><p>The Z number of the absorber for these data.  This is determined as part of
-the normalize method but can also be set by hand.  To deal with edge energy
-confusions, certain K and L3 edges are prefered over nearby L2 and L3 edges
-when this attribute is set automatically.</p></dd>
-<dd><pre>       prefer     over
+<dt id="bkg_e0-number"><code>bkg_e0</code> (number)</dt>
+<dd>
+
+<p>The E0 value of mu(E) data. This is determined from the data when the read_data method is called.</p>
+
+</dd>
+<dt id="bkg_e0_fraction-number-0.5"><code>bkg_e0_fraction</code> (number) <i>[0.5]</i></dt>
+<dd>
+
+<p>This is a number between 0 and 1 used for the e0 algorithm which sets e0 to a fraction of the edge step. See <a href="Data/E0.pm.html">Demeter::Data::E0</a>.</p>
+
+</dd>
+<dt id="bkg_eshift-number-0"><code>bkg_eshift</code> (number) <i>[0]</i></dt>
+<dd>
+
+<p>An energy shift to apply to the data before doing any further processing.</p>
+
+</dd>
+<dt id="bkg_kw-number-1"><code>bkg_kw</code> (number) <i>[1]</i></dt>
+<dd>
+
+<p>The k-weight to use during the background removal using the Autobk algorithm.</p>
+
+</dd>
+<dt id="bkg_rbkg-number-1"><code>bkg_rbkg</code> (number) <i>[1]</i></dt>
+<dd>
+
+<p>The Rbkg value in the Autobk algorithm.</p>
+
+</dd>
+<dt id="bkg_dk-number-0"><code>bkg_dk</code> (number) <i>[0]</i></dt>
+<dd>
+
+<p>The dk value to be used in the Fourier transform as part of the Autobk algorithm.</p>
+
+</dd>
+<dt id="bkg_pre1-number--150"><code>bkg_pre1</code> (number) <i>[-150]</i></dt>
+<dd>
+
+<p>The lower end of the range of the pre-edge regression, relative to E0.</p>
+
+</dd>
+<dt id="bkg_pre2-number--30"><code>bkg_pre2</code> (number) <i>[-30]</i></dt>
+<dd>
+
+<p>The upper end of the range of the pre-edge regression, relative to E0.</p>
+
+</dd>
+<dt id="bkg_nor1-number-100"><code>bkg_nor1</code> (number) <i>[100]</i></dt>
+<dd>
+
+<p>The lower end of the range of the post-edge regression, relative to E0.</p>
+
+</dd>
+<dt id="bkg_nor2-number-600"><code>bkg_nor2</code> (number) <i>[600]</i></dt>
+<dd>
+
+<p>The upper end of the range of the post-edge regression, relative to E0.</p>
+
+</dd>
+<dt id="bkg_spl1-number-0"><code>bkg_spl1</code> (number) <i>[0]</i></dt>
+<dd>
+
+<p>The lower end in k of the spline range in the Autobk algorithm. The value of bkg_spl1e is updated whenever this is updated.</p>
+
+</dd>
+<dt id="bkg_spl2-number-15"><code>bkg_spl2</code> (number) <i>[15]</i></dt>
+<dd>
+
+<p>The upper end in k of the spline range in the Autobk algorithm. The value of bkg_spl2e is updated whenever this is updated.</p>
+
+</dd>
+<dt id="bkg_spl1e-number-0"><code>bkg_spl1e</code> (number) <i>[0]</i></dt>
+<dd>
+
+<p>The lower end in energy of the spline range in the Autobk algorithm, relative to E0. The value of bkg_spl1 is updated whenever this is updated.</p>
+
+</dd>
+<dt id="bkg_spl2e-number-857"><code>bkg_spl2e</code> (number) <i>[857]</i></dt>
+<dd>
+
+<p>The upper end in energy of the spline range in the Autobk algorithm, relative to E0. The value of bkg_spl2 is updated whenever this is updated.</p>
+
+</dd>
+<dt id="bkg_kwindow-list-Hanning"><code>bkg_kwindow</code> (list) <i>[Hanning]</i></dt>
+<dd>
+
+<p>This is the functional form of the Fourier transform window used in the Autobk algorithm. It is one of</p>
+
+<pre><code>   Kaiser-Bessel Hanning Welch Parzen Sine Gaussian</code></pre>
+
+</dd>
+<dt id="bkg_slope-number"><code>bkg_slope</code> (number)</dt>
+<dd>
+
+<p>The slope of the pre-edge line. This is set as part of the <code>normalize</code> method.</p>
+
+</dd>
+<dt id="bkg_int-number"><code>bkg_int</code> (number)</dt>
+<dd>
+
+<p>The intercept of the pre-edge line. This is set as part of the <code>normalize</code> method.</p>
+
+</dd>
+<dt id="bkg_step-number"><code>bkg_step</code> (number)</dt>
+<dd>
+
+<p>The edge step found by the <code>normalize</code> method. This attribute will be overwritten the next time the <code>normalize</code> method is called unless the <code>bkg_fixstep</code> atribute is set true.</p>
+
+</dd>
+<dt id="bkg_fitted_step-number"><code>bkg_fitted_step</code> (number)</dt>
+<dd>
+
+<p>The value of edge step found by the <code>normalize</code> method, regardless of the setting of <code>bkg_fixstep</code>. This is needed to correctly flatten data.</p>
+
+</dd>
+<dt id="bkg_fixstep-boolean-0"><code>bkg_fixstep</code> (boolean) <i>[0]</i></dt>
+<dd>
+
+<p>When true, the value of the c&lt;bkg&gt;_step will not be overwritten by the c&lt;normalize&gt; method.</p>
+
+</dd>
+<dt id="bkg_nc0-number"><code>bkg_nc0</code> (number)</dt>
+<dd>
+
+<p>The constant parameter in the post-edge regression. This is set as part of the c&lt;normalize&gt; method.</p>
+
+</dd>
+<dt id="bkg_nc1-number"><code>bkg_nc1</code> (number)</dt>
+<dd>
+
+<p>The linear parameter in the post-edge regression. This is set as part of the <code>normalize</code> method.</p>
+
+</dd>
+<dt id="bkg_nc2-number"><code>bkg_nc2</code> (number)</dt>
+<dd>
+
+<p>The cubic parameter in the post-edge regression. This is set as part of the <code>normalize</code> method.</p>
+
+</dd>
+<dt id="bkg_nc3-number"><code>bkg_nc3</code> (number)</dt>
+<dd>
+
+<p>The quartic parameter in the post-edge regression. This is set as part of the <code>normalize</code> method. (Larch only)</p>
+
+</dd>
+<dt id="bkg_flatten-boolean-1"><code>bkg_flatten</code> (boolean) <i>[1]</i></dt>
+<dd>
+
+<p>When true, a plot of normalized mu(E) data will be flattened.</p>
+
+</dd>
+<dt id="bkg_funnorm-boolean-0"><code>bkg_funnorm</code> (boolean) <i>[0]</i></dt>
+<dd>
+
+<p>When true, a functional normalization is performed to approximately remove the effect of quickly varying I0 signal on fluorescence EXAFS.</p>
+
+<p>Note that has a bad impact on the display of mu(E). The energy-dependent normalization is made by dividing (post(E)-pre(E)) from mu(E) right doing the background removal. Thus the background function is computed from something different from mu(E). This turns out to be hard to keep track of when using Demeter&#39;s plotting system. Athena &quot;solves&quot; this by keeping track of what is being plotted. A plot in k, R, or q uses the corrected mu(E). A plot in E is made by temporarily turning off the energy-dependent normalization flag, re-evaluating the background function, then turning the flag back on. This is a bit of an efficiency hit. And the plot in E does not quite correspond to the plot in k. Awkward!</p>
+
+</dd>
+<dt id="bkg_nnorm-integer-3"><code>bkg_nnorm</code> (integer) <i>[3]</i></dt>
+<dd>
+
+<p>This can be either 2 or 3 and specifies the order of the post-edge regression. When this is 2, <code>bkg_nc2</code> will be forced to 0 in the regression. <i>not yet implemented</i></p>
+
+</dd>
+<dt id="bkg_stan-Data-or-Path-object"><code>bkg_stan</code> (Data or Path object)</dt>
+<dd>
+
+<p>The background removal standard. This can be either a Data object or a Path object. <i>not yet implemented</i></p>
+
+</dd>
+<dt id="bkg_clamp1-integer-0"><code>bkg_clamp1</code> (integer) <i>[0]</i></dt>
+<dd>
+
+<p>The value of the low-end spline clamp.</p>
+
+</dd>
+<dt id="bkg_clamp2-integer-24"><code>bkg_clamp2</code> (integer) <i>[24]</i></dt>
+<dd>
+
+<p>The value of the high-end spline clamp.</p>
+
+</dd>
+<dt id="bkg_nclamp-integer-5"><code>bkg_nclamp</code> (integer) <i>[5]</i></dt>
+<dd>
+
+<p>The number of data points to use in evaluating the clamp.</p>
+
+</dd>
+<dt id="bkg_cl-boolean-0"><code>bkg_cl</code> (boolean) <i>[0]</i></dt>
+<dd>
+
+<p>When true, use Cromer-Liberman normalization rather than the Autobk algorithm. <i>not yet implemented</i></p>
+
+</dd>
+<dt id="bkg_z-number"><code>bkg_z</code> (number)</dt>
+<dd>
+
+<p>The Z number of the absorber for these data. This is determined as part of the normalize method but can also be set by hand. To deal with edge energy confusions, certain K and L3 edges are prefered over nearby L2 and L3 edges when this attribute is set automatically.</p>
+
+<pre><code>       prefer     over
       ----------------
        Fe K       Nd L1
        Mn K       Ce L1
@@ -320,393 +439,497 @@ when this attribute is set automatically.</p></dd>
        Pt L3      W  L2
        Se K       Pb L2
        Np L3      At L1
-       Cr K       Ba L1
+       Cr K       Ba L1</code></pre>
 
-</pre></dd>		<dd><p>There is a configuration parameter to turn this behavor on and off.</p></dd>
+<p>There is a configuration parameter to turn this behavor on and off.</p>
+
+</dd>
 </dl>
-<h2 id="Forward_Transform_Attributes">Forward Transform Attributes</h2>
 
-<p>Note that there is not an <code>fft_kw</code> attribute.  For all plotting and
-data processing purposes, the Plot object's <code>kweight</code> attribute is
-used, while in fits the Fit object's k-weighting attributes are used.</p>
+<h2 id="Forward-Transform-Attributes">Forward Transform Attributes</h2>
+
+<p>Note that there is not an <code>fft_kw</code> attribute. For all plotting and data processing purposes, the Plot object&#39;s <code>kweight</code> attribute is used, while in fits the Fit object&#39;s k-weighting attributes are used.</p>
 
 <dl>
-	<dt><code>fft_edge</code> (edge symbol) <i>[K]</i></dt>
-		<dd><p>The absorption edge measured by the input data.  This is used doing a
-central-atom-only phase correction to the Fourier transform.</p></dd>
-	<dt><code>fft_kmin</code> (number) <i>[2]</i></dt>
-		<dd><p>The lower end of the k-range for the forward transform.  <code>fft_kmin</code> and
-<code>fft_kmax</code> will be sorted by Demeter.</p></dd>
-	<dt><code>fft_kmax</code> (number) <i>[12]</i></dt>
-		<dd><p>The upper end of the k-range for the forward transform.  <code>fft_kmin</code> and
-<code>fft_kmax</code> will be sorted by Demeter.</p></dd>
-	<dt><code>fft_dk</code> (number) <i>[2]</i></dt>
-		<dd><p>The width of the window sill used for the forward transform.  The
-meaning of this parameter depends on the functional form of the
-window.  See the Ifeffit/Larch document for a full discussion of the
-functional forms.</p></dd>
-	<dt><code>fft_kwindow</code> (list) <i>[Hanning]</i></dt>
-		<dd><p>This is the functional form of the Fourier transform window used in
-the forward transform.  It is one of</p></dd>
-<dd><pre>   Kaiser-Bessel Hanning Welch Parzen Sine Gaussian
 
-</pre></dd>	<dt><code>fft_pc</code> (Path object) <i>[0]</i></dt>
-		<dd><p>This is set to the Path object to be used for a full phase correction to the
-Fourier transform.</p></dd>
-	<dt><code>rmax_out</code> (number) <i>[10]</i></dt>
-		<dd><p>This tells Ifeffit/Larch how to size output arrays after doing a Fourier transform.</p></dd>
-</dl>
-<h2 id="Back_Transform_Attributes">Back Transform Attributes</h2>
-
-<dl>
-	<dt><code>bft_rwindow</code> (number) <i>[Hanning]</i></dt>
-		<dd><p>This is the functional form of the Fourier transform window used in
-the backward transform.  It is one of</p></dd>
-<dd><pre>   Kaiser-Bessel Hanning Welch Parzen Sine Gaussian
-
-</pre></dd>	<dt><code>bft_rmin</code> (number) <i>[1]</i></dt>
-		<dd><p>The lower end of the R-range for the backward transform or the fitting range.
-<code>bft_rmin</code> and <code>bft_rmax</code> will be sorted by Demeter.</p></dd>
-	<dt><code>bft_rmax</code> (number) <i>[3]</i></dt>
-		<dd><p>The upper end of the R-range for the backward transform or the fitting range.
-<code>bft_rmin</code> and <code>bft_rmax</code> will be sorted by Demeter.</p></dd>
-	<dt><code>bft_dr</code> (number) <i>[0.2]</i></dt>
-		<dd><p>The width of the window sill used for the backward transform.  The
-meaning of this parameter depends on the functional form of the
-window.  See the Ifeffit/Larch document for a full discussion of the
-functional forms.</p></dd>
-</dl>
-<h2 id="Fitting_Attributes">Fitting Attributes</h2>
-
-<p>Note that parameters with <code>fft_</code> and <code>bft_</code> analogs such as
-<code>fft_kmin</code> have been deprecated along with the <code>process</code> mode.</p>
-
-<dl>
-	<dt><code>fitting</code> (boolean) <i>[0]</i></dt>
-		<dd><p>This is set to true when a Data object is used in a fit.  It is used by
-plotting methods to determine whether data parts (fit, background, residual)
-should be considered for plotting.</p></dd>
-	<dt><code>fit_k1</code> (boolean) <i>[1]</i></dt>
-		<dd><p>If true, then k-weight of 1 will be used in the fit.  Setting more
-than one k-weighting parameter to true will result in a multiple
-k-weight fit.  By default, fits are done with kweight of 1, 2, and 3.</p></dd>
-	<dt><code>fit_k2</code> (boolean) <i>[1]</i></dt>
-		<dd><p>If true, then k-weight of 2 will be used in the fit.  Setting more
-than one k-weighting parameter to true will result in a multiple
-k-weight fit.  By default, fits are done with kweight of 1, 2, and 3.</p></dd>
-	<dt><code>fit_k3</code> (boolean) <i>[1]</i></dt>
-		<dd><p>If true, then k-weight of 3 will be used in the fit.  Setting more
-than one k-weighting parameter to true will result in a multiple
-k-weight fit.  By default, fits are done with kweight of 1, 2, and 3.</p></dd>
-	<dt><code>fit_karb</code> (boolean) <i>[0]</i></dt>
-		<dd><p>If true, then the user-supplied, arbitrary k-weight will be used in
-the fit.  Setting more than one k-weighting parameter to true will
-result in a multiple k-weight fit.  By default, fits are done with
-kweight of 1, 2, and 3.</p></dd>
-	<dt><code>fit_karb_value</code> (number) <i>[0]</i></dt>
-		<dd><p>This is the value of the arbitrary k-weight which will be used in the
-fit is <code>fit_karb</code> is true.</p></dd>
-	<dt><code>fit_space</code> (list) <i>[R]</i></dt>
-		<dd><p>This is the space in which the fit will be evaluated.  It is one of
-<code>k</code>, <code>r</code>, or <code>q</code>.</p></dd>
-	<dt><code>fit_epsilon</code> (number) <i>[0]</i></dt>
-		<dd><p>If this number is non-zero, it will be used as the measurement
-uncertainty in k-space when the fit is evaluated.  If it is zero, then
-the default in Ifeffit or Larch will be used.</p></dd>
-	<dt><code>fit_cormin</code> (number) <i>[0.4]</i></dt>
-		<dd><p>This is the minimum value of correlation to be reported in the log
-file after a fit.</p></dd>
-	<dt><code>fit_pcpath</code> (Path object)</dt>
-		<dd><p>This is the Path object to use for phase correction when these data
-and it paths are plotted.  It takes the reference to the Path object
-as its value.</p></dd>
-	<dt><code>fit_include</code> (boolean) <i>[1]</i></dt>
-		<dd><p>When this is true, the data will be included in the next fit.</p></dd>
-	<dt><code>fit_plot_after_fit</code> (boolean) <i>[0]</i></dt>
-		<dd><p>This is a flag for use by a user interface to indicate that after a
-fit is finished, this data set should be plotted.</p></dd>
-	<dt><code>fit_do_bkg</code> (boolean) <i>[0]</i></dt>
-		<dd><p>When true, the background function will be corefined for this data set
-and the &quot;bkg&quot; part of the data will be created.</p></dd>
-	<dt><code>fit_titles</code> (multiline string)</dt>
-		<dd><p>These are title lines associated with this Data object.  These lines
-will be written to log files, output data files, etc.</p></dd>
-	<dt><code>fitsum</code> (list)</dt>
-		<dd><p>This attribute indicates whether the Fit objects <code>fit</code> or <code>ff2chi</code>
-mehthod was most recently called.  It is one of <code>fit</code> or <code>sum</code>.
-It's purpose is to allow the fit part of the data object to be labeled
-correctly in a plot.</p></dd>
-</dl>
-<h2 id="Plotting_Attributes">Plotting Attributes</h2>
-
-<p>Most aspects of how plots are made are handled by the attributes of
-the Plot object.  These Data attributes are specific to a particular
-Data object and influence how that object is plotted.</p>
-
-<dl>
-	<dt><code>y_offset</code> (number) <i>[0]</i></dt>
-		<dd><p>The vertical displacement given to this data when plotted.  This is
-useful for making stacked plots.</p></dd>
-	<dt><code>plot_multiplier</code> (number) <i>[1]</i></dt>
-		<dd><p>An over-all scaling factor for this data when plotted.  It is probably
-a bad idea for this to be 0.</p></dd>
-</dl>
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
-
-<p>This subclass inherits from Demeter, so all of the methods of the
-parent class are available.</p>
-
-<p>See <a href="../Demeter.pm.html#Object_handling_methods">Object_handling_methods in Demeter</a> for a discussion of accessor
-methods.</p>
-
-<h2 id="I_O_methods">I/O methods</h2>
-
-<p>These methods handle the details of file I/O.  See also the <code>save</code>
-method of the parent class.</p>
-
-<dl>
-	<dt><code>save</code></dt>
-		<dd><p>This method returns the Ifeffit/Larch commands necessary to write
-column data files based on the data object.  See <code>Demeter::Data::IO</code>
-for details.</p></dd>
-	<dt><code>data_parameter_report</code></dt>
-		<dd><p>This method returns a simple, textual summary of the attributes of the data
-object related to background removal and data processing.  It is used in log
-files, output data files, and elsewhere.  It may also be useful as a way of
-interactively describing the data.</p></dd>
-	<dt><code>fit_parameter_report</code></dt>
-		<dd><p>This method returns a simple, textual summary of the attributes of the
-data object related to the fit.  It is used in log files, output data
-files, and elsewhere.  It may also be useful as a way of interactively
-describing the data.  The two optional arguments control whether the
-r-factor is computed as part of the report.</p></dd>
-	<dt><code>r_factor</code></dt>
-		<dd><p>This returns an evaluation of the R-factor from a fit for a single
-data set.  This is different from the R-factor for a multiple data set
-fit as reported by Ifeffit or Larch in that this number includes only
-the misfit of the single data set.</p></dd>
-<dd><pre>  $r = $data_object -&gt; r_factor;
-
-</pre></dd>	<dt><code>nidp</code></dt>
-		<dd><p>This returns the number of independent points associated with this
-data set, as determined from the values of the k- and R-range
-parameters.</p></dd>
-<dd><pre>   $n = $data_object -&gt; nidp;
-
-</pre></dd>		<dd><p>The Athena-like fft and bft ranges are used if the processing mode is
-set to &quot;fft&quot;.  The Artemis-like fit ranges are used if the processing
-mode is set to &quot;fit&quot;.</p></dd>
-	<dt><code>plot</code></dt>
-		<dd><p>Use this method to make plots of data.  Demeter keeps track of changes
-to parameters and which data processing steps need to be taken in
-order to correctly make the plot.  Consequently, it should never be
-necessary to import data or perform a Fourier tansform by hand.  The
-practice with Demeter is to create a Data group, set some of its
-attributes, and then make a plot.</p></dd>
-<dd><pre>  $data_object -&gt; plot($space)
-
-</pre></dd>		<dd><p>The argument is one of <code>E</code>, <code>k</code>, <code>R</code>, <code>q</code>, or <code>kq</code>.  The details
-of the plot are determine by the current state of the
-<a href="Plot.pm.html">Demeter::Plot</a> object.</p></dd>
-</dl>
-<h2 id="Convenience_methods">Convenience methods</h2>
-
-<dl>
-	<dt><code>set_windows</code></dt>
-		<dd><p>This is a shortcut to setting the functional form of all Fourier
-transform windows used by the Data object.  In one swoop, this method
-sets <code>bkg_kwindow</code>, <code>fit_kwindow</code>, <code>fit_rwindow</code>, <code>fft_kwindow</code>,
-and <code>bft_rwindow</code> to the specified window type.</p></dd>
-<dd><pre>  $data_object -&gt; set_windows(&quot;Hanning&quot;);
-
-</pre></dd>		<dd><p>The window type must be one of <code>Kaiser-Bessel</code>, <code>Hanning</code>,
-<code>Parzen</code>, <code>Welch</code>, <code>Sine</code>, or <code>Gaussian</code>.</p></dd>
-	<dt><code>nsuff</code></dt>
-		<dd><p>Returns either &quot;norm&quot; or &quot;flat&quot; as the proper suffix for the
-normalized mu(E) array depending on the value of <code>bkg_flatten</code>.</p></dd>
-	<dt><code>data</code></dt>
-		<dd><p>This method returns the reference to the data object itself.  This is
-less silly than it seems.  Having a <code>data</code> method defined for both
-Data and Path objects allows a loop over both kinds of objects and
-provides a simple way to identify the correct Data object.</p></dd>
-<dd><pre>  foreach my $obj (@data_objects, @paths_objects) {
-     my $d = $obj-&gt;data;
-     ## do something with $d
-  };
-
-</pre></dd></dl>
-<h1 id="DATA_FILES_AND_DATA_PARTS">DATA FILES AND DATA PARTS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
-
-
-
-
-<p>When data are imported, Demeter tries to figure out whether the data
-are raw data, mu(E) or chi(k) data, if that has not been specified.
-The heuristics are as follows:</p>
-
-<ul>
-	<li>If the <code>numerator</code> or <code>denominator</code> attributes are set, this is data
-is assumed to be column data that will be interpreted as raw data and
-converted to mu(E) data.</li>
-	<li>The data will be read by Ifeffit or Larch.  If the first data point is
-greater than 100, it will be assumed that these data are mu(E) and
-that the energy axis is absolute energy.</li>
-	<li>If the last data point is greater than 35, it will be assumed that
-these data are mu(E) and that the energy axis is relative energy.</li>
-	<li>If none of the above are true, then the data must be chi(k) data.</li>
-</ul>
-
-<p>If your data will be misintepreted by these heuristics, then you
-<strong>must</strong> set the <code>data_type</code> attribute by hand.</p>
-
-<p>The Data object has several parts associated with it.  Before a fit
-(or summation) is done, there are two parts: the data itself and the
-window.  After the fit, there is a residual, a fit, and (if the
-<code>fit_do_bkg</code> attribute is true) a background.  Attributes of the
-<a href="Plot.pm.html">Demeter::Plot</a> object are used to specify which Data parts
-are shown in a plot.</p>
-
-<h1 id="DIAGNOSTICS">DIAGNOSTICS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
-
-<p>These messages are classified as follows (listed in increasing order
-of desperation):</p>
-
-<pre>    (W) A warning (optional).
-    (F) A fatal error (trappable).
-
-</pre><dl>
-	<dt><code>&quot;$key&quot; is not a valid Demeter::Data parameter</code></dt>
-		<dd><p>(W) You have attempted to access an attribute that does not exist.  Check
-the spelling of the attribute at the point where you called the accessor.</p></dd>
-	<dt><code>Demeter::Data: &quot;group&quot; is not a valid group name</code></dt>
-		<dd><p>(F) You have used a group name that does not follow Ifeffit's rules for group
-names.  The group name must start with a letter.  After that only letters,
-numbers, &amp;, ?, _, and : are acceptable characters.  The group name must be no
-longer than 64 characters.</p></dd>
-	<dt><code>Demeter::Data: &quot;$key&quot; takes a number as an argument</code></dt>
-		<dd><p>(F) You have attempted to set a numerical attribute with something
-that cannot be interpretted as a number.</p></dd>
+<dt id="fft_edge-edge-symbol-K"><code>fft_edge</code> (edge symbol) <i>[K]</i></dt>
 <dd>
 
+<p>The absorption edge measured by the input data. This is used doing a central-atom-only phase correction to the Fourier transform.</p>
 
-</dd>	<dt><code>Demeter::Data: $k must be a number</code></dt>
-		<dd><p>(F) You have attempted to set an attribute that requires a numerical
-value to something that cannot be interpreted as a number.</p></dd>
-	<dt><code>Demeter::Data: $k must be a positive integer</code></dt>
-		<dd><p>(F) You have attempted to set an attribute that requires a positive
-integer value to something that cannot be interpreted as such.</p></dd>
-	<dt><code>Demeter::Data: $k must be a window function</code></dt>
-		<dd><p>(F) You have set a Fourier transform window attribute to something not
-recognized as a window function.</p></dd>
-	<dt><code>Demeter::Data: $r_hash-</code>{$k} is not a readable data file&gt;</dt>
-		<dd><p>(F) You have set the <code>file</code> attribute to something that cannot be
-found on disk.</p></dd>
-	<dt><code>Demeter::Data: $k must be one of (k R q)</code></dt>
-		<dd><p>(F) You have set a fitting space that is not one <code>k</code>, <code>R</code>, or <code>q</code>.</p></dd>
-	<dt><code>Demeter::Data: $k must be one of (K L1 L2 L3)</code></dt>
-		<dd><p>(F) You have attempted to set the <code>fft_edge</code> attribute to something
-that is not recognized as an edge symbol.</p></dd>
-	<dt><code>No filename specified for save</code></dt>
-		<dd><p>(F) You have called the save method without supplying a filename
-for the output file.</p></dd>
-	<dt><code>Valid save types are: xmu norm chi r q fit bkgsub</code></dt>
-		<dd><p>(F) You have called the save method with an unknown output file type.</p></dd>
-	<dt><code>cannot save mu(E) file from chi(k) data</code></dt>
-	<dt><code>cannot save norm(E) file from chi(k) data</code></dt>
-		<dd><p>(F) You have attempted to write out data in energy for data that were
-imported as chi(k).</p></dd>
-	<dt><code>No filename specified for serialize</code></dt>
-		<dd><p>(F) You have not supplied a filename for your data serialization.</p></dd>
-	<dt><code>No filename or YAML stream specified for deserialize</code></dt>
-		<dd><p>(F) You have not supplied a filename from which to deserialization
-data.</p></dd>
+</dd>
+<dt id="fft_kmin-number-2"><code>fft_kmin</code> (number) <i>[2]</i></dt>
+<dd>
+
+<p>The lower end of the k-range for the forward transform. <code>fft_kmin</code> and <code>fft_kmax</code> will be sorted by Demeter.</p>
+
+</dd>
+<dt id="fft_kmax-number-12"><code>fft_kmax</code> (number) <i>[12]</i></dt>
+<dd>
+
+<p>The upper end of the k-range for the forward transform. <code>fft_kmin</code> and <code>fft_kmax</code> will be sorted by Demeter.</p>
+
+</dd>
+<dt id="fft_dk-number-2"><code>fft_dk</code> (number) <i>[2]</i></dt>
+<dd>
+
+<p>The width of the window sill used for the forward transform. The meaning of this parameter depends on the functional form of the window. See the Ifeffit/Larch document for a full discussion of the functional forms.</p>
+
+</dd>
+<dt id="fft_kwindow-list-Hanning"><code>fft_kwindow</code> (list) <i>[Hanning]</i></dt>
+<dd>
+
+<p>This is the functional form of the Fourier transform window used in the forward transform. It is one of</p>
+
+<pre><code>   Kaiser-Bessel Hanning Welch Parzen Sine Gaussian</code></pre>
+
+</dd>
+<dt id="fft_pc-Path-object-0"><code>fft_pc</code> (Path object) <i>[0]</i></dt>
+<dd>
+
+<p>This is set to the Path object to be used for a full phase correction to the Fourier transform.</p>
+
+</dd>
+<dt id="rmax_out-number-10"><code>rmax_out</code> (number) <i>[10]</i></dt>
+<dd>
+
+<p>This tells Ifeffit/Larch how to size output arrays after doing a Fourier transform.</p>
+
+</dd>
 </dl>
 
+<h2 id="Back-Transform-Attributes">Back Transform Attributes</h2>
 
+<dl>
 
-<h1 id="SERIALIZATION_AND_DESERIALIZATION">SERIALIZATION AND DESERIALIZATION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<dt id="bft_rwindow-number-Hanning"><code>bft_rwindow</code> (number) <i>[Hanning]</i></dt>
+<dd>
 
-<p>The serialization format of a data object is as a YAML file.  The YAML
-serialization begins with a mapping of the Data object attributes.  This is
-followed by sequences representing the data.  For mu(E) data, the sequences
-are energy and xmu.  If the data was column data, the xmu sequence is followed
-by a sequence representing the i0 array.  For chi(k) data, the mapping is
-followed by sequences representing k and chi(k).</p>
+<p>This is the functional form of the Fourier transform window used in the backward transform. It is one of</p>
+
+<pre><code>   Kaiser-Bessel Hanning Welch Parzen Sine Gaussian</code></pre>
+
+</dd>
+<dt id="bft_rmin-number-1"><code>bft_rmin</code> (number) <i>[1]</i></dt>
+<dd>
+
+<p>The lower end of the R-range for the backward transform or the fitting range. <code>bft_rmin</code> and <code>bft_rmax</code> will be sorted by Demeter.</p>
+
+</dd>
+<dt id="bft_rmax-number-3"><code>bft_rmax</code> (number) <i>[3]</i></dt>
+<dd>
+
+<p>The upper end of the R-range for the backward transform or the fitting range. <code>bft_rmin</code> and <code>bft_rmax</code> will be sorted by Demeter.</p>
+
+</dd>
+<dt id="bft_dr-number-0.2"><code>bft_dr</code> (number) <i>[0.2]</i></dt>
+<dd>
+
+<p>The width of the window sill used for the backward transform. The meaning of this parameter depends on the functional form of the window. See the Ifeffit/Larch document for a full discussion of the functional forms.</p>
+
+</dd>
+</dl>
+
+<h2 id="Fitting-Attributes">Fitting Attributes</h2>
+
+<p>Note that parameters with <code>fft_</code> and <code>bft_</code> analogs such as <code>fft_kmin</code> have been deprecated along with the <code>process</code> mode.</p>
+
+<dl>
+
+<dt id="fitting-boolean-0"><code>fitting</code> (boolean) <i>[0]</i></dt>
+<dd>
+
+<p>This is set to true when a Data object is used in a fit. It is used by plotting methods to determine whether data parts (fit, background, residual) should be considered for plotting.</p>
+
+</dd>
+<dt id="fit_k1-boolean-1"><code>fit_k1</code> (boolean) <i>[1]</i></dt>
+<dd>
+
+<p>If true, then k-weight of 1 will be used in the fit. Setting more than one k-weighting parameter to true will result in a multiple k-weight fit. By default, fits are done with kweight of 1, 2, and 3.</p>
+
+</dd>
+<dt id="fit_k2-boolean-1"><code>fit_k2</code> (boolean) <i>[1]</i></dt>
+<dd>
+
+<p>If true, then k-weight of 2 will be used in the fit. Setting more than one k-weighting parameter to true will result in a multiple k-weight fit. By default, fits are done with kweight of 1, 2, and 3.</p>
+
+</dd>
+<dt id="fit_k3-boolean-1"><code>fit_k3</code> (boolean) <i>[1]</i></dt>
+<dd>
+
+<p>If true, then k-weight of 3 will be used in the fit. Setting more than one k-weighting parameter to true will result in a multiple k-weight fit. By default, fits are done with kweight of 1, 2, and 3.</p>
+
+</dd>
+<dt id="fit_karb-boolean-0"><code>fit_karb</code> (boolean) <i>[0]</i></dt>
+<dd>
+
+<p>If true, then the user-supplied, arbitrary k-weight will be used in the fit. Setting more than one k-weighting parameter to true will result in a multiple k-weight fit. By default, fits are done with kweight of 1, 2, and 3.</p>
+
+</dd>
+<dt id="fit_karb_value-number-0"><code>fit_karb_value</code> (number) <i>[0]</i></dt>
+<dd>
+
+<p>This is the value of the arbitrary k-weight which will be used in the fit is <code>fit_karb</code> is true.</p>
+
+</dd>
+<dt id="fit_space-list-R"><code>fit_space</code> (list) <i>[R]</i></dt>
+<dd>
+
+<p>This is the space in which the fit will be evaluated. It is one of <code>k</code>, <code>r</code>, or <code>q</code>.</p>
+
+</dd>
+<dt id="fit_epsilon-number-0"><code>fit_epsilon</code> (number) <i>[0]</i></dt>
+<dd>
+
+<p>If this number is non-zero, it will be used as the measurement uncertainty in k-space when the fit is evaluated. If it is zero, then the default in Ifeffit or Larch will be used.</p>
+
+</dd>
+<dt id="fit_cormin-number-0.4"><code>fit_cormin</code> (number) <i>[0.4]</i></dt>
+<dd>
+
+<p>This is the minimum value of correlation to be reported in the log file after a fit.</p>
+
+</dd>
+<dt id="fit_pcpath-Path-object"><code>fit_pcpath</code> (Path object)</dt>
+<dd>
+
+<p>This is the Path object to use for phase correction when these data and it paths are plotted. It takes the reference to the Path object as its value.</p>
+
+</dd>
+<dt id="fit_include-boolean-1"><code>fit_include</code> (boolean) <i>[1]</i></dt>
+<dd>
+
+<p>When this is true, the data will be included in the next fit.</p>
+
+</dd>
+<dt id="fit_plot_after_fit-boolean-0"><code>fit_plot_after_fit</code> (boolean) <i>[0]</i></dt>
+<dd>
+
+<p>This is a flag for use by a user interface to indicate that after a fit is finished, this data set should be plotted.</p>
+
+</dd>
+<dt id="fit_do_bkg-boolean-0"><code>fit_do_bkg</code> (boolean) <i>[0]</i></dt>
+<dd>
+
+<p>When true, the background function will be corefined for this data set and the &quot;bkg&quot; part of the data will be created.</p>
+
+</dd>
+<dt id="fit_titles-multiline-string"><code>fit_titles</code> (multiline string)</dt>
+<dd>
+
+<p>These are title lines associated with this Data object. These lines will be written to log files, output data files, etc.</p>
+
+</dd>
+<dt id="fitsum-list"><code>fitsum</code> (list)</dt>
+<dd>
+
+<p>This attribute indicates whether the Fit objects <code>fit</code> or <code>ff2chi</code> mehthod was most recently called. It is one of <code>fit</code> or <code>sum</code>. It&#39;s purpose is to allow the fit part of the data object to be labeled correctly in a plot.</p>
+
+</dd>
+</dl>
+
+<h2 id="Plotting-Attributes">Plotting Attributes</h2>
+
+<p>Most aspects of how plots are made are handled by the attributes of the Plot object. These Data attributes are specific to a particular Data object and influence how that object is plotted.</p>
+
+<dl>
+
+<dt id="y_offset-number-0"><code>y_offset</code> (number) <i>[0]</i></dt>
+<dd>
+
+<p>The vertical displacement given to this data when plotted. This is useful for making stacked plots.</p>
+
+</dd>
+<dt id="plot_multiplier-number-1"><code>plot_multiplier</code> (number) <i>[1]</i></dt>
+<dd>
+
+<p>An over-all scaling factor for this data when plotted. It is probably a bad idea for this to be 0.</p>
+
+</dd>
+</dl>
+
+<h1 id="METHODS">METHODS</h1>
+
+<p>This subclass inherits from Demeter, so all of the methods of the parent class are available.</p>
+
+<p>See <a href="../Demeter.pm.html#Object_handling_methods">&quot;Object_handling_methods&quot; in Demeter</a> for a discussion of accessor methods.</p>
+
+<h2 id="I-O-methods">I/O methods</h2>
+
+<p>These methods handle the details of file I/O. See also the <code>save</code> method of the parent class.</p>
+
+<dl>
+
+<dt id="save"><code>save</code></dt>
+<dd>
+
+<p>This method returns the Ifeffit/Larch commands necessary to write column data files based on the data object. See <code>Demeter::Data::IO</code> for details.</p>
+
+</dd>
+<dt id="data_parameter_report"><code>data_parameter_report</code></dt>
+<dd>
+
+<p>This method returns a simple, textual summary of the attributes of the data object related to background removal and data processing. It is used in log files, output data files, and elsewhere. It may also be useful as a way of interactively describing the data.</p>
+
+</dd>
+<dt id="fit_parameter_report"><code>fit_parameter_report</code></dt>
+<dd>
+
+<p>This method returns a simple, textual summary of the attributes of the data object related to the fit. It is used in log files, output data files, and elsewhere. It may also be useful as a way of interactively describing the data. The two optional arguments control whether the r-factor is computed as part of the report.</p>
+
+</dd>
+<dt id="r_factor"><code>r_factor</code></dt>
+<dd>
+
+<p>This returns an evaluation of the R-factor from a fit for a single data set. This is different from the R-factor for a multiple data set fit as reported by Ifeffit or Larch in that this number includes only the misfit of the single data set.</p>
+
+<pre><code>  $r = $data_object -&gt; r_factor;</code></pre>
+
+</dd>
+<dt id="nidp"><code>nidp</code></dt>
+<dd>
+
+<p>This returns the number of independent points associated with this data set, as determined from the values of the k- and R-range parameters.</p>
+
+<pre><code>   $n = $data_object -&gt; nidp;</code></pre>
+
+<p>The Athena-like fft and bft ranges are used if the processing mode is set to &quot;fft&quot;. The Artemis-like fit ranges are used if the processing mode is set to &quot;fit&quot;.</p>
+
+</dd>
+<dt id="plot"><code>plot</code></dt>
+<dd>
+
+<p>Use this method to make plots of data. Demeter keeps track of changes to parameters and which data processing steps need to be taken in order to correctly make the plot. Consequently, it should never be necessary to import data or perform a Fourier tansform by hand. The practice with Demeter is to create a Data group, set some of its attributes, and then make a plot.</p>
+
+<pre><code>  $data_object -&gt; plot($space)</code></pre>
+
+<p>The argument is one of <code>E</code>, <code>k</code>, <code>R</code>, <code>q</code>, or <code>kq</code>. The details of the plot are determine by the current state of the <a href="Plot.pm.html">Demeter::Plot</a> object.</p>
+
+</dd>
+</dl>
+
+<h2 id="Convenience-methods">Convenience methods</h2>
+
+<dl>
+
+<dt id="set_windows"><code>set_windows</code></dt>
+<dd>
+
+<p>This is a shortcut to setting the functional form of all Fourier transform windows used by the Data object. In one swoop, this method sets <code>bkg_kwindow</code>, <code>fit_kwindow</code>, <code>fit_rwindow</code>, <code>fft_kwindow</code>, and <code>bft_rwindow</code> to the specified window type.</p>
+
+<pre><code>  $data_object -&gt; set_windows(&quot;Hanning&quot;);</code></pre>
+
+<p>The window type must be one of <code>Kaiser-Bessel</code>, <code>Hanning</code>, <code>Parzen</code>, <code>Welch</code>, <code>Sine</code>, or <code>Gaussian</code>.</p>
+
+</dd>
+<dt id="nsuff"><code>nsuff</code></dt>
+<dd>
+
+<p>Returns either &quot;norm&quot; or &quot;flat&quot; as the proper suffix for the normalized mu(E) array depending on the value of <code>bkg_flatten</code>.</p>
+
+</dd>
+<dt id="data"><code>data</code></dt>
+<dd>
+
+<p>This method returns the reference to the data object itself. This is less silly than it seems. Having a <code>data</code> method defined for both Data and Path objects allows a loop over both kinds of objects and provides a simple way to identify the correct Data object.</p>
+
+<pre><code>  foreach my $obj (@data_objects, @paths_objects) {
+     my $d = $obj-&gt;data;
+     ## do something with $d
+  };</code></pre>
+
+</dd>
+</dl>
+
+<h1 id="DATA-FILES-AND-DATA-PARTS">DATA FILES AND DATA PARTS</h1>
+
+<p>When data are imported, Demeter tries to figure out whether the data are raw data, mu(E) or chi(k) data, if that has not been specified. The heuristics are as follows:</p>
+
+<ul>
+
+<li><p>If the <code>numerator</code> or <code>denominator</code> attributes are set, this is data is assumed to be column data that will be interpreted as raw data and converted to mu(E) data.</p>
+
+</li>
+<li><p>The data will be read by Ifeffit or Larch. If the first data point is greater than 100, it will be assumed that these data are mu(E) and that the energy axis is absolute energy.</p>
+
+</li>
+<li><p>If the last data point is greater than 35, it will be assumed that these data are mu(E) and that the energy axis is relative energy.</p>
+
+</li>
+<li><p>If none of the above are true, then the data must be chi(k) data.</p>
+
+</li>
+</ul>
+
+<p>If your data will be misintepreted by these heuristics, then you <b>must</b> set the <code>data_type</code> attribute by hand.</p>
+
+<p>The Data object has several parts associated with it. Before a fit (or summation) is done, there are two parts: the data itself and the window. After the fit, there is a residual, a fit, and (if the <code>fit_do_bkg</code> attribute is true) a background. Attributes of the <a href="Plot.pm.html">Demeter::Plot</a> object are used to specify which Data parts are shown in a plot.</p>
+
+<h1 id="DIAGNOSTICS">DIAGNOSTICS</h1>
+
+<p>These messages are classified as follows (listed in increasing order of desperation):</p>
+
+<pre><code>    (W) A warning (optional).
+    (F) A fatal error (trappable).</code></pre>
+
+<dl>
+
+<dt id="key-is-not-a-valid-Demeter::Data-parameter"><code>&quot;$key&quot; is not a valid Demeter::Data parameter</code></dt>
+<dd>
+
+<p>(W) You have attempted to access an attribute that does not exist. Check the spelling of the attribute at the point where you called the accessor.</p>
+
+</dd>
+<dt id="Demeter::Data:-group-is-not-a-valid-group-name"><code>Demeter::Data: &quot;group&quot; is not a valid group name</code></dt>
+<dd>
+
+<p>(F) You have used a group name that does not follow Ifeffit&#39;s rules for group names. The group name must start with a letter. After that only letters, numbers, &amp;, ?, _, and : are acceptable characters. The group name must be no longer than 64 characters.</p>
+
+</dd>
+<dt id="Demeter::Data:-key-takes-a-number-as-an-argument"><code>Demeter::Data: &quot;$key&quot; takes a number as an argument</code></dt>
+<dd>
+
+<p>(F) You have attempted to set a numerical attribute with something that cannot be interpretted as a number.</p>
+
+</dd>
+<dt id="Demeter::Data:-k-must-be-a-number"><code>Demeter::Data: $k must be a number</code></dt>
+<dd>
+
+<p>(F) You have attempted to set an attribute that requires a numerical value to something that cannot be interpreted as a number.</p>
+
+</dd>
+<dt id="Demeter::Data:-k-must-be-a-positive-integer"><code>Demeter::Data: $k must be a positive integer</code></dt>
+<dd>
+
+<p>(F) You have attempted to set an attribute that requires a positive integer value to something that cannot be interpreted as such.</p>
+
+</dd>
+<dt id="Demeter::Data:-k-must-be-a-window-function"><code>Demeter::Data: $k must be a window function</code></dt>
+<dd>
+
+<p>(F) You have set a Fourier transform window attribute to something not recognized as a window function.</p>
+
+</dd>
+<dt id="Demeter::Data:-r_hash--k-is-not-a-readable-data-file"><code>Demeter::Data: $r_hash-</code>{$k} is not a readable data file&gt;</dt>
+<dd>
+
+<p>(F) You have set the <code>file</code> attribute to something that cannot be found on disk.</p>
+
+</dd>
+<dt id="Demeter::Data:-k-must-be-one-of-k-R-q"><code>Demeter::Data: $k must be one of (k R q)</code></dt>
+<dd>
+
+<p>(F) You have set a fitting space that is not one <code>k</code>, <code>R</code>, or <code>q</code>.</p>
+
+</dd>
+<dt id="Demeter::Data:-k-must-be-one-of-K-L1-L2-L3"><code>Demeter::Data: $k must be one of (K L1 L2 L3)</code></dt>
+<dd>
+
+<p>(F) You have attempted to set the <code>fft_edge</code> attribute to something that is not recognized as an edge symbol.</p>
+
+</dd>
+<dt id="No-filename-specified-for-save"><code>No filename specified for save</code></dt>
+<dd>
+
+<p>(F) You have called the save method without supplying a filename for the output file.</p>
+
+</dd>
+<dt id="Valid-save-types-are:-xmu-norm-chi-r-q-fit-bkgsub"><code>Valid save types are: xmu norm chi r q fit bkgsub</code></dt>
+<dd>
+
+<p>(F) You have called the save method with an unknown output file type.</p>
+
+</dd>
+<dt id="cannot-save-mu-E-file-from-chi-k-data"><code>cannot save mu(E) file from chi(k) data</code></dt>
+<dd>
+
+</dd>
+<dt id="cannot-save-norm-E-file-from-chi-k-data"><code>cannot save norm(E) file from chi(k) data</code></dt>
+<dd>
+
+<p>(F) You have attempted to write out data in energy for data that were imported as chi(k).</p>
+
+</dd>
+<dt id="No-filename-specified-for-serialize"><code>No filename specified for serialize</code></dt>
+<dd>
+
+<p>(F) You have not supplied a filename for your data serialization.</p>
+
+</dd>
+<dt id="No-filename-or-YAML-stream-specified-for-deserialize"><code>No filename or YAML stream specified for deserialize</code></dt>
+<dd>
+
+<p>(F) You have not supplied a filename from which to deserialization data.</p>
+
+</dd>
+</dl>
+
+<h1 id="SERIALIZATION-AND-DESERIALIZATION">SERIALIZATION AND DESERIALIZATION</h1>
+
+<p>The serialization format of a data object is as a YAML file. The YAML serialization begins with a mapping of the Data object attributes. This is followed by sequences representing the data. For mu(E) data, the sequences are energy and xmu. If the data was column data, the xmu sequence is followed by a sequence representing the i0 array. For chi(k) data, the mapping is followed by sequences representing k and chi(k).</p>
 
 <p>To serialize a Data object to a file:</p>
 
-<pre>  $data -&gt; serialize($filename);
+<pre><code>  $data -&gt; serialize($filename);</code></pre>
 
-</pre><p>To import the serialized data and create a Data object to hold it:</p>
+<p>To import the serialized data and create a Data object to hold it:</p>
 
-<pre>  $data -&gt; deserialize($filename);
+<pre><code>  $data -&gt; deserialize($filename);</code></pre>
 
-</pre><p>As a convenience <code>freeze</code> is a synonym for <code>serialize</code> and <code>thaw</code>
-is a synonym for <code>deserialize</code>.</p>
+<p>As a convenience <code>freeze</code> is a synonym for <code>serialize</code> and <code>thaw</code> is a synonym for <code>deserialize</code>.</p>
 
-<p>Among the many attractive features of YAML as a serialization format is that
-YAML is supported by lots of programming languages.  So Demeter serialization
-can be imported easily into other analysis software.</p>
+<p>Among the many attractive features of YAML as a serialization format is that YAML is supported by lots of programming languages. So Demeter serialization can be imported easily into other analysis software.</p>
 
-<p>In principle, the Athena project file is also a serialization
-format. The YAML serialization is intended for use as part of a
-fitting project.  An Athena project file is probably a more useful
-user interaction format for data processing.</p>
+<p>In principle, the Athena project file is also a serialization format. The YAML serialization is intended for use as part of a fitting project. An Athena project file is probably a more useful user interaction format for data processing.</p>
 
-<h1 id="CONFIGURATION">CONFIGURATION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="CONFIGURATION">CONFIGURATION</h1>
 
-<p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration system.
-Many attributes of a Data object can be configured via the
-configuration system.  See, among others, the <code>bkg</code>, <code>fft</code>, <code>bft</code>,
-and <code>fit</code> configuration groups.</p>
+<p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration system. Many attributes of a Data object can be configured via the configuration system. See, among others, the <code>bkg</code>, <code>fft</code>, <code>bft</code>, and <code>fit</code> configuration groups.</p>
 
-<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
 
-<p>Demeter's dependencies are in the <cite>Build.PL</cite> file.</p>
+<p>Demeter&#39;s dependencies are in the <i>Build.PL</i> file.</p>
 
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
 <p>Several features have not yet been implemented.</p>
 
 <ul>
-	<li>Should there only be two items in a collection of tied references?
-Consider importing MED channels -- it would be reasonable for each
-channel and the reference to be a reference collection.</li>
-	<li>Only some of the Athena-like data process methods (alignment, merging,
-and so on) have been implemented at this time.  None of the analysis
-features of Athena (LCF, LR/PD, peak fitting) have been implemeneted.</li>
-	<li>Various background and normalization options: functional
-normalization, normalization order, background removal standard,
-Cromer-Liberman.</li>
-	<li>Tied reference channel</li>
-	<li>Standard deviation for merged data not written to serialization.</li>
+
+<li><p>Should there only be two items in a collection of tied references? Consider importing MED channels -- it would be reasonable for each channel and the reference to be a reference collection.</p>
+
+</li>
+<li><p>Only some of the Athena-like data process methods (alignment, merging, and so on) have been implemented at this time. None of the analysis features of Athena (LCF, LR/PD, peak fitting) have been implemeneted.</p>
+
+</li>
+<li><p>Various background and normalization options: functional normalization, normalization order, background removal standard, Cromer-Liberman.</p>
+
+</li>
+<li><p>Tied reference channel</p>
+
+</li>
+<li><p>Standard deviation for merged data not written to serialization.</p>
+
+</li>
 </ul>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel, <a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a></p>
 
 <p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
-
-
-
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

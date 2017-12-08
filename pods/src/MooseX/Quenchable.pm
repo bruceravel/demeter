@@ -78,6 +78,7 @@ sub register_implementation { 'MooseX::Quenchable::Attribute' }
 
 1;
 
+__END__
 
 
 =head1 NAME
@@ -101,7 +102,7 @@ Add the "Quenchable" trait to attributes:
     traits => [ qw(Quenchable) ],
   );
 
-and then you can silently disable changes to that attribute.
+...and then you can silently disable changes to that attribute.
 
   my $object = Class->new;
 
@@ -118,7 +119,7 @@ The 'Quenchable' attribute lets your class have attributes that can
 have setting silently disabled.
 
 This is an example of cargo-cult programming.  It was swiped
-shamelessly from MooseX::SetOnce by Ricardo SIGNES and
+shamelessly from MooseX::SetOnce by Ricardo SIGNES <rjbs@cpan.org> and
 slightly modified.
 
 This does not override an attribute's clearer, so there is a way to

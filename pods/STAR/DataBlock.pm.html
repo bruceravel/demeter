@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>STAR::DataBlock</title>
-<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>STAR::DataBlock &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,29 +15,71 @@
 </div>
 <div class="path">
   <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
-  STAR-DataBlock
+  STAR::DataBlock
 </div>
 <div>
 <a href="../src/STAR/DataBlock.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>STAR::DataBlock - Perl extension for handling DataBlock objects created 
-by STAR::Parser.</p>
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a>
+    <ul>
+      <li><a href="#Version">Version</a></li>
+    </ul>
+  </li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new</a></li>
+    </ul>
+  </li>
+  <li><a href="#OBJECT-METHODS">OBJECT METHODS</a>
+    <ul>
+      <li><a href="#store">store</a></li>
+      <li><a href="#get_item_data">get_item_data</a></li>
+      <li><a href="#get_keys">get_keys</a></li>
+      <li><a href="#get_items">get_items</a></li>
+      <li><a href="#get_categories">get_categories</a></li>
+      <li><a href="#insert_category">insert_category</a></li>
+      <li><a href="#insert_item">insert_item</a></li>
+      <li><a href="#set_item_data">set_item_data</a></li>
+      <li><a href="#Object-attributes">Object attributes</a></li>
+      <li><a href="#file_name">file_name</a></li>
+      <li><a href="#title">title</a></li>
+      <li><a href="#type">type</a></li>
+      <li><a href="#starting_line">starting_line</a></li>
+      <li><a href="#ending_line">ending_line</a></li>
+      <li><a href="#get_attributes">get_attributes</a></li>
+    </ul>
+  </li>
+  <li><a href="#COMMENTS">COMMENTS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a>
+    <ul>
+      <li><a href="#Acknowledgments">Acknowledgments</a></li>
+    </ul>
+  </li>
+  <li><a href="#COPYRIGHT">COPYRIGHT</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>STAR::DataBlock - Perl extension for handling DataBlock objects created by STAR::Parser.</p>
 
 <h2 id="Version">Version</h2>
 
 <p>This documentation refers to version 0.58 of this module.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<pre>  use STAR::DataBlock;
-
+<pre><code>  use STAR::DataBlock;
+  
   $data_obj = STAR::DataBlock-&gt;new(-file=&gt;$ARGV[0]);  #retrieves stored file
-
+  
   $attributes = $data_obj-&gt;get_attributes;
   print $attributes;
 
@@ -70,554 +90,170 @@ by STAR::Parser.</p>
       $count{ $_ } = $#item_data + 1;
 
       # do something else (hopefully more useful) with @item_data...
-  }
+  }</code></pre>
 
-</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This package contains class and object methods for 
-dealing with DataBlock objects created by STAR::Parser. 
-They include methods for such tasks as reading  
-objects from disk, querying their data structures 
-or writing DataBlock objects as STAR compliant files.</p>
+<p>This package contains class and object methods for dealing with DataBlock objects created by STAR::Parser. They include methods for such tasks as reading objects from disk, querying their data structures or writing DataBlock objects as STAR compliant files.</p>
 
-<p>All methods support a &quot;named parameters&quot; style for passing arguments. If 
-only one argument is mandatory, then it may be passed in either a 
-&quot;named parameters&quot; or &quot;unnamed parameters&quot; style, for example:</p>
+<p>All methods support a &quot;named parameters&quot; style for passing arguments. If only one argument is mandatory, then it may be passed in either a &quot;named parameters&quot; or &quot;unnamed parameters&quot; style, for example:</p>
 
-<pre>       $data_obj-&gt;get_item_data( -file=&gt;$file, -save=&gt;'-' );
+<pre><code>       $data_obj-&gt;get_item_data( -file=&gt;$file, -save=&gt;&#39;-&#39; );
    or: $data_obj-&gt;get_item_data( -file=&gt;$file ); 
    or: $data_obj-&gt;get_item_data( $file );  
 
-       # all of the above are the same, since -save=&gt;'-' is the default
+       # all of the above are the same, since -save=&gt;&#39;-&#39; is the default
        # and therefore only one parameter needs to be specified 
-       # in &quot;named&quot; or &quot;unnamed&quot; parameter style
+       # in &quot;named&quot; or &quot;unnamed&quot; parameter style</code></pre>
 
-</pre><p>Some methods may be invoked with on <code>$options</code> string. Currently, only one 
-option is supported:</p>
+<p>Some methods may be invoked with on <code>$options</code> string. Currently, only one option is supported:</p>
 
-<pre>  l  writes program activity log to STDERR
+<pre><code>  l  writes program activity log to STDERR</code></pre>
 
-</pre><p>Future versions may support additional options.</p>
+<p>Future versions may support additional options.</p>
 
-<h1 id="CONSTRUCTOR">CONSTRUCTOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
 
 <h2 id="new">new</h2>
 
-<p><a href="#" onclick="toggleCode('method_new');return false;">[Source]</a></p>
-                                        <div class="method-source-code" id="method_new">
-                                        <pre>
-
-sub new {
-    my ($proto, @parameters) = @_;
-    my $class = ref($proto) || $proto;
-    my $file;
-    my $self;
-
-    $file = shift @parameters unless $#parameters;  
-    #
-    #  the above is executed if and only if $#parameters == 0,
-    #  which means only if exactly one parameter is being passed
-    #  (in "unnamed parameters" style)
-
-    while ($_ = shift @parameters) {
-        $file = shift @parameters if /-file/;
-    } 
-
-    if ( $file ) {
-        $self = retrieve($file);
-    }
-    else {
-        $self = {};
-        bless ($self,$class);
-    }
-
-    return $self;
-}
-</pre></div>
-
-<pre>  Usage:  $data_obj = STAR::DataBlock-&gt;new();                #creates new object
+<pre><code>  Usage:  $data_obj = STAR::DataBlock-&gt;new();                #creates new object
 
           $data_obj = STAR::DataBlock-&gt;new( -file=&gt;$file );  #retrieves previously
-     OR:  $data_obj = STAR::DataBlock-&gt;new( $file );         #stored object
+     OR:  $data_obj = STAR::DataBlock-&gt;new( $file );         #stored object</code></pre>
 
-</pre><p>Overloaded constructor. Called as a no-arg constructor internally by STAR::Parser.
-May be called with a <code>$file</code> argument to retrieve an object previously stored with
-store (see below).</p>
+<p>Overloaded constructor. Called as a no-arg constructor internally by STAR::Parser. May be called with a <code>$file</code> argument to retrieve an object previously stored with store (see below).</p>
 
-<h1 id="OBJECT_METHODS">OBJECT METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="OBJECT-METHODS">OBJECT METHODS</h1>
 
 <h2 id="store">store</h2>
 
-<pre>  Usage:  $data_obj-&gt;store($file);
+<pre><code>  Usage:  $data_obj-&gt;store($file);</code></pre>
 
-</pre><p>Saves a DataBlock object to disk. This method is in Storable.</p>
+<p>Saves a DataBlock object to disk. This method is in Storable.</p>
 
 <h2 id="get_item_data">get_item_data</h2>
 
-<p><a href="#" onclick="toggleCode('method_get_item_data');return false;">[Source]</a></p>
-                                        <div class="method-source-code" id="method_get_item_data">
-                                        <pre>
-
-sub get_item_data {
-
-    my ($self,@parameters) = @_;
-    my ($d,$s,$c,$i);
-
-    $d = $self->title;               #default data block
-    $s = '-';                        #default save block
-
-    $i = shift @parameters unless $#parameters;
-    while ($_ = shift @parameters) {
-       $d = shift @parameters if /-datablock/;
-       $s = shift @parameters if /-save/;
-       $i = shift @parameters if /-item/;
-    }
-
-    if ( $i =~ /^(\S+?)\./ ) {
-        $c = $1;
-    }
-    else {
-        $c = '-';
-    }
-    return if (! exists $self->{DATA}{$d}{$s}{$c}{$i});
-    return @{$self->{DATA}{$d}{$s}{$c}{$i}};
-}
-</pre></div>
-
-<pre>  Usage: @item_data = $data_obj-&gt;get_item_data(-item=&gt;$item[,
+<pre><code>  Usage: @item_data = $data_obj-&gt;get_item_data(-item=&gt;$item[,
                                                -save=&gt;$save_block]);
 
   Example:
   --------
   my @names=$data_obj-&gt;
             get_item_data(-item=&gt;&quot;_citation_author.name&quot;);
-  print $names[0],&quot;\n&quot;;  #prints first citation author name
+  print $names[0],&quot;\n&quot;;  #prints first citation author name</code></pre>
 
-</pre><p>This object method returns all the data for a specified item. 
-If the <code>-save</code> parameter is omitted, it is assumed that the item 
-is not in a save block (i.e. <code>$save='-'</code>). This is always the case 
-in data files, since they do not contain save blocks. However, this 
-class is sub-classed by STAR::Dictionary, where items may be in save 
-blocks.
-The data is returned as an array, which holds one or 
-more scalars. </p>
+<p>This object method returns all the data for a specified item. If the <code>-save</code> parameter is omitted, it is assumed that the item is not in a save block (i.e. <code>$save=&#39;-&#39;</code>). This is always the case in data files, since they do not contain save blocks. However, this class is sub-classed by STAR::Dictionary, where items may be in save blocks. The data is returned as an array, which holds one or more scalars.</p>
 
 <h2 id="get_keys">get_keys</h2>
 
-<p><a href="#" onclick="toggleCode('method_get_keys');return false;">[Source]</a></p>
-                                        <div class="method-source-code" id="method_get_keys">
-                                        <pre>
+<pre><code>  Usage: $keys = $data_obj-&gt;get_keys;</code></pre>
 
-sub get_keys {
-
-    my ($self,@parameters) = @_;
-
-    my ($d, $s, $c, $i, $log);
-    my $keys = '';
-
-    $keys .= "data\tsave\n";
-    $keys .= "block\tblock\tcateg.\titem\n";
-    $keys .= "----------------------------\n\n";
-    foreach $d ( sort keys %{$self->{DATA}} ) {
-        $keys .= "$d\n";
-        foreach $s ( sort keys %{$self->{DATA}{$d}} ) {
-            $keys .= "\t$s\n";
-            foreach $c ( sort keys %{$self->{DATA}{$d}{$s}} ) {
-                $keys .= "\t\t$c\n";
-                foreach $i ( sort keys %{$self->{DATA}{$d}{$s}{$c}} ) {
-                    $keys .= "\t\t\t$i\n";
-                }
-            }
-        }
-    }
-    return $keys;
-}
-</pre></div>
-
-<pre>  Usage: $keys = $data_obj-&gt;get_keys;
-
-</pre><p>Returns a string with a hierarchically formatted list of hash keys 
-(data blocks, save blocks, categories, and items) 
-found in the data structure of the DataBlock object. </p>
+<p>Returns a string with a hierarchically formatted list of hash keys (data blocks, save blocks, categories, and items) found in the data structure of the DataBlock object.</p>
 
 <h2 id="get_items">get_items</h2>
 
-<p><a href="#" onclick="toggleCode('method_get_items');return false;">[Source]</a></p>
-                                        <div class="method-source-code" id="method_get_items">
-                                        <pre>
+<pre><code>  Usage: @items = $data_obj-&gt;get_items;</code></pre>
 
-sub get_items {
- 
-    my $self = shift;
-    my ($d,$s,$c,$i);
-    my (@items);   
- 
-    foreach $d ( sort keys %{$self->{DATA}} ) {
-        foreach $s ( sort keys %{$self->{DATA}{$d}} ) {
-            foreach $c ( sort keys %{$self->{DATA}{$d}{$s}} ) {
-                foreach $i ( sort keys %{$self->{DATA}{$d}{$s}{$c}} ) {
-                    push @items,$i;
-                }
-            }
-        }
-    }
-    return @items;
-}
-</pre></div>
-
-<pre>  Usage: @items = $data_obj-&gt;get_items;
-
-</pre><p>Returns an array with all the items present in the DataBlock.</p>
+<p>Returns an array with all the items present in the DataBlock.</p>
 
 <h2 id="get_categories">get_categories</h2>
 
-<p><a href="#" onclick="toggleCode('method_get_categories');return false;">[Source]</a></p>
-                                        <div class="method-source-code" id="method_get_categories">
-                                        <pre>
+<pre><code>  Usage: @categories = $data_obj-&gt;get_categories;</code></pre>
 
-sub get_categories {
- 
-    my $self = shift;
-    my ($d, $s, $c);
-    my (@cats);   
- 
-    foreach $d ( sort keys %{$self->{DATA}} ) {
-        foreach $s ( sort keys %{$self->{DATA}{$d}} ) {
-            foreach $c ( sort keys %{$self->{DATA}{$d}{$s}} ) {
-                push @cats,$c;
-            }
-        }
-    }
-    return @cats;
-}
-</pre></div>
-
-<pre>  Usage: @categories = $data_obj-&gt;get_categories;
-
-</pre><p>Returns an array with all the categories present in the DataBlock.</p>
+<p>Returns an array with all the categories present in the DataBlock.</p>
 
 <h2 id="insert_category">insert_category</h2>
 
-<p><a href="#" onclick="toggleCode('method_insert_category');return false;">[Source]</a></p>
-                                        <div class="method-source-code" id="method_insert_category">
-                                        <pre>
+<pre><code>  Usage: $data_obj-&gt;insert_category( -cat=&gt;$cat[,
+                                     -save=&gt;$save] );</code></pre>
 
-sub insert_category {
-
-    my ($self, @parameters) = @_;
-    my ($d, $s, $c);
-
-    $d = $self->title;      # default data block
-    $s = '-';               # default save block
-
-    $c = shift @parameters unless $#parameters;   # single "unnamed" parameter
-    while ( $_ = shift @parameters ) {
-        $d = shift @parameters if /-datablock/;
-        $s = shift @parameters if /-save/;
-        $c = shift @parameters if /-cat/;
-    }
-
-    if ( exists $self->{DATA}{$d}{$s}{$c} ) {
-        # category already exists
-        # do nothing
-    } 
-    else {
-        $self->{DATA}{$d}{$s}{$c} = {};   #just an empty addition to the hash
-                                          #no data yet
-        print "inserted category $c\n";
-    }
-    return;
-}
-</pre></div>
-
-<pre>  Usage: $data_obj-&gt;insert_category( -cat=&gt;$cat[,
-                                     -save=&gt;$save] );
-
-</pre><p>Inserts the category <code>$cat</code> into the data structure. The default save block
-(if none is specified) is <code>'-'</code>.</p>
+<p>Inserts the category <code>$cat</code> into the data structure. The default save block (if none is specified) is <code>&#39;-&#39;</code>.</p>
 
 <h2 id="insert_item">insert_item</h2>
 
-<p><a href="#" onclick="toggleCode('method_insert_item');return false;">[Source]</a></p>
-                                        <div class="method-source-code" id="method_insert_item">
-                                        <pre>
+<pre><code>  Usage: $data_obj-&gt;insert_item( -item=&gt;$item[,
+                                 -save=&gt;$save]  );</code></pre>
 
-sub insert_item {
- 
-    my ($self, @parameters) = @_;
-    my ($d, $s, $c, $i);
+<p>Inserts the item <code>$item</code> into the data structure. The default save block (if none is specified) is <code>&#39;-&#39;</code>.</p>
 
-    $d = $self->title;      # default data block
-    $s = '-';               # default save block
+<h2 id="set_item_data">set_item_data</h2>
 
-    $i = shift @parameters unless $#parameters;   # single "unnamed" parameter
-    while ( $_ = shift @parameters ) {
-        $d = shift @parameters if /-datablock/;
-        $s = shift @parameters if /-save/;
-        $i = shift @parameters if /-item/;
-    }
-
-    if ( $i =~ /^(\S+?)\./ ) {
-        $c = $1;
-    }
-    else {
-        $c = '-';
-    }
-
-    #has the category already been created?
-    if ( ! exists $self->{DATA}{$d}{$s}{$c} ) {
-        print "category $c doesn't exist\n";
-        $self->insert_category( -datablock=>$d, -save=>$s, -cat=>$c );
-    }
-
-    #has the item been created before?
-    if ( exists $self->{DATA}{$d}{$s}{$c}{$i} ) {
-        # item already exists
-        # do nothing
-    }
-    else {
-        $self->{DATA}{$d}{$s}{$c}{$i} = ();  # empty array, still no data
-    }
-    return;
-}
-</pre></div>
-
-<pre>  Usage: $data_obj-&gt;insert_item( -item=&gt;$item[,
-                                 -save=&gt;$save]  );
-
-</pre><p>Inserts the item <code>$item</code> into the data structure. The default save block 
-(if none is specified) is <code>'-'</code>.</p>
-
-<h2 id="set_item_data">set_item_data </h2>
-
-<p><a href="#" onclick="toggleCode('method_set_item_data');return false;">[Source]</a></p>
-                                        <div class="method-source-code" id="method_set_item_data">
-                                        <pre>
-
-sub set_item_data {
-
-    my ($self, @parameters) = @_;
-    my ($d, $s, $c, $i, $data_ref);
- 
-    $d = $self->title;      # default data block
-    $s = '-';               # default save block
-
-    #no single "unnamed" parameter in this case
-    #need at least -item and -dataref
-
-    while ( $_ = shift @parameters ) {
-        $d = shift @parameters if /-datablock/;
-        $s = shift @parameters if /-save/;
-        $i = shift @parameters if /-item/;
-        $data_ref = shift @parameters if /-dataref/;
-    }
-
-    if ( $i =~ /^(\S+?)\./ ) {
-        $c = $1;
-    }
-    else {
-        $c = '-';
-    }
-
-    #does the item exist?
-    if ( ! exists $self->{DATA}{$d}{$s}{$c}{$i} ) {
-        $self->insert_item( -datalblock=>$d, -save=>$s, -item=>$i );
-    }
- 
-    #now add the data
-    $self->{DATA}{$d}{$s}{$c}{$i} = $data_ref; 
-
-    return;
-}
-</pre></div>
-
-<pre>  Usage: $data_obj-&gt;set_item_data( -item=&gt;$item, 
+<pre><code>  Usage: $data_obj-&gt;set_item_data( -item=&gt;$item, 
                                    -dataref=&gt;$dataref[,
-                                   -save=&gt;$save] );
+                                   -save=&gt;$save] );</code></pre>
 
-</pre><p>Sets the data of the item <code>$item</code> to the array of data referenced by 
-<code>$dataref</code>. If the <code>-save</code> parameter is omitted, the save block defaults to
-<code>'-'</code>. This is always correct for data blocks. In a dictionary (which inherits
-from DataBlock), the save block <code>'-'</code> contains information pertaining to the
-dictionary itself.</p>
+<p>Sets the data of the item <code>$item</code> to the array of data referenced by <code>$dataref</code>. If the <code>-save</code> parameter is omitted, the save block defaults to <code>&#39;-&#39;</code>. This is always correct for data blocks. In a dictionary (which inherits from DataBlock), the save block <code>&#39;-&#39;</code> contains information pertaining to the dictionary itself.</p>
 
-<h2 id="Object_attributes">Object attributes</h2>
+<h2 id="Object-attributes">Object attributes</h2>
 
-<p>The following five methods set or retrieve attributes of a DataBlock object. 
-In the set mode (with argument), these methods are called internally 
-to set the attributes of a DataBlock object. In the retrieve mode 
-(without arguments) these methods may also be called by a user to 
-retrieve object attributes (see the above examples).</p>
+<p>The following five methods set or retrieve attributes of a DataBlock object. In the set mode (with argument), these methods are called internally to set the attributes of a DataBlock object. In the retrieve mode (without arguments) these methods may also be called by a user to retrieve object attributes (see the above examples).</p>
 
 <h2 id="file_name">file_name</h2>
 
-<p><a href="#" onclick="toggleCode('method_file_name');return false;">[Source]</a></p>
-                                        <div class="method-source-code" id="method_file_name">
-                                        <pre>
+<pre><code>  Usage:  $data_obj-&gt;file_name($name);   #set mode
+          $name = $data_obj-&gt;file_name;  #get mode</code></pre>
 
-sub file_name {
-    my ($self,@parameters) = @_;
-    $self->{FILE} = shift @parameters unless $#parameters; 
-    while ($_ = shift @parameters ) {
-        $self->{FILE} = shift @parameters if /-file/;
-    }
-    return $self->{FILE};
-}
-</pre></div>
-
-<pre>  Usage:  $data_obj-&gt;file_name($name);   #set mode
-          $name = $data_obj-&gt;file_name;  #get mode
-
-</pre><p>Name of the file in which the DataBlock object was found</p>
+<p>Name of the file in which the DataBlock object was found</p>
 
 <h2 id="title">title</h2>
 
-<p><a href="#" onclick="toggleCode('method_title');return false;">[Source]</a></p>
-                                        <div class="method-source-code" id="method_title">
-                                        <pre>
+<pre><code>  Usage:  $data_obj-&gt;title($title);      #set mode
+          $title = $data_obj-&gt;title;     #get mode</code></pre>
 
-sub title {
-    my ($self,@parameters) = @_;
-    $self->{TITLE} = shift @parameters unless $#parameters; 
-    while ($_ = shift @parameters ) {
-        $self->{TITLE} = shift @parameters if /-title/;
-    }
-    return $self->{TITLE};
-}
-</pre></div>
-
-<pre>  Usage:  $data_obj-&gt;title($title);      #set mode
-          $title = $data_obj-&gt;title;     #get mode
-
-</pre><p>Title of the DataBlock object</p>
+<p>Title of the DataBlock object</p>
 
 <h2 id="type">type</h2>
 
-<p><a href="#" onclick="toggleCode('method_type');return false;">[Source]</a></p>
-                                        <div class="method-source-code" id="method_type">
-                                        <pre>
+<pre><code>  Usage:  $data_obj-&gt;type($type);        #set mode
+          $type = $data_obj-&gt;type;       #get mode</code></pre>
 
-sub type {
-    my ($self,@parameters) = @_;
-    $self->{TYPE} = shift @parameters unless $#parameters; 
-    while ($_ = shift @parameters ) {
-        $self->{TYPE} = shift @parameters if /-type/;
-    }
-    return $self->{TYPE};
-}
-</pre></div>
-
-<pre>  Usage:  $data_obj-&gt;type($type);        #set mode
-          $type = $data_obj-&gt;type;       #get mode
-
-</pre><p>Type of data contained (always 'data' for a DataBlock object, 
-but 'dictionary' for an object in the sub class STAR::Dictionary) </p>
+<p>Type of data contained (always &#39;data&#39; for a DataBlock object, but &#39;dictionary&#39; for an object in the sub class STAR::Dictionary)</p>
 
 <h2 id="starting_line">starting_line</h2>
 
-<p><a href="#" onclick="toggleCode('method_starting_line');return false;">[Source]</a></p>
-                                        <div class="method-source-code" id="method_starting_line">
-                                        <pre>
+<pre><code>  Usage:  $data_obj-&gt;starting_line($startln);    #set mode
+          $startln = $data_obj-&gt;starting_line;   #get mode</code></pre>
 
-sub starting_line {
-    my ($self,@parameters) = @_;
-    $self->{STARTLN} = shift @parameters unless $#parameters; 
-    while ($_ = shift @parameters ) {
-        $self->{STARTLN} = shift @parameters if /-startln/;
-    }
-    return $self->{STARTLN};
-}
-</pre></div>
-
-<pre>  Usage:  $data_obj-&gt;starting_line($startln);    #set mode
-          $startln = $data_obj-&gt;starting_line;   #get mode
-
-</pre><p>Line number where data block started in the file</p>
+<p>Line number where data block started in the file</p>
 
 <h2 id="ending_line">ending_line</h2>
 
-<p><a href="#" onclick="toggleCode('method_ending_line');return false;">[Source]</a></p>
-                                        <div class="method-source-code" id="method_ending_line">
-                                        <pre>
+<pre><code>  Usage:  $data_obj-&gt;ending_line($endln);        #set mode
+          $endln = $data_obj-&gt;ending_line;       #get mode</code></pre>
 
-sub ending_line {
-    my ($self,@parameters) = @_;
-    $self->{ENDLN} = shift @parameters unless $#parameters; 
-    while ($_ = shift @parameters ) {
-        $self->{ENDLN} = shift @parameters if /-endln/;
-    }
-    return $self->{ENDLN};
-}
-</pre></div>
-
-<pre>  Usage:  $data_obj-&gt;ending_line($endln);        #set mode
-          $endln = $data_obj-&gt;ending_line;       #get mode
-
-</pre><p>Line number where data block ended in the file</p>
+<p>Line number where data block ended in the file</p>
 
 <h2 id="get_attributes">get_attributes</h2>
 
-<p><a href="#" onclick="toggleCode('method_get_attributes');return false;">[Source]</a></p>
-                                        <div class="method-source-code" id="method_get_attributes">
-                                        <pre>
+<pre><code>  Usage: $info = $data_obj-&gt;get_attributes;</code></pre>
 
-sub get_attributes {
+<p>Returns a string containing a descriptive list of attributes of the DataBlock object. Two examples of output:</p>
 
-    my $self = shift;      
-    my $string;
-        
-    $string .= $self->{TITLE};
-    $string .= " (dictionary)" if ($self->{TYPE} eq 'dictionary');
-    $string .= "\n";
-    $string .= "File: ".$self->{FILE}."   ";
-    $string .= "Lines: ".$self->{STARTLN};
-    $string .= " to ".$self->{ENDLN}."\n";
-
-    return $string;
-}
-</pre></div>
-
-<pre>  Usage: $info = $data_obj-&gt;get_attributes;
-
-</pre><p>Returns a string containing a descriptive list of 
-attributes of the DataBlock object. Two examples of output:</p>
-
-<pre>  RCSB011457
+<pre><code>  RCSB011457
   File: native/1fbm.cif   Lines: 1 to 5294
 
   cif_mm.dic (dictionary)
-  File: dictionary/mmcif_dict.txt   Lines: 89 to 38008
+  File: dictionary/mmcif_dict.txt   Lines: 89 to 38008</code></pre>
 
-</pre><h1 id="COMMENTS">COMMENTS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="COMMENTS">COMMENTS</h1>
 
-<p>This module provides no error checking of files or objects, 
-either against the dictionary, or otherwise. 
-Dictionary 
-information is not currently used in the parsing 
-of files by STAR::Parser. So, for example, information about 
-parent-child relationships between items is not 
-present in a DataBlock object. Functionality related to these 
-issues is being provided in additional modules, such as STAR::Checker, 
-and STAR::Filter.</p>
+<p>This module provides no error checking of files or objects, either against the dictionary, or otherwise. Dictionary information is not currently used in the parsing of files by STAR::Parser. So, for example, information about parent-child relationships between items is not present in a DataBlock object. Functionality related to these issues is being provided in additional modules, such as STAR::Checker, and STAR::Filter.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Wolfgang Bluhm, mail@wbluhm.com</p>
 
 <h2 id="Acknowledgments">Acknowledgments</h2>
 
-<p>Thanks to Phil Bourne, Helge Weissig, Anne Kuller, Doug Greer,
-Michele Bluhm, and others for support, help, and comments.</p>
+<p>Thanks to Phil Bourne, Helge Weissig, Anne Kuller, Doug Greer, Michele Bluhm, and others for support, help, and comments.</p>
 
-<h1 id="COPYRIGHT">COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="COPYRIGHT">COPYRIGHT</h1>
 
-<p>A full copyright statement is provided with the distribution
-Copyright (c) 2000 University of California, San Diego</p>
+<p>A full copyright statement is provided with the distribution Copyright (c) 2000 University of California, San Diego</p>
 
-<h1 id="SEE_ALSO">SEE ALSO <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="SEE-ALSO">SEE ALSO</h1>
 
 <p>STAR::Parser, STAR::Dictionary.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

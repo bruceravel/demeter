@@ -61,6 +61,7 @@ has 'lineshapes' => (
 				   'clear_lineshape' => 'clear',
 				  }
 		    );
+has 'bla_npix' => (is => 'rw', isa => 'HashRef',  default => sub{ {} },);
 
 sub BUILD {
   my ($self, @params) = @_;
@@ -117,6 +118,13 @@ sub Read {
       @ {$cpt->varglob('lineshape')} = $cpt->reval( $line );
       my @ls = @ {$cpt->varglob('lineshape')};
       $self->add_lineshape(\@ls);
+    };
+
+    ## a Metis-specific, "it's good to be charge" block of code
+    if ($line =~ m{\A\%npixdata}) {
+      @ {$cpt->varglob('npixdata')} = $cpt->reval( $line );
+      my %npix = % {$cpt->varglob('npixdata')};
+      $self->bla_npix(\%npix);
     };
 
     next unless ($line =~ /^\$old_group/);

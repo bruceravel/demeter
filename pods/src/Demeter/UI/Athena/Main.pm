@@ -11,6 +11,7 @@ use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON EVT_K
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_HYPERLINK);
 use Wx::Perl::TextValidator;
 use Const::Fast;
+use Demeter::UI::Athena::SpecifyConfig;
 use Demeter::UI::Wx::Colours;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 const my $PM => $PLUSMN2;
@@ -1130,12 +1131,14 @@ sub ContextMenu {
     $menu->AppendSeparator;
     $menu->Append($ALL_TO_1,    "Set Importance to 1 for all groups");
     $menu->Append($MARKED_TO_1, "Set Importance to 1 for marked groups");
-    if ($app->current_data->xdi) {
-      if (defined $app->current_data->xdi->metadata->{BLA}->{pixel_ratio}) {
-	$menu->AppendSeparator;
-	$menu->Append($IMP_BLA_PIXEL, "Set Importance for marked data to BLA pixel ratio");
-      };
-    };
+    #if ($app->current_data->xdi) {
+    #  if (defined $app->current_data->xdi->metadata->{BLA}->{pixel_ratio}) {
+    $menu->AppendSeparator;
+    $menu->Append($IMP_BLA_PIXEL, "Set Importance for marked data to BLA pixel ratio");
+    $menu->Enable($IMP_BLA_PIXEL, 0);
+    $menu->Enable($IMP_BLA_PIXEL, 1) if (exists $Demeter::UI::Athena::npix{$app->current_data->group});
+    #  };
+    #};
   } elsif ($which eq 'bkg_eshift') {
     $menu->AppendSeparator;
     $menu->Append($IDENTIFY_REFERENCE, "Identify this groups reference");
@@ -1158,11 +1161,14 @@ sub ContextMenu {
     $menu->Append($STEP_MARKED,  "Show edge steps of marked groups");
     $menu->AppendSeparator;
     $menu->Append($STEP_ERROR,   "Approximate uncertainty in edge step");
-  } elsif (($which eq 'plot_multiplier') and ($app->current_data->xdi)) {
-    if (defined $app->current_data->xdi->metadata->{BLA}->{pixel_ratio}) {
-      $menu->AppendSeparator;
-      $menu->Append($SCALE_BLA_PIXEL, "Set Plot multiplier for marked data to BLA pixel ratio");
-    };
+  #} elsif (($which eq 'plot_multiplier') and ($app->current_data->xdi)) {
+    #if (defined $app->current_data->xdi->metadata->{BLA}->{pixel_ratio}) {
+  } elsif ($which eq 'plot_multiplier') {
+    $menu->AppendSeparator;
+    $menu->Append($SCALE_BLA_PIXEL, "Set Plot multiplier for marked data to BLA pixel ratio");
+    $menu->Enable($SCALE_BLA_PIXEL, 0);
+    $menu->Enable($SCALE_BLA_PIXEL, 1) if (exists $Demeter::UI::Athena::npix{$app->current_data->group});
+    #};
   };
 
   ## set to session default
@@ -1231,7 +1237,11 @@ sub DoContextMenu {
 
     ## -------- bkg_eshift context menu
     ($id == $IDENTIFY_REFERENCE) and do {
-      $app->{main}->status(sprintf("%s is the reference for %s", $data->reference->name, $data->name));
+      if ($data->reference) {
+	$app->{main}->status(sprintf("%s is the reference for %s", $data->reference->name, $data->name));
+      } else {
+	$app->{main}->status(sprintf("%s does not have a reference", $data->name));
+      };
       last SWITCH;
     };
     ($id == $UNTIE_REFERENCE) and do {
@@ -1258,10 +1268,12 @@ sub DoContextMenu {
     ($id == $IMP_BLA_PIXEL) and do {
       foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
 	next if (not $app->{main}->{list}->IsChecked($i));
-	my $pr = $app->{main}->{list}->GetIndexedData($i)->xdi->metadata->{BLA}->{pixel_ratio};
-	if (looks_like_number($pr)) {
-	  $app->{main}->{list}->GetIndexedData($i)->importance($pr);
-	};
+	next if not exists($Demeter::UI::Athena::npix{$app->{main}->{list}->GetIndexedData($i)->group});
+	$app->{main}->{list}->GetIndexedData($i)->importance($Demeter::UI::Athena::npix{$app->{main}->{list}->GetIndexedData($i)->group}->[1]);
+	#my $pr = $app->{main}->{list}->GetIndexedData($i)->xdi->metadata->{BLA}->{pixel_ratio};
+	#if (looks_like_number($pr)) {
+	#  $app->{main}->{list}->GetIndexedData($i)->importance($pr);
+	#};
       };
       $app->modified(1);
       $app->OnGroupSelect(0,0,0);
@@ -1270,10 +1282,12 @@ sub DoContextMenu {
     ($id == $SCALE_BLA_PIXEL) and do {
       foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
 	next if (not $app->{main}->{list}->IsChecked($i));
-	my $pr = $app->{main}->{list}->GetIndexedData($i)->xdi->metadata->{BLA}->{pixel_ratio};
-	if (looks_like_number($pr)) {
-	  $app->{main}->{list}->GetIndexedData($i)->plot_multiplier($pr);
-	};
+	next if not exists($Demeter::UI::Athena::npix{$app->{main}->{list}->GetIndexedData($i)->group});
+	$app->{main}->{list}->GetIndexedData($i)->plot_multiplier($Demeter::UI::Athena::npix{$app->{main}->{list}->GetIndexedData($i)->group}->[1]);
+	#my $pr = $app->{main}->{list}->GetIndexedData($i)->xdi->metadata->{BLA}->{pixel_ratio};
+	#if (looks_like_number($pr)) {
+	#  $app->{main}->{list}->GetIndexedData($i)->plot_multiplier($pr);
+	#};
       };
       $app->modified(1);
       $app->OnGroupSelect(0,0,0);

@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::Data::E0</title>
-<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::Data::E0 &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,141 +15,165 @@
 </div>
 <div class="path">
   <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-Data-E0
+  Demeter::Data::E0
 </div>
 <div>
 <a href="../../src/Demeter/Data/E0.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a></li>
+  <li><a href="#CONFIGURATION">CONFIGURATION</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::Data::E0 - Calibrate and align XAS mu(E) data</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This subclass of Demeter::Data contains methods for calibrating
-mu(E) data and adjusting e0.</p>
+<p>This subclass of Demeter::Data contains methods for calibrating mu(E) data and adjusting e0.</p>
 
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="METHODS">METHODS</h1>
 
 <dl>
-	<dt><code>calibrate</code></dt>
-		<dd><p>This calibrates data by setting a chosen energy value to a new value.  This
-method simultaneously sets the <code>bkg_e0</code> and <code>bkg_eshift</code> Data attributes.</p></dd>
-<dd><pre>  $e0 = $data -&gt; calibrate($edge_point, $edge_energy);
 
-</pre></dd>		<dd><p>Both arguments are optional.  If the <code>$edge_point</code> is 0 or not given, then
-the current value of <code>bkg_e0</code> will be used.  If the <code>$edge_energy</code> is not
-given, then the tabulated energy for the absorber species and edge will be
-used.  If <code>$edge_energy</code> is 0 or not given and the Data object does not have
-valid values for the <code>bkg_z</code> and <code>fft_edge</code> attributes, an exception will be
-thrown.  The return value is the new value of the edge energy.</p></dd>
-	<dt><code>align</code></dt>
-		<dd><p>This method aligns each item in a list of data objects to the Data object on
-which the method is called.  That is, align each Data object in the argument
-list to the calling object.</p></dd>
-<dd><pre>  $standard_data -&gt; align(@list_of_data_to_align);
+<dt id="calibrate"><code>calibrate</code></dt>
+<dd>
 
-</pre></dd>		<dd><p>Each argument must be a Data object.  The return value is the energy shift of
-the last Data object in the list.</p></dd>
-	<dt><code>align_with_reference</code></dt>
-		<dd><p>This method align each item in a list of data objects to the Data
-object on which the method is called using the reference channels, if
-available.  That is, align each Data object in the argument list to
-the calling object, using their reference channels.</p></dd>
-<dd><pre>  $standard_data -&gt; align_with_reference(@list_of_data_to_align);
+<p>This calibrates data by setting a chosen energy value to a new value. This method simultaneously sets the <code>bkg_e0</code> and <code>bkg_eshift</code> Data attributes.</p>
 
-</pre></dd>		<dd><p>Each argument must be a Data object.  The return value is the energy shift of
-the last Data object in the list.</p></dd>
-	<dt><code>alignwr</code></dt>
-		<dd><p>This is an alias for <code>align_with_reference</code>.</p></dd>
-	<dt><code>e0</code></dt>
-		<dd><p>This method is used to set the edge energy for mu(E) data either to a
-number or a calculated value.</p></dd>
-<dd><pre>  $e0 = $data -&gt; e0($how);
+<pre><code>  $e0 = $data -&gt; calibrate($edge_point, $edge_energy);</code></pre>
 
-</pre></dd>		<dd><p>The <code>$how</code> argument can be any of the following.  If <code>$how</code> is
-omitted, it defaults to &quot;ifeffit&quot;.</p></dd>
-<dd><dl>
-	<dt><i>ifeffit</i></dt>
-		<dd><p>Use the internal algorithm from the data processing backend
-(Ifeffit/Larch) for finding the edge energy.  This is very similar to,
-but not exactly the same as, the first peak of the first derivative.
-Ifeffit and Larch actually uses a simple peak-finding algorithm to
-distinguish the edge from noise in the pre-edge.  The result of this
-is that an energy is often chosen that is one or two data points above
-what the human eye would recognize as the peak of the first
-derivative.</p></dd>
-	<dt><i>zero</i></dt>
-		<dd><p>Find the zero crossing of the second derivative of mu(E).  Starting
-from the current value of the edge energy (or from the value returned
-by the backend algorithm if the edge energy has not yet been set),
-step forward and backward until the parity of the second derivative
-spectrum switches.  Then, linearly interpolate between the values
-bracketing the parity change to find the zero value.</p></dd>
-	<dt><i>fraction</i></dt>
-		<dd><p>Find the point in the edge of the normalized spectrum whose y-value is
-a given fraction of the edge step.  By default, this fraction is 0.5,
-but that can be set by the <code>bkg_e0_fraction</code> attribute of the Data
-object. This point is linearly interporlated from the normalized data.
-The data are normalized again and the fractional point is found again
-until its energy value changes by less than 0.001 volts, up to a
-maximum of five iterations.</p></dd>
-	<dt><i>atomic</i></dt>
-		<dd><p>Use the tabulated value of the zero-valent atomic binding energy as
-the edge energy.</p></dd>
-	<dt><i>Data object</i></dt>
-		<dd><p>If the <code>$mode</code> is another Data object, set the edge energy of this
-Data object to the value of the other one.</p></dd>
-	<dt><i>number</i></dt>
-		<dd><p>If the <code>$mode</code> is recognizable as a number, set the edge energy to
-that value.</p></dd>
-</dl>
+<p>Both arguments are optional. If the <code>$edge_point</code> is 0 or not given, then the current value of <code>bkg_e0</code> will be used. If the <code>$edge_energy</code> is not given, then the tabulated energy for the absorber species and edge will be used. If <code>$edge_energy</code> is 0 or not given and the Data object does not have valid values for the <code>bkg_z</code> and <code>fft_edge</code> attributes, an exception will be thrown. The return value is the new value of the edge energy.</p>
+
+</dd>
+<dt id="align"><code>align</code></dt>
+<dd>
+
+<p>This method aligns each item in a list of data objects to the Data object on which the method is called. That is, align each Data object in the argument list to the calling object.</p>
+
+<pre><code>  $standard_data -&gt; align(@list_of_data_to_align);</code></pre>
+
+<p>Each argument must be a Data object. The return value is the energy shift of the last Data object in the list.</p>
+
+</dd>
+<dt id="align_with_reference"><code>align_with_reference</code></dt>
+<dd>
+
+<p>This method align each item in a list of data objects to the Data object on which the method is called using the reference channels, if available. That is, align each Data object in the argument list to the calling object, using their reference channels.</p>
+
+<pre><code>  $standard_data -&gt; align_with_reference(@list_of_data_to_align);</code></pre>
+
+<p>Each argument must be a Data object. The return value is the energy shift of the last Data object in the list.</p>
+
+</dd>
+<dt id="alignwr"><code>alignwr</code></dt>
+<dd>
+
+<p>This is an alias for <code>align_with_reference</code>.</p>
+
+</dd>
+<dt id="e0"><code>e0</code></dt>
+<dd>
+
+<p>This method is used to set the edge energy for mu(E) data either to a number or a calculated value.</p>
+
+<pre><code>  $e0 = $data -&gt; e0($how);</code></pre>
+
+<p>The <code>$how</code> argument can be any of the following. If <code>$how</code> is omitted, it defaults to &quot;ifeffit&quot;.</p>
+
+<dl>
+
+<dt id="ifeffit"><i>ifeffit</i></dt>
+<dd>
+
+<p>Use the internal algorithm from the data processing backend (Ifeffit/Larch) for finding the edge energy. This is very similar to, but not exactly the same as, the first peak of the first derivative. Ifeffit and Larch actually uses a simple peak-finding algorithm to distinguish the edge from noise in the pre-edge. The result of this is that an energy is often chosen that is one or two data points above what the human eye would recognize as the peak of the first derivative.</p>
+
+</dd>
+<dt id="zero"><i>zero</i></dt>
+<dd>
+
+<p>Find the zero crossing of the second derivative of mu(E). Starting from the current value of the edge energy (or from the value returned by the backend algorithm if the edge energy has not yet been set), step forward and backward until the parity of the second derivative spectrum switches. Then, linearly interpolate between the values bracketing the parity change to find the zero value.</p>
+
+</dd>
+<dt id="fraction"><i>fraction</i></dt>
+<dd>
+
+<p>Find the point in the edge of the normalized spectrum whose y-value is a given fraction of the edge step. By default, this fraction is 0.5, but that can be set by the <code>bkg_e0_fraction</code> attribute of the Data object. This point is linearly interporlated from the normalized data. The data are normalized again and the fractional point is found again until its energy value changes by less than 0.001 volts, up to a maximum of five iterations.</p>
+
+</dd>
+<dt id="atomic"><i>atomic</i></dt>
+<dd>
+
+<p>Use the tabulated value of the zero-valent atomic binding energy as the edge energy.</p>
+
+</dd>
+<dt id="Data-object"><i>Data object</i></dt>
+<dd>
+
+<p>If the <code>$mode</code> is another Data object, set the edge energy of this Data object to the value of the other one.</p>
+
+</dd>
+<dt id="number"><i>number</i></dt>
+<dd>
+
+<p>If the <code>$mode</code> is recognizable as a number, set the edge energy to that value.</p>
+
 </dd>
 </dl>
-<h1 id="CONFIGURATION">CONFIGURATION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>See <a href="../Config.pm.html">Demeter::Config</a> for a description of the configuration
-system.</p>
+</dd>
+</dl>
 
-<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="CONFIGURATION">CONFIGURATION</h1>
 
-<p>Demeter's dependencies are in the <cite>Build.PL</cite> file.</p>
+<p>See <a href="../Config.pm.html">Demeter::Config</a> for a description of the configuration system.</p>
 
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
+
+<p>Demeter&#39;s dependencies are in the <i>Build.PL</i> file.</p>
+
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
 <ul>
-	<li>Need a white line peak option to the <code>e0</code> method</li>
+
+<li><p>Need a white line peak option to the <code>e0</code> method</p>
+
+</li>
 </ul>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel, <a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a></p>
 
 <p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

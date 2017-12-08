@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::Files</title>
-<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::Files &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,119 +15,173 @@
 </div>
 <div class="path">
   <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-Files
+  Demeter::Files
 </div>
 <div>
 <a href="../src/Demeter/Files.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a></li>
+  <li><a href="#CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::Files - File import tests</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This role contains several methods for identifying files common to the
-Demeter, Feff, and Ifeffit/Larch universes.</p>
+<p>This role contains several methods for identifying files common to the Demeter, Feff, and Ifeffit/Larch universes.</p>
 
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="METHODS">METHODS</h1>
 
 <dl>
-	<dt><code>is_atoms</code></dt>
-		<dd><p>Return true if a file is recognized as an atoms input file.  This uses
-simple semantics based on the file contents.</p></dd>
-<dd><pre>  my $yesno = Demeter-&gt;is_atoms($file, $verbose);
 
-</pre></dd>	<dt><code>is_cif</code></dt>
-		<dd><p>Return true if a file is recognized as a CIF file.  This is a pretty
-dumb method -- it returns true if the file extension is <code>.cif</code>.</p></dd>
-<dd><pre>  my $yesno = Demeter-&gt;is_cif($file, $verbose);
+<dt id="is_atoms"><code>is_atoms</code></dt>
+<dd>
 
-</pre></dd>	<dt><code>is_feff</code></dt>
-		<dd><p>Return true if a file is recognized as a Feff input file.  This uses
-simple semantics based on the file contents.</p></dd>
-<dd><pre>  my $yesno = Demeter-&gt;is_feff($file, $verbose);
+<p>Return true if a file is recognized as an atoms input file. This uses simple semantics based on the file contents.</p>
 
-</pre></dd>	<dt><code>is_data</code></dt>
-		<dd><p>Return true is Ifeffit/Larch recognizes this file as a data file.</p></dd>
-<dd><pre>  my $yesno = Demeter-&gt;is_data($file, $verbose);
+<pre><code>  my $yesno = Demeter-&gt;is_atoms($file, $verbose);</code></pre>
 
-</pre></dd>	<dt><code>is_prj</code></dt>
-		<dd><p>Return true if this is a conventional Athena project file.</p></dd>
-<dd><pre>  my $yesno = Demeter-&gt;is_prj($file, $verbose);
-
-</pre></dd>	<dt><code>is_json</code></dt>
-		<dd><p>Return true if this is a JSON-style Athena project file.</p></dd>
-<dd><pre>  my $yesno = Demeter-&gt;is_json($file, $verbose);
-
-</pre></dd>	<dt><code>is_zipproj</code></dt>
-		<dd><p>Return true if this is a zip file which can be recognized as a save
-file for some aspect of Artemis.</p></dd>
-<dd><pre>  my $yesno = Demeter-&gt;is_zipproj($file, $verbose, $type);
-
-</pre></dd>		<dd><p><code>$type</code> can be one of:</p></dd>
-<dd><dl>
-	<dt><code>any</code></dt>
-		<dd><p>Returns true if the file is any kind of recognized save file in a zip
-format.</p></dd>
-	<dt><code>guess</code></dt>
-		<dd><p>Returns true if the file is any kind of recognized save file in a zip
-format.  The return value tells you what kind.  -1 means an Artemis
-project file., -2 means a Demeter fit serialization file, and -3 means
-an old-style Artemis project file.</p></dd>
-	<dt><code>fpj</code></dt>
-		<dd><p>Returns true only if the file is an Artemis project file.</p></dd>
-	<dt><code>dpj</code></dt>
-		<dd><p>Returns true only if the file is a Demeter fit serialization file.</p></dd>
-	<dt><code>apj</code></dt>
-		<dd><p>Returns true only if the file is an old-style Artemis project file.</p></dd>
-</dl>
 </dd>
-	<dt><code>is_xdi</code></dt>
-		<dd><p>Return true if the file is recognizably an XDI file.</p></dd>
-<dd><pre>  my $yesno = Demeter-&gt;is_xdi($file, $verbose);
+<dt id="is_cif"><code>is_cif</code></dt>
+<dd>
 
-</pre></dd></dl>
-<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<p>Return true if a file is recognized as a CIF file. This is a pretty dumb method -- it returns true if the file extension is <code>.cif</code>.</p>
+
+<pre><code>  my $yesno = Demeter-&gt;is_cif($file, $verbose);</code></pre>
+
+</dd>
+<dt id="is_feff"><code>is_feff</code></dt>
+<dd>
+
+<p>Return true if a file is recognized as a Feff input file. This uses simple semantics based on the file contents.</p>
+
+<pre><code>  my $yesno = Demeter-&gt;is_feff($file, $verbose);</code></pre>
+
+</dd>
+<dt id="is_data"><code>is_data</code></dt>
+<dd>
+
+<p>Return true is Ifeffit/Larch recognizes this file as a data file.</p>
+
+<pre><code>  my $yesno = Demeter-&gt;is_data($file, $verbose);</code></pre>
+
+</dd>
+<dt id="is_prj"><code>is_prj</code></dt>
+<dd>
+
+<p>Return true if this is a conventional Athena project file.</p>
+
+<pre><code>  my $yesno = Demeter-&gt;is_prj($file, $verbose);</code></pre>
+
+</dd>
+<dt id="is_json"><code>is_json</code></dt>
+<dd>
+
+<p>Return true if this is a JSON-style Athena project file.</p>
+
+<pre><code>  my $yesno = Demeter-&gt;is_json($file, $verbose);</code></pre>
+
+</dd>
+<dt id="is_zipproj"><code>is_zipproj</code></dt>
+<dd>
+
+<p>Return true if this is a zip file which can be recognized as a save file for some aspect of Artemis.</p>
+
+<pre><code>  my $yesno = Demeter-&gt;is_zipproj($file, $verbose, $type);</code></pre>
+
+<p><code>$type</code> can be one of:</p>
+
+<dl>
+
+<dt id="any"><code>any</code></dt>
+<dd>
+
+<p>Returns true if the file is any kind of recognized save file in a zip format.</p>
+
+</dd>
+<dt id="guess"><code>guess</code></dt>
+<dd>
+
+<p>Returns true if the file is any kind of recognized save file in a zip format. The return value tells you what kind. -1 means an Artemis project file., -2 means a Demeter fit serialization file, and -3 means an old-style Artemis project file.</p>
+
+</dd>
+<dt id="fpj"><code>fpj</code></dt>
+<dd>
+
+<p>Returns true only if the file is an Artemis project file.</p>
+
+</dd>
+<dt id="dpj"><code>dpj</code></dt>
+<dd>
+
+<p>Returns true only if the file is a Demeter fit serialization file.</p>
+
+</dd>
+<dt id="apj"><code>apj</code></dt>
+<dd>
+
+<p>Returns true only if the file is an old-style Artemis project file.</p>
+
+</dd>
+</dl>
+
+</dd>
+<dt id="is_xdi"><code>is_xdi</code></dt>
+<dd>
+
+<p>Return true if the file is recognizably an XDI file.</p>
+
+<pre><code>  my $yesno = Demeter-&gt;is_xdi($file, $verbose);</code></pre>
+
+</dd>
+</dl>
+
+<h1 id="CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</h1>
 
 <p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration system.</p>
 
-<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
 
-<p>The dependencies of the Demeter system are listed in the
-<cite>Build.PL</cite> file.</p>
+<p>The dependencies of the Demeter system are listed in the <i>Build.PL</i> file.</p>
 
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
 <p>All tests are fragile.</p>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
-<pre>  Bruce Ravel, L&lt;http://bruceravel.github.io/home&gt;
-  http://bruceravel.github.io/demeter
+<pre><code>  Bruce Ravel, L&lt;http://bruceravel.github.io/home&gt;
+  http://bruceravel.github.io/demeter</code></pre>
 
-</pre><h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

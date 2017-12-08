@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::Plugin::Zip</title>
-<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::Plugins::Zip &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,93 +15,95 @@
 </div>
 <div class="path">
   <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-Plugins-Zip
+  Demeter::Plugins::Zip
 </div>
 <div>
 <a href="../../src/Demeter/Plugins/Zip.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#Methods">Methods</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::Plugin::Zip - Open a zip file of data file</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<p>This plugin opens a zip file, writing the contents to the stash folder
-so that each can be used as data.  This is <strong>very</strong> simple, a proof of
-concept, really.  It assumes that the zip file has no depth and the
-contents will be splayed out into a single folder.  The return value
-of the <code>fix</code> method is an array reference containing a list of fully
-resolved file paths to data files in the stash folder.</p>
+<p>This plugin opens a zip file, writing the contents to the stash folder so that each can be used as data. This is <b>very</b> simple, a proof of concept, really. It assumes that the zip file has no depth and the contents will be splayed out into a single folder. The return value of the <code>fix</code> method is an array reference containing a list of fully resolved file paths to data files in the stash folder.</p>
 
+<p>Here is a simple example of using this plugin. Note that the <code>fix</code> method returns an array reference. It is up to <b>you</b> to actually do something with its contents. That &quot;something&quot; could be to test the file against some other plygin. Note also that <b>you</b> need to clean up the temporary files when you are done.</p>
 
-
-
-<p>Here is a simple example of using this plugin.  Note that the <code>fix</code>
-method returns an array reference.  It is up to <strong>you</strong> to actually do
-something with its contents.  That &quot;something&quot; could be to test the
-file against some other plygin.  Note also that <strong>you</strong> need to clean
-up the temporary files when you are done.</p>
-
-<pre>    #!/usr/bin/perl
+<pre><code>    #!/usr/bin/perl
 
     use Demeter qw(:data :p=gnuplot :ui=screen);
     use File::Path;
 
-    my $this = Demeter::Plugins::Zip-&gt;new(file=&gt;'examples/data/data.zip');
+    my $this = Demeter::Plugins::Zip-&gt;new(file=&gt;&#39;examples/data/data.zip&#39;);
     ($this-&gt;is) ? print &quot;this is a zip file\n&quot; : print &quot;this is not a zip file\n&quot;;
     my $fixed = $this-&gt;fix;
 
     Demeter-&gt;po-&gt;e_bkg(0);
 
     ## now do something whith each file extracted from the zip file
-    ## note: that 'something' could be to test against some other plugin
+    ## note: that &#39;something&#39; could be to test against some other plugin
     foreach my $f (@{$this-&gt;fixed}) {
        my $data = Demeter::Data -&gt; new();
-       $data -&gt; set(file   =&gt;  $f,  datatype  =&gt; 'xmu',
-                    energy =&gt; '$1', numerator =&gt; '$2',
-                    denominator =&gt; '$3', ln =&gt; 1, );
-       $data-&gt;plot('E');
+       $data -&gt; set(file   =&gt;  $f,  datatype  =&gt; &#39;xmu&#39;,
+                    energy =&gt; &#39;$1&#39;, numerator =&gt; &#39;$2&#39;,
+                    denominator =&gt; &#39;$3&#39;, ln =&gt; 1, );
+       $data-&gt;plot(&#39;E&#39;);
        $data-&gt;pause if ($f eq $this-&gt;fixed-&gt;[-1]); # pause on the last file
     };
-    ## give a hoot! don't pollute!
-    $this-&gt;clean;
+    ## give a hoot! don&#39;t pollute!
+    $this-&gt;clean;</code></pre>
 
-
-
-
-</pre><h1 id="Methods">Methods <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="Methods">Methods</h1>
 
 <dl>
-	<dt><code>is</code></dt>
-		<dd><p>The <code>is</code> method is used to identify the file type, typically by some
-information contained within the file.  In the case of a zip file, a
-very simple check is made to determine whether the file is actually a
-zip file and can be opened.  Absolutely no tests are made on the file
-contents.</p></dd>
-	<dt><code>fix</code></dt>
-		<dd><p>This extracts each file from the zip file, writing it to a subfolder
-beneath the stash folder.  This location is stored in the <code>folder</code>
-attribute of this object.  A reference to this list is stored in the
-<code>fixed</code> attribute and is the return value of this method.</p></dd>
-	<dt><code>suggest</code></dt>
-		<dd><p>This is an empty list.  Each constituent file will have to be
-processed individually.</p></dd>
-	<dt><code>clean</code></dt>
-		<dd><p>Removes the temporary folder to which the data were written.</p></dd>
+
+<dt id="is"><code>is</code></dt>
+<dd>
+
+<p>The <code>is</code> method is used to identify the file type, typically by some information contained within the file. In the case of a zip file, a very simple check is made to determine whether the file is actually a zip file and can be opened. Absolutely no tests are made on the file contents.</p>
+
+</dd>
+<dt id="fix"><code>fix</code></dt>
+<dd>
+
+<p>This extracts each file from the zip file, writing it to a subfolder beneath the stash folder. This location is stored in the <code>folder</code> attribute of this object. A reference to this list is stored in the <code>fixed</code> attribute and is the return value of this method.</p>
+
+</dd>
+<dt id="suggest"><code>suggest</code></dt>
+<dd>
+
+<p>This is an empty list. Each constituent file will have to be processed individually.</p>
+
+</dd>
+<dt id="clean"><code>clean</code></dt>
+<dd>
+
+<p>Removes the temporary folder to which the data were written.</p>
+
+</dd>
 </dl>
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<pre>  Bruce Ravel, L&lt;http://bruceravel.github.io/home&gt;
-  http://bruceravel.github.io/demeter
+<h1 id="AUTHOR">AUTHOR</h1>
 
+<pre><code>  Bruce Ravel, L&lt;http://bruceravel.github.io/home&gt;
+  http://bruceravel.github.io/demeter</code></pre>
 
-</pre>
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
+

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>15.8. Unique potential styles &mdash; Artemis 0.9.26 documentation</title>
+    <title>15.8. Unique potential styles &#8212; Artemis 0.9.26 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -17,15 +17,15 @@
         VERSION:     '0.9.26',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Artemis 0.9.26 documentation" href="../index.html" />
-    <link rel="up" title="15. Extended discussions" href="index.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="15.9. Fuzzy degeneracy" href="fuzzy.html" />
     <link rel="prev" title="15.7. Empirical standards" href="empirical.html" />
 
@@ -44,8 +44,8 @@
         <li class="right" >
           <a href="empirical.html" title="15.7. Empirical standards"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">15. Extended discussions</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">15. Extended discussions</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -57,7 +57,7 @@
   <div class="section" id="unique-potential-styles">
 <h1>15.8. Unique potential styles<a class="headerlink" href="#unique-potential-styles" title="Permalink to this headline">¶</a></h1>
 <p>Consider this <code class="file docutils literal"><span class="pre">atoms.inp</span></code> file for sodium uranyl triacetate:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>title = Templeton et al.
+<div class="highlight-default"><div class="highlight"><pre><span></span>title = Templeton et al.
 title = Redetermination and Absolute configuration of Sodium Uranyl(VI) triacetate.
 title = Acta Cryst 1985 C41 1439-1441
 space = P 21 3
@@ -89,35 +89,35 @@ these work using sodium uranyl triacetate.</p>
 <p>Choosing the <span class="guilabel">elements</span> style assigns a unique potenitial to
 each atomic species in the crystal. Using this style results in the
 following <code class="file docutils literal"><span class="pre">feff.inp</span></code> file:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>TITLE Templeton et al.
-TITLE Redetermination and Absolute configuration of Sodium Uranyl(VI) triacetate.
-TITLE Acta Cryst 1985 C41 1439-1441
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">TITLE</span> <span class="n">Templeton</span> <span class="n">et</span> <span class="n">al</span><span class="o">.</span>
+<span class="n">TITLE</span> <span class="n">Redetermination</span> <span class="ow">and</span> <span class="n">Absolute</span> <span class="n">configuration</span> <span class="n">of</span> <span class="n">Sodium</span> <span class="n">Uranyl</span><span class="p">(</span><span class="n">VI</span><span class="p">)</span> <span class="n">triacetate</span><span class="o">.</span>
+<span class="n">TITLE</span> <span class="n">Acta</span> <span class="n">Cryst</span> <span class="mi">1985</span> <span class="n">C41</span> <span class="mi">1439</span><span class="o">-</span><span class="mi">1441</span>
 
-HOLE      4   1.0   * FYI: (U L3 edge @ 17166 eV, second number is S0^2)
-*         mphase,mpath,mfeff,mchi
-CONTROL   1      1     1     1
-PRINT     1      0     0     0
+<span class="n">HOLE</span>      <span class="mi">4</span>   <span class="mf">1.0</span>   <span class="o">*</span> <span class="n">FYI</span><span class="p">:</span> <span class="p">(</span><span class="n">U</span> <span class="n">L3</span> <span class="n">edge</span> <span class="o">@</span> <span class="mi">17166</span> <span class="n">eV</span><span class="p">,</span> <span class="n">second</span> <span class="n">number</span> <span class="ow">is</span> <span class="n">S0</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span>
+<span class="o">*</span>         <span class="n">mphase</span><span class="p">,</span><span class="n">mpath</span><span class="p">,</span><span class="n">mfeff</span><span class="p">,</span><span class="n">mchi</span>
+<span class="n">CONTROL</span>   <span class="mi">1</span>      <span class="mi">1</span>     <span class="mi">1</span>     <span class="mi">1</span>
+<span class="n">PRINT</span>     <span class="mi">1</span>      <span class="mi">0</span>     <span class="mi">0</span>     <span class="mi">0</span>
 
-RMAX      5.0
-*NLEG      4
+<span class="n">RMAX</span>      <span class="mf">5.0</span>
+<span class="o">*</span><span class="n">NLEG</span>      <span class="mi">4</span>
 
-POTENTIALS
- * ipot   Z      tag
-    0     92     U
-    1     92     U
-    2     11     Na
-    3     8      O
-    4     6      C
+<span class="n">POTENTIALS</span>
+ <span class="o">*</span> <span class="n">ipot</span>   <span class="n">Z</span>      <span class="n">tag</span>
+    <span class="mi">0</span>     <span class="mi">92</span>     <span class="n">U</span>
+    <span class="mi">1</span>     <span class="mi">92</span>     <span class="n">U</span>
+    <span class="mi">2</span>     <span class="mi">11</span>     <span class="n">Na</span>
+    <span class="mi">3</span>     <span class="mi">8</span>      <span class="n">O</span>
+    <span class="mi">4</span>     <span class="mi">6</span>      <span class="n">C</span>
 
 
-ATOMS                  * this list contains 81 atoms
-*   x          y          z     ipot tag           distance
-   0.00000    0.00000    0.00000  0  U             0.00000
-   1.01332    1.01332    1.01332  3  Oax.1         1.75512
-  -1.01652   -1.01652   -1.01652  3  Oax.2         1.76067
-   1.25061   -1.97853    0.76213  3  Oeq.1         2.46160
-  -1.97853    0.76213    1.25061  3  Oeq.1         2.46160
-           ... (more atoms follow)
+<span class="n">ATOMS</span>                  <span class="o">*</span> <span class="n">this</span> <span class="nb">list</span> <span class="n">contains</span> <span class="mi">81</span> <span class="n">atoms</span>
+<span class="o">*</span>   <span class="n">x</span>          <span class="n">y</span>          <span class="n">z</span>     <span class="n">ipot</span> <span class="n">tag</span>           <span class="n">distance</span>
+   <span class="mf">0.00000</span>    <span class="mf">0.00000</span>    <span class="mf">0.00000</span>  <span class="mi">0</span>  <span class="n">U</span>             <span class="mf">0.00000</span>
+   <span class="mf">1.01332</span>    <span class="mf">1.01332</span>    <span class="mf">1.01332</span>  <span class="mi">3</span>  <span class="n">Oax</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">1.75512</span>
+  <span class="o">-</span><span class="mf">1.01652</span>   <span class="o">-</span><span class="mf">1.01652</span>   <span class="o">-</span><span class="mf">1.01652</span>  <span class="mi">3</span>  <span class="n">Oax</span><span class="o">.</span><span class="mi">2</span>         <span class="mf">1.76067</span>
+   <span class="mf">1.25061</span>   <span class="o">-</span><span class="mf">1.97853</span>    <span class="mf">0.76213</span>  <span class="mi">3</span>  <span class="n">Oeq</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">2.46160</span>
+  <span class="o">-</span><span class="mf">1.97853</span>    <span class="mf">0.76213</span>    <span class="mf">1.25061</span>  <span class="mi">3</span>  <span class="n">Oeq</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">2.46160</span>
+           <span class="o">...</span> <span class="p">(</span><span class="n">more</span> <span class="n">atoms</span> <span class="n">follow</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This is reasonable input for <font size=-1 color="#8C4112">FEFF</font>. Indeed, for many
@@ -141,36 +141,36 @@ the <span class="guilabel">tags</span> style. Note that, in the <code class="fil
 pairs of oxygen sites were given the tags “Oax” and
 “Oeq”.  Also note that the two carbon sites were given the
 same tag. With all this, we get the following <code class="file docutils literal"><span class="pre">feff.inp</span></code> file:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>TITLE Templeton et al.
-TITLE Redetermination and Absolute configuration of Sodium Uranyl(VI) triacetate.
-TITLE Acta Cryst 1985 C41 1439-1441
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">TITLE</span> <span class="n">Templeton</span> <span class="n">et</span> <span class="n">al</span><span class="o">.</span>
+<span class="n">TITLE</span> <span class="n">Redetermination</span> <span class="ow">and</span> <span class="n">Absolute</span> <span class="n">configuration</span> <span class="n">of</span> <span class="n">Sodium</span> <span class="n">Uranyl</span><span class="p">(</span><span class="n">VI</span><span class="p">)</span> <span class="n">triacetate</span><span class="o">.</span>
+<span class="n">TITLE</span> <span class="n">Acta</span> <span class="n">Cryst</span> <span class="mi">1985</span> <span class="n">C41</span> <span class="mi">1439</span><span class="o">-</span><span class="mi">1441</span>
 
-HOLE      4   1.0   * FYI: (U L3 edge @ 17166 eV, second number is S0^2)
-*         mphase,mpath,mfeff,mchi
-CONTROL   1      1     1     1
-PRINT     1      0     0     0
+<span class="n">HOLE</span>      <span class="mi">4</span>   <span class="mf">1.0</span>   <span class="o">*</span> <span class="n">FYI</span><span class="p">:</span> <span class="p">(</span><span class="n">U</span> <span class="n">L3</span> <span class="n">edge</span> <span class="o">@</span> <span class="mi">17166</span> <span class="n">eV</span><span class="p">,</span> <span class="n">second</span> <span class="n">number</span> <span class="ow">is</span> <span class="n">S0</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span>
+<span class="o">*</span>         <span class="n">mphase</span><span class="p">,</span><span class="n">mpath</span><span class="p">,</span><span class="n">mfeff</span><span class="p">,</span><span class="n">mchi</span>
+<span class="n">CONTROL</span>   <span class="mi">1</span>      <span class="mi">1</span>     <span class="mi">1</span>     <span class="mi">1</span>
+<span class="n">PRINT</span>     <span class="mi">1</span>      <span class="mi">0</span>     <span class="mi">0</span>     <span class="mi">0</span>
 
-RMAX      5.0
-*NLEG      4
+<span class="n">RMAX</span>      <span class="mf">5.0</span>
+<span class="o">*</span><span class="n">NLEG</span>      <span class="mi">4</span>
 
-POTENTIALS
- * ipot   Z      tag
-    0     92     U
-    1     92     U
-    2     11     Na
-    3     8      O
-    4     8      O
-    5     6      C
+<span class="n">POTENTIALS</span>
+ <span class="o">*</span> <span class="n">ipot</span>   <span class="n">Z</span>      <span class="n">tag</span>
+    <span class="mi">0</span>     <span class="mi">92</span>     <span class="n">U</span>
+    <span class="mi">1</span>     <span class="mi">92</span>     <span class="n">U</span>
+    <span class="mi">2</span>     <span class="mi">11</span>     <span class="n">Na</span>
+    <span class="mi">3</span>     <span class="mi">8</span>      <span class="n">O</span>
+    <span class="mi">4</span>     <span class="mi">8</span>      <span class="n">O</span>
+    <span class="mi">5</span>     <span class="mi">6</span>      <span class="n">C</span>
 
 
-ATOMS                  * this list contains 81 atoms
-*   x          y          z     ipot tag           distance
-   0.00000    0.00000    0.00000  0  U             0.00000
-   1.01332    1.01332    1.01332  3  Oax.1         1.75512
-  -1.01652   -1.01652   -1.01652  3  Oax.2         1.76067
-   1.25061   -1.97853    0.76213  4  Oeq.1         2.46160
-  -1.97853    0.76213    1.25061  4  Oeq.1         2.46160
-           ... (more atoms follow)
+<span class="n">ATOMS</span>                  <span class="o">*</span> <span class="n">this</span> <span class="nb">list</span> <span class="n">contains</span> <span class="mi">81</span> <span class="n">atoms</span>
+<span class="o">*</span>   <span class="n">x</span>          <span class="n">y</span>          <span class="n">z</span>     <span class="n">ipot</span> <span class="n">tag</span>           <span class="n">distance</span>
+   <span class="mf">0.00000</span>    <span class="mf">0.00000</span>    <span class="mf">0.00000</span>  <span class="mi">0</span>  <span class="n">U</span>             <span class="mf">0.00000</span>
+   <span class="mf">1.01332</span>    <span class="mf">1.01332</span>    <span class="mf">1.01332</span>  <span class="mi">3</span>  <span class="n">Oax</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">1.75512</span>
+  <span class="o">-</span><span class="mf">1.01652</span>   <span class="o">-</span><span class="mf">1.01652</span>   <span class="o">-</span><span class="mf">1.01652</span>  <span class="mi">3</span>  <span class="n">Oax</span><span class="o">.</span><span class="mi">2</span>         <span class="mf">1.76067</span>
+   <span class="mf">1.25061</span>   <span class="o">-</span><span class="mf">1.97853</span>    <span class="mf">0.76213</span>  <span class="mi">4</span>  <span class="n">Oeq</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">2.46160</span>
+  <span class="o">-</span><span class="mf">1.97853</span>    <span class="mf">0.76213</span>    <span class="mf">1.25061</span>  <span class="mi">4</span>  <span class="n">Oeq</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">2.46160</span>
+           <span class="o">...</span> <span class="p">(</span><span class="n">more</span> <span class="n">atoms</span> <span class="n">follow</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Note that potential indeces 3 and 4 are both for oxygen atoms. 3 is for
@@ -190,39 +190,39 @@ file below, but it also issues this warning.</p>
 <span id="fig-feffsiteserror"></span><a class="reference external image-reference" href="../_images/feff-siteserror.png"><img alt="../_images/feff-siteserror.png" src="../_images/feff-siteserror.png" /></a>
 <p class="caption"><span class="caption-number">Fig. 15.30 </span><span class="caption-text">The sites error dialog.</span></p>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>TITLE Templeton et al.
- TITLE Redetermination and Absolute configuration of Sodium Uranyl(VI) triacetate.
- TITLE Acta Cryst 1985 C41 1439-1441
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">TITLE</span> <span class="n">Templeton</span> <span class="n">et</span> <span class="n">al</span><span class="o">.</span>
+ <span class="n">TITLE</span> <span class="n">Redetermination</span> <span class="ow">and</span> <span class="n">Absolute</span> <span class="n">configuration</span> <span class="n">of</span> <span class="n">Sodium</span> <span class="n">Uranyl</span><span class="p">(</span><span class="n">VI</span><span class="p">)</span> <span class="n">triacetate</span><span class="o">.</span>
+ <span class="n">TITLE</span> <span class="n">Acta</span> <span class="n">Cryst</span> <span class="mi">1985</span> <span class="n">C41</span> <span class="mi">1439</span><span class="o">-</span><span class="mi">1441</span>
 
- HOLE      4   1.0   * FYI: (U L3 edge @ 17166 eV, second number is S0^2)
- *         mphase,mpath,mfeff,mchi
- CONTROL   1      1     1     1
- PRINT     1      0     0     0
+ <span class="n">HOLE</span>      <span class="mi">4</span>   <span class="mf">1.0</span>   <span class="o">*</span> <span class="n">FYI</span><span class="p">:</span> <span class="p">(</span><span class="n">U</span> <span class="n">L3</span> <span class="n">edge</span> <span class="o">@</span> <span class="mi">17166</span> <span class="n">eV</span><span class="p">,</span> <span class="n">second</span> <span class="n">number</span> <span class="ow">is</span> <span class="n">S0</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span>
+ <span class="o">*</span>         <span class="n">mphase</span><span class="p">,</span><span class="n">mpath</span><span class="p">,</span><span class="n">mfeff</span><span class="p">,</span><span class="n">mchi</span>
+ <span class="n">CONTROL</span>   <span class="mi">1</span>      <span class="mi">1</span>     <span class="mi">1</span>     <span class="mi">1</span>
+ <span class="n">PRINT</span>     <span class="mi">1</span>      <span class="mi">0</span>     <span class="mi">0</span>     <span class="mi">0</span>
 
- RMAX      5.0
- *NLEG      4
+ <span class="n">RMAX</span>      <span class="mf">5.0</span>
+ <span class="o">*</span><span class="n">NLEG</span>      <span class="mi">4</span>
 
- POTENTIALS
-  * ipot   Z      tag
-     0     92     U
-     1     92     U
-     2     11     Na
-     3     8      O
-     4     8      O
-     5     8      O
-     6     8      O
-     7     6      C
-     8     6      C
+ <span class="n">POTENTIALS</span>
+  <span class="o">*</span> <span class="n">ipot</span>   <span class="n">Z</span>      <span class="n">tag</span>
+     <span class="mi">0</span>     <span class="mi">92</span>     <span class="n">U</span>
+     <span class="mi">1</span>     <span class="mi">92</span>     <span class="n">U</span>
+     <span class="mi">2</span>     <span class="mi">11</span>     <span class="n">Na</span>
+     <span class="mi">3</span>     <span class="mi">8</span>      <span class="n">O</span>
+     <span class="mi">4</span>     <span class="mi">8</span>      <span class="n">O</span>
+     <span class="mi">5</span>     <span class="mi">8</span>      <span class="n">O</span>
+     <span class="mi">6</span>     <span class="mi">8</span>      <span class="n">O</span>
+     <span class="mi">7</span>     <span class="mi">6</span>      <span class="n">C</span>
+     <span class="mi">8</span>     <span class="mi">6</span>      <span class="n">C</span>
 
 
- ATOMS                  * this list contains 81 atoms
- *   x          y          z     ipot tag           distance
-    0.00000    0.00000    0.00000  0  U             0.00000
-    1.01332    1.01332    1.01332  4  Oax.1         1.75512
-   -1.01652   -1.01652   -1.01652  3  Oax.2         1.76067
-    1.25061   -1.97853    0.76213  6  Oeq.1         2.46160
-   -1.97853    0.76213    1.25061  6  Oeq.1         2.46160
-            ... (more atoms follow)
+ <span class="n">ATOMS</span>                  <span class="o">*</span> <span class="n">this</span> <span class="nb">list</span> <span class="n">contains</span> <span class="mi">81</span> <span class="n">atoms</span>
+ <span class="o">*</span>   <span class="n">x</span>          <span class="n">y</span>          <span class="n">z</span>     <span class="n">ipot</span> <span class="n">tag</span>           <span class="n">distance</span>
+    <span class="mf">0.00000</span>    <span class="mf">0.00000</span>    <span class="mf">0.00000</span>  <span class="mi">0</span>  <span class="n">U</span>             <span class="mf">0.00000</span>
+    <span class="mf">1.01332</span>    <span class="mf">1.01332</span>    <span class="mf">1.01332</span>  <span class="mi">4</span>  <span class="n">Oax</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">1.75512</span>
+   <span class="o">-</span><span class="mf">1.01652</span>   <span class="o">-</span><span class="mf">1.01652</span>   <span class="o">-</span><span class="mf">1.01652</span>  <span class="mi">3</span>  <span class="n">Oax</span><span class="o">.</span><span class="mi">2</span>         <span class="mf">1.76067</span>
+    <span class="mf">1.25061</span>   <span class="o">-</span><span class="mf">1.97853</span>    <span class="mf">0.76213</span>  <span class="mi">6</span>  <span class="n">Oeq</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">2.46160</span>
+   <span class="o">-</span><span class="mf">1.97853</span>    <span class="mf">0.76213</span>    <span class="mf">1.25061</span>  <span class="mi">6</span>  <span class="n">Oeq</span><span class="o">.</span><span class="mi">1</span>         <span class="mf">2.46160</span>
+            <span class="o">...</span> <span class="p">(</span><span class="n">more</span> <span class="n">atoms</span> <span class="n">follow</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>If you attempt to run <font size=-1 color="#8C4112">FEFF</font> with this input data,
@@ -241,9 +241,9 @@ message shown below and not run <font size=-1 color="#8C4112">FEFF</font>. You h
 <hr class="docutils" />
 <p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
 copyright © 2016 Bruce Ravel</p>
-<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>This document is licensed under <a class="reference external" href="https://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
 <p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
-consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+consider <a class="reference external" href="https://creativecommons.org/donate/">supporting The Creative Commons</a>.</p>
 </div>
 </div>
 
@@ -280,7 +280,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l2"><a class="reference internal" href="constraints.html">15.5. Constraints and restraints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bvs.html">15.6. Bond valence sums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="empirical.html">15.7. Empirical standards</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">15.8. Unique potential styles</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">15.8. Unique potential styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fuzzy.html">15.9. Fuzzy degeneracy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dopants.html">15.10. Handling dopants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fivesix.html">15.11. 5 &amp; 6 legged paths</a></li>
@@ -288,7 +288,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 </li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.26</b></p>
+<p>Current Demeter version: <b>0.9.26</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
@@ -296,6 +296,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/XAS-Education/">Bruce's XAS Education page</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -309,20 +310,17 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/extended/ipots.txt"
+      <li><a href="../_sources/extended/ipots.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -339,13 +337,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="empirical.html" title="15.7. Empirical standards"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >15. Extended discussions</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >15. Extended discussions</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, Bruce Ravel.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+        &#169; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
     </div>
   </body>
 </html>

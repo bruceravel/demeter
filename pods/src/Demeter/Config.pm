@@ -32,6 +32,7 @@ use Demeter::IniReader;
 use Config::INI::Writer;
 use Cwd qw(abs_path);
 use File::Basename;
+use File::Spec;
 use JSON qw(decode_json);
 use Regexp::Assemble;
 #use Demeter::Constants qw($NUMBER);
@@ -604,6 +605,17 @@ sub fix {
     $self->set_default('artemis', 'doc_url', q{http://bruceravel.github.io/demeter/documents/Artemis/index.html});
   };
 
+  ## on windows, make sure gnuplot->program and feff->executable are sensible
+  if ($self->is_windows) {
+    if (not -x $self->default('gnuplot', 'program')) {
+      my $distributed = File::Spec->catfile($ENV{DEMETER_BASE}, 'c', 'bin', 'gnuplot', 'bin', 'gnuplot.exe');
+      $self->set_default('gnuplot', 'program', $distributed)
+    };
+    if (not -x $self->default('feff', 'executable')) {
+      my $distributed = File::Spec->catfile($ENV{DEMETER_BASE}, 'c', 'bin', 'feff6.exe');
+      $self->set_default('feff', 'executable', $distributed)
+    };
+  };
   return $self;
 };
 

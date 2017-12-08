@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::Plugin::DUBBLE</title>
-<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::Plugins::DUBBLE &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,85 +15,77 @@
 </div>
 <div class="path">
   <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-Plugins-DUBBLE
+  Demeter::Plugins::DUBBLE
 </div>
 <div>
 <a href="../../src/Demeter/Plugins/DUBBLE.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#Methods">Methods</a></li>
+  <li><a href="#ACKNOWLEDGMENTS">ACKNOWLEDGMENTS</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::Plugin::DUBBLE - Import data from the DUBBLE beamline at ESRF</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<p>This plugin converts monochromator angle into from millidegrees to
-energy and (as needed) disentanlges the confusing layout of data from
-the multi-element detector, writing out a file that can easily be
-imported by Athena.</p>
+<p>This plugin converts monochromator angle into from millidegrees to energy and (as needed) disentanlges the confusing layout of data from the multi-element detector, writing out a file that can easily be imported by Athena.</p>
 
-
-
-
-<h1 id="Methods">Methods <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="Methods">Methods</h1>
 
 <dl>
-	<dt><code>is</code></dt>
-		<dd><p>Recognize the DUBBLE file by the first line, which contains the string
-&quot;&amp;SRS&quot;, and a subsequent header line, which contains the string
-&quot;dubble&quot;.</p></dd>
-	<dt><code>fix</code></dt>
-		<dd><p>Convert the angle column to energy and disentangle lines from the
-multi-element detector for files that contain them.</p></dd>
-		<dd><p>The file is lexically analyzed to determine whether it contains
-scalars from the multi-element detector.  DUBBLE writes MED data
-spread out over four lines of text in the data file.  (Which is very
-perverse!)  Data files not containing scalars from the MED do not have
-these additional lines.  So a file containing MED data is recognized
-by the fact that the first number on each line is not monotonically
-decreasing.  This filter examines the first forty lines of data.  When
-it finds the situation of the first number not being monotonically
-decreasing (which it should be as data are stored as a function of
-mono angle in millidegrees), the file is assumed to contain MED data
-and is processed accordingly.</p></dd>
-		<dd><p>Note that this filter assumes that the MED data is spread out over
-three additional lines.  Apparently DUBBLE uses a 9-element detector.
-At most, four MED scalars are written per line, thus it takes three
-additional lines to record the MED data.  Should DUBBLE ever use a
-different detector, a more clever lexical analysis will be required to
-determine the number of MED channels.</p></dd>
+
+<dt id="is"><code>is</code></dt>
+<dd>
+
+<p>Recognize the DUBBLE file by the first line, which contains the string &quot;&amp;SRS&quot;, and a subsequent header line, which contains the string &quot;dubble&quot;.</p>
+
+</dd>
+<dt id="fix"><code>fix</code></dt>
+<dd>
+
+<p>Convert the angle column to energy and disentangle lines from the multi-element detector for files that contain them.</p>
+
+<p>The file is lexically analyzed to determine whether it contains scalars from the multi-element detector. DUBBLE writes MED data spread out over four lines of text in the data file. (Which is very perverse!) Data files not containing scalars from the MED do not have these additional lines. So a file containing MED data is recognized by the fact that the first number on each line is not monotonically decreasing. This filter examines the first forty lines of data. When it finds the situation of the first number not being monotonically decreasing (which it should be as data are stored as a function of mono angle in millidegrees), the file is assumed to contain MED data and is processed accordingly.</p>
+
+<p>Note that this filter assumes that the MED data is spread out over three additional lines. Apparently DUBBLE uses a 9-element detector. At most, four MED scalars are written per line, thus it takes three additional lines to record the MED data. Should DUBBLE ever use a different detector, a more clever lexical analysis will be required to determine the number of MED channels.</p>
+
+</dd>
 </dl>
-<h1 id="ACKNOWLEDGMENTS">ACKNOWLEDGMENTS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>Thanks to Qingping Wu, who providing some sample transmission data
-from DUBBLE, and to Eric Breynaert, who provided both some sample
-fluorescence data and an example conversion script which included the
-value of the monochromator lattice constant used at DUBBLE.</p>
+<h1 id="ACKNOWLEDGMENTS">ACKNOWLEDGMENTS</h1>
 
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<p>Thanks to Qingping Wu, who providing some sample transmission data from DUBBLE, and to Eric Breynaert, who provided both some sample fluorescence data and an example conversion script which included the value of the monochromator lattice constant used at DUBBLE.</p>
+
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
 <ul>
-	<li>This plugin is fragile.  Should the mono lattice parameter or number
-of MED channels change, this <strong>will</strong> break.  One solution would be to
-use an ini file to pass this information into the plugin, using
-3.13543 and 9 MED channels as defaults.  Another option would be to do
-a more sophisticated analysis in the <code>_is_med</code> method and have the
-true value be the number of subsequent lines which contain MED data.</li>
+
+<li><p>This plugin is fragile. Should the mono lattice parameter or number of MED channels change, this <b>will</b> break. One solution would be to use an ini file to pass this information into the plugin, using 3.13543 and 9 MED channels as defaults. Another option would be to do a more sophisticated analysis in the <code>_is_med</code> method and have the true value be the number of subsequent lines which contain MED data.</p>
+
+</li>
 </ul>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
-<pre>  Bruce Ravel &lt;L&lt;http://bruceravel.github.io/home&gt;&gt;
+<pre><code>  Bruce Ravel &lt;L&lt;http://bruceravel.github.io/home&gt;&gt;
   http://bruceravel.github.io/demeter
-  Athena copyright (c) 2001-2017
+  Athena copyright (c) 2001-2017</code></pre>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</pre>
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::Plugin::X15B</title>
-<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::Plugins::X15B &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,58 +15,52 @@
 </div>
 <div class="path">
   <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-Plugins-X15B
+  Demeter::Plugins::X15B
 </div>
 <div>
 <a href="../../src/Demeter/Plugins/X15B.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#X15B-files">X15B files</a></li>
+  <li><a href="#CONFIGURATION">CONFIGURATION</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::Plugin::X15B - NSLS X15B filetype plugin</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<p>This plugin directly reads the binary files written by NSLS beamline
-X15B.</p>
+<p>This plugin directly reads the binary files written by NSLS beamline X15B.</p>
 
-<h1 id="X15B_files">X15B files <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="X15B-files">X15B files</h1>
 
-<p>At X15b there is a program called x15totxt, written in Turbo Pascal by
-some dude named Tim Darling.  He kindly left behind a short
-explanation the format of the X15b binary data file.  It seems that
-the header is 53 4-byte numbers.  Each line of data contains 16 4 byte
-numbers.  Thus this file is easily unpacked and processed in four byte
-bites.</p>
+<p>At X15b there is a program called x15totxt, written in Turbo Pascal by some dude named Tim Darling. He kindly left behind a short explanation the format of the X15b binary data file. It seems that the header is 53 4-byte numbers. Each line of data contains 16 4 byte numbers. Thus this file is easily unpacked and processed in four byte bites.</p>
 
-<p>The X15B file is recognized by a a four character sequence at the
-beginning of the file which consists of character 212 (capital
-O-circumflex in ISO 8859) followed by three nulls (character 0).</p>
+<p>The X15B file is recognized by a a four character sequence at the beginning of the file which consists of character 212 (capital O-circumflex in ISO 8859) followed by three nulls (character 0).</p>
 
-<p>The resulting file is a well-labeled, well-formatted column data file
-in a form that will work well with Athena or virtually any other
-analysis or plotting program.  The columns are: energy, the I0 ion
-chamber, the narrow and wide windows on the germanium detector, and
-the transmission ion chamber.</p>
+<p>The resulting file is a well-labeled, well-formatted column data file in a form that will work well with Athena or virtually any other analysis or plotting program. The columns are: energy, the I0 ion chamber, the narrow and wide windows on the germanium detector, and the transmission ion chamber.</p>
 
-<h1 id="CONFIGURATION">CONFIGURATION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="CONFIGURATION">CONFIGURATION</h1>
 
-<p>Only the relevant columns from the original data file are passed along
-to the output ascii file.  These column numbers can be configured in
-the <cite>x15b.demeter_conf</cite> file or via Athena's project registry
-configuration interface.</p>
+<p>Only the relevant columns from the original data file are passed along to the output ascii file. These column numbers can be configured in the <i>x15b.demeter_conf</i> file or via Athena&#39;s project registry configuration interface.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
-<pre>  Bruce Ravel, L&lt;http://bruceravel.github.io/home&gt;
-  http://bruceravel.github.io/demeter
+<pre><code>  Bruce Ravel, L&lt;http://bruceravel.github.io/home&gt;
+  http://bruceravel.github.io/demeter</code></pre>
 
-</pre>
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
+

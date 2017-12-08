@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>16.2. Silver/gold alloy &mdash; Demeter Programming Guide 0.9.26 documentation</title>
+    <title>16.2. Silver/gold alloy &#8212; Demeter Programming Guide 0.9.26 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -17,15 +17,15 @@
         VERSION:     '0.9.26',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Demeter Programming Guide 0.9.26 documentation" href="../index.html" />
-    <link rel="up" title="16. Full examples" href="index.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="16.3. Uranyl ion in solution" href="uranyl.html" />
     <link rel="prev" title="16.1. Methyltin chloride" href="methyltin.html" />
 
@@ -44,8 +44,8 @@
         <li class="right" >
           <a href="methyltin.html" title="16.1. Methyltin chloride"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">16. Full examples</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">16. Full examples</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -180,11 +180,11 @@ direct manipulation of a Feff object without editing a feff.inp file.</p>
 111
 112
 113</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
- <span class="k">use</span> <span class="n">Demeter</span> <span class="sx">qw(:ui=screen :plotwith=gnuplot)</span><span class="p">;</span>
+ <span class="k">use</span> <span class="nn">Demeter</span> <span class="sx">qw(:ui=screen :plotwith=gnuplot)</span><span class="p">;</span>
  <span class="k">print</span> <span class="s">&quot;Multiple data set fit to several AgAu samples using Demeter $Demeter::VERSION\n&quot;</span><span class="p">;</span>
 
  <span class="c1">### -------- import five sets of Ag and Ag/Au data from an Athena project file</span>
- <span class="k">my</span> <span class="nv">$prj</span> <span class="o">=</span> <span class="nn">Demeter::Data::</span><span class="n">Prj</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&#39;AgAu_merged.prj&#39;</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$prj</span> <span class="o">=</span> <span class="nn">Demeter::Data::Prj</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&#39;AgAu_merged.prj&#39;</span><span class="p">);</span>
  <span class="nv">$prj</span> <span class="o">-&gt;</span> <span class="n">set_mode</span><span class="p">(</span><span class="n">screen</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">,</span> <span class="n">backend</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">);</span>
  <span class="k">my</span> <span class="nv">@common</span> <span class="o">=</span> <span class="p">(</span><span class="n">fft_kmin</span>  <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span>   <span class="n">fft_kmax</span>  <span class="o">=&gt;</span> <span class="mi">11</span><span class="p">,</span>
                <span class="n">bft_rmax</span>  <span class="o">=&gt;</span> <span class="mf">3.2</span><span class="p">,</span> <span class="n">bft_rmin</span>  <span class="o">=&gt;</span> <span class="mf">1.8</span><span class="p">,</span>
@@ -217,13 +217,13 @@ direct manipulation of a Feff object without editing a feff.inp file.</p>
                    <span class="p">);</span>
 
  <span class="c1">## -------- import Ag crystal data and generate a feff.inp file</span>
- <span class="k">my</span> <span class="nv">$atoms</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Atoms</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;Ag.inp&quot;</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$atoms</span> <span class="o">=</span> <span class="nn">Demeter::Atoms</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;Ag.inp&quot;</span><span class="p">);</span>
  <span class="nb">open</span><span class="p">(</span><span class="k">my</span> <span class="nv">$FEFF</span><span class="p">,</span> <span class="s">&#39;&gt;feff.inp&#39;</span><span class="p">);</span>
  <span class="k">print</span> <span class="nv">$FEFF</span> <span class="nv">$atoms</span><span class="o">-&gt;</span><span class="n">Write</span><span class="p">(</span><span class="s">&quot;feff6&quot;</span><span class="p">);</span>
  <span class="nb">close</span> <span class="nv">$FEFF</span><span class="p">;</span>
 
  <span class="c1">## -------- run Feff on pure silver</span>
- <span class="k">my</span> <span class="nv">$agfeff</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Feff</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;feff.inp&quot;</span><span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$agfeff</span> <span class="o">=</span> <span class="nn">Demeter::Feff</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;feff.inp&quot;</span><span class="p">);</span>
  <span class="nv">$agfeff</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">workspace</span><span class="o">=&gt;</span><span class="s">&quot;feff/&quot;</span><span class="p">,</span> <span class="n">screen</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">,);</span>
  <span class="nv">$agfeff</span> <span class="o">-&gt;</span> <span class="n">make_workspace</span><span class="p">;</span>
  <span class="nv">$agfeff</span> <span class="o">-&gt;</span> <span class="n">run</span><span class="p">;</span>
@@ -231,10 +231,10 @@ direct manipulation of a Feff object without editing a feff.inp file.</p>
  <span class="c1">## -------- make a path object from the 1st shell of pure silver, use</span>
  <span class="c1">##          this for the pure silver data</span>
  <span class="k">my</span> <span class="nv">@paths</span> <span class="o">=</span> <span class="p">();</span>
- <span class="nv">$paths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Path</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
+ <span class="nv">$paths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nn">Demeter::Path</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">();</span>
  <span class="nv">$paths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="n">data</span>     <span class="o">=&gt;</span> <span class="nv">$data_100</span><span class="p">,</span>
                 <span class="n">parent</span>   <span class="o">=&gt;</span> <span class="nv">$agfeff</span><span class="p">,</span>
-                <span class="n">sp</span>       <span class="o">=&gt;</span> <span class="nv">$agfeff</span><span class="o">-&gt;</span><span class="n">pathlist</span><span class="o">-&gt;</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">sp</span>       <span class="o">=&gt;</span> <span class="nv">$agfeff</span><span class="o">-&gt;</span><span class="nn">pathlist</span><span class="o">-&gt;</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                 <span class="n">name</span>     <span class="o">=&gt;</span> <span class="s">&#39;silver&#39;</span><span class="p">,</span>
                 <span class="n">n</span>        <span class="o">=&gt;</span> <span class="mi">12</span><span class="p">,</span>
                 <span class="n">s02</span>      <span class="o">=&gt;</span> <span class="s">&#39;amp&#39;</span><span class="p">,</span>
@@ -283,7 +283,7 @@ direct manipulation of a Feff object without editing a feff.inp file.</p>
 
 
  <span class="c1">## -------- make a Fit object, which is just a collection of GDS, Data, and Path objects</span>
- <span class="k">my</span> <span class="nv">$fitobject</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Fit</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">;</span>
+ <span class="k">my</span> <span class="nv">$fitobject</span> <span class="o">=</span> <span class="nn">Demeter::Fit</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">;</span>
  <span class="nv">$fitobject</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="n">gds</span>   <span class="o">=&gt;</span> <span class="o">\</span><span class="nv">@gdsobjects</span><span class="p">,</span>
                  <span class="n">data</span>  <span class="o">=&gt;</span> <span class="p">[</span><span class="nv">$data_100</span><span class="p">,</span> <span class="nv">$data_80</span><span class="p">,</span> <span class="nv">$data_60</span><span class="p">,</span> <span class="nv">$data_50</span><span class="p">,</span> <span class="nv">$data_40</span><span class="p">],</span>
                  <span class="n">paths</span> <span class="o">=&gt;</span> <span class="o">\</span><span class="nv">@paths</span>
@@ -354,7 +354,7 @@ from a command line script.</p>
 </div>
 <p>The lines below replaced the <code class="docutils literal"><span class="pre">interview</span></code> method to produce this
 plot of the result of the fit:</p>
-<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$fitobject</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">plot_fit</span> <span class="o">=&gt;</span>  <span class="mi">1</span><span class="p">,</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$fitobject</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">plot_fit</span> <span class="o">=&gt;</span>  <span class="mi">1</span><span class="p">,</span>
                         <span class="n">r_pl</span>     <span class="o">=&gt;</span> <span class="s">&#39;m&#39;</span><span class="p">,</span>
                         <span class="n">kweight</span>  <span class="o">=&gt;</span>  <span class="mi">2</span><span class="p">);</span>
 <span class="nv">$data_100</span>  <span class="o">-&gt;</span> <span class="n">y_offset</span><span class="p">(</span><span class="mf">2.0</span><span class="p">);</span>
@@ -389,9 +389,9 @@ it!</p>
 <hr class="docutils" />
 <p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
 copyright © 2016 Bruce Ravel</p>
-<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>This document is licensed under <a class="reference external" href="https://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
 <p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
-consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+consider <a class="reference external" href="https://creativecommons.org/donate/">supporting The Creative Commons</a>.</p>
 </div>
 
 
@@ -422,14 +422,14 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../output.html">15. Output formats</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">16. Full examples</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="methyltin.html">16.1. Methyltin chloride</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">16.2. Silver/gold alloy</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">16.2. Silver/gold alloy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="uranyl.html">16.3. Uranyl ion in solution</a></li>
 <li class="toctree-l2"><a class="reference internal" href="histo.html">16.4. Histogram</a></li>
 </ul>
 </li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.26</b></p>
+<p>Current Demeter version: <b>0.9.26</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
@@ -437,6 +437,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/XAS-Education/">Bruce's XAS Education page</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -450,20 +451,17 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/examples/agau.txt"
+      <li><a href="../_sources/examples/agau.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -480,13 +478,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="methyltin.html" title="16.1. Methyltin chloride"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >16. Full examples</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >16. Full examples</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, Bruce Ravel.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+        &#169; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
     </div>
   </body>
 </html>

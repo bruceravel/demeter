@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6. Atoms &mdash; Demeter Programming Guide 0.9.26 documentation</title>
+    <title>6. Atoms &#8212; Demeter Programming Guide 0.9.26 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -17,14 +17,15 @@
         VERSION:     '0.9.26',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/wheat.ico"/>
-    <link rel="top" title="Demeter Programming Guide 0.9.26 documentation" href="index.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="7. Feff" href="feff/index.html" />
     <link rel="prev" title="5.4. Difference spectra" href="xanes/diff.html" />
 
@@ -43,7 +44,7 @@
         <li class="right" >
           <a href="xanes/diff.html" title="5.4. Difference spectra"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Demeter Programming Guide 0.9.26 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Demeter Programming Guide 0.9.26 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -66,9 +67,9 @@ Atoms object is created. In this example, an <code class="file docutils literal"
 imported and an input file for <font size=-1 color="#8C4112">FEFF6</font> is written to standard
 output.</p>
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/perl</span>
-<span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+<span class="k">use</span> <span class="nn">Demeter</span><span class="p">;</span>
 
-<span class="k">my</span> <span class="nv">$atoms</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Atoms</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;ybco.inp&quot;</span><span class="p">);</span>
+<span class="k">my</span> <span class="nv">$atoms</span> <span class="o">=</span> <span class="nn">Demeter::Atoms</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;ybco.inp&quot;</span><span class="p">);</span>
 <span class="k">print</span> <span class="nv">$atoms</span><span class="o">-&gt;</span><span class="n">Write</span><span class="p">(</span><span class="s">&quot;feff6&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -81,9 +82,9 @@ CIF format.  The Atoms object assumes that the value of the <code class="docutil
 attribute points at an <code class="file docutils literal"><span class="pre">atoms.inp</span></code> file, so the <code class="docutils literal"><span class="pre">cif</span></code>
 attribute must be used to specify a CIF file.</p>
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/perl</span>
-<span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+<span class="k">use</span> <span class="nn">Demeter</span><span class="p">;</span>
 
-<span class="k">my</span> <span class="nv">$atoms</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Atoms</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">cif</span> <span class="o">=&gt;</span> <span class="s">&quot;Fe2N_ICSD.cif&quot;</span><span class="p">);</span>
+<span class="k">my</span> <span class="nv">$atoms</span> <span class="o">=</span> <span class="nn">Demeter::Atoms</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">cif</span> <span class="o">=&gt;</span> <span class="s">&quot;Fe2N_ICSD.cif&quot;</span><span class="p">);</span>
 <span class="k">print</span> <span class="nv">$atoms</span><span class="o">-&gt;</span><span class="n">Write</span><span class="p">(</span><span class="s">&quot;feff6&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -101,9 +102,9 @@ importing the second record in the CIF file.  In a GUI like
 <font size=-1 color="#8C4112">ARTEMIS</font>, it is probably wise to let the user count from 1
 and to do the translation behind the scenes.</p>
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/perl</span>
-<span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+<span class="k">use</span> <span class="nn">Demeter</span><span class="p">;</span>
 
-<span class="k">my</span> <span class="nv">$atoms</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Atoms</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">cif</span> <span class="o">=&gt;</span> <span class="s">&quot;AuCl.cif&quot;</span><span class="p">,</span> <span class="n">record</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">);</span>
+<span class="k">my</span> <span class="nv">$atoms</span> <span class="o">=</span> <span class="nn">Demeter::Atoms</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">cif</span> <span class="o">=&gt;</span> <span class="s">&quot;AuCl.cif&quot;</span><span class="p">,</span> <span class="n">record</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">);</span>
 <span class="k">print</span> <span class="nv">$atoms</span><span class="o">-&gt;</span><span class="n">Write</span><span class="p">(</span><span class="s">&quot;feff6&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -115,7 +116,7 @@ offers more discussion of the content of the <code class="file docutils literal"
 <div class="section" id="manually-inputing-crystal-data">
 <h3>6.2.1. Manually inputing crystal data<a class="headerlink" href="#manually-inputing-crystal-data" title="Permalink to this headline">¶</a></h3>
 <p>Starting with this <code class="file docutils literal"><span class="pre">atoms.inp</span></code> file</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>title YBCO: Y Ba2 Cu3 O7
+<div class="highlight-default"><div class="highlight"><pre><span></span>title YBCO: Y Ba2 Cu3 O7
 space P M M M
 rmax=5.2              a 3.823   b 3.886 c 11.681
 core=cu2
@@ -152,9 +153,9 @@ straight-forward, brute-force approach is shown in this example:</p>
 16
 17
 18</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
- <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+ <span class="k">use</span> <span class="nn">Demeter</span><span class="p">;</span>
 
- <span class="k">my</span> <span class="nv">$atoms</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Atoms</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">();</span>
+ <span class="k">my</span> <span class="nv">$atoms</span> <span class="o">=</span> <span class="nn">Demeter::Atoms</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">();</span>
  <span class="nv">$atoms</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">a</span><span class="o">=&gt;</span><span class="mf">3.823</span><span class="p">,</span> <span class="n">b</span><span class="o">=&gt;</span><span class="mf">3.886</span><span class="p">,</span> <span class="n">c</span><span class="o">=&gt;</span><span class="mf">11.681</span><span class="p">);</span>
  <span class="nv">$atoms</span> <span class="o">-&gt;</span> <span class="n">space</span><span class="p">(</span><span class="s">&#39;P M M M&#39;</span><span class="p">);</span>
  <span class="c1">## add each site</span>
@@ -210,9 +211,9 @@ a syntax highlighting text editor) with perl's <a class="reference external" hre
 function</a>, as shown in
 this example:</p>
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/perl</span>
-<span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+<span class="k">use</span> <span class="nn">Demeter</span><span class="p">;</span>
 
-<span class="k">my</span> <span class="nv">$atoms</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Atoms</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;ybco.inp&quot;</span><span class="p">);</span>
+<span class="k">my</span> <span class="nv">$atoms</span> <span class="o">=</span> <span class="nn">Demeter::Atoms</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;ybco.inp&quot;</span><span class="p">);</span>
 <span class="k">print</span> <span class="nv">$atoms</span><span class="o">-&gt;</span><span class="n">Write</span><span class="p">(</span><span class="s">&quot;feff6&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -233,27 +234,27 @@ come with <font size=-1 color="#8C4112">DEMETER</font> are:</p>
 <dt><code class="docutils literal"><span class="pre">p1</span></code></dt>
 <dd><p class="first">Input file for <font size=-1 color="#8C4112">ATOMS</font> using the <code class="docutils literal"><span class="pre">P</span> <span class="pre">1</span></code> spacegroup and the fully
 populated unit cell. Here's an example:</p>
-<div class="last highlight-python"><div class="highlight"><pre><span></span>title = YBCO: Y Ba2 Cu3 O7
-space = P M M M
-a     =   3.82300    b    =   3.88600    c     =  11.68100
-alpha =  90.00000    beta =  90.00000    gamma =  90.00000
-rmax  =   5.20000    core  = cu2
-shift =
-atoms
-# el.     x           y           z        tag
-  Y      0.50000     0.50000     0.50000   Y
-  Ba     0.50000     0.50000     0.18400   Ba
-  Ba     0.50000     0.50000     0.81600   Ba
-  Cu     0.00000     0.00000     0.00000   cu1
-  Cu     0.00000     0.00000     0.35600   cu2
-  Cu     0.00000     0.00000     0.64400   cu2
-  O      0.00000     0.50000     0.00000   o1
-  O      0.00000     0.00000     0.15800   o2
-  O      0.00000     0.00000     0.84200   o2
-  O      0.00000     0.50000     0.37900   o3
-  O      0.00000     0.50000     0.62100   o3
-  O      0.50000     0.00000     0.37700   o4
-  O      0.50000     0.00000     0.62300   o4
+<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="o">=</span> <span class="n">YBCO</span><span class="p">:</span> <span class="n">Y</span> <span class="n">Ba2</span> <span class="n">Cu3</span> <span class="n">O7</span>
+<span class="n">space</span> <span class="o">=</span> <span class="n">P</span> <span class="n">M</span> <span class="n">M</span> <span class="n">M</span>
+<span class="n">a</span>     <span class="o">=</span>   <span class="mf">3.82300</span>    <span class="n">b</span>    <span class="o">=</span>   <span class="mf">3.88600</span>    <span class="n">c</span>     <span class="o">=</span>  <span class="mf">11.68100</span>
+<span class="n">alpha</span> <span class="o">=</span>  <span class="mf">90.00000</span>    <span class="n">beta</span> <span class="o">=</span>  <span class="mf">90.00000</span>    <span class="n">gamma</span> <span class="o">=</span>  <span class="mf">90.00000</span>
+<span class="n">rmax</span>  <span class="o">=</span>   <span class="mf">5.20000</span>    <span class="n">core</span>  <span class="o">=</span> <span class="n">cu2</span>
+<span class="n">shift</span> <span class="o">=</span>
+<span class="n">atoms</span>
+<span class="c1"># el.     x           y           z        tag</span>
+  <span class="n">Y</span>      <span class="mf">0.50000</span>     <span class="mf">0.50000</span>     <span class="mf">0.50000</span>   <span class="n">Y</span>
+  <span class="n">Ba</span>     <span class="mf">0.50000</span>     <span class="mf">0.50000</span>     <span class="mf">0.18400</span>   <span class="n">Ba</span>
+  <span class="n">Ba</span>     <span class="mf">0.50000</span>     <span class="mf">0.50000</span>     <span class="mf">0.81600</span>   <span class="n">Ba</span>
+  <span class="n">Cu</span>     <span class="mf">0.00000</span>     <span class="mf">0.00000</span>     <span class="mf">0.00000</span>   <span class="n">cu1</span>
+  <span class="n">Cu</span>     <span class="mf">0.00000</span>     <span class="mf">0.00000</span>     <span class="mf">0.35600</span>   <span class="n">cu2</span>
+  <span class="n">Cu</span>     <span class="mf">0.00000</span>     <span class="mf">0.00000</span>     <span class="mf">0.64400</span>   <span class="n">cu2</span>
+  <span class="n">O</span>      <span class="mf">0.00000</span>     <span class="mf">0.50000</span>     <span class="mf">0.00000</span>   <span class="n">o1</span>
+  <span class="n">O</span>      <span class="mf">0.00000</span>     <span class="mf">0.00000</span>     <span class="mf">0.15800</span>   <span class="n">o2</span>
+  <span class="n">O</span>      <span class="mf">0.00000</span>     <span class="mf">0.00000</span>     <span class="mf">0.84200</span>   <span class="n">o2</span>
+  <span class="n">O</span>      <span class="mf">0.00000</span>     <span class="mf">0.50000</span>     <span class="mf">0.37900</span>   <span class="n">o3</span>
+  <span class="n">O</span>      <span class="mf">0.00000</span>     <span class="mf">0.50000</span>     <span class="mf">0.62100</span>   <span class="n">o3</span>
+  <span class="n">O</span>      <span class="mf">0.50000</span>     <span class="mf">0.00000</span>     <span class="mf">0.37700</span>   <span class="n">o4</span>
+  <span class="n">O</span>      <span class="mf">0.50000</span>     <span class="mf">0.00000</span>     <span class="mf">0.62300</span>   <span class="n">o4</span>
 </pre></div>
 </div>
 </dd>
@@ -272,45 +273,45 @@ absorption coefficients. Here's an example:</p>
 <dt><code class="docutils literal"><span class="pre">spacegroup</span></code></dt>
 <dd><p class="first">A file containing a description of the space group. Here's an
 example:</p>
-<div class="last highlight-python"><div class="highlight"><pre><span></span># title = YBCO: Y Ba2 Cu3 O7
-# space = P M M M
-# a     =   3.82300    b    =   3.88600    c     =  11.68100
-# alpha =  90.00000    beta =  90.00000    gamma =  90.00000
-# rmax  =   5.20000    core  = cu2
-# shift =
-# atoms
-# # el.     x           y           z        tag
-#   Y      0.50000     0.50000     0.50000   Y
-#   Ba     0.50000     0.50000     0.18400   Ba
-#   Cu     0.00000     0.00000     0.00000   cu1
-#   Cu     0.00000     0.00000     0.35600   cu2
-#   O      0.00000     0.50000     0.00000   o1
-#   O      0.00000     0.00000     0.15800   o2
-#   O      0.00000     0.50000     0.37900   o3
-#   O      0.50000     0.00000     0.37700   o4
+<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="c1"># title = YBCO: Y Ba2 Cu3 O7</span>
+<span class="c1"># space = P M M M</span>
+<span class="c1"># a     =   3.82300    b    =   3.88600    c     =  11.68100</span>
+<span class="c1"># alpha =  90.00000    beta =  90.00000    gamma =  90.00000</span>
+<span class="c1"># rmax  =   5.20000    core  = cu2</span>
+<span class="c1"># shift =</span>
+<span class="c1"># atoms</span>
+<span class="c1"># # el.     x           y           z        tag</span>
+<span class="c1">#   Y      0.50000     0.50000     0.50000   Y</span>
+<span class="c1">#   Ba     0.50000     0.50000     0.18400   Ba</span>
+<span class="c1">#   Cu     0.00000     0.00000     0.00000   cu1</span>
+<span class="c1">#   Cu     0.00000     0.00000     0.35600   cu2</span>
+<span class="c1">#   O      0.00000     0.50000     0.00000   o1</span>
+<span class="c1">#   O      0.00000     0.00000     0.15800   o2</span>
+<span class="c1">#   O      0.00000     0.50000     0.37900   o3</span>
+<span class="c1">#   O      0.50000     0.00000     0.37700   o4</span>
 
-Spacegroup P M M M (#47)
+<span class="n">Spacegroup</span> <span class="n">P</span> <span class="n">M</span> <span class="n">M</span> <span class="n">M</span> <span class="p">(</span><span class="c1">#47)</span>
 
-  Schoenflies: D_2h^1
-  Full symbol: p 2/m 2/m 2/m
-  New symbol :
-  Thirtyfive :
-  Nicknames  :
+  <span class="n">Schoenflies</span><span class="p">:</span> <span class="n">D_2h</span><span class="o">^</span><span class="mi">1</span>
+  <span class="n">Full</span> <span class="n">symbol</span><span class="p">:</span> <span class="n">p</span> <span class="mi">2</span><span class="o">/</span><span class="n">m</span> <span class="mi">2</span><span class="o">/</span><span class="n">m</span> <span class="mi">2</span><span class="o">/</span><span class="n">m</span>
+  <span class="n">New</span> <span class="n">symbol</span> <span class="p">:</span>
+  <span class="n">Thirtyfive</span> <span class="p">:</span>
+  <span class="n">Nicknames</span>  <span class="p">:</span>
 
-  Common shift vector:
+  <span class="n">Common</span> <span class="n">shift</span> <span class="n">vector</span><span class="p">:</span>
 
 
-  Bravais translations:
+  <span class="n">Bravais</span> <span class="n">translations</span><span class="p">:</span>
 
-  8 positions:
-       x         y         z
-      -x        -y         z
-      -x         y        -z
-       x        -y        -z
-      -x        -y        -z
-       x         y        -z
-       x        -y         z
-      -x         y         z
+  <span class="mi">8</span> <span class="n">positions</span><span class="p">:</span>
+       <span class="n">x</span>         <span class="n">y</span>         <span class="n">z</span>
+      <span class="o">-</span><span class="n">x</span>        <span class="o">-</span><span class="n">y</span>         <span class="n">z</span>
+      <span class="o">-</span><span class="n">x</span>         <span class="n">y</span>        <span class="o">-</span><span class="n">z</span>
+       <span class="n">x</span>        <span class="o">-</span><span class="n">y</span>        <span class="o">-</span><span class="n">z</span>
+      <span class="o">-</span><span class="n">x</span>        <span class="o">-</span><span class="n">y</span>        <span class="o">-</span><span class="n">z</span>
+       <span class="n">x</span>         <span class="n">y</span>        <span class="o">-</span><span class="n">z</span>
+       <span class="n">x</span>        <span class="o">-</span><span class="n">y</span>         <span class="n">z</span>
+      <span class="o">-</span><span class="n">x</span>         <span class="n">y</span>         <span class="n">z</span>
 </pre></div>
 </div>
 </dd>
@@ -334,9 +335,9 @@ walls.</p>
 <hr class="docutils" />
 <p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
 copyright © 2016 Bruce Ravel</p>
-<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>This document is licensed under <a class="reference external" href="https://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
 <p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
-consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+consider <a class="reference external" href="https://creativecommons.org/donate/">supporting The Creative Commons</a>.</p>
 </div>
 </div>
 
@@ -356,7 +357,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="mue/index.html">3. Processing μ(E) data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="highlevel/index.html">4. High level actions of the object model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="xanes/index.html">5. Analysis of XANES data</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">6. Atoms</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">6. Atoms</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#input-crystal-data">6.1. Input crystal data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#object-methods">6.2. Object methods</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#other-methods">6.3. Other methods</a></li>
@@ -375,7 +376,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.26</b></p>
+<p>Current Demeter version: <b>0.9.26</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
@@ -383,6 +384,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/XAS-Education/">Bruce's XAS Education page</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -396,20 +398,17 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/atoms.txt"
+      <li><a href="_sources/atoms.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -426,12 +425,12 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="xanes/diff.html" title="5.4. Difference spectra"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Demeter Programming Guide 0.9.26 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Demeter Programming Guide 0.9.26 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, Bruce Ravel.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+        &#169; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
     </div>
   </body>
 </html>

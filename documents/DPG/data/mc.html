@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>2.5. Multichannel data files &mdash; Demeter Programming Guide 0.9.26 documentation</title>
+    <title>2.5. Multichannel data files &#8212; Demeter Programming Guide 0.9.26 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -17,15 +17,15 @@
         VERSION:     '0.9.26',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Demeter Programming Guide 0.9.26 documentation" href="../index.html" />
-    <link rel="up" title="2. The basics of data processing" href="index.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="2.6. Special data types" href="special.html" />
     <link rel="prev" title="2.4. Athena project files" href="athena.html" />
 
@@ -44,8 +44,8 @@
         <li class="right" >
           <a href="athena.html" title="2.4. Athena project files"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">2. The basics of data processing</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">2. The basics of data processing</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -89,11 +89,11 @@ energy for direct comparison.</p>
 13
 14
 15</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
- <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
- <span class="k">use</span> <span class="nn">Demeter::Data::</span><span class="n">MultiChannel</span><span class="p">;</span>
+ <span class="k">use</span> <span class="nn">Demeter</span><span class="p">;</span>
+ <span class="k">use</span> <span class="nn">Demeter::Data::MultiChannel</span><span class="p">;</span>
 
  <span class="k">my</span> <span class="nv">$file</span> <span class="o">=</span> <span class="s">&#39;med_data.000&#39;</span>
- <span class="k">my</span> <span class="nv">$mc</span> <span class="o">=</span> <span class="nn">Demeter::Data::</span><span class="n">MultiChannel</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span>   <span class="o">=&gt;</span> <span class="nv">$file</span><span class="p">,</span> <span class="n">energy</span> <span class="o">=&gt;</span> <span class="s">&#39;$1&#39;</span><span class="p">,</span> <span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$mc</span> <span class="o">=</span> <span class="nn">Demeter::Data::MultiChannel</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span>   <span class="o">=&gt;</span> <span class="nv">$file</span><span class="p">,</span> <span class="n">energy</span> <span class="o">=&gt;</span> <span class="s">&#39;$1&#39;</span><span class="p">,</span> <span class="p">);</span>
  <span class="nv">$data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$mc</span><span class="o">-&gt;</span><span class="n">make_data</span><span class="p">(</span><span class="n">numerator</span>   <span class="o">=&gt;</span> <span class="s">&#39;$4&#39;</span><span class="p">,</span> <span class="n">denominator</span> <span class="o">=&gt;</span> <span class="s">&#39;$2&#39;</span><span class="p">,</span>
                            <span class="n">ln</span>          <span class="o">=&gt;</span>  <span class="mi">0</span><span class="p">,</span>   <span class="n">name</span>        <span class="o">=&gt;</span> <span class="s">&#39;MED Channel 1&#39;</span><span class="p">,</span> <span class="p">);</span>
  <span class="nv">$data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$mc</span><span class="o">-&gt;</span><span class="n">make_data</span><span class="p">(</span><span class="n">numerator</span>   <span class="o">=&gt;</span> <span class="s">&#39;$5&#39;</span><span class="p">,</span> <span class="n">denominator</span> <span class="o">=&gt;</span> <span class="s">&#39;$2&#39;</span><span class="p">,</span>
@@ -124,7 +124,7 @@ the Data creator method, <code class="docutils literal"><span class="pre">new</s
 way to Data objects created in other ways.</p>
 <p>Of course, another option is to use a normal Data object to import MED
 data and do the summation on the fly, like so</p>
-<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Data</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">numerator</span>   <span class="o">=&gt;</span> <span class="s">&#39;$4+$5+$6+$7&#39;</span><span class="p">,</span> <span class="n">denominator</span> <span class="o">=&gt;</span> <span class="s">&#39;$2&#39;</span><span class="p">,</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">=</span> <span class="nn">Demeter::Data</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">numerator</span>   <span class="o">=&gt;</span> <span class="s">&#39;$4+$5+$6+$7&#39;</span><span class="p">,</span> <span class="n">denominator</span> <span class="o">=&gt;</span> <span class="s">&#39;$2&#39;</span><span class="p">,</span>
                            <span class="n">ln</span>          <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>             <span class="n">name</span>        <span class="o">=&gt;</span> <span class="s">&#39;MED data&#39;</span> <span class="p">);</span>
 </pre></div>
 </div>
@@ -149,11 +149,11 @@ reference channel from a normal XAS data file. Here is an example:</p>
 10
 11
 12</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
- <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
- <span class="k">use</span> <span class="nn">Demeter::Data::</span><span class="n">MultiChannel</span><span class="p">;</span>
+ <span class="k">use</span> <span class="nn">Demeter</span><span class="p">;</span>
+ <span class="k">use</span> <span class="nn">Demeter::Data::MultiChannel</span><span class="p">;</span>
 
  <span class="k">my</span> <span class="nv">$file</span> <span class="o">=</span> <span class="s">&#39;fe2o3.000&#39;</span>
- <span class="k">my</span> <span class="nv">$mc</span> <span class="o">=</span> <span class="nn">Demeter::Data::</span><span class="n">MultiChannel</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span>   <span class="o">=&gt;</span> <span class="nv">$file</span><span class="p">,</span> <span class="n">energy</span> <span class="o">=&gt;</span> <span class="s">&#39;$1&#39;</span><span class="p">,</span> <span class="p">);</span>
+ <span class="k">my</span> <span class="nv">$mc</span> <span class="o">=</span> <span class="nn">Demeter::Data::MultiChannel</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span>   <span class="o">=&gt;</span> <span class="nv">$file</span><span class="p">,</span> <span class="n">energy</span> <span class="o">=&gt;</span> <span class="s">&#39;$1&#39;</span><span class="p">,</span> <span class="p">);</span>
 
  <span class="nv">$data</span> <span class="o">=</span> <span class="nv">$mc</span><span class="o">-&gt;</span><span class="n">make_data</span><span class="p">(</span><span class="n">numerator</span>   <span class="o">=&gt;</span> <span class="s">&#39;$2&#39;</span><span class="p">,</span> <span class="n">denominator</span> <span class="o">=&gt;</span> <span class="s">&#39;$3&#39;</span><span class="p">,</span>
                         <span class="n">ln</span>          <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>    <span class="n">name</span>        <span class="o">=&gt;</span> <span class="s">&#39;Fe2O3&#39;</span> <span class="p">);</span>
@@ -214,14 +214,14 @@ project file.</p>
 31
 32
 33</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">#!/usr/bin/perl</span>
- <span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span> <span class="c1"># qw(:plotwith=gnuplot);</span>
- <span class="k">use</span> <span class="nn">Demeter::Data::</span><span class="n">MultiChannel</span><span class="p">;</span>
- <span class="k">use</span> <span class="nn">File::</span><span class="n">Basename</span><span class="p">;</span>
+ <span class="k">use</span> <span class="nn">Demeter</span><span class="p">;</span> <span class="c1"># qw(:plotwith=gnuplot);</span>
+ <span class="k">use</span> <span class="nn">Demeter::Data::MultiChannel</span><span class="p">;</span>
+ <span class="k">use</span> <span class="nn">File::Basename</span><span class="p">;</span>
 
  <span class="k">my</span> <span class="nv">$datafile</span> <span class="o">=</span> <span class="nb">shift</span><span class="p">(</span><span class="nv">@ARGV</span><span class="p">);</span>    <span class="c1"># take file name from command line</span>
- <span class="k">my</span> <span class="nv">$mc</span> <span class="o">=</span> <span class="nn">Demeter::Data::</span><span class="n">MultiChannel</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span>   <span class="o">=&gt;</span> <span class="nv">$file</span><span class="p">,</span> <span class="n">energy</span> <span class="o">=&gt;</span> <span class="s">&#39;$1&#39;</span><span class="p">,</span> <span class="p">);</span>
- <span class="nv">$mc</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">title</span> <span class="o">=&gt;</span> <span class="nv">$datafile</span><span class="p">,</span> <span class="n">e_norm</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">,</span> <span class="n">e_markers</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">,</span> <span class="n">emin</span><span class="o">=&gt;-</span><span class="mi">40</span><span class="p">,</span> <span class="n">emax</span><span class="o">=&gt;</span><span class="mi">60</span><span class="p">);</span>
- <span class="nv">$mc</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+ <span class="k">my</span> <span class="nv">$mc</span> <span class="o">=</span> <span class="nn">Demeter::Data::MultiChannel</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="n">file</span>   <span class="o">=&gt;</span> <span class="nv">$file</span><span class="p">,</span> <span class="n">energy</span> <span class="o">=&gt;</span> <span class="s">&#39;$1&#39;</span><span class="p">,</span> <span class="p">);</span>
+ <span class="nv">$mc</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">title</span> <span class="o">=&gt;</span> <span class="nv">$datafile</span><span class="p">,</span> <span class="n">e_norm</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">,</span> <span class="n">e_markers</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">,</span> <span class="n">emin</span><span class="o">=&gt;-</span><span class="mi">40</span><span class="p">,</span> <span class="n">emax</span><span class="o">=&gt;</span><span class="mi">60</span><span class="p">);</span>
+ <span class="nv">$mc</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
 
  <span class="k">my</span> <span class="nv">@data</span><span class="p">;</span>
  <span class="k">print</span> <span class="s">&quot;channel 1, &quot;</span><span class="p">;</span>
@@ -244,7 +244,7 @@ project file.</p>
  <span class="k">print</span> <span class="s">&quot;exporting $prjfile ... &quot;</span><span class="p">;</span>
  <span class="nv">$data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">write_athena</span><span class="p">(</span><span class="nv">$prjfile</span><span class="p">,</span> <span class="nv">@data</span><span class="p">);</span>
  <span class="k">print</span> <span class="vg">$/</span><span class="p">;</span>
- <span class="nv">$data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">po</span><span class="o">-&gt;</span><span class="n">end_plot</span><span class="p">;</span>
+ <span class="nv">$data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="nn">po</span><span class="o">-&gt;</span><span class="n">end_plot</span><span class="p">;</span>
  <span class="nv">$mc</span><span class="o">-&gt;</span><span class="n">discard</span><span class="p">;</span>
 </pre></div>
 </td></tr></table></div>
@@ -259,9 +259,9 @@ objects, which will be useful in this case, as well as for MED data.</p>
 <hr class="docutils" />
 <p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
 copyright © 2016 Bruce Ravel</p>
-<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>This document is licensed under <a class="reference external" href="https://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
 <p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
-consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+consider <a class="reference external" href="https://creativecommons.org/donate/">supporting The Creative Commons</a>.</p>
 </div>
 </div>
 
@@ -282,7 +282,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l2"><a class="reference internal" href="chi.html">2.2. χ(k) data files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="columns.html">2.3. Column data files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="athena.html">2.4. Athena project files</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">2.5. Multichannel data files</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">2.5. Multichannel data files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="special.html">2.6. Special data types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="other.html">2.7. Handling arbitrary data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html">2.8. Plotting and basic data processing</a></li>
@@ -304,7 +304,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.26</b></p>
+<p>Current Demeter version: <b>0.9.26</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
@@ -312,6 +312,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/XAS-Education/">Bruce's XAS Education page</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -325,20 +326,17 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/data/mc.txt"
+      <li><a href="../_sources/data/mc.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -355,13 +353,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="athena.html" title="2.4. Athena project files"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >2. The basics of data processing</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >2. The basics of data processing</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, Bruce Ravel.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+        &#169; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
     </div>
   </body>
 </html>

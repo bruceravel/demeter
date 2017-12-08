@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.4. Path interpretation &mdash; Demeter Programming Guide 0.9.26 documentation</title>
+    <title>7.4. Path interpretation &#8212; Demeter Programming Guide 0.9.26 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -17,15 +17,15 @@
         VERSION:     '0.9.26',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Demeter Programming Guide 0.9.26 documentation" href="../index.html" />
-    <link rel="up" title="7. Feff" href="index.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="8. Scattering paths" href="../paths/index.html" />
     <link rel="prev" title="7.3. The path finder" href="pathfinder.html" />
 
@@ -44,8 +44,8 @@
         <li class="right" >
           <a href="pathfinder.html" title="7.3. The path finder"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">7. Feff</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">7. Feff</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -60,9 +60,9 @@
 all the paths. The main tool <font size=-1 color="#8C4112">DEMETER</font> offers for this is the
 path interpretation.</p>
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/perl</span>
-<span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+<span class="k">use</span> <span class="nn">Demeter</span><span class="p">;</span>
 
-<span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Feff</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;feff/feff.inp&quot;</span><span class="p">);</span>
+<span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::Feff</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;feff/feff.inp&quot;</span><span class="p">);</span>
 <span class="nv">$feff</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">workspace</span> <span class="o">=&gt;</span> <span class="s">&quot;feff/&quot;</span><span class="p">,</span> <span class="n">screen</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,);</span>
 <span class="nv">$feff</span> <span class="o">-&gt;</span> <span class="n">potph</span>
 <span class="nv">$feff</span> <span class="o">-&gt;</span> <span class="n">pathfinder</span><span class="p">;</span>
@@ -71,47 +71,47 @@ path interpretation.</p>
 </div>
 <p>or, using the serialization file introduced in the last section,</p>
 <div class="highlight-perl"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/perl</span>
-<span class="k">use</span> <span class="n">Demeter</span><span class="p">;</span>
+<span class="k">use</span> <span class="nn">Demeter</span><span class="p">;</span>
 
-<span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::</span><span class="n">Feff</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">yaml</span> <span class="o">=&gt;</span> <span class="s">&quot;feff/feff.yaml&quot;</span><span class="p">);</span>
+<span class="k">my</span> <span class="nv">$feff</span> <span class="o">=</span> <span class="nn">Demeter::Feff</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(</span><span class="n">yaml</span> <span class="o">=&gt;</span> <span class="s">&quot;feff/feff.yaml&quot;</span><span class="p">);</span>
 <span class="k">print</span> <span class="nv">$feff</span> <span class="o">-&gt;</span> <span class="n">intrp</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>Here is what gets printed out by the line with the <code class="docutils literal"><span class="pre">intrp</span></code> method:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span># Hg at site 15 in thymidine
-# This paths.dat file was written by Demeter 0.3.0
-# The central atom is denoted by this token: &lt;+&gt;
-# Cluster size = 4.50000 Angstrom, containing 21 atoms
-# 23 paths were found
-# Forward scattering cutoff 25.00
-# Distance fuzz = 0.0300 Angstroms
-# Angle fuzz = 3.0000 degrees
-# Suppressing eta: yes
-# -------------------------------------------------------------------------------
-#     degen   Reff       scattering path                       I legs   type
- 0001   1    2.040  ----  &lt;+&gt; N16    &lt;+&gt;                       2  2 single scattering
- 0002   2    2.923  ----  &lt;+&gt; C      &lt;+&gt;                       2  2 single scattering
- 0003   2    3.036  ----  &lt;+&gt; O      &lt;+&gt;                       2  2 single scattering
- 0004   4    3.171  ----  &lt;+&gt; C      N16    &lt;+&gt;                1  3 obtuse triangle
- 0005   2    3.418  ----  &lt;+&gt; N16    C      N16    &lt;+&gt;         0  4 dog-leg
- 0006   4    3.591  ----  &lt;+&gt; C      O      &lt;+&gt;                0  3 other double scattering
- 0007   4    3.676  ----  &lt;+&gt; O      N16    &lt;+&gt;                0  3 other double scattering
- 0008   1    4.080  ----  &lt;+&gt; N16    &lt;+&gt;    N16    &lt;+&gt;         1  4 rattle
- 0009   2    4.146  ----  &lt;+&gt; C      O      C      &lt;+&gt;         0  4 dog-leg
- 0010   2    4.159  ----  &lt;+&gt; C      C      &lt;+&gt;                1  3 acute triangle
- 0011   1    4.191  ----  &lt;+&gt; N13    &lt;+&gt;                       2  2 single scattering
- 0012   2    4.244  ----  &lt;+&gt; N13    C      &lt;+&gt;                1  3 obtuse triangle
- 0013   2    4.258  ----  &lt;+&gt; O      C      O      &lt;+&gt;         0  4 dog-leg
- 0014   1    4.263  ----  &lt;+&gt; C      &lt;+&gt;                       2  2 single scattering
- 0015   2    4.267  ----  &lt;+&gt; N13    N16    &lt;+&gt;                1  3 obtuse triangle
- 0016   2    4.301  ----  &lt;+&gt; C      N16    C      &lt;+&gt;         0  4 dog-leg
- 0017   1    4.297  ----  &lt;+&gt; C      N13    C      &lt;+&gt;         0  4 dog-leg
- 0018   2    4.317  ----  &lt;+&gt; N16    O      N16    &lt;+&gt;         0  4 dog-leg
- 0019   2    4.314  ----  &lt;+&gt; C      C      &lt;+&gt;                1  3 obtuse triangle
- 0020   2    4.342  ----  &lt;+&gt; N16    C      &lt;+&gt;                1  3 obtuse triangle
- 0021   1    4.343  ----  &lt;+&gt; N16    N13    N16    &lt;+&gt;         0  4 dog-leg
- 0022   1    4.364  ----  &lt;+&gt; C      C      C      &lt;+&gt;         0  4 dog-leg
- 0023   1    4.420  ----  &lt;+&gt; N16    C      N16    &lt;+&gt;         0  4 dog-leg
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Hg at site 15 in thymidine</span>
+<span class="c1"># This paths.dat file was written by Demeter 0.3.0</span>
+<span class="c1"># The central atom is denoted by this token: &lt;+&gt;</span>
+<span class="c1"># Cluster size = 4.50000 Angstrom, containing 21 atoms</span>
+<span class="c1"># 23 paths were found</span>
+<span class="c1"># Forward scattering cutoff 25.00</span>
+<span class="c1"># Distance fuzz = 0.0300 Angstroms</span>
+<span class="c1"># Angle fuzz = 3.0000 degrees</span>
+<span class="c1"># Suppressing eta: yes</span>
+<span class="c1"># -------------------------------------------------------------------------------</span>
+<span class="c1">#     degen   Reff       scattering path                       I legs   type</span>
+ <span class="mi">0001</span>   <span class="mi">1</span>    <span class="mf">2.040</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">N16</span>    <span class="o">&lt;+&gt;</span>                       <span class="mi">2</span>  <span class="mi">2</span> <span class="n">single</span> <span class="n">scattering</span>
+ <span class="mi">0002</span>   <span class="mi">2</span>    <span class="mf">2.923</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">C</span>      <span class="o">&lt;+&gt;</span>                       <span class="mi">2</span>  <span class="mi">2</span> <span class="n">single</span> <span class="n">scattering</span>
+ <span class="mi">0003</span>   <span class="mi">2</span>    <span class="mf">3.036</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">O</span>      <span class="o">&lt;+&gt;</span>                       <span class="mi">2</span>  <span class="mi">2</span> <span class="n">single</span> <span class="n">scattering</span>
+ <span class="mi">0004</span>   <span class="mi">4</span>    <span class="mf">3.171</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">C</span>      <span class="n">N16</span>    <span class="o">&lt;+&gt;</span>                <span class="mi">1</span>  <span class="mi">3</span> <span class="n">obtuse</span> <span class="n">triangle</span>
+ <span class="mi">0005</span>   <span class="mi">2</span>    <span class="mf">3.418</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">N16</span>    <span class="n">C</span>      <span class="n">N16</span>    <span class="o">&lt;+&gt;</span>         <span class="mi">0</span>  <span class="mi">4</span> <span class="n">dog</span><span class="o">-</span><span class="n">leg</span>
+ <span class="mi">0006</span>   <span class="mi">4</span>    <span class="mf">3.591</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">C</span>      <span class="n">O</span>      <span class="o">&lt;+&gt;</span>                <span class="mi">0</span>  <span class="mi">3</span> <span class="n">other</span> <span class="n">double</span> <span class="n">scattering</span>
+ <span class="mi">0007</span>   <span class="mi">4</span>    <span class="mf">3.676</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">O</span>      <span class="n">N16</span>    <span class="o">&lt;+&gt;</span>                <span class="mi">0</span>  <span class="mi">3</span> <span class="n">other</span> <span class="n">double</span> <span class="n">scattering</span>
+ <span class="mi">0008</span>   <span class="mi">1</span>    <span class="mf">4.080</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">N16</span>    <span class="o">&lt;+&gt;</span>    <span class="n">N16</span>    <span class="o">&lt;+&gt;</span>         <span class="mi">1</span>  <span class="mi">4</span> <span class="n">rattle</span>
+ <span class="mi">0009</span>   <span class="mi">2</span>    <span class="mf">4.146</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">C</span>      <span class="n">O</span>      <span class="n">C</span>      <span class="o">&lt;+&gt;</span>         <span class="mi">0</span>  <span class="mi">4</span> <span class="n">dog</span><span class="o">-</span><span class="n">leg</span>
+ <span class="mi">0010</span>   <span class="mi">2</span>    <span class="mf">4.159</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">C</span>      <span class="n">C</span>      <span class="o">&lt;+&gt;</span>                <span class="mi">1</span>  <span class="mi">3</span> <span class="n">acute</span> <span class="n">triangle</span>
+ <span class="mi">0011</span>   <span class="mi">1</span>    <span class="mf">4.191</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">N13</span>    <span class="o">&lt;+&gt;</span>                       <span class="mi">2</span>  <span class="mi">2</span> <span class="n">single</span> <span class="n">scattering</span>
+ <span class="mi">0012</span>   <span class="mi">2</span>    <span class="mf">4.244</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">N13</span>    <span class="n">C</span>      <span class="o">&lt;+&gt;</span>                <span class="mi">1</span>  <span class="mi">3</span> <span class="n">obtuse</span> <span class="n">triangle</span>
+ <span class="mi">0013</span>   <span class="mi">2</span>    <span class="mf">4.258</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">O</span>      <span class="n">C</span>      <span class="n">O</span>      <span class="o">&lt;+&gt;</span>         <span class="mi">0</span>  <span class="mi">4</span> <span class="n">dog</span><span class="o">-</span><span class="n">leg</span>
+ <span class="mi">0014</span>   <span class="mi">1</span>    <span class="mf">4.263</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">C</span>      <span class="o">&lt;+&gt;</span>                       <span class="mi">2</span>  <span class="mi">2</span> <span class="n">single</span> <span class="n">scattering</span>
+ <span class="mi">0015</span>   <span class="mi">2</span>    <span class="mf">4.267</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">N13</span>    <span class="n">N16</span>    <span class="o">&lt;+&gt;</span>                <span class="mi">1</span>  <span class="mi">3</span> <span class="n">obtuse</span> <span class="n">triangle</span>
+ <span class="mi">0016</span>   <span class="mi">2</span>    <span class="mf">4.301</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">C</span>      <span class="n">N16</span>    <span class="n">C</span>      <span class="o">&lt;+&gt;</span>         <span class="mi">0</span>  <span class="mi">4</span> <span class="n">dog</span><span class="o">-</span><span class="n">leg</span>
+ <span class="mi">0017</span>   <span class="mi">1</span>    <span class="mf">4.297</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">C</span>      <span class="n">N13</span>    <span class="n">C</span>      <span class="o">&lt;+&gt;</span>         <span class="mi">0</span>  <span class="mi">4</span> <span class="n">dog</span><span class="o">-</span><span class="n">leg</span>
+ <span class="mi">0018</span>   <span class="mi">2</span>    <span class="mf">4.317</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">N16</span>    <span class="n">O</span>      <span class="n">N16</span>    <span class="o">&lt;+&gt;</span>         <span class="mi">0</span>  <span class="mi">4</span> <span class="n">dog</span><span class="o">-</span><span class="n">leg</span>
+ <span class="mi">0019</span>   <span class="mi">2</span>    <span class="mf">4.314</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">C</span>      <span class="n">C</span>      <span class="o">&lt;+&gt;</span>                <span class="mi">1</span>  <span class="mi">3</span> <span class="n">obtuse</span> <span class="n">triangle</span>
+ <span class="mi">0020</span>   <span class="mi">2</span>    <span class="mf">4.342</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">N16</span>    <span class="n">C</span>      <span class="o">&lt;+&gt;</span>                <span class="mi">1</span>  <span class="mi">3</span> <span class="n">obtuse</span> <span class="n">triangle</span>
+ <span class="mi">0021</span>   <span class="mi">1</span>    <span class="mf">4.343</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">N16</span>    <span class="n">N13</span>    <span class="n">N16</span>    <span class="o">&lt;+&gt;</span>         <span class="mi">0</span>  <span class="mi">4</span> <span class="n">dog</span><span class="o">-</span><span class="n">leg</span>
+ <span class="mi">0022</span>   <span class="mi">1</span>    <span class="mf">4.364</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">C</span>      <span class="n">C</span>      <span class="n">C</span>      <span class="o">&lt;+&gt;</span>         <span class="mi">0</span>  <span class="mi">4</span> <span class="n">dog</span><span class="o">-</span><span class="n">leg</span>
+ <span class="mi">0023</span>   <span class="mi">1</span>    <span class="mf">4.420</span>  <span class="o">----</span>  <span class="o">&lt;+&gt;</span> <span class="n">N16</span>    <span class="n">C</span>      <span class="n">N16</span>    <span class="o">&lt;+&gt;</span>         <span class="mi">0</span>  <span class="mi">4</span> <span class="n">dog</span><span class="o">-</span><span class="n">leg</span>
 </pre></div>
 </div>
 <p>This should be familiar to the <font size=-1 color="#8C4112">ARTEMIS</font> user. The paths are
@@ -166,9 +166,9 @@ sequences as the values of the anonymous hash.</p>
 <hr class="docutils" />
 <p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
 copyright © 2016 Bruce Ravel</p>
-<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>This document is licensed under <a class="reference external" href="https://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
 <p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
-consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+consider <a class="reference external" href="https://creativecommons.org/donate/">supporting The Creative Commons</a>.</p>
 </div>
 </div>
 
@@ -193,7 +193,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l2"><a class="reference internal" href="input.html">7.1. Input data for Feff</a></li>
 <li class="toctree-l2"><a class="reference internal" href="potph.html">7.2. Computng potentials</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pathfinder.html">7.3. The path finder</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">7.4. Path interpretation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">7.4. Path interpretation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../paths/index.html">8. Scattering paths</a></li>
@@ -207,7 +207,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.26</b></p>
+<p>Current Demeter version: <b>0.9.26</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
@@ -215,6 +215,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/XAS-Education/">Bruce's XAS Education page</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -228,20 +229,17 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/feff/intrp.txt"
+      <li><a href="../_sources/feff/intrp.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -258,13 +256,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="pathfinder.html" title="7.3. The path finder"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >7. Feff</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >7. Feff</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, Bruce Ravel.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+        &#169; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
     </div>
   </body>
 </html>

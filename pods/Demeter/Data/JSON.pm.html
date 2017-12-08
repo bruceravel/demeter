@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::Data::JSON</title>
-<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::Data::JSON &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,169 +15,219 @@
 </div>
 <div class="path">
   <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-Data-JSON
+  Demeter::Data::JSON
 </div>
 <div>
 <a href="../../src/Demeter/Data/JSON.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#Accessor-methods">Accessor methods</a></li>
+      <li><a href="#Project-file-methods">Project file methods</a></li>
+    </ul>
+  </li>
+  <li><a href="#DIAGNOSTICS">DIAGNOSTICS</a></li>
+  <li><a href="#CONFIGURATION">CONFIGURATION</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::Data::JSON - Read data from JSON-style Athena project files</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This class contains methods for interacting with Athena project files.
-It is not a subclass of some other Demeter method.</p>
+<p>This class contains methods for interacting with Athena project files. It is not a subclass of some other Demeter method.</p>
 
-<pre>  $project   = Demeter::Data::JSON-&gt;new(file=&gt;'some.prj');
+<pre><code>  $project   = Demeter::Data::JSON-&gt;new(file=&gt;&#39;some.prj&#39;);
   @data     = $project -&gt; slurp;         # import all records
-  ($d1, $2) = $project -&gt; record(3, 8);  # import specific records
+  ($d1, $2) = $project -&gt; record(3, 8);  # import specific records</code></pre>
 
-</pre><p>The script <code>lsprj</code>, which comes with Demeter, uses this module.</p>
+<p>The script <code>lsprj</code>, which comes with Demeter, uses this module.</p>
 
-<p>See <a href="Athena.pm.html">Demeter::Data::Athena</a> for Demeter's method of writing
-Athena project files.</p>
+<p>See <a href="Athena.pm.html">Demeter::Data::Athena</a> for Demeter&#39;s method of writing Athena project files.</p>
 
-<p>Note that the semantics of this object are identical to
-Demeter::Data::Prj.  They are intended to be used interchangeably.
-Athena and Artemis will read Prj and JSON files transparently.</p>
+<p>Note that the semantics of this object are identical to Demeter::Data::Prj. They are intended to be used interchangeably. Athena and Artemis will read Prj and JSON files transparently.</p>
 
-<p>This JSON file has some manditory structure to allow it to be used
-properly by Athena and Artemis see <a href="#some_file">some file...</a>.</p>
+<p>This JSON file has some manditory structure to allow it to be used properly by Athena and Artemis see <a href="#some-file">&quot;some file...&quot;</a>.</p>
 
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="METHODS">METHODS</h1>
 
-<h2 id="Accessor_methods">Accessor methods</h2>
+<h2 id="Accessor-methods">Accessor methods</h2>
 
 <dl>
-	<dt><code>set</code></dt>
-		<dd><p>Currently, the only thing to set is <code>file</code>.</p></dd>
-<dd><pre>  $prj -&gt; set(file=&gt;'some.prj');
 
-</pre></dd>		<dd><p>Setting the file triggers reading the file.  You do not need to read
-the file explicitly.</p></dd>
+<dt id="set"><code>set</code></dt>
+<dd>
+
+<p>Currently, the only thing to set is <code>file</code>.</p>
+
+<pre><code>  $prj -&gt; set(file=&gt;&#39;some.prj&#39;);</code></pre>
+
+<p>Setting the file triggers reading the file. You do not need to read the file explicitly.</p>
+
+</dd>
 </dl>
-<h2 id="Project_file_methods">Project file methods</h2>
+
+<h2 id="Project-file-methods">Project file methods</h2>
 
 <dl>
-	<dt><code>slurp</code></dt>
-		<dd><p>Return a list containing Demeter Data objects for each group from the
-project file.  This is a convenience wrapper wround the <code>record</code>
-method.</p></dd>
-<dd><pre>  @data_objects = $prj -&gt; slurp
 
-</pre></dd>		<dd><p><code>prj</code> is an alias for <code>slurp</code>.</p></dd>
-	<dt><code>record</code></dt>
-		<dd><p>Import a single record from the project file.</p></dd>
-		<dd><p>To retrieve the third group from an Athena project file:</p></dd>
-<dd><pre>  $data_object = $prj -&gt; record(3);
+<dt id="slurp"><code>slurp</code></dt>
+<dd>
 
-</pre></dd>		<dd><p>Note that, for this method, you count the groups in the Athena project
-starting with 1, where record #1 is the top-most record in the list as
-displayed in Athena.</p></dd>
-		<dd><p><code>records</code> is an alias for <code>record</code>, as in</p></dd>
-<dd><pre>  @data_objects = $prj -&gt; records(3, 4, 8);
+<p>Return a list containing Demeter Data objects for each group from the project file. This is a convenience wrapper wround the <code>record</code> method.</p>
 
-</pre></dd>		<dd><p>All imported records will have attributes set to values imported from
-the project file.</p></dd>
-		<dd><p>Note that is you pass this method an argument whose value is larger
-than the number of records in the associated project file, it will
-silently skip that argument.</p></dd>
-	<dt><code>list</code></dt>
-		<dd><p>Return a listing of the labels of the groups in the project file.</p></dd>
-<dd><pre>  print $prj -&gt; list;
+<pre><code>  @data_objects = $prj -&gt; slurp</code></pre>
+
+<p><code>prj</code> is an alias for <code>slurp</code>.</p>
+
+</dd>
+<dt id="record"><code>record</code></dt>
+<dd>
+
+<p>Import a single record from the project file.</p>
+
+<p>To retrieve the third group from an Athena project file:</p>
+
+<pre><code>  $data_object = $prj -&gt; record(3);</code></pre>
+
+<p>Note that, for this method, you count the groups in the Athena project starting with 1, where record #1 is the top-most record in the list as displayed in Athena.</p>
+
+<p><code>records</code> is an alias for <code>record</code>, as in</p>
+
+<pre><code>  @data_objects = $prj -&gt; records(3, 4, 8);</code></pre>
+
+<p>All imported records will have attributes set to values imported from the project file.</p>
+
+<p>Note that is you pass this method an argument whose value is larger than the number of records in the associated project file, it will silently skip that argument.</p>
+
+</dd>
+<dt id="list"><code>list</code></dt>
+<dd>
+
+<p>Return a listing of the labels of the groups in the project file.</p>
+
+<pre><code>  print $prj -&gt; list;
    ==prints==&gt;
     #     record
     # -------------------------------------------
       1 : Iron foil
       2 : Iron oxide
-      3 : Iron sulfide
+      3 : Iron sulfide</code></pre>
 
-</pre></dd>		<dd><p>Optionally, a list of attributes can be passed, generating a simple
-table of parameter values.</p></dd>
-<dd><pre>  print $prj -&gt; list(qw(bkg_rbkg fft_kmin));
+<p>Optionally, a list of attributes can be passed, generating a simple table of parameter values.</p>
+
+<pre><code>  print $prj -&gt; list(qw(bkg_rbkg fft_kmin));
    ==prints==&gt;
     #     record         bkg_rbkg   fft_kmin
     # -------------------------------------------
       1 : Iron foil      1.6        2.0
       2 : Iron oxide     1.0        2.0
-      3 : Iron sulfide   1.0        3.0
+      3 : Iron sulfide   1.0        3.0</code></pre>
 
-</pre></dd>		<dd><p>The attributes are those for the <a href="../Data.pm.html">Demeter::Data</a> object.</p></dd>
-	<dt><code>allnames</code></dt>
-		<dd><p>This returns the labels as displayed in Athena's groups list as an array.</p></dd>
-<dd><pre>  my @names = $prj -&gt; allnames;
+<p>The attributes are those for the <a href="../Data.pm.html">Demeter::Data</a> object.</p>
 
-</pre></dd>	<dt><code>plot_as_chi</code></dt>
-		<dd><p>This returns the same sort of list as the <code>entries</code> accessor, except
-that all the gorups that cannot be plotted as chi(K) (i.e. detector
-groups, xanes groups, etc) have been filtered out.  Two array
-references are returned, the first containing the names of those
-groups, the second containing the filtered entries list.</p></dd>
-<dd><pre>  my ($names_ref, $entries_ref) = $prj -&gt; plot_as_chi;
+</dd>
+<dt id="allnames"><code>allnames</code></dt>
+<dd>
 
-</pre></dd></dl>
-<h1 id="DIAGNOSTICS">DIAGNOSTICS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<p>This returns the labels as displayed in Athena&#39;s groups list as an array.</p>
+
+<pre><code>  my @names = $prj -&gt; allnames;</code></pre>
+
+</dd>
+<dt id="plot_as_chi"><code>plot_as_chi</code></dt>
+<dd>
+
+<p>This returns the same sort of list as the <code>entries</code> accessor, except that all the gorups that cannot be plotted as chi(K) (i.e. detector groups, xanes groups, etc) have been filtered out. Two array references are returned, the first containing the names of those groups, the second containing the filtered entries list.</p>
+
+<pre><code>  my ($names_ref, $entries_ref) = $prj -&gt; plot_as_chi;</code></pre>
+
+</dd>
+</dl>
+
+<h1 id="DIAGNOSTICS">DIAGNOSTICS</h1>
 
 <dl>
-	<dt><code>Demeter::Data::JSON: $file does not exist</code></dt>
-		<dd><p>The Athena project file cannot be found on your computer.</p></dd>
-	<dt><code>Demeter::Data::JSON:$file cannot be read (permissions?)</code></dt>
-		<dd><p>The specified Athena project file cannot be read by Demeter, possibly
-because of permissions settings.</p></dd>
-	<dt><code>could not open $file as an Athena project</code></dt>
-		<dd><p>A problem was encountered attempting to open the Athena project file
-using the <a href="https://metacpan.org/pod/Compress%3A%3AZlib">Compress::Zlib</a> module.</p></dd>
+
+<dt id="Demeter::Data::JSON:-file-does-not-exist"><code>Demeter::Data::JSON: $file does not exist</code></dt>
+<dd>
+
+<p>The Athena project file cannot be found on your computer.</p>
+
+</dd>
+<dt id="Demeter::Data::JSON:-file-cannot-be-read-permissions"><code>Demeter::Data::JSON:$file cannot be read (permissions?)</code></dt>
+<dd>
+
+<p>The specified Athena project file cannot be read by Demeter, possibly because of permissions settings.</p>
+
+</dd>
+<dt id="could-not-open-file-as-an-Athena-project"><code>could not open $file as an Athena project</code></dt>
+<dd>
+
+<p>A problem was encountered attempting to open the Athena project file using the <a href="http://metacpan.org/module/Compress::Zlib">Compress::Zlib</a> module.</p>
+
+</dd>
 </dl>
-<h1 id="CONFIGURATION">CONFIGURATION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<h1 id="CONFIGURATION">CONFIGURATION</h1>
 
 <p>There are no configuration options for this class.</p>
 
-<p>See <a href="../Config.pm.html">Demeter::Config</a> for a description of Demeter's
-configuration system.</p>
+<p>See <a href="../Config.pm.html">Demeter::Config</a> for a description of Demeter&#39;s configuration system.</p>
 
-<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
 
-<p>Demeter's dependencies are in the <cite>Build.PL</cite> file.</p>
+<p>Demeter&#39;s dependencies are in the <i>Build.PL</i> file.</p>
 
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
 <ul>
-	<li>Not all Athena attributes are dealt with correctly yet -- title is the
-biggie</li>
-	<li>Need to deal with chi groups, detector groups, etc.</li>
-	<li>Not dealing yet with, for instance, LCF parameters</li>
+
+<li><p>Not all Athena attributes are dealt with correctly yet -- title is the biggie</p>
+
+</li>
+<li><p>Need to deal with chi groups, detector groups, etc.</p>
+
+</li>
+<li><p>Not dealing yet with, for instance, LCF parameters</p>
+
+</li>
 </ul>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel, <a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a></p>
 
 <p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

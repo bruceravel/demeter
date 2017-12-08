@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>10.1. Linear combination fitting &mdash; Athena 0.9.26 documentation</title>
+    <title>10.1. Linear combination fitting &#8212; Athena 0.9.26 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -17,15 +17,15 @@
         VERSION:     '0.9.26',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Athena 0.9.26 documentation" href="../index.html" />
-    <link rel="up" title="10. Data analysis" href="index.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="10.2. Principle components analysis" href="pca.html" />
     <link rel="prev" title="10. Data analysis" href="index.html" />
 
@@ -44,8 +44,8 @@
         <li class="right" >
           <a href="index.html" title="10. Data analysis"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">10. Data analysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">10. Data analysis</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -145,8 +145,8 @@ checkbuttons near the bottom of the tool.</p>
 clicking on the button labeled <span class="guilabel">Weights between 0 &amp; 1</span>.
 In this case, each weight used is computed from the variable using
 this formula:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>guess  weight_varied = 0.5
-def    weight        = max(0, min(1, weight_varied))
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">guess</span>  <span class="n">weight_varied</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="k">def</span>    <span class="nf">weight</span>        <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight_varied</span><span class="p">))</span>
 </pre></div>
 </div>
 <p class="last">The weight reported at the end of the fit, then, is the result of
@@ -168,7 +168,7 @@ constraint might yield fit results that are hard to interpret. If
 the constraint that weights must be between 0 and 1 is in place,
 then the weight of the last standard in the fit is computed by this
 formula:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>def  weight_final = max(0, 1 - (w1 + w2 + ... wn))
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span>  <span class="nf">weight_final</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">w1</span> <span class="o">+</span> <span class="n">w2</span> <span class="o">+</span> <span class="o">...</span> <span class="n">wn</span><span class="p">))</span>
 </pre></div>
 </div>
 <p class="last">This forces the final weight to be positive, but may result in a
@@ -226,9 +226,9 @@ quality of a single fit. Relative changes in chi-square between fits are
 probably meaningful. However, given the two problems described above,
 chi-square does not have a very different meaning from the R-factor.</p>
 <p>The R-factor reported in the text box is</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span> sum ( (data - fit)^2 )
-------------------------
- sum (     data^2     )
+<div class="highlight-default"><div class="highlight"><pre><span></span> <span class="nb">sum</span> <span class="p">(</span> <span class="p">(</span><span class="n">data</span> <span class="o">-</span> <span class="n">fit</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span> <span class="p">)</span>
+<span class="o">------------------------</span>
+ <span class="nb">sum</span> <span class="p">(</span>     <span class="n">data</span><span class="o">^</span><span class="mi">2</span>     <span class="p">)</span>
 </pre></div>
 </div>
 <p>where the sums are over the data points in the fitting region. The
@@ -361,9 +361,9 @@ manual</a>.</p>
 <hr class="docutils" />
 <p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
 copyright © 2016 Bruce Ravel</p>
-<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>This document is licensed under <a class="reference external" href="https://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
 <p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
-consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+consider <a class="reference external" href="https://creativecommons.org/donate/">supporting The Creative Commons</a>.</p>
 </div>
 </div>
 
@@ -388,7 +388,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../output/index.html">8. Data export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../process/index.html">9. Data processing</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">10. Data analysis</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="">10.1. Linear combination fitting</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">10.1. Linear combination fitting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pca.html">10.2. Principle components analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="peak.html">10.3. Peak fitting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lr.html">10.4. Log-ratio/phase-difference analysis</a></li>
@@ -400,7 +400,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.26</b></p>
+<p>Current Demeter version: <b>0.9.26</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
@@ -408,6 +408,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/XAS-Education/">Bruce's XAS Education page</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -426,20 +427,17 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/analysis/lcf.txt"
+      <li><a href="../_sources/analysis/lcf.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -456,13 +454,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="index.html" title="10. Data analysis"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >10. Data analysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >10. Data analysis</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, Bruce Ravel.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+        &#169; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
     </div>
   </body>
 </html>

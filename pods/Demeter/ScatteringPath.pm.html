@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::ScatteringPath</title>
-<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::ScatteringPath &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,309 +15,382 @@
 </div>
 <div class="path">
   <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-ScatteringPath
+  Demeter::ScatteringPath
 </div>
 <div>
 <a href="../src/Demeter/ScatteringPath.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#ATTRIBUTES">ATTRIBUTES</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#Accessor-methods">Accessor methods</a></li>
+      <li><a href="#Evaluation-methods">Evaluation methods</a></li>
+      <li><a href="#Textual-reporting-methods">Textual reporting methods</a></li>
+      <li><a href="#Heap-methods">Heap methods</a></li>
+    </ul>
+  </li>
+  <li><a href="#COERCIONS">COERCIONS</a></li>
+  <li><a href="#DIAGNOSTICS">DIAGNOSTICS</a></li>
+  <li><a href="#CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::ScatteringPath - Create and manipulate scattering paths</p>
 
-
-
-
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
+<pre><code>   $sp_object -&gt; new(feff=&gt;$feff, string=&gt;$string);
+   $sp_object -&gt; evaluate;</code></pre>
 
+<p>Those are the only two attributes provided to the object. Everything else is computed from those two.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<pre>   $sp_object -&gt; new(feff=&gt;$feff, string=&gt;$string);
-   $sp_object -&gt; evaluate;
+<p>This object handles the abstract representation of the scattering path. This is part of Demeter&#39;s theory subsystem, unlike Demeter::Path, which is part of Demeter&#39;s fitting subsytem. This object is used by Demeter::Feff&#39;s path finder and just-in-time path calculator.</p>
 
-</pre><p>Those are the only two attributes provided to the object.  Everything
-else is computed from those two.</p>
+<p>This object requires that a Feff object has already been created and fully populated. That is either done by the Feff object&#39;s <code>rdinp</code> method or in some other manner. These objects are created during the Feff object&#39;s <code>pathfinder</code> method. Once a tree of scattering paths is created from the Feff object&#39;s atoms list, the tree is traversed and a ScatteringPath object is made from each visitation of the tree. The tree is completely depopulated, transfering each ScatteringPath object to a heap. ScatteringPaths are removed from the heap and placed onto a well-ordered list of paths. As the list is created, the paths are collapsed by degeneracy.</p>
 
-<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<p>Although you may interact with ScatteringPath objects extensively in your programs, typically creation is left up to the Feff object&#39;s <code>pathfinder</code> method. Similarly, you will find that you rarely <code>set</code> attributes, but often <code>get</code> them.</p>
 
-<p>This object handles the abstract representation of the scattering
-path.  This is part of Demeter's theory subsystem, unlike
-Demeter::Path, which is part of Demeter's fitting subsytem.  This
-object is used by Demeter::Feff's path finder and
-just-in-time path calculator.</p>
-
-<p>This object requires that a Feff object has already been created and
-fully populated.  That is either done by the Feff object's <code>rdinp</code>
-method or in some other manner.  These objects are created during the
-Feff object's <code>pathfinder</code> method.  Once a tree of scattering paths is
-created from the Feff object's atoms list, the tree is traversed and a
-ScatteringPath object is made from each visitation of the tree.  The
-tree is completely depopulated, transfering each ScatteringPath object
-to a heap.  ScatteringPaths are removed from the heap and placed onto
-a well-ordered list of paths.  As the list is created, the paths are
-collapsed by degeneracy.</p>
-
-<p>Although you may interact with ScatteringPath objects extensively in
-your programs, typically creation is left up to the Feff object's
-<code>pathfinder</code> method.  Similarly, you will find that you rarely <code>set</code>
-attributes, but often <code>get</code> them.</p>
-
-<h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="ATTRIBUTES">ATTRIBUTES</h1>
 
 <dl>
-	<dt><code>feff</code></dt>
-		<dd><p>A reference to the Feff object from which this ScatteringPath was
-created.  <code>parent</code> is an alias for <code>feff</code>.</p></dd>
-	<dt><code>string</code></dt>
-		<dd><p>A string denoting the route this path takes through the cluster.  This
-string has a very specific form.  The first and last tokens in the
-string represent the absorber and can be almost anything.  A plus sign
-(+) is typical.  Each intermediate token is the index in the Feff
-objects atoms list for that atom in the scattering path.  The tokens
-are joined by dots.  For example, a ScatteringPath that represents the
-path from the absorber to the 7th atom in the list to the 23rd atom in
-the list and back (a double scattering path) would have this string:</p></dd>
-<dd><pre>   +.7.23.+
 
-</pre></dd>		<dd><p>These numbers are interpreted by referring to the Feff object
-contained in the feff attribute.  Typically, the value of this
-attribute is the first degenerate scattering geometry found by the
-path finder.</p></dd>
-	<dt><code>nkey</code></dt>
-		<dd><p>This is a integer constructed from the atoms indeces that is used to
-sort the scattering paths in the heap a predictable manner.</p></dd>
-	<dt><code>rleg</code></dt>
-		<dd><p>This is a reference to a list of path lengths in the path.</p></dd>
-	<dt><code>beta</code></dt>
-		<dd><p>This is a reference to a list of beta angle in the path.</p></dd>
-	<dt><code>eta</code></dt>
-		<dd><p>This is a reference to a list of eta angle in the path.</p></dd>
-	<dt><code>nleg</code></dt>
-		<dd><p>This is the number of legs in the path, stored for easy reference.</p></dd>
-	<dt><code>halflength</code></dt>
-		<dd><p>This is the half path length of this path.  This is the primary
-sorting criterion.</p></dd>
-	<dt><code>heapvalue</code></dt>
-		<dd><p>This is a value required by and used by the Heap algorithm.  It is
-computed using the halflength class method from <a href="Tools.pm.html">Demeter::Tools</a>.</p></dd>
-	<dt><code>n</code></dt>
-		<dd><p>This is the degeneracy of this path after the paths have been collapsed.</p></dd>
-	<dt><code>degeneracies</code></dt>
-		<dd><p>This is a reference to a list containing the string attribute of each
-ScatteringPath object that was collapsed into this one.</p></dd>
-	<dt><code>fuzzy</code></dt>
-		<dd><p>This is the fuzzy path length.  It is set to the average of the
-lengths of the nearly degenerate paths.  For truly degenerate paths,
-the half length and the fuzzy length will be the same.</p></dd>
-</dl>
-
-
-
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
-
-<h2 id="Accessor_methods">Accessor methods</h2>
-
-<p>The accessor methods of the parent class, <code>get</code> and <code>set</code> are used
-my this class.</p>
-
-<dl>
-	<dt><code>attributes</code></dt>
-		<dd><p>This returns a list of all ScatteringPath object attributes.</p></dd>
-<dd><pre>  print join(&quot; &quot;, $sp -&gt; attributes), $/;
-    ==prints==&gt;
-       nleg string heapvalue group nkey weight etanonzero rleg fs
-       degeneracies n randstring beta eta feff halflength fuzzy type
-
-</pre></dd>	<dt><code>savelist</code></dt>
-		<dd><p>This returns a list containing the subset of all ScatteringPath object
-attributes that need to be saved when a Feff calculation is serialized.</p></dd>
-<dd><pre>  print join(&quot; &quot;, $sp -&gt; savelist), $/;
-    ==prints==&gt;
-       nleg string group nkey weight etanonzero rleg fs degeneracies
-       n randstring beta eta halflength fuzzy type
-
-</pre></dd></dl>
-<h2 id="Evaluation_methods">Evaluation methods</h2>
-
-<p>Once a ScatteringPath object if defined by the <code>new</code> method and given
-feff and string attributes, the object must be evaluated.  For reasons
-of efficiency, the evaluation is not done automatically, so the
-example given for the <code>evaluate</code> method should become your common
-idiom for using this object.</p>
-
-<dl>
-	<dt><code>evaluate</code></dt>
-		<dd><p>This method sets most attributes for the object based on the values of
-the feff and string attributes.  It calls the remaining methods in
-sequence.</p></dd>
-<dd><pre>   $sp_object -&gt; new(feff=&gt;$feff, string=&gt;$string);
-   $sp_object -&gt; evaluate;
-
-</pre></dd>	<dt><code>compute_nleg_nkey</code></dt>
-		<dd><p>Determine the number of legs of this path and compute the nkey from
-the atoms in this path.  Set the nleg and nkey attributes.</p></dd>
-	<dt><code>compute_halflength</code></dt>
-		<dd><p>Determine the half path length of this path and set the halfpath
-attribute.  Note that the Demeter::Tools::halflength class method is
-used to compute this.</p></dd>
+<dt id="feff"><code>feff</code></dt>
 <dd>
 
+<p>A reference to the Feff object from which this ScatteringPath was created. <code>parent</code> is an alias for <code>feff</code>.</p>
 
-</dd>	<dt><code>compute_beta</code></dt>
-		<dd><p>Compute the beta and eta angles for this path and set the beta
-and eta attributes.</p></dd>
-</dl>
-<h2 id="Textual_reporting_methods">Textual reporting methods</h2>
-
-<dl>
-	<dt><code>pathsdat</code></dt>
-		<dd><p>This method writes out a paragraph in the format read from the
-paths.dat file by genfmt</p></dd>
-<dd><pre>  print $sp_object -&gt; pathsdat(\%args);
-
-</pre></dd>		<dd><p>This method takes an optional argument which is a hash reference.  The
-hash has can have these keys:</p></dd>
-<dd><dl>
-	<dt><i>index</i></dt>
-		<dd><p>the numerical index of this path in the sense of NNNN from feffNNNN.dat</p></dd>
-	<dt><i>angles</i></dt>
-		<dd><p>a boolean, true measn to write out the rleg, beta, and eta columns to
-the paths.dat file.  note that those columns are optional -- feff does
-not read them</p></dd>
-	<dt><i>string</i></dt>
-		<dd><p>the string (in the sense of the ScatteringPath string method) to be
-used to expand into a paths.dat paragraph.  use the all_strings method
-to get the strings of all degeneracies for this SP object</p></dd>
-</dl>
 </dd>
-	<dt><code>all_strings</code></dt>
-		<dd><p>This method returns a list of text strings of the sort returned by the
-<code>string</code> method.  These can be used to reconstruct the geometry of
-any of the degenerate paths subsumed into this ScatteringPath object.</p></dd>
-<dd><pre>  @strings = $sp_object -&gt; all_strings;
+<dt id="string"><code>string</code></dt>
+<dd>
 
-</pre></dd>	<dt><code>all_degeneracies</code></dt>
-		<dd><p>This returns a list of text strings.  The list contains the list from
-the <code>all_strings</code> method with each list element passed through the
-<code>intrplist</code> method.</p></dd>
-	<dt><code>intrplist</code></dt>
-		<dd><p>Compute the interpretation line from the string attribute.  This looks
-something like this:</p></dd>
-<dd><pre>   [+] O_1    Ti_1   O_1    [+]
+<p>A string denoting the route this path takes through the cluster. This string has a very specific form. The first and last tokens in the string represent the absorber and can be almost anything. A plus sign (+) is typical. Each intermediate token is the index in the Feff objects atoms list for that atom in the scattering path. The tokens are joined by dots. For example, a ScatteringPath that represents the path from the absorber to the 7th atom in the list to the 23rd atom in the list and back (a double scattering path) would have this string:</p>
 
-</pre></dd>		<dd><p>With no argument, this returns the interpretation line for the primary
-path:</p></dd>
-<dd><pre>  print $sp_object -&gt; intrplist;
+<pre><code>   +.7.23.+</code></pre>
 
-</pre></dd>		<dd><p>Alternately, you can provide a string from the list returned by the
-<code>all_strings</code> method to generate the interpretation line for that
-degenerate path:</p></dd>
-<dd><pre>  print $sp_object -&gt; intrplist($some_string);
+<p>These numbers are interpreted by referring to the Feff object contained in the feff attribute. Typically, the value of this attribute is the first degenerate scattering geometry found by the path finder.</p>
 
-</pre></dd></dl>
-<h2 id="Heap_methods">Heap methods</h2>
+</dd>
+<dt id="nkey"><code>nkey</code></dt>
+<dd>
 
-<p>These are the two methods required by the <a href="https://metacpan.org/pod/Heap">Heap</a> module.</p>
+<p>This is a integer constructed from the atoms indeces that is used to sort the scattering paths in the heap a predictable manner.</p>
+
+</dd>
+<dt id="rleg"><code>rleg</code></dt>
+<dd>
+
+<p>This is a reference to a list of path lengths in the path.</p>
+
+</dd>
+<dt id="beta"><code>beta</code></dt>
+<dd>
+
+<p>This is a reference to a list of beta angle in the path.</p>
+
+</dd>
+<dt id="eta"><code>eta</code></dt>
+<dd>
+
+<p>This is a reference to a list of eta angle in the path.</p>
+
+</dd>
+<dt id="nleg"><code>nleg</code></dt>
+<dd>
+
+<p>This is the number of legs in the path, stored for easy reference.</p>
+
+</dd>
+<dt id="halflength"><code>halflength</code></dt>
+<dd>
+
+<p>This is the half path length of this path. This is the primary sorting criterion.</p>
+
+</dd>
+<dt id="heapvalue"><code>heapvalue</code></dt>
+<dd>
+
+<p>This is a value required by and used by the Heap algorithm. It is computed using the halflength class method from <a href="Tools.pm.html">Demeter::Tools</a>.</p>
+
+</dd>
+<dt id="n"><code>n</code></dt>
+<dd>
+
+<p>This is the degeneracy of this path after the paths have been collapsed.</p>
+
+</dd>
+<dt id="degeneracies"><code>degeneracies</code></dt>
+<dd>
+
+<p>This is a reference to a list containing the string attribute of each ScatteringPath object that was collapsed into this one.</p>
+
+</dd>
+<dt id="fuzzy"><code>fuzzy</code></dt>
+<dd>
+
+<p>This is the fuzzy path length. It is set to the average of the lengths of the nearly degenerate paths. For truly degenerate paths, the half length and the fuzzy length will be the same.</p>
+
+</dd>
+</dl>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="Accessor-methods">Accessor methods</h2>
+
+<p>The accessor methods of the parent class, <code>get</code> and <code>set</code> are used my this class.</p>
 
 <dl>
-	<dt><code>heap</code></dt>
-		<dd><p>This is used to set and access the heapvalue attribute.</p></dd>
-	<dt><code>cmp</code></dt>
-		<dd><p>This is the comparison method used to order the items on the heap.  It
-sorts first by half path length, then by nleg, then by the output of
-the <code>betakey</code> method, and finally by the nkey.</p></dd>
-		<dd><p>In practice this means that paths are ordered by increasing path
-length, then by increasing nleg.  In the case of collinear paths, it
-is guaranteed that the single scattering paths will come before the
-doubles which will come before the triples.  The sort by beta assures
-that forward scattering paths come before paths which scatter at other
-angles.</p></dd>
-		<dd><p>Finally, the nkey portion of the sort makes it clear which path from a
-degenerate set will be selected as the representative path.  This sort
-is done in the order the atoms appear in the Feff object's atoms list.
-For example, for the single scattering from the first shell, the
-representative path will always be the one that scatters from the
-first atom from the first coordination shell to appear in the atoms
-list.</p></dd>
+
+<dt id="attributes"><code>attributes</code></dt>
+<dd>
+
+<p>This returns a list of all ScatteringPath object attributes.</p>
+
+<pre><code>  print join(&quot; &quot;, $sp -&gt; attributes), $/;
+    ==prints==&gt;
+       nleg string heapvalue group nkey weight etanonzero rleg fs
+       degeneracies n randstring beta eta feff halflength fuzzy type</code></pre>
+
+</dd>
+<dt id="savelist"><code>savelist</code></dt>
+<dd>
+
+<p>This returns a list containing the subset of all ScatteringPath object attributes that need to be saved when a Feff calculation is serialized.</p>
+
+<pre><code>  print join(&quot; &quot;, $sp -&gt; savelist), $/;
+    ==prints==&gt;
+       nleg string group nkey weight etanonzero rleg fs degeneracies
+       n randstring beta eta halflength fuzzy type</code></pre>
+
+</dd>
 </dl>
-<h1 id="COERCIONS">COERCIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>When the reference to the ScatteringPath object is used in string
-context, it returns the group name, like other Demeter objects.</p>
+<h2 id="Evaluation-methods">Evaluation methods</h2>
 
-<p>When the reference to the ScatteringPath object is used in numerical
-context, it returns the half length of the path from the <code>halfpath</code>
-method.</p>
-
-<h1 id="DIAGNOSTICS">DIAGNOSTICS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<p>Once a ScatteringPath object if defined by the <code>new</code> method and given feff and string attributes, the object must be evaluated. For reasons of efficiency, the evaluation is not done automatically, so the example given for the <code>evaluate</code> method should become your common idiom for using this object.</p>
 
 <dl>
-	<dt><code>Demeter::ScatteringPath: \&quot;$key\&quot; is not a valid parameter</code></dt>
-		<dd><p>You have tried to set or get an invalid ScatteringPath attribute.</p></dd>
-	<dt><code>Demeter::ScatteringPath::compute_halflength: feff and string attributes unset</code></dt>
-		<dd><p>You have attempted to compute a halflength without defining the path geometry.</p></dd>
-	<dt><code>ScatteringPaths from different Feff objects</code></dt>
-		<dd><p>You have attempted to compare ScatteringPath objects associated with
-different Feff objects.</p></dd>
+
+<dt id="evaluate"><code>evaluate</code></dt>
+<dd>
+
+<p>This method sets most attributes for the object based on the values of the feff and string attributes. It calls the remaining methods in sequence.</p>
+
+<pre><code>   $sp_object -&gt; new(feff=&gt;$feff, string=&gt;$string);
+   $sp_object -&gt; evaluate;</code></pre>
+
+</dd>
+<dt id="compute_nleg_nkey"><code>compute_nleg_nkey</code></dt>
+<dd>
+
+<p>Determine the number of legs of this path and compute the nkey from the atoms in this path. Set the nleg and nkey attributes.</p>
+
+</dd>
+<dt id="compute_halflength"><code>compute_halflength</code></dt>
+<dd>
+
+<p>Determine the half path length of this path and set the halfpath attribute. Note that the Demeter::Tools::halflength class method is used to compute this.</p>
+
+</dd>
+<dt id="compute_beta"><code>compute_beta</code></dt>
+<dd>
+
+<p>Compute the beta and eta angles for this path and set the beta and eta attributes.</p>
+
+</dd>
 </dl>
-<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration
-system.  The <code>pathfinder</code> parameter group is used to configure the
-behavior of this module.</p>
+<h2 id="Textual-reporting-methods">Textual reporting methods</h2>
 
-<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<dl>
 
-<p>The dependencies of the Demeter system are listed in the
-<cite>Build.PL</cite> file.</p>
+<dt id="pathsdat"><code>pathsdat</code></dt>
+<dd>
 
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<p>This method writes out a paragraph in the format read from the paths.dat file by genfmt</p>
+
+<pre><code>  print $sp_object -&gt; pathsdat(\%args);</code></pre>
+
+<p>This method takes an optional argument which is a hash reference. The hash has can have these keys:</p>
+
+<dl>
+
+<dt id="index"><i>index</i></dt>
+<dd>
+
+<p>the numerical index of this path in the sense of NNNN from feffNNNN.dat</p>
+
+</dd>
+<dt id="angles"><i>angles</i></dt>
+<dd>
+
+<p>a boolean, true measn to write out the rleg, beta, and eta columns to the paths.dat file. note that those columns are optional -- feff does not read them</p>
+
+</dd>
+<dt id="string1"><i>string</i></dt>
+<dd>
+
+<p>the string (in the sense of the ScatteringPath string method) to be used to expand into a paths.dat paragraph. use the all_strings method to get the strings of all degeneracies for this SP object</p>
+
+</dd>
+</dl>
+
+</dd>
+<dt id="all_strings"><code>all_strings</code></dt>
+<dd>
+
+<p>This method returns a list of text strings of the sort returned by the <code>string</code> method. These can be used to reconstruct the geometry of any of the degenerate paths subsumed into this ScatteringPath object.</p>
+
+<pre><code>  @strings = $sp_object -&gt; all_strings;</code></pre>
+
+</dd>
+<dt id="all_degeneracies"><code>all_degeneracies</code></dt>
+<dd>
+
+<p>This returns a list of text strings. The list contains the list from the <code>all_strings</code> method with each list element passed through the <code>intrplist</code> method.</p>
+
+</dd>
+<dt id="intrplist"><code>intrplist</code></dt>
+<dd>
+
+<p>Compute the interpretation line from the string attribute. This looks something like this:</p>
+
+<pre><code>   [+] O_1    Ti_1   O_1    [+]</code></pre>
+
+<p>With no argument, this returns the interpretation line for the primary path:</p>
+
+<pre><code>  print $sp_object -&gt; intrplist;</code></pre>
+
+<p>Alternately, you can provide a string from the list returned by the <code>all_strings</code> method to generate the interpretation line for that degenerate path:</p>
+
+<pre><code>  print $sp_object -&gt; intrplist($some_string);</code></pre>
+
+</dd>
+</dl>
+
+<h2 id="Heap-methods">Heap methods</h2>
+
+<p>These are the two methods required by the <a href="http://metacpan.org/module/Heap">Heap</a> module.</p>
+
+<dl>
+
+<dt id="heap"><code>heap</code></dt>
+<dd>
+
+<p>This is used to set and access the heapvalue attribute.</p>
+
+</dd>
+<dt id="cmp"><code>cmp</code></dt>
+<dd>
+
+<p>This is the comparison method used to order the items on the heap. It sorts first by half path length, then by nleg, then by the output of the <code>betakey</code> method, and finally by the nkey.</p>
+
+<p>In practice this means that paths are ordered by increasing path length, then by increasing nleg. In the case of collinear paths, it is guaranteed that the single scattering paths will come before the doubles which will come before the triples. The sort by beta assures that forward scattering paths come before paths which scatter at other angles.</p>
+
+<p>Finally, the nkey portion of the sort makes it clear which path from a degenerate set will be selected as the representative path. This sort is done in the order the atoms appear in the Feff object&#39;s atoms list. For example, for the single scattering from the first shell, the representative path will always be the one that scatters from the first atom from the first coordination shell to appear in the atoms list.</p>
+
+</dd>
+</dl>
+
+<h1 id="COERCIONS">COERCIONS</h1>
+
+<p>When the reference to the ScatteringPath object is used in string context, it returns the group name, like other Demeter objects.</p>
+
+<p>When the reference to the ScatteringPath object is used in numerical context, it returns the half length of the path from the <code>halfpath</code> method.</p>
+
+<h1 id="DIAGNOSTICS">DIAGNOSTICS</h1>
+
+<dl>
+
+<dt id="Demeter::ScatteringPath:-key-is-not-a-valid-parameter"><code>Demeter::ScatteringPath: \&quot;$key\&quot; is not a valid parameter</code></dt>
+<dd>
+
+<p>You have tried to set or get an invalid ScatteringPath attribute.</p>
+
+</dd>
+<dt id="Demeter::ScatteringPath::compute_halflength:-feff-and-string-attributes-unset"><code>Demeter::ScatteringPath::compute_halflength: feff and string attributes unset</code></dt>
+<dd>
+
+<p>You have attempted to compute a halflength without defining the path geometry.</p>
+
+</dd>
+<dt id="ScatteringPaths-from-different-Feff-objects"><code>ScatteringPaths from different Feff objects</code></dt>
+<dd>
+
+<p>You have attempted to compare ScatteringPath objects associated with different Feff objects.</p>
+
+</dd>
+</dl>
+
+<h1 id="CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</h1>
+
+<p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration system. The <code>pathfinder</code> parameter group is used to configure the behavior of this module.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
+
+<p>The dependencies of the Demeter system are listed in the <i>Build.PL</i> file.</p>
+
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
 <p>A few features have not yet been implemented:</p>
 
 <ul>
-	<li>It is currently very awkward to get a <cite>feffNNNN.dat</cite> written for one
-of the degeneracies associated with a ScatteringPath.</li>
-	<li>Final eta angle is not computed correctly</li>
-	<li>Amplitude approximation</li>
-	<li>polarization</li>
-	<li>changing species of an atom in a path</li>
+
+<li><p>It is currently very awkward to get a <i>feffNNNN.dat</i> written for one of the degeneracies associated with a ScatteringPath.</p>
+
+</li>
+<li><p>Final eta angle is not computed correctly</p>
+
+</li>
+<li><p>Amplitude approximation</p>
+
+</li>
+<li><p>polarization</p>
+
+</li>
+<li><p>changing species of an atom in a path</p>
+
+</li>
 </ul>
 
 <p>And testing has been limited.</p>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel, <a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a></p>
 
 <p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
-
-
-
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

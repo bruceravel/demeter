@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>8.2. Project files &mdash; Athena 0.9.26 documentation</title>
+    <title>8.2. Project files &#8212; Athena 0.9.26 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -17,15 +17,15 @@
         VERSION:     '0.9.26',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Athena 0.9.26 documentation" href="../index.html" />
-    <link rel="up" title="8. Data export" href="index.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="8.3. Parameter report files" href="report.html" />
     <link rel="prev" title="8.1. Column output files" href="column.html" />
 
@@ -44,8 +44,8 @@
         <li class="right" >
           <a href="column.html" title="8.1. Column output files"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">8. Data export</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">8. Data export</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -222,10 +222,10 @@ for variable or dictionary key names in most languages.</p>
 <p>Standard JSON does not have comments, so special headers are used to
 carry material that might have gone into comments.</p>
 <p>The first several lines should look something like this</p>
-<div class="code json highlight-python"><div class="highlight"><pre><span></span>{&quot;_____emacs_mode&quot;: &quot;-*- mode: json; truncate-lines: t -*-&quot;,
- &quot;_____header1&quot;: &quot;# Athena project file -- Demeter version 0.9.21&quot;,
- &quot;_____header2&quot;: &quot;# This file created at 2015-02-04T17:23:22&quot;,
- &quot;_____header3&quot;: &quot;# Using Demeter 0.9.21 with perl 5.018002 and using Larch 0.9.24 on linux&quot;,
+<div class="code json highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;_____emacs_mode&quot;</span><span class="p">:</span> <span class="s2">&quot;-*- mode: json; truncate-lines: t -*-&quot;</span><span class="p">,</span>
+ <span class="s2">&quot;_____header1&quot;</span><span class="p">:</span> <span class="s2">&quot;# Athena project file -- Demeter version 0.9.21&quot;</span><span class="p">,</span>
+ <span class="s2">&quot;_____header2&quot;</span><span class="p">:</span> <span class="s2">&quot;# This file created at 2015-02-04T17:23:22&quot;</span><span class="p">,</span>
+ <span class="s2">&quot;_____header3&quot;</span><span class="p">:</span> <span class="s2">&quot;# Using Demeter 0.9.21 with perl 5.018002 and using Larch 0.9.24 on linux&quot;</span><span class="p">,</span>
 </pre></div>
 </div>
 <p>The <code class="docutils literal"><span class="pre">_____emacs_mode</span></code> line is a convenience for Bruce. That will
@@ -240,7 +240,7 @@ the first four lines of the file or
 <font size=-1 color="#8C4112">ATHENA</font>/<font size=-1 color="#8C4112">ARTEMIS</font> will not recognize the file as a
 project file. In fact, <font size=-1 color="#8C4112">DEMETER</font> tries to match this regexp
 in the first four lines:</p>
-<div class="code perl highlight-python"><div class="highlight"><pre><span></span>m{_____header\d.+Athena project file}
+<div class="code perl highlight-default"><div class="highlight"><pre><span></span><span class="n">m</span><span class="p">{</span><span class="n">_____header</span>\<span class="n">d</span><span class="o">.+</span><span class="n">Athena</span> <span class="n">project</span> <span class="n">file</span><span class="p">}</span>
 </pre></div>
 </div>
 <p>This regexp is insensitive to the type of quote or the amount of
@@ -264,7 +264,7 @@ decoded. The <font size=-1 color="#8C4112">ATHENA</font> user expects to see the
 same order when a project file is re-opened. , then, is used to
 specify the order.</p>
 <p>Here is an example from a project file with two data groups:</p>
-<div class="code json highlight-python"><div class="highlight"><pre><span></span>&quot;_____order&quot;: [&quot;ftaja&quot;,&quot;cyrlv&quot;]
+<div class="code json highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;_____order&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;ftaja&quot;</span><span class="p">,</span><span class="s2">&quot;cyrlv&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>A field called <code class="docutils literal"><span class="pre">_____journal</span></code> is optional. If provided, it is a list
@@ -278,17 +278,17 @@ file. In the context of <font size=-1 color="#8C4112">ATHENA</font>, this is the
 attribute, the <font size=-1 color="#8C4112">IFEFFIT</font> group name, and the <font size=-1 color="#8C4112">LARCH</font>
 group name. In the <font size=-1 color="#8C4112">LARCH</font> context, a data group might be
 defined like so:</p>
-<div class="code highlight-python"><div class="highlight"><pre><span></span><span class="n">ftaja</span> <span class="o">=</span> <span class="n">read_ascii</span><span class="p">(</span><span class="s1">&#39;mydata.dat&#39;</span><span class="p">)</span>
+<div class="code highlight-default"><div class="highlight"><pre><span></span><span class="n">ftaja</span> <span class="o">=</span> <span class="n">read_ascii</span><span class="p">(</span><span class="s1">&#39;mydata.dat&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>while in the <font size=-1 color="#8C4112">IFEFFIT</font> context</p>
-<div class="code highlight-python"><div class="highlight"><pre><span></span><span class="n">read_data</span><span class="p">(</span><span class="nb">file</span><span class="o">=</span><span class="n">mydata</span><span class="o">.</span><span class="n">dat</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">raw</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">ftaja</span><span class="p">)</span>
+<div class="code highlight-default"><div class="highlight"><pre><span></span><span class="n">read_data</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">mydata</span><span class="o">.</span><span class="n">dat</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">raw</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">ftaja</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>In each case, “ftaja” is the group name which should be used
 as the key for the data field. In <font size=-1 color="#8C4112">DEMETER</font>, “ftaja”
 will be the return value of</p>
-<div class="code perl highlight-python"><div class="highlight"><pre><span></span>$data_object-&gt;group;
+<div class="code perl highlight-default"><div class="highlight"><pre><span></span>$data_object-&gt;group;
 </pre></div>
 </div>
 <p>Each data field consists of a dictionary of attributes, and 2 or more
@@ -342,13 +342,13 @@ energy/μor k/χbased on the value of the attribute from the
 <p>Here's an example of a data field for a group named
 “ftaja”. (<font size=-1 color="#8C4112">ATHENA</font> uses, but does not require, random
 5-character strings as group names.)</p>
-<div class="code json highlight-python"><div class="highlight"><pre><span></span>&quot;ftaja&quot;: {
-          &quot;args&quot;: {&quot;key1&quot;: &quot;val1&quot;, ..., &quot;keyN&quot;: &quot;valN&quot;},
-          &quot;x&quot;: [&quot;6911.98862&quot;,&quot;6916.99353&quot;, ...],
-          &quot;y&quot;: [&quot;0.044142489773191296&quot;,&quot;0.041334046117570016&quot;, ...],
-          &quot;i0&quot;: [&quot;41410.4&quot;,&quot;41396.4&quot;, ...],
-          &quot;signal&quot;: [&quot;39622.2&quot;,&quot;39720.2&quot;, ...]
-}
+<div class="code json highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;ftaja&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;key1&quot;</span><span class="p">:</span> <span class="s2">&quot;val1&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="s2">&quot;keyN&quot;</span><span class="p">:</span> <span class="s2">&quot;valN&quot;</span><span class="p">},</span>
+          <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;6911.98862&quot;</span><span class="p">,</span><span class="s2">&quot;6916.99353&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+          <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;0.044142489773191296&quot;</span><span class="p">,</span><span class="s2">&quot;0.041334046117570016&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+          <span class="s2">&quot;i0&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;41410.4&quot;</span><span class="p">,</span><span class="s2">&quot;41396.4&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+          <span class="s2">&quot;signal&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;39622.2&quot;</span><span class="p">,</span><span class="s2">&quot;39720.2&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>A proper JSON parser is used to read the project file. The content must
@@ -1172,7 +1172,7 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
 <li class="toctree-l1"><a class="reference internal" href="../params/index.html">7. Setting parameters</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">8. Data export</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="column.html">8.1. Column output files</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">8.2. Project files</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">8.2. Project files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="report.html">8.3. Parameter report files</a></li>
 </ul>
 </li>
@@ -1183,7 +1183,7 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
 <li class="toctree-l1"><a class="reference internal" href="../hephaestus.html">13. Hephaestus</a></li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.26</b></p>
+<p>Current Demeter version: <b>0.9.26</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
@@ -1191,6 +1191,7 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/XAS-Education/">Bruce's XAS Education page</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -1209,20 +1210,17 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/output/project.txt"
+      <li><a href="../_sources/output/project.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -1239,13 +1237,13 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
         <li class="right" >
           <a href="column.html" title="8.1. Column output files"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >8. Data export</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Athena 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >8. Data export</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, Bruce Ravel.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+        &#169; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
     </div>
   </body>
 </html>

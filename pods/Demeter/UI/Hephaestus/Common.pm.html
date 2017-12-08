@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::UI::Hephaestus::Common</title>
-<link rel="stylesheet" type="text/css" href="../../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::UI::Hephaestus::Common &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,91 +15,112 @@
 </div>
 <div class="path">
   <a href="../../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-UI-Hephaestus-Common
+  Demeter::UI::Hephaestus::Common
 </div>
 <div>
 <a href="../../../src/Demeter/UI/Hephaestus/Common.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONFIGURATION">CONFIGURATION</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::UI::Hephaestus::Common - Common functions used in Hephaestus</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
 <p>This module contains functions used by many parts of Hephaestus.</p>
 
-<pre>  use Demeter::UI::Hephaestus::Common qw(e2l);
+<pre><code>  use Demeter::UI::Hephaestus::Common qw(e2l);</code></pre>
 
-</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>Several common functions are conatined in this moduel for use
-throughout Hephaestus.</p>
+<p>Several common functions are conatined in this moduel for use throughout Hephaestus.</p>
 
 <dl>
-	<dt><code>e2l</code></dt>
-		<dd><p>Convert between energy and wavelength.</p></dd>
-<dd><pre>  $l = e2l($e);
+
+<dt id="e2l"><code>e2l</code></dt>
+<dd>
+
+<p>Convert between energy and wavelength.</p>
+
+<pre><code>  $l = e2l($e);
    #  or
-  $e = e2l($l);
+  $e = e2l($l);</code></pre>
 
-</pre></dd>	<dt><code>hversion</code></dt>
-		<dd><p>Return a string giving the Hephaestus version number.</p></dd>
-	<dt><code>hcopyright</code></dt>
-		<dd><p>Return a string giving the Hephaestus copyright statement.</p></dd>
-	<dt><code>hdescription</code></dt>
-		<dd><p>Return a string giving a description of Hephaestus' operating
-environment, including version numbers for perl, WxWidgets, and
-WxPerl.</p></dd>
-	<dt><code>enable_element</code></dt>
-		<dd><p>Enable/disable a specific element on a periodic table given a code
-reference that returns a true/false value.</p></dd>
-<dd><pre>   enable_element($pt, $el, $coderef)
+</dd>
+<dt id="hversion"><code>hversion</code></dt>
+<dd>
 
-</pre></dd>		<dd><p>The <code>$coderef</code> is called with <code>$el</code> as its argument.  <code>el</code> is the
-first-letter capitalized element symbol.  <code>$pt</code> is a pointer to an
-instance of a periodic table widget.  The state of the <code>$el</code> button
-on $&lt;pt&gt; will be set.</p></dd>
+<p>Return a string giving the Hephaestus version number.</p>
+
+</dd>
+<dt id="hcopyright"><code>hcopyright</code></dt>
+<dd>
+
+<p>Return a string giving the Hephaestus copyright statement.</p>
+
+</dd>
+<dt id="hdescription"><code>hdescription</code></dt>
+<dd>
+
+<p>Return a string giving a description of Hephaestus&#39; operating environment, including version numbers for perl, WxWidgets, and WxPerl.</p>
+
+</dd>
+<dt id="enable_element"><code>enable_element</code></dt>
+<dd>
+
+<p>Enable/disable a specific element on a periodic table given a code reference that returns a true/false value.</p>
+
+<pre><code>   enable_element($pt, $el, $coderef)</code></pre>
+
+<p>The <code>$coderef</code> is called with <code>$el</code> as its argument. <code>el</code> is the first-letter capitalized element symbol. <code>$pt</code> is a pointer to an instance of a periodic table widget. The state of the <code>$el</code> button on $&lt;pt&gt; will be set.</p>
+
+</dd>
 </dl>
-<h1 id="CONFIGURATION">CONFIGURATION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
 
+<h1 id="CONFIGURATION">CONFIGURATION</h1>
 
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
 
+<p>Demeter&#39;s dependencies are in the <i>Build.PL</i> file.</p>
 
-<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
-<p>Demeter's dependencies are in the <cite>Build.PL</cite> file.</p>
-
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
-
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel, <a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a></p>
 
 <p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>15.2. Characteristic value &mdash; Artemis 0.9.26 documentation</title>
+    <title>15.2. Characteristic value &#8212; Artemis 0.9.26 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -17,15 +17,15 @@
         VERSION:     '0.9.26',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Artemis 0.9.26 documentation" href="../index.html" />
-    <link rel="up" title="15. Extended discussions" href="index.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="15.3. Geometric parametrization of bond length" href="delr.html" />
     <link rel="prev" title="15.1. Quick first shell" href="qfs.html" />
 
@@ -44,8 +44,8 @@
         <li class="right" >
           <a href="qfs.html" title="15.1. Quick first shell"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">15. Extended discussions</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">15. Extended discussions</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -78,7 +78,7 @@ allows you to parameterize the σ<sup>2</sup> at each temperature
 as a function of a single variable parameter, the Einstein
 temperature. To do this, you must define a <span class="guess">guess</span> parameter to
 represent the Einstein temperature like so:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>guess thetae = 500
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">guess</span> <span class="n">thetae</span> <span class="o">=</span> <span class="mi">500</span>
 </pre></div>
 </div>
 <p>The functional form of the Einstein model takes the variable Einstein
@@ -86,9 +86,9 @@ temperature and the sample's measurement temperature as its arguments.</p>
 <ul class="simple" id="bibtex-bibliography-extended/cv-0">
 <li>E.&nbsp;Sevillano, H.&nbsp;Meuth, and J.&nbsp;J. Rehr. Extended x-ray absorption fine structure Debye-Waller factors. I. Monatomic crystals. <em>Phys. Rev. B</em>, 20:4908–4911, Dec 1979. <a class="reference external" href="https://doi.org/10.1103/PhysRevB.20.4908">doi:10.1103/PhysRevB.20.4908</a>.</li>
 </ul>
-<div class="highlight-python"><div class="highlight"><pre><span></span>path {
-       sigma2 = eins(temp, thetae)
-}
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">path</span> <span class="p">{</span>
+       <span class="n">sigma2</span> <span class="o">=</span> <span class="n">eins</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">thetae</span><span class="p">)</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>where <code class="docutils literal"><span class="pre">temp</span></code> represents the sample temparature. The pseudo-syntax
@@ -97,32 +97,32 @@ on a <a class="reference external" href="../path/index.html">the Path page</a>.<
 <p>In a multiple data set fit, you would have to take care that <code class="docutils literal"><span class="pre">temp</span></code> is
 replaced each time it is used. That could be done in two ways. You could
 use various <span class="set">set</span> parameters:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>set temp1 = 10
-set temp2 = 300
-set temp3 = 500
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">set</span> <span class="n">temp1</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="nb">set</span> <span class="n">temp2</span> <span class="o">=</span> <span class="mi">300</span>
+<span class="nb">set</span> <span class="n">temp3</span> <span class="o">=</span> <span class="mi">500</span>
 
-path for data set 1 {
-       sigma2 = eins(temp1, thetae)
-}
-path for data set 2 {
-       sigma2 = eins(temp2, thetae)
-}
-path for data set 3 {
-       sigma2 = eins(temp3, thetae)
-}
+<span class="n">path</span> <span class="k">for</span> <span class="n">data</span> <span class="nb">set</span> <span class="mi">1</span> <span class="p">{</span>
+       <span class="n">sigma2</span> <span class="o">=</span> <span class="n">eins</span><span class="p">(</span><span class="n">temp1</span><span class="p">,</span> <span class="n">thetae</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">path</span> <span class="k">for</span> <span class="n">data</span> <span class="nb">set</span> <span class="mi">2</span> <span class="p">{</span>
+       <span class="n">sigma2</span> <span class="o">=</span> <span class="n">eins</span><span class="p">(</span><span class="n">temp2</span><span class="p">,</span> <span class="n">thetae</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">path</span> <span class="k">for</span> <span class="n">data</span> <span class="nb">set</span> <span class="mi">3</span> <span class="p">{</span>
+       <span class="n">sigma2</span> <span class="o">=</span> <span class="n">eins</span><span class="p">(</span><span class="n">temp3</span><span class="p">,</span> <span class="n">thetae</span><span class="p">)</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Or you could simply state the temperature explicitly in the path
 parameter math expressions:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>path for data set 1 {
-       sigma2 = eins(10,  thetae)
-}
-path for data set 2 {
-       sigma2 = eins(300, thetae)
-}
-path for data set 3 {
-       sigma2 = eins(500, thetae)
-}
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">path</span> <span class="k">for</span> <span class="n">data</span> <span class="nb">set</span> <span class="mi">1</span> <span class="p">{</span>
+       <span class="n">sigma2</span> <span class="o">=</span> <span class="n">eins</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span>  <span class="n">thetae</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">path</span> <span class="k">for</span> <span class="n">data</span> <span class="nb">set</span> <span class="mi">2</span> <span class="p">{</span>
+       <span class="n">sigma2</span> <span class="o">=</span> <span class="n">eins</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="n">thetae</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">path</span> <span class="k">for</span> <span class="n">data</span> <span class="nb">set</span> <span class="mi">3</span> <span class="p">{</span>
+       <span class="n">sigma2</span> <span class="o">=</span> <span class="n">eins</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="n">thetae</span><span class="p">)</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Both of those solutions work. But neither make effective use of the
@@ -143,9 +143,9 @@ values of 10, 300, and 500.</p>
 </li>
 <li><p class="first">Next, edit the σ<sup>2</sup> path parameter for one of the data
 sets to read</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>path for data set 1 {
-       sigma2 = eins([CV],  thetae)
-}
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">path</span> <span class="k">for</span> <span class="n">data</span> <span class="nb">set</span> <span class="mi">1</span> <span class="p">{</span>
+       <span class="n">sigma2</span> <span class="o">=</span> <span class="n">eins</span><span class="p">([</span><span class="n">CV</span><span class="p">],</span>  <span class="n">thetae</span><span class="p">)</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </li>
@@ -177,35 +177,35 @@ path parameter math expressions between data sets.</p>
 temparatures. This time, however, we choose to float an independent σ²
 parameter at each temperature.</p>
 <p>The straightforward way of doing this would be something like</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>guess ss1 = 0.002
-guess ss2 = 0.004
-guess ss3 = 0.006
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">guess</span> <span class="n">ss1</span> <span class="o">=</span> <span class="mf">0.002</span>
+<span class="n">guess</span> <span class="n">ss2</span> <span class="o">=</span> <span class="mf">0.004</span>
+<span class="n">guess</span> <span class="n">ss3</span> <span class="o">=</span> <span class="mf">0.006</span>
 
-path for data set 1 {
-       sigma2 = ss1
-}
-path for data set 2 {
-       sigma2 = ss2
-}
-path for data set 3 {
-       sigma2 = ss3
-}
+<span class="n">path</span> <span class="k">for</span> <span class="n">data</span> <span class="nb">set</span> <span class="mi">1</span> <span class="p">{</span>
+       <span class="n">sigma2</span> <span class="o">=</span> <span class="n">ss1</span>
+<span class="p">}</span>
+<span class="n">path</span> <span class="k">for</span> <span class="n">data</span> <span class="nb">set</span> <span class="mi">2</span> <span class="p">{</span>
+       <span class="n">sigma2</span> <span class="o">=</span> <span class="n">ss2</span>
+<span class="p">}</span>
+<span class="n">path</span> <span class="k">for</span> <span class="n">data</span> <span class="nb">set</span> <span class="mi">3</span> <span class="p">{</span>
+       <span class="n">sigma2</span> <span class="o">=</span> <span class="n">ss3</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Here is how this can be done using the CV and an <span class="lguess">lguess</span>
 parameter.  First, set the CV values to the temperature values, as
 before. Next, do the following:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>lguess ss = 0.002
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">lguess</span> <span class="n">ss</span> <span class="o">=</span> <span class="mf">0.002</span>
 
-path for data set 1 {
-       sigma2 = ss
-}
-path for data set 2 {
-       sigma2 = ss
-}
-path for data set 3 {
-       sigma2 = ss
-}
+<span class="n">path</span> <span class="k">for</span> <span class="n">data</span> <span class="nb">set</span> <span class="mi">1</span> <span class="p">{</span>
+       <span class="n">sigma2</span> <span class="o">=</span> <span class="n">ss</span>
+<span class="p">}</span>
+<span class="n">path</span> <span class="k">for</span> <span class="n">data</span> <span class="nb">set</span> <span class="mi">2</span> <span class="p">{</span>
+       <span class="n">sigma2</span> <span class="o">=</span> <span class="n">ss</span>
+<span class="p">}</span>
+<span class="n">path</span> <span class="k">for</span> <span class="n">data</span> <span class="nb">set</span> <span class="mi">3</span> <span class="p">{</span>
+       <span class="n">sigma2</span> <span class="o">=</span> <span class="n">ss</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p><font size=-1 color="#8C4112">ARTEMIS</font> will notice that <code class="docutils literal"><span class="pre">ss</span></code> is an <span class="lguess">lguess</span>
@@ -232,9 +232,9 @@ further editing, the desired fitting model – with one
 <hr class="docutils" />
 <p><font size=-1 color="#8C4112">DEMETER</font> is copyright © 2009-2016 Bruce Ravel – This document is
 copyright © 2016 Bruce Ravel</p>
-<p>This document is licensed under <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
+<p>This document is licensed under <a class="reference external" href="https://creativecommons.org/licenses/by-sa/3.0/">The Creative Commons Attribution-ShareAlike License</a>.</p>
 <p>If <font size=-1 color="#8C4112">DEMETER</font> and this document are useful to you, please
-consider <a class="reference external" href="http://creativecommons.org/support/">supporting The Creative Commons</a>.</p>
+consider <a class="reference external" href="https://creativecommons.org/donate/">supporting The Creative Commons</a>.</p>
 </div>
 </div>
 
@@ -265,7 +265,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <li class="toctree-l1"><a class="reference internal" href="../atoms/index.html">14. Crystallography for EXAFS</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">15. Extended discussions</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="qfs.html">15.1. Quick first shell</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">15.2. Characteristic value</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">15.2. Characteristic value</a></li>
 <li class="toctree-l2"><a class="reference internal" href="delr.html">15.3. Geometric parametrization of bond length</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ss.html">15.4. Modeling disorder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="constraints.html">15.5. Constraints and restraints</a></li>
@@ -279,7 +279,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 </li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.26</b></p>
+<p>Current Demeter version: <b>0.9.26</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
@@ -287,6 +287,7 @@ consider <a class="reference external" href="http://creativecommons.org/support/
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/XAS-Education/">Bruce's XAS Education page</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -300,20 +301,17 @@ consider <a class="reference external" href="http://creativecommons.org/support/
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/extended/cv.txt"
+      <li><a href="../_sources/extended/cv.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -330,13 +328,13 @@ consider <a class="reference external" href="http://creativecommons.org/support/
         <li class="right" >
           <a href="qfs.html" title="15.1. Quick first shell"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >15. Extended discussions</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Artemis 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >15. Extended discussions</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, Bruce Ravel.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+        &#169; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
     </div>
   </body>
 </html>

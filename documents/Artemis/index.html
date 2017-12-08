@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Artemis: EXAFS Data Analysis using Feff with Larch or Ifeffit &mdash; Artemis 0.9.26 documentation</title>
+    <title>Artemis: EXAFS Data Analysis using Feff with Larch or Ifeffit &#8212; Artemis 0.9.26 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -17,14 +17,15 @@
         VERSION:     '0.9.26',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/wheat.ico"/>
-    <link rel="top" title="Artemis 0.9.26 documentation" href="#" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="1. Forward" href="forward.html" />
 
     <link rel="stylesheet" type="text/css" href="_static/demeter.css" />
@@ -39,7 +40,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="forward.html" title="1. Forward"
              accesskey="N">next</a></li>
-        <li class="nav-item nav-item-0"><a href="#">Artemis 0.9.26 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="#">Artemis 0.9.26 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -50,18 +51,18 @@
             
   <div class="section" id="artemis-exafs-data-analysis-using-feff-with-larch-or-ifeffit">
 <h1>Artemis: EXAFS Data Analysis using Feff with Larch or Ifeffit<a class="headerlink" href="#artemis-exafs-data-analysis-using-feff-with-larch-or-ifeffit" title="Permalink to this headline">¶</a></h1>
-<div class="highlight-python"><div class="highlight"><pre><span></span>I sing of Artemis, whose shafts are of gold, who cheers on the hounds, the pure maiden, shooter
-of stags, who delights in archery, own sister to Apollo with the golden sword. Over the shadowy
-hills and windy peaks she draws her golden bow, rejoicing in the chase, and sends out grievous
-shafts. The tops of the high mountains tremble and the tangled wood echoes awesomely with the
-outcry of beasts: earthquakes and the sea also where fishes shoal. But the goddess with a bold
-heart turns every way destroying the race of wild beasts: and when she is satisfied and has
-cheered her heart, this huntress who delights in arrows slackens her supple bow and goes to the
-great house of her dear brother Phoebus Apollo, to the rich land of Delphi, there to order the
-lovely dance of the Muses and Graces.
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">I</span> <span class="n">sing</span> <span class="n">of</span> <span class="n">Artemis</span><span class="p">,</span> <span class="n">whose</span> <span class="n">shafts</span> <span class="n">are</span> <span class="n">of</span> <span class="n">gold</span><span class="p">,</span> <span class="n">who</span> <span class="n">cheers</span> <span class="n">on</span> <span class="n">the</span> <span class="n">hounds</span><span class="p">,</span> <span class="n">the</span> <span class="n">pure</span> <span class="n">maiden</span><span class="p">,</span> <span class="n">shooter</span>
+<span class="n">of</span> <span class="n">stags</span><span class="p">,</span> <span class="n">who</span> <span class="n">delights</span> <span class="ow">in</span> <span class="n">archery</span><span class="p">,</span> <span class="n">own</span> <span class="n">sister</span> <span class="n">to</span> <span class="n">Apollo</span> <span class="k">with</span> <span class="n">the</span> <span class="n">golden</span> <span class="n">sword</span><span class="o">.</span> <span class="n">Over</span> <span class="n">the</span> <span class="n">shadowy</span>
+<span class="n">hills</span> <span class="ow">and</span> <span class="n">windy</span> <span class="n">peaks</span> <span class="n">she</span> <span class="n">draws</span> <span class="n">her</span> <span class="n">golden</span> <span class="n">bow</span><span class="p">,</span> <span class="n">rejoicing</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">chase</span><span class="p">,</span> <span class="ow">and</span> <span class="n">sends</span> <span class="n">out</span> <span class="n">grievous</span>
+<span class="n">shafts</span><span class="o">.</span> <span class="n">The</span> <span class="n">tops</span> <span class="n">of</span> <span class="n">the</span> <span class="n">high</span> <span class="n">mountains</span> <span class="n">tremble</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">tangled</span> <span class="n">wood</span> <span class="n">echoes</span> <span class="n">awesomely</span> <span class="k">with</span> <span class="n">the</span>
+<span class="n">outcry</span> <span class="n">of</span> <span class="n">beasts</span><span class="p">:</span> <span class="n">earthquakes</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">sea</span> <span class="n">also</span> <span class="n">where</span> <span class="n">fishes</span> <span class="n">shoal</span><span class="o">.</span> <span class="n">But</span> <span class="n">the</span> <span class="n">goddess</span> <span class="k">with</span> <span class="n">a</span> <span class="n">bold</span>
+<span class="n">heart</span> <span class="n">turns</span> <span class="n">every</span> <span class="n">way</span> <span class="n">destroying</span> <span class="n">the</span> <span class="n">race</span> <span class="n">of</span> <span class="n">wild</span> <span class="n">beasts</span><span class="p">:</span> <span class="ow">and</span> <span class="n">when</span> <span class="n">she</span> <span class="ow">is</span> <span class="n">satisfied</span> <span class="ow">and</span> <span class="n">has</span>
+<span class="n">cheered</span> <span class="n">her</span> <span class="n">heart</span><span class="p">,</span> <span class="n">this</span> <span class="n">huntress</span> <span class="n">who</span> <span class="n">delights</span> <span class="ow">in</span> <span class="n">arrows</span> <span class="n">slackens</span> <span class="n">her</span> <span class="n">supple</span> <span class="n">bow</span> <span class="ow">and</span> <span class="n">goes</span> <span class="n">to</span> <span class="n">the</span>
+<span class="n">great</span> <span class="n">house</span> <span class="n">of</span> <span class="n">her</span> <span class="n">dear</span> <span class="n">brother</span> <span class="n">Phoebus</span> <span class="n">Apollo</span><span class="p">,</span> <span class="n">to</span> <span class="n">the</span> <span class="n">rich</span> <span class="n">land</span> <span class="n">of</span> <span class="n">Delphi</span><span class="p">,</span> <span class="n">there</span> <span class="n">to</span> <span class="n">order</span> <span class="n">the</span>
+<span class="n">lovely</span> <span class="n">dance</span> <span class="n">of</span> <span class="n">the</span> <span class="n">Muses</span> <span class="ow">and</span> <span class="n">Graces</span><span class="o">.</span>
 
-                                               Homeric Hymns XXVII
-                                               Translated by H. G. Evelyn-White
+                                               <span class="n">Homeric</span> <span class="n">Hymns</span> <span class="n">XXVII</span>
+                                               <span class="n">Translated</span> <span class="n">by</span> <span class="n">H</span><span class="o">.</span> <span class="n">G</span><span class="o">.</span> <span class="n">Evelyn</span><span class="o">-</span><span class="n">White</span>
 </pre></div>
 </div>
 
@@ -213,7 +214,7 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
 <li class="toctree-l1"><a class="reference internal" href="extended/index.html">15. Extended discussions</a></li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.26</b></p>
+<p>Current Demeter version: <b>0.9.26</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
@@ -221,6 +222,7 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/XAS-Education/">Bruce's XAS Education page</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -234,20 +236,17 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/index.txt"
+      <li><a href="_sources/index.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -261,12 +260,12 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
         <li class="right" style="margin-right: 10px">
           <a href="forward.html" title="1. Forward"
              >next</a></li>
-        <li class="nav-item nav-item-0"><a href="#">Artemis 0.9.26 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="#">Artemis 0.9.26 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, Bruce Ravel.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+        &#169; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
     </div>
   </body>
 </html>

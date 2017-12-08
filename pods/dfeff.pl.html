@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>dfeff</title>
-<link rel="stylesheet" type="text/css" href="podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>dfeff &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -43,115 +21,149 @@
 <a href="src/dfeff.pl">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
 
-<p>dfeff - Run Demeter's implementation of Feff6</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#COMMAND-LINE-SWITCHES">COMMAND LINE SWITCHES</a></li>
+  <li><a href="#CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>dfeff - Run Demeter&#39;s implementation of Feff6</p>
+
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<pre>  dfeff &lt;--workspace=/path/to/folder/&gt; [options] &lt;myfeff.inp&gt;
+<pre><code>  dfeff &lt;--workspace=/path/to/folder/&gt; [options] &lt;myfeff.inp&gt;</code></pre>
 
-</pre><p>If no input file is specified, <cite>feff.inp</cite> is used.  If no workspace
-is specified on the command line, the current directory is used.</p>
+<p>If no input file is specified, <i>feff.inp</i> is used. If no workspace is specified on the command line, the current directory is used.</p>
 
-<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This runs Demeter's implementation of Feff6 somewhat similarly to how
-the normal Feff behaves.  The default behavior of this program is to
-run through all parts of the Feff calculation, starting with reading
-the input file and ending with writing the <cite>feffNNNN.dat</cite> files.
-However, this program allows considerably more control over the Feff
-run than you get from the normal Feff.</p>
+<p>This runs Demeter&#39;s implementation of Feff6 somewhat similarly to how the normal Feff behaves. The default behavior of this program is to run through all parts of the Feff calculation, starting with reading the input file and ending with writing the <i>feffNNNN.dat</i> files. However, this program allows considerably more control over the Feff run than you get from the normal Feff.</p>
 
-<h1 id="COMMAND_LINE_SWITCHES">COMMAND LINE SWITCHES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+<h1 id="COMMAND-LINE-SWITCHES">COMMAND LINE SWITCHES</h1>
 
-<p>You can specify a Feff input file at the command line.  This input
-file can have any name (it is not restricted to <cite>feff.inp</cite> as in
-Feff6) and need not be in the current working directory nor in the
-workspace where the Feff calculation will be made.  A copy of the
-input file will be placed in the workspace.</p>
+<p>You can specify a Feff input file at the command line. This input file can have any name (it is not restricted to <i>feff.inp</i> as in Feff6) and need not be in the current working directory nor in the workspace where the Feff calculation will be made. A copy of the input file will be placed in the workspace.</p>
 
-<p>You can specify the folder in which the Feff calculation will be made
-using the <code>--workspace</code> command line switch.</p>
+<p>You can specify the folder in which the Feff calculation will be made using the <code>--workspace</code> command line switch.</p>
 
 <dl>
-	<dt><code>-w</code> or <code>--workspace</code></dt>
-		<dd><p>Specify a folder in which to run this feff calculation.  If
-unspecified, the current work directory will be used.</p></dd>
-	<dt><code>--rmax</code></dt>
-		<dd><p>Specify a maximum path length, in Angstroms.</p></dd>
-	<dt><code>--all</code></dt>
-		<dd><p>Run all parts of Feff.  This is the default behavior if none of the
-following three flags are set.</p></dd>
-	<dt><code>--potentials</code></dt>
-		<dd><p>Run the potentials portion of the Feff calculation.</p></dd>
-	<dt><code>--pathfinder</code></dt>
-		<dd><p>Run the pathfinder portion of the Feff calculation.</p></dd>
-	<dt><code>--ff2chi</code></dt>
-		<dd><p>Write out all <cite>feffNNNN.dat</cite> files found by the pathfinder.</p></dd>
-	<dt><code>--save</code></dt>
-		<dd><p>Save the temporary files written out during the feff calculation.</p></dd>
-	<dt><code>--keep</code></dt>
-		<dd><p>Use Feff's curved wave keep criterion when generating <cite>feffNNNN.dat</cite>
-files.</p></dd>
-	<dt><code>-q</code> or <code>--quiet</code></dt>
-		<dd><p>Suppress screen messages during the Feff run.</p></dd>
-	<dt><code>-v</code> or <code>--version</code></dt>
-		<dd><p>Display version information and quit.</p></dd>
-	<dt><code>-h</code> or <code>--help</code></dt>
-		<dd><p>Display help information and quit.</p></dd>
+
+<dt id="w-or---workspace"><code>-w</code> or <code>--workspace</code></dt>
+<dd>
+
+<p>Specify a folder in which to run this feff calculation. If unspecified, the current work directory will be used.</p>
+
+</dd>
+<dt id="rmax"><code>--rmax</code></dt>
+<dd>
+
+<p>Specify a maximum path length, in Angstroms.</p>
+
+</dd>
+<dt id="all"><code>--all</code></dt>
+<dd>
+
+<p>Run all parts of Feff. This is the default behavior if none of the following three flags are set.</p>
+
+</dd>
+<dt id="potentials"><code>--potentials</code></dt>
+<dd>
+
+<p>Run the potentials portion of the Feff calculation.</p>
+
+</dd>
+<dt id="pathfinder"><code>--pathfinder</code></dt>
+<dd>
+
+<p>Run the pathfinder portion of the Feff calculation.</p>
+
+</dd>
+<dt id="ff2chi"><code>--ff2chi</code></dt>
+<dd>
+
+<p>Write out all <i>feffNNNN.dat</i> files found by the pathfinder.</p>
+
+</dd>
+<dt id="save"><code>--save</code></dt>
+<dd>
+
+<p>Save the temporary files written out during the feff calculation.</p>
+
+</dd>
+<dt id="keep"><code>--keep</code></dt>
+<dd>
+
+<p>Use Feff&#39;s curved wave keep criterion when generating <i>feffNNNN.dat</i> files.</p>
+
+</dd>
+<dt id="q-or---quiet"><code>-q</code> or <code>--quiet</code></dt>
+<dd>
+
+<p>Suppress screen messages during the Feff run.</p>
+
+</dd>
+<dt id="v-or---version"><code>-v</code> or <code>--version</code></dt>
+<dd>
+
+<p>Display version information and quit.</p>
+
+</dd>
+<dt id="h-or---help"><code>-h</code> or <code>--help</code></dt>
+<dd>
+
+<p>Display help information and quit.</p>
+
+</dd>
 </dl>
-<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
 
-<p>See <a href="Demeter/Config.pm.html">Demeter::Config</a> for a description of Demeter's
-configuration system.  See the <code>feff</code> configuration group.</p>
+<h1 id="CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</h1>
 
-<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+<p>See <a href="Demeter/Config.pm.html">Demeter::Config</a> for a description of Demeter&#39;s configuration system. See the <code>feff</code> configuration group.</p>
 
-<p>This script uses <a href="https://metacpan.org/pod/Term%3A%3AANSIColor">Term::ANSIColor</a> to color the terminal output, but
-it defaults gracefully to colorless output if this module is not
-available.</p>
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
 
-<p>The dependencies of the Demeter system are in the
-<cite>Build.PL</cite> file.</p>
+<p>This script uses <a href="http://metacpan.org/module/Term::ANSIColor">Term::ANSIColor</a> to color the terminal output, but it defaults gracefully to colorless output if this module is not available.</p>
 
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+<p>The dependencies of the Demeter system are in the <i>Build.PL</i> file.</p>
 
-<p>See <a href="Demeter/Feff.pm.html">Demeter::Feff</a> and <a href="Demeter/ScatteringPath.pm.html">Demeter::ScatteringPath</a>
-for bugs and limitations of the underlying libraries.</p>
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
-<p>There should be an option for running Feff's pathfinder for the sake
-of bug testing Demeter's pathfinder or for using paths with more than
-4 legs.</p>
+<p>See <a href="Demeter/Feff.pm.html">Demeter::Feff</a> and <a href="Demeter/ScatteringPath.pm.html">Demeter::ScatteringPath</a> for bugs and limitations of the underlying libraries.</p>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<p>There should be an option for running Feff&#39;s pathfinder for the sake of bug testing Demeter&#39;s pathfinder or for using paths with more than 4 legs.</p>
+
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>)</p>
 
 <p>http://bruceravel.github.io/demeter/</p>
 
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2008-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

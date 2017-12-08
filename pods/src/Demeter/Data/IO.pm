@@ -260,6 +260,7 @@ sub _save_many_command {
 		     many_file   => $outfile,
 		     many_list   => \@groups,
 		    );
+  #{ local $|=1; print '>' . $self->co->get('save_with_multipliers') . '<';}
   if ($space eq 'k') {		# files in k have 2 abscissa columns
     $command .= $self-> template("process", "save_many_header_k");
     $command .= $self-> template("process", "save_many_k");

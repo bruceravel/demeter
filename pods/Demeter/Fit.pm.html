@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::Fit</title>
-<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::Fit &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,314 +15,388 @@
 </div>
 <div class="path">
   <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-Fit
+  Demeter::Fit
 </div>
 <div>
 <a href="../src/Demeter/Fit.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#ATTRIBUTES">ATTRIBUTES</a></li>
+  <li><a href="#METHODS">METHODS</a></li>
+  <li><a href="#SERIALIZATION-AND-DESERIALIZATION">SERIALIZATION AND DESERIALIZATION</a></li>
+  <li><a href="#DIAGNOSTICS">DIAGNOSTICS</a></li>
+  <li><a href="#CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::Fit - Fit EXAFS data using Ifeffit or Larch</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<pre>  my $fitobject = Demeter::Fit -&gt; new(gds   =&gt; \@gds_objects,
+<pre><code>  my $fitobject = Demeter::Fit -&gt; new(gds   =&gt; \@gds_objects,
                                       data  =&gt; [$data_object],
                                       paths =&gt; \@path_objects,
-	                             );
+                                     );
   $fitobject -&gt; fit;
   $fitobject -&gt; evaluate;
-  $fitobject -&gt; logfile(&quot;cufit.log&quot;);
+  $fitobject -&gt; logfile(&quot;cufit.log&quot;);</code></pre>
 
-</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This class collects and organizes all the components of a fit using
-Ifeffit or Larch.  The bulk of a script to fit EXAFS data involves
-setting up all the data, paths, and parameters that go into the fit.
-Once that is done, you pass that information to the Fit object as
-array references.  It collates all of the information, resolves the
-connections between Path and Data objects, performs a number of sanity
-checks on the input information, and generates the sequence of Ifeffit
-or Larch commands needed to perform the fit.  After the hard work of
-setting up the Data, Path, and GDS objects is done, you are just a few
-lines away from a complete fitting script!</p>
+<p>This class collects and organizes all the components of a fit using Ifeffit or Larch. The bulk of a script to fit EXAFS data involves setting up all the data, paths, and parameters that go into the fit. Once that is done, you pass that information to the Fit object as array references. It collates all of the information, resolves the connections between Path and Data objects, performs a number of sanity checks on the input information, and generates the sequence of Ifeffit or Larch commands needed to perform the fit. After the hard work of setting up the Data, Path, and GDS objects is done, you are just a few lines away from a complete fitting script!</p>
 
-<h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="ATTRIBUTES">ATTRIBUTES</h1>
 
-<p>Three attributes define a fit.  These are <code>gds</code>, <code>data</code>, and
-<code>paths</code>.  Each takes an reference to an array of other objects.  The
-<code>gds</code> attribute takes a reference to an array of GDS objects, and so
-on.  All other attributes of a Fit object are scalar valued.</p>
+<p>Three attributes define a fit. These are <code>gds</code>, <code>data</code>, and <code>paths</code>. Each takes an reference to an array of other objects. The <code>gds</code> attribute takes a reference to an array of GDS objects, and so on. All other attributes of a Fit object are scalar valued.</p>
 
-<p>The <code>set</code> method will throw an exception if the argument to <code>gds</code>,
-<code>data</code>, and <code>paths</code> is not a reference to an array.  Similarly, the
-<code>get</code> method returns array references for those three attributes.</p>
+<p>The <code>set</code> method will throw an exception if the argument to <code>gds</code>, <code>data</code>, and <code>paths</code> is not a reference to an array. Similarly, the <code>get</code> method returns array references for those three attributes.</p>
 
-<p>Here is a list of the scalar valued attributes.  Many of these get set
-automatically when the fit is performed.  All of them are optional.</p>
+<p>Here is a list of the scalar valued attributes. Many of these get set automatically when the fit is performed. All of them are optional.</p>
 
 <dl>
-	<dt><code>vpaths</code></dt>
-		<dd><p>Like the <code>gds</code>, <code>data</code>, and <code>paths</code> attributes, this takes a
-reference to an array.  This array contains all the
-<a href="VPath.pm.html">VPath</a> objects defined with the fit.  Note that,
-unlike the other three, this is not required and is not a part of the
-definition of the fit.  In fact, the only use for this attribute is to
-have a collection of VPaths saved to a serialization file and
-recovered when the fit is deserialized.</p></dd>
-	<dt><code>label</code></dt>
-		<dd><p>Short descriptive text for this fit.</p></dd>
-	<dt><code>description</code></dt>
-		<dd><p>Longer descriptive text for this fit.  This will be written to the log
-file after a fit.</p></dd>
-	<dt><code>fom</code></dt>
-		<dd><p>A figure of merit for this fit.  This is intended for reports on
-multiple fits.  An example might be the temperature of the data fit
-where the report is then intended to show the temperature dependence
-of the fit.</p></dd>
-	<dt><code>environment</code></dt>
-		<dd><p>This is filled in with information about the versions of Demeter and
-perl and the operating system used.</p></dd>
-	<dt><code>interface</code></dt>
-		<dd><p>This is filled in with text identifying the user interface.  The
-default value is 'Demeter-based script'.  This should be set to the
-name of the program using Demeter.</p></dd>
-	<dt><code>time_of_fit</code></dt>
-		<dd><p>This is filled in with the time stamp when the fit finishes.</p></dd>
-	<dt><code>prepared_by</code></dt>
-		<dd><p>This is filled in with an attempt to identify the person performing
-the fit.</p></dd>
-	<dt><code>contact</code></dt>
-		<dd><p>This may be filled in with information about how to contact the person
-performing the fit.</p></dd>
-	<dt><code>cormin</code></dt>
-		<dd><p>Minimum correlation reported in the log file.  This must be a number
-between 0 and 1.</p></dd>
-	<dt><code>ignore_nidp</code></dt>
-		<dd><p>If this boolean attribute is true, Demeter will not perform the sanity
-check which verifies that the number of guess parameters is smaller
-than the number of independent points.  Just because this parameter
-exists, <strong>do not</strong> presume that this is a good idea.  If you run a fit
-with too many free parameters, best fit values, error bars and
-correlations will not be meaningful and the fit that you run cannot be
-reliably interpreted in a statistical sense.</p></dd>
+
+<dt id="vpaths"><code>vpaths</code></dt>
+<dd>
+
+<p>Like the <code>gds</code>, <code>data</code>, and <code>paths</code> attributes, this takes a reference to an array. This array contains all the <a href="VPath.pm.html">VPath</a> objects defined with the fit. Note that, unlike the other three, this is not required and is not a part of the definition of the fit. In fact, the only use for this attribute is to have a collection of VPaths saved to a serialization file and recovered when the fit is deserialized.</p>
+
+</dd>
+<dt id="label"><code>label</code></dt>
+<dd>
+
+<p>Short descriptive text for this fit.</p>
+
+</dd>
+<dt id="description"><code>description</code></dt>
+<dd>
+
+<p>Longer descriptive text for this fit. This will be written to the log file after a fit.</p>
+
+</dd>
+<dt id="fom"><code>fom</code></dt>
+<dd>
+
+<p>A figure of merit for this fit. This is intended for reports on multiple fits. An example might be the temperature of the data fit where the report is then intended to show the temperature dependence of the fit.</p>
+
+</dd>
+<dt id="environment"><code>environment</code></dt>
+<dd>
+
+<p>This is filled in with information about the versions of Demeter and perl and the operating system used.</p>
+
+</dd>
+<dt id="interface"><code>interface</code></dt>
+<dd>
+
+<p>This is filled in with text identifying the user interface. The default value is &#39;Demeter-based script&#39;. This should be set to the name of the program using Demeter.</p>
+
+</dd>
+<dt id="time_of_fit"><code>time_of_fit</code></dt>
+<dd>
+
+<p>This is filled in with the time stamp when the fit finishes.</p>
+
+</dd>
+<dt id="prepared_by"><code>prepared_by</code></dt>
+<dd>
+
+<p>This is filled in with an attempt to identify the person performing the fit.</p>
+
+</dd>
+<dt id="contact"><code>contact</code></dt>
+<dd>
+
+<p>This may be filled in with information about how to contact the person performing the fit.</p>
+
+</dd>
+<dt id="cormin"><code>cormin</code></dt>
+<dd>
+
+<p>Minimum correlation reported in the log file. This must be a number between 0 and 1.</p>
+
+</dd>
+<dt id="ignore_nidp"><code>ignore_nidp</code></dt>
+<dd>
+
+<p>If this boolean attribute is true, Demeter will not perform the sanity check which verifies that the number of guess parameters is smaller than the number of independent points. Just because this parameter exists, <b>do not</b> presume that this is a good idea. If you run a fit with too many free parameters, best fit values, error bars and correlations will not be meaningful and the fit that you run cannot be reliably interpreted in a statistical sense.</p>
+
+</dd>
 </dl>
 
-
-
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="METHODS">METHODS</h1>
 
 <dl>
-	<dt><code>fit</code></dt>
-		<dd><p>This method returns the sequence of commands to perform a fit in
-Ifeffit or Larch.  This sequence will include lines defining each
-guess, def, set, and restrain parameter.  The data will be imported by
-the <code>read_data</code> command.  Each path associated with the data set will
-be defined.  Then the text of the Ifeffit's <code>feffit</code> or Larch's
-<code>...</code> command is generated.  Finally, commands for defining the after
-parameters and for computing the residual arrays are made.</p></dd>
-<dd><pre>   $fitobject -&gt; fit;
 
-</pre></dd>		<dd><p>A number of sanity checks are made on the fitting model before the fit is
-performed.  For the complete list of these sanity checks, see
-<a href="Fit/Sanity.pm.html">Demeter::Fit::Sanity</a>.</p></dd>
-	<dt><code>sum</code></dt>
-		<dd><p>This method returns a VPath object containing all paths associated
-with the fit and with the specified Data object.  If the data argument
-is not supplied, the first data set in the <code>data</code> attribute will be
-used.  Ths, for a one-data-set fit, the data argument is optional.</p></dd>
-<dd><pre>  my $sum = $fit-&gt;sum($data);
-  $data -&gt; plot('r');
-  $sum  -&gt; plot('r');
+<dt id="fit"><code>fit</code></dt>
+<dd>
 
-</pre></dd>	<dt><code>rm</code></dt>
-		<dd><p>Clean up all on-disk trace of this fit project, typically at the end
-of script involving deserialization of project file.</p></dd>
-<dd><pre>  $fitobject -&gt; rm;
+<p>This method returns the sequence of commands to perform a fit in Ifeffit or Larch. This sequence will include lines defining each guess, def, set, and restrain parameter. The data will be imported by the <code>read_data</code> command. Each path associated with the data set will be defined. Then the text of the Ifeffit&#39;s <code>feffit</code> or Larch&#39;s <code>...</code> command is generated. Finally, commands for defining the after parameters and for computing the residual arrays are made.</p>
 
-</pre></dd>	<dt><code>gds</code></dt>
-		<dd><p>This method returns a reference to the list of GDS objects in this fit.</p></dd>
-<dd><pre>  @list_of_parameters = @{ $fit -&gt; gds };
+<pre><code>   $fitobject -&gt; fit;</code></pre>
 
-</pre></dd>	<dt><code>data</code></dt>
-		<dd><p>This method returns a reference to the list of Data objects in this fit.</p></dd>
-<dd><pre>  @list_of_data = @{ $fit -&gt; data };
+<p>A number of sanity checks are made on the fitting model before the fit is performed. For the complete list of these sanity checks, see <a href="Fit/Sanity.pm.html">Demeter::Fit::Sanity</a>.</p>
 
-</pre></dd>	<dt><code>paths</code></dt>
-		<dd><p>This method returns a reference to the list of Path objects in this fit.</p></dd>
-<dd><pre>  @list_of_paths = @{ $fit -&gt; paths };
+</dd>
+<dt id="sum"><code>sum</code></dt>
+<dd>
 
-</pre></dd>	<dt><code>set_all</code></dt>
-		<dd><p>NOT WORKING AT THIS TIME.</p></dd>
-		<dd><p>This method is used to set attributes of every Data, Path, or GDS in a
-fit.  For instance, this example sets <code>rmin</code> for each data set to 1.2:</p></dd>
-<dd><pre>  $fitobject -&gt; set_all('data', {rmin=&gt;1.2});
+<p>This method returns a VPath object containing all paths associated with the fit and with the specified Data object. If the data argument is not supplied, the first data set in the <code>data</code> attribute will be used. Ths, for a one-data-set fit, the data argument is optional.</p>
 
-</pre></dd>		<dd><p>This example sets the <code>sigma2</code> math expression for each Path in the
-fit:</p></dd>
-<dd><pre>  $fitobject -&gt; set_all('path', {sigma2=&gt;'debye(temp, thetad)'});
+<pre><code>  my $sum = $fit-&gt;sum($data);
+  $data -&gt; plot(&#39;r&#39;);
+  $sum  -&gt; plot(&#39;r&#39;);</code></pre>
 
-</pre></dd>		<dd><p>This example converts all parameters to be set parameters:</p></dd>
-<dd><pre>  $fitobject -&gt; set_all('gds', {type =&gt; 'set'});
+</dd>
+<dt id="rm"><code>rm</code></dt>
+<dd>
 
-</pre></dd>		<dd><p>The first argument is one of &quot;data&quot;, &quot;paths&quot;, &quot;gds&quot; and the second is
-a reference to a hash of valid attributes for the object type.</p></dd>
-		<dd><p>This returns the Fit object reference if the arguments can be properly
-interpreted and return 0 otherwise.</p></dd>
-	<dt><code>evaluate</code></dt>
-		<dd><p>This method is called after the <code>fit</code> or <code>ff2chi</code> method.  This will
-evaluate all path parameters, all GDS parameters, and all correlations
-between guess parameters and store them in the appropriate objects.
-This is always called by the <code>fit</code> method once the fit is finished,
-thus it is rarely necessary for you to need to make an explicit call.</p></dd>
-<dd><pre>   $fitobject -&gt; fit;
-   $fitobject -&gt; evaluate;
+<p>Clean up all on-disk trace of this fit project, typically at the end of script involving deserialization of project file.</p>
 
-</pre></dd>	<dt><code>logfile</code></dt>
-		<dd><p>This write a log file from the results of a fit and an ff2chi.</p></dd>
-<dd><pre>   $fitobject -&gt; logfile($filename, $header, $footer);
+<pre><code>  $fitobject -&gt; rm;</code></pre>
 
-</pre></dd>		<dd><p>The first argument is the name of the output file.  The other two
-arguments are arbitrary text that will be added to the top and bottom
-of the log file.</p></dd>
-	<dt><code>statistic</code></dt>
-		<dd><p>This returns the value of one of the fitting statistics, assuming the
-<code>evaluate</code> method has been called.</p></dd>
-<dd><pre>   $fitobject -&gt; statistic(&quot;chi_reduced&quot;);
+</dd>
+<dt id="gds"><code>gds</code></dt>
+<dd>
 
-</pre></dd>		<dd><p>An exception is thrown is the argument is not one of the following:</p></dd>
-<dd><pre>   n_idp n_varys chi_square chi_reduced r_factor
-   epsilon_k epsilon_r data_total
+<p>This method returns a reference to the list of GDS objects in this fit.</p>
 
-</pre></dd>	<dt><code>correl</code></dt>
-		<dd><p>This returns the correlation between any two parameters, assuming the
-<code>evaluate</code> method has been called.</p></dd>
-<dd><pre>   my $cor = $fitobject-&gt;correl(&quot;delr&quot;, &quot;enot&quot;);
+<pre><code>  @list_of_parameters = @{ $fit -&gt; gds };</code></pre>
 
-</pre></dd>	<dt><code>all_correl</code></dt>
-		<dd><p>This returns a complete hash of correlations between parameters,
-assuming the <code>evaluate</code> method has been called.</p></dd>
-<dd><pre>   my %correls = $fitobject -&gt; all_correl;
+</dd>
+<dt id="data"><code>data</code></dt>
+<dd>
 
-</pre></dd>	<dt><code>correl_report</code></dt>
-		<dd><p>This method returns a block of text summarizing all the correlations
-above the value given as the first argument, assuming the <code>evaluate</code>
-method has been called.  This method is used by the <code>logfile</code> method.</p></dd>
-<dd><pre>   my $text = $fitobject -&gt; correl_report(0.4);
+<p>This method returns a reference to the list of Data objects in this fit.</p>
 
-</pre></dd>	<dt><code>happiness</code></dt>
-		<dd><p>This returns the happiness evaluation of the fit and is writtent to
-the log file.  The two return values are the happiness measurement and
-a text summary of how the happiness was evaluated.  See
-<a href="Fit/Happiness.pm.html">Demeter::Fit::Happiness</a>.</p></dd>
-<dd><pre>   ($happiness, $summery) = $fit -&gt; happiness;
+<pre><code>  @list_of_data = @{ $fit -&gt; data };</code></pre>
 
-</pre></dd></dl>
-<h1 id="SERIALIZATION_AND_DESERIALIZATION">SERIALIZATION AND DESERIALIZATION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+</dd>
+<dt id="paths"><code>paths</code></dt>
+<dd>
 
-<p>A fit can be serialized to a zip file containing YAML serializations
-of the various parts of the fit.</p>
+<p>This method returns a reference to the list of Path objects in this fit.</p>
 
-<pre>  $fitobject-&gt;serialize(&quot;projectfile&quot;);
+<pre><code>  @list_of_paths = @{ $fit -&gt; paths };</code></pre>
 
-</pre><p>One of these zip files can be deserialized to a Fit object:</p>
+</dd>
+<dt id="set_all"><code>set_all</code></dt>
+<dd>
 
-<pre>  $newfitobject = Demeter::Fit-&gt;new(project=&gt;&quot;projectfile&quot;);
+<p>NOT WORKING AT THIS TIME.</p>
 
-</pre><p>The files are normal zip files and can be opened using a normal zip
-tool.</p>
+<p>This method is used to set attributes of every Data, Path, or GDS in a fit. For instance, this example sets <code>rmin</code> for each data set to 1.2:</p>
 
-<p><code>freeze</code> and <code>thaw</code> are aliases for the <code>serialize</code> and
-<code>deserialize</code> methods.</p>
+<pre><code>  $fitobject -&gt; set_all(&#39;data&#39;, {rmin=&gt;1.2});</code></pre>
 
-<p>The constituents of the deserialized fit can be recovered by
-dereferencing the arrays stored in the <code>gds</code>, <code>data</code>, and <code>paths</code>
-attributes.</p>
+<p>This example sets the <code>sigma2</code> math expression for each Path in the fit:</p>
 
-<pre>  my @gds   = @{ $newfitobject-&gt;gds };
+<pre><code>  $fitobject -&gt; set_all(&#39;path&#39;, {sigma2=&gt;&#39;debye(temp, thetad)&#39;});</code></pre>
+
+<p>This example converts all parameters to be set parameters:</p>
+
+<pre><code>  $fitobject -&gt; set_all(&#39;gds&#39;, {type =&gt; &#39;set&#39;});</code></pre>
+
+<p>The first argument is one of &quot;data&quot;, &quot;paths&quot;, &quot;gds&quot; and the second is a reference to a hash of valid attributes for the object type.</p>
+
+<p>This returns the Fit object reference if the arguments can be properly interpreted and return 0 otherwise.</p>
+
+</dd>
+<dt id="evaluate"><code>evaluate</code></dt>
+<dd>
+
+<p>This method is called after the <code>fit</code> or <code>ff2chi</code> method. This will evaluate all path parameters, all GDS parameters, and all correlations between guess parameters and store them in the appropriate objects. This is always called by the <code>fit</code> method once the fit is finished, thus it is rarely necessary for you to need to make an explicit call.</p>
+
+<pre><code>   $fitobject -&gt; fit;
+   $fitobject -&gt; evaluate;</code></pre>
+
+</dd>
+<dt id="logfile"><code>logfile</code></dt>
+<dd>
+
+<p>This write a log file from the results of a fit and an ff2chi.</p>
+
+<pre><code>   $fitobject -&gt; logfile($filename, $header, $footer);</code></pre>
+
+<p>The first argument is the name of the output file. The other two arguments are arbitrary text that will be added to the top and bottom of the log file.</p>
+
+</dd>
+<dt id="statistic"><code>statistic</code></dt>
+<dd>
+
+<p>This returns the value of one of the fitting statistics, assuming the <code>evaluate</code> method has been called.</p>
+
+<pre><code>   $fitobject -&gt; statistic(&quot;chi_reduced&quot;);</code></pre>
+
+<p>An exception is thrown is the argument is not one of the following:</p>
+
+<pre><code>   n_idp n_varys chi_square chi_reduced r_factor
+   epsilon_k epsilon_r data_total</code></pre>
+
+</dd>
+<dt id="correl"><code>correl</code></dt>
+<dd>
+
+<p>This returns the correlation between any two parameters, assuming the <code>evaluate</code> method has been called.</p>
+
+<pre><code>   my $cor = $fitobject-&gt;correl(&quot;delr&quot;, &quot;enot&quot;);</code></pre>
+
+</dd>
+<dt id="all_correl"><code>all_correl</code></dt>
+<dd>
+
+<p>This returns a complete hash of correlations between parameters, assuming the <code>evaluate</code> method has been called.</p>
+
+<pre><code>   my %correls = $fitobject -&gt; all_correl;</code></pre>
+
+</dd>
+<dt id="correl_report"><code>correl_report</code></dt>
+<dd>
+
+<p>This method returns a block of text summarizing all the correlations above the value given as the first argument, assuming the <code>evaluate</code> method has been called. This method is used by the <code>logfile</code> method.</p>
+
+<pre><code>   my $text = $fitobject -&gt; correl_report(0.4);</code></pre>
+
+</dd>
+<dt id="happiness"><code>happiness</code></dt>
+<dd>
+
+<p>This returns the happiness evaluation of the fit and is writtent to the log file. The two return values are the happiness measurement and a text summary of how the happiness was evaluated. See <a href="Fit/Happiness.pm.html">Demeter::Fit::Happiness</a>.</p>
+
+<pre><code>   ($happiness, $summery) = $fit -&gt; happiness;</code></pre>
+
+</dd>
+</dl>
+
+<h1 id="SERIALIZATION-AND-DESERIALIZATION">SERIALIZATION AND DESERIALIZATION</h1>
+
+<p>A fit can be serialized to a zip file containing YAML serializations of the various parts of the fit.</p>
+
+<pre><code>  $fitobject-&gt;serialize(&quot;projectfile&quot;);</code></pre>
+
+<p>One of these zip files can be deserialized to a Fit object:</p>
+
+<pre><code>  $newfitobject = Demeter::Fit-&gt;new(project=&gt;&quot;projectfile&quot;);</code></pre>
+
+<p>The files are normal zip files and can be opened using a normal zip tool.</p>
+
+<p><code>freeze</code> and <code>thaw</code> are aliases for the <code>serialize</code> and <code>deserialize</code> methods.</p>
+
+<p>The constituents of the deserialized fit can be recovered by dereferencing the arrays stored in the <code>gds</code>, <code>data</code>, and <code>paths</code> attributes.</p>
+
+<pre><code>  my @gds   = @{ $newfitobject-&gt;gds };
   my @data  = @{ $newfitobject-&gt;data };
-  my @paths = @{ $newfitobject-&gt;paths };
+  my @paths = @{ $newfitobject-&gt;paths };</code></pre>
 
-</pre><h1 id="DIAGNOSTICS">DIAGNOSTICS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="DIAGNOSTICS">DIAGNOSTICS</h1>
 
-<p>These messages are classified as follows (listed in increasing order
-of desperation):</p>
+<p>These messages are classified as follows (listed in increasing order of desperation):</p>
 
-<pre>    (W) A warning (optional).
-    (F) A fatal error (trappable).
+<pre><code>    (W) A warning (optional).
+    (F) A fatal error (trappable).</code></pre>
 
-</pre><dl>
-	<dt>Demeter::Fit: component not an array reference</dt>
-		<dd><p>(F) You have attempted to set one of the array-valued Fit attributes
-to something that is not a reference to an array.</p></dd>
-	<dt>Demeter::Fit: &lt;key&gt; is not a component of this fit</dt>
-		<dd><p>(W) You have attempted to get an attribute value that is not one of
-<code>gds</code>, <code>data</code>, <code>paths</code> or one of the scalar values.</p></dd>
-	<dt>No gds component is defined for this fit</dt>
-	<dt>No data component is defined for this fit</dt>
-	<dt>No paths component is defined for this fit</dt>
-		<dd><p>(F) You have neglected to define one of the attributes of the Fit
-object.</p></dd>
-	<dt>This fit is ill-defined.  Giving up...</dt>
-	<dt>This summation is ill-defined.  Giving up...</dt>
-		<dd><p>(F) One or more of the sanity checks has failed.  Other
-diagnostic messages with more details will be issued.</p></dd>
-	<dt>'$stat' is not a fitting statistic ($STAT_TEXT)</dt>
-		<dd><p>(W) You have asked for a fitting statitstic that is not one of the
-ones available (n_idp n_varys chi_square chi_reduced r_factor
-epsilon_k epsilon_r data_total).</p></dd>
+<dl>
+
+<dt id="Demeter::Fit:-component-not-an-array-reference">Demeter::Fit: component not an array reference</dt>
+<dd>
+
+<p>(F) You have attempted to set one of the array-valued Fit attributes to something that is not a reference to an array.</p>
+
+</dd>
+<dt id="Demeter::Fit:-key-is-not-a-component-of-this-fit">Demeter::Fit: &lt;key&gt; is not a component of this fit</dt>
+<dd>
+
+<p>(W) You have attempted to get an attribute value that is not one of <code>gds</code>, <code>data</code>, <code>paths</code> or one of the scalar values.</p>
+
+</dd>
+<dt id="No-gds-component-is-defined-for-this-fit">No gds component is defined for this fit</dt>
+<dd>
+
+</dd>
+<dt id="No-data-component-is-defined-for-this-fit">No data component is defined for this fit</dt>
+<dd>
+
+</dd>
+<dt id="No-paths-component-is-defined-for-this-fit">No paths component is defined for this fit</dt>
+<dd>
+
+<p>(F) You have neglected to define one of the attributes of the Fit object.</p>
+
+</dd>
+<dt id="This-fit-is-ill-defined.-Giving-up">This fit is ill-defined. Giving up...</dt>
+<dd>
+
+</dd>
+<dt id="This-summation-is-ill-defined.-Giving-up">This summation is ill-defined. Giving up...</dt>
+<dd>
+
+<p>(F) One or more of the sanity checks has failed. Other diagnostic messages with more details will be issued.</p>
+
+</dd>
+<dt id="stat-is-not-a-fitting-statistic-STAT_TEXT">&#39;$stat&#39; is not a fitting statistic ($STAT_TEXT)</dt>
+<dd>
+
+<p>(W) You have asked for a fitting statitstic that is not one of the ones available (n_idp n_varys chi_square chi_reduced r_factor epsilon_k epsilon_r data_total).</p>
+
+</dd>
 </dl>
-<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration system.
-See the fit group of configuration parameters.</p>
+<h1 id="CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</h1>
 
-<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration system. See the fit group of configuration parameters.</p>
 
-<p>The dependencies of the Demeter system are in the
-<cite>Build.PL</cite> file.</p>
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
 
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<p>The dependencies of the Demeter system are in the <i>Build.PL</i> file.</p>
+
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
 <ul>
-	<li>It is not clear how serialization and deserialization will work in the
-context of an artemis project with multiple fits conatined in one file.</li>
-	<li>The log file should be structured by using templates.</li>
-	<li>set_all method not implemented</li>
+
+<li><p>It is not clear how serialization and deserialization will work in the context of an artemis project with multiple fits conatined in one file.</p>
+
+</li>
+<li><p>The log file should be structured by using templates.</p>
+
+</li>
+<li><p>set_all method not implemented</p>
+
+</li>
 </ul>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel, <a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a></p>
 
 <p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
-
-
-
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

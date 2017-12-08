@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Xray::Scattering::WassKirf</title>
-<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Xray::Scattering::WaasKirf &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,103 +15,95 @@
 </div>
 <div class="path">
   <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Xray-Scattering-WaasKirf
+  Xray::Scattering::WaasKirf
 </div>
 <div>
 <a href="../../src/Xray/Scattering/WaasKirf.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a></li>
+  <li><a href="#ELEMENTS-AND-VALENCE-STATES">ELEMENTS AND VALENCE STATES</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Xray::Scattering::WassKirf - Perl interface to the Waaskirf-Kirfel tables</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<pre>  use Xray::Scattering;
-  Xray::Scattering-&gt;load('WaasKirf');
-  $fnot = Xray::Scattering-&gt;get_f($symb, $d);
+<pre><code>  use Xray::Scattering;
+  Xray::Scattering-&gt;load(&#39;WaasKirf&#39;);
+  $fnot = Xray::Scattering-&gt;get_f($symb, $d);</code></pre>
 
-</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This module provides a functional interface to the Waasmaier-Kirfel tables of
-coefficients for calculating the Thomson (kinematical) scattering factors of
-the elements and common valence states.  The coefficients are stored
-externally in the waaskirf.db database file.  The coefficients are for an
-Aikman expansion, which is of this form:</p>
+<p>This module provides a functional interface to the Waasmaier-Kirfel tables of coefficients for calculating the Thomson (kinematical) scattering factors of the elements and common valence states. The coefficients are stored externally in the waaskirf.db database file. The coefficients are for an Aikman expansion, which is of this form:</p>
 
-<pre>          5
+<pre><code>          5
     f0 = sum [ ai*exp(-bi*s^2) ] + c
-         i=1
+         i=1</code></pre>
 
-</pre><p>Thus there are 11 coefficients for each of the 211 tabulated
-element/valence symbols.</p>
+<p>Thus there are 11 coefficients for each of the 211 tabulated element/valence symbols.</p>
 
-<p><code>s</code> is <code>sin(theta)/lambda</code>.  <code>(lambda*s)/2pi</code> is the momentum transfer.
-<code>s</code> is simply related to the crystal d-spacing by <code>s=1/2d</code>.</p>
+<p><code>s</code> is <code>sin(theta)/lambda</code>. <code>(lambda*s)/2pi</code> is the momentum transfer. <code>s</code> is simply related to the crystal d-spacing by <code>s=1/2d</code>.</p>
 
-<p>The reference for these tables is &quot;New Analytical Scattering Factor
-Functions for Free Atoms and Ions for Free Atoms and Ions&quot;,
-D. Waasmaier &amp; A. Kirfel, Acta Cryst. (1995) A51, pp. 416-413.
-[doi:10.1107/S0108767394013292] These data, computed for neutral atoms
-and ions, are valid for the full range of sin(theta)/lambda from 0.0
-to 6.0 A-1.</p>
+<p>The reference for these tables is &quot;New Analytical Scattering Factor Functions for Free Atoms and Ions for Free Atoms and Ions&quot;, D. Waasmaier &amp; A. Kirfel, Acta Cryst. (1995) A51, pp. 416-413. [doi:10.1107/S0108767394013292] These data, computed for neutral atoms and ions, are valid for the full range of sin(theta)/lambda from 0.0 to 6.0 A-1.</p>
 
-<p>The actual data used in the W-K Aikman expansion can be found in a few
-places on the web.  Here is where I obtained the file used with this
-module: http://ftp.esrf.fr/pub/scisoft/xop/DabaxFiles/f0_WaasKirf.dat</p>
+<p>The actual data used in the W-K Aikman expansion can be found in a few places on the web. Here is where I obtained the file used with this module: http://ftp.esrf.fr/pub/scisoft/xop/DabaxFiles/f0_WaasKirf.dat</p>
 
-
-
-
-
-
-
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="METHODS">METHODS</h1>
 
 <dl>
-	<dt><code>get_f</code></dt>
-		<dd><p>This function calculates the Thomson scattering for a given symbol
-and d-spacing.  The Thomson scattering depends only on the momentum
-transfer.  The d-spacing of the scattering planes is a closely related
-quantity and is easily calculated from the crystal structure, see
-<a href="https://metacpan.org/pod/Xtal.pm">Xtal.pm</a>.</p></dd>
-<dd><pre>  $symb = &quot;Ce3+&quot;;
-  $fnot = Xray::Scattering-&gt;get_f($symb, $d);
 
-</pre></dd>		<dd><p>If the symbol cannot be found in the table, <code>get_f</code> returns 0.  It
-also returns 0 when <code>$symbol</code> consists of whitespace or is &quot;null&quot; or
-&quot;nu&quot;.  If <code>$symbol</code> is a number or the name of an element, then it
-assumes you want the Thomson scattering for the neutral element.  The
-absolute value of <code>$d_spacing</code> is used by this function.</p></dd>
-		<dd><p>If you ask for a valence state that is not in the table but for an element
-whose 0+ state is in the table, this method returns the scattering factor for
-the 0 valent atom.</p></dd>
-	<dt><code>get_coefficients</code></dt>
-		<dd><p>This returns the 11 element list containing the coefficients for the
-given symbol.</p></dd>
-<dd><pre>   @coefs = Xray::Scattering-&gt;get_coefficients($symb)
+<dt id="get_f"><code>get_f</code></dt>
+<dd>
 
-</pre></dd>		<dd><p>This returns a1,b1,a2,b2,a3,b3,a4,b4,c.</p></dd>
-		<dd><p>If you ask for a valence state that is not in the table but for an element
-whose 0+ state is in the table, this method returns the coefficients for
-the 0 valent atom.</p></dd>
-	<dt><code>has</code></dt>
-		<dd><p>This is a test of whether a given symbol is tabulated in the Waasmaier-Kirfel
-table.  It returns the symbol itself if found in the table or 0 if it is not
-in the table.</p></dd>
-<dd><pre>  $symb = &quot;Ce3+&quot;;
-  $is_tabulated = Xray::Scattering-&gt;has($symb);
+<p>This function calculates the Thomson scattering for a given symbol and d-spacing. The Thomson scattering depends only on the momentum transfer. The d-spacing of the scattering planes is a closely related quantity and is easily calculated from the crystal structure, see <a href="http://metacpan.org/module/Xtal.pm">Xtal.pm</a>.</p>
 
-</pre></dd></dl>
-<h1 id="ELEMENTS_AND_VALENCE_STATES">ELEMENTS AND VALENCE STATES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<pre><code>  $symb = &quot;Ce3+&quot;;
+  $fnot = Xray::Scattering-&gt;get_f($symb, $d);</code></pre>
 
-<p>The following is a list of symbols for the tabulated elements and
-valence states.  The final two are ways of refering to an empty site
-(i.e. a null or blank atom).</p>
+<p>If the symbol cannot be found in the table, <code>get_f</code> returns 0. It also returns 0 when <code>$symbol</code> consists of whitespace or is &quot;null&quot; or &quot;nu&quot;. If <code>$symbol</code> is a number or the name of an element, then it assumes you want the Thomson scattering for the neutral element. The absolute value of <code>$d_spacing</code> is used by this function.</p>
 
-<pre>  H     H1-   He    Li    Li1+    Be    Be2+   B     C
+<p>If you ask for a valence state that is not in the table but for an element whose 0+ state is in the table, this method returns the scattering factor for the 0 valent atom.</p>
+
+</dd>
+<dt id="get_coefficients"><code>get_coefficients</code></dt>
+<dd>
+
+<p>This returns the 11 element list containing the coefficients for the given symbol.</p>
+
+<pre><code>   @coefs = Xray::Scattering-&gt;get_coefficients($symb)</code></pre>
+
+<p>This returns a1,b1,a2,b2,a3,b3,a4,b4,c.</p>
+
+<p>If you ask for a valence state that is not in the table but for an element whose 0+ state is in the table, this method returns the coefficients for the 0 valent atom.</p>
+
+</dd>
+<dt id="has"><code>has</code></dt>
+<dd>
+
+<p>This is a test of whether a given symbol is tabulated in the Waasmaier-Kirfel table. It returns the symbol itself if found in the table or 0 if it is not in the table.</p>
+
+<pre><code>  $symb = &quot;Ce3+&quot;;
+  $is_tabulated = Xray::Scattering-&gt;has($symb);</code></pre>
+
+</dd>
+</dl>
+
+<h1 id="ELEMENTS-AND-VALENCE-STATES">ELEMENTS AND VALENCE STATES</h1>
+
+<p>The following is a list of symbols for the tabulated elements and valence states. The final two are ways of refering to an empty site (i.e. a null or blank atom).</p>
+
+<pre><code>  H     H1-   He    Li    Li1+    Be    Be2+   B     C
   Cval  N     O     O1-   O2-     F     F1-    Ne    Na
   Na1+  Mg    Mg2+  Al    Al3+    Si    Siva   Si4+  P
   S     Cl    Cl1-  Ar    K       K1+   Ca     Ca2+  Sc
@@ -156,16 +126,12 @@ valence states.  The final two are ways of refering to an empty site
   Pb4+  Bi    Bi3+  Bi5+  Po      At    Rn     Fr    Ra
   Ra2+  Ac    Ac3+  Th    Th4+    Pa    U      U3+   U4+
   U6+   Np    Np3+  Np4+  Np6+    Pu    Pu3+   Pu4+  Pu6+
-  Am    Cm    Bk    Cf    ' '     Nu
+  Am    Cm    Bk    Cf    &#39; &#39;     Nu</code></pre>
 
+<h1 id="AUTHOR">AUTHOR</h1>
 
+<pre><code>  Bruce Ravel, L&lt;http://bruceravel.github.io/home&gt;
+  http://bruceravel.github.io/demeter</code></pre>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</pre><h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
-
-<pre>  Bruce Ravel, L&lt;http://bruceravel.github.io/home&gt;
-  http://bruceravel.github.io/demeter
-
-</pre>
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::Plugins::FileType</title>
-<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::Plugins::FileType &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,398 +15,390 @@
 </div>
 <div class="path">
   <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-Plugins-FileType
+  Demeter::Plugins::FileType
 </div>
 <div>
 <a href="../../src/Demeter/Plugins/FileType.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a>
+    <ul>
+      <li><a href="#Plugins-shipped-with-Demeter">Plugins shipped with Demeter</a></li>
+      <li><a href="#Boilerplate">Boilerplate</a></li>
+      <li><a href="#Common-attributes">Common attributes</a></li>
+      <li><a href="#Common-methods">Common methods</a></li>
+      <li><a href="#Required-methods">Required methods</a></li>
+      <li><a href="#Namespace-and-disk-locations">Namespace and disk locations</a></li>
+    </ul>
+  </li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENSE-AND-COPYRIGHT">LICENSE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::Plugins::FileType - base class for file type plugins</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<pre>   my $filetype  = Demeter::Plugins::X15B-&gt;new(file=&gt;$file);
+<pre><code>   my $filetype  = Demeter::Plugins::X15B-&gt;new(file=&gt;$file);
    if ($filetype-&gt;is) {
      my $converted = $filetype-&gt;fix;
      my $data = Demeter::Data-&gt;new(file =&gt; $converted,
-    	                           $filetype -&gt; suggest(&quot;fluorescence&quot;)
+                                   $filetype -&gt; suggest(&quot;fluorescence&quot;)
                                   );
-   };
+   };</code></pre>
 
-</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>A file type plugin is used to address the common situation of raw XAS
-data from a beamline which is in a form that cannot be read directly
-by Ifeffit.  Some common reasons for this are data in a binary format,
-data with an ambiguous separation between header and data, and
-ill-formed numbers (e.g. NaN or missing white space between columns)
-among the columns of data.</p>
+<p>A file type plugin is used to address the common situation of raw XAS data from a beamline which is in a form that cannot be read directly by Ifeffit. Some common reasons for this are data in a binary format, data with an ambiguous separation between header and data, and ill-formed numbers (e.g. NaN or missing white space between columns) among the columns of data.</p>
 
-<p>The user of a data analysis program does not much care about the
-reasons that a particular data file might be unreadable by Ifeffit --
-that person is only concerned with getting some analysis done.
-Consequently, a program like Athena must do one of two things:</p>
+<p>The user of a data analysis program does not much care about the reasons that a particular data file might be unreadable by Ifeffit -- that person is only concerned with getting some analysis done. Consequently, a program like Athena must do one of two things:</p>
 
-<dl>
-	<dt>1.</dt>
-		<dd><p>Treat each such file as a special case and include custom code for
-dealing with each such case, or</p></dd>
-	<dt>2.</dt>
-		<dd><p>Provide a plugin mechanism with which a small amount of code can be
-dropped in some well-advertised location and which can be used to
-change the troublesome data into a more easily handled from.</p></dd>
-</dl>
-<p>Demeter adopts the second option.  Ifeffit (or Larch) is used for data
-import.  All data files must be readable by Ifeffit (or Larch).  For
-those kinds of data file that are not easily read by Ifeffit, a plugin
-is used to convert the data from the troublesome format into a
-standard, well-formatted, column data file.  The normal input
-mechanism is then used to import the data into a <a href="../Data.pm.html">Demeter::Data</a>
-object.</p>
+<ol>
 
-<p>All file type plugins are implemented as <a href="https://metacpan.org/pod/Moose">Moose</a> objects.  As such,
-all file type plugins must have certain attributes and methods so that
-data handling programs (such as Athena) can expect uniformity of
-interface.  The best way to meet these requirements is to modify an
-existing file type plugin.</p>
+<li><p>Treat each such file as a special case and include custom code for dealing with each such case, or</p>
 
-<p>See the <cite>022_filetypes.t</cite> test from the Demeter distribution for an
-example of using the methods of a file type plugin and creating
-Demeter::Data objects from the output of the plugins.</p>
+</li>
+<li><p>Provide a plugin mechanism with which a small amount of code can be dropped in some well-advertised location and which can be used to change the troublesome data into a more easily handled from.</p>
 
-<p>Note that this base class uses the <a href="../Project.pm.html">Demeter::Project</a> and
-<a href="../Tools.pm.html">Demeter::Tools</a> roles and so all subclasses have access to the
-methods of those roles.</p>
+</li>
+</ol>
 
-<h2 id="Plugins_shipped_with_Demeter">Plugins shipped with Demeter</h2>
+<p>Demeter adopts the second option. Ifeffit (or Larch) is used for data import. All data files must be readable by Ifeffit (or Larch). For those kinds of data file that are not easily read by Ifeffit, a plugin is used to convert the data from the troublesome format into a standard, well-formatted, column data file. The normal input mechanism is then used to import the data into a <a href="../Data.pm.html">Demeter::Data</a> object.</p>
 
-<p>The following are some of the plugins that come with Demeter.  This is
-not a complete list of plugins.  Please note that these were written
-using example data files that Bruce had available to him.  He has not
-himself used all of these beamlines.  Your mileage may vary with your
-own data.</p>
+<p>All file type plugins are implemented as <a href="http://metacpan.org/module/Moose">Moose</a> objects. As such, all file type plugins must have certain attributes and methods so that data handling programs (such as Athena) can expect uniformity of interface. The best way to meet these requirements is to modify an existing file type plugin.</p>
+
+<p>See the <i>022_filetypes.t</i> test from the Demeter distribution for an example of using the methods of a file type plugin and creating Demeter::Data objects from the output of the plugins.</p>
+
+<p>Note that this base class uses the <a href="../Project.pm.html">Demeter::Project</a> and <a href="../Tools.pm.html">Demeter::Tools</a> roles and so all subclasses have access to the methods of those roles.</p>
+
+<h2 id="Plugins-shipped-with-Demeter">Plugins shipped with Demeter</h2>
+
+<p>The following are some of the plugins that come with Demeter. This is not a complete list of plugins. Please note that these were written using example data files that Bruce had available to him. He has not himself used all of these beamlines. Your mileage may vary with your own data.</p>
 
 <dl>
-	<dt><code>X10C</code></dt>
-		<dd><p>Convert files from NSLS beamline X10C.  These files have headers which
-confuse Ifeffit and sometimes fail to have white space separating
-numbers among the data columns.  The plugin comments out the headers
-and corrects the problem with white space between columns.</p></dd>
-	<dt><code>X15B</code></dt>
-		<dd><p>Convert files from NSLS beamline X15B.  This beamline uses an ancient
-data acquisition system which writes files in a cryptic binary
-format.  This plugin converts these data to a simple column data file,
-saving only the scalars containing the XAS-relevant measurement
-channels.</p></dd>
-	<dt><code>PFBL12C</code></dt>
-		<dd><p>Convert files from Photon Factory beamline 12C.  These files have
-headers which will confuse Ifeffit's file import and store data as a
-function of monochromator angle.  This plugin comments the header and
-converts mono angle to energy using information about the crystal type
-contained in the header.</p></dd>
-	<dt><code>SSRLB</code></dt>
-		<dd><p>Convert SSRL binary data file.  Yes, SSRL does provide a program for
-converting these binary files to column ASCII data.  This plugin does
-the same chore, yielding a file easily read by Ifeffit.</p></dd>
-	<dt><code>SSRLA</code></dt>
-		<dd><p>Convert SSRL ASCII data file.  Presumably, these ASCII files are the
-result of the SSRL conversion program.  These ASCII files are
-unreadable by Ifeffit.  This plugin, comments out the header lines,
-constructs a column label line out of the Data: section, moves the
-first column (real time clock) to the third column, and swaps the
-requested and acheived energy columns.</p></dd>
-	<dt><code>SSRLmicro</code></dt>
-		<dd><p>Sam Webb's microprobe data acquisition program writes files with lots
-of columns and with a header structure that cannot be easily used by
-Ifeffit.  This plugin massages that file format into a form more
-easily ready by Ifeffit, keeping only the ROI columns.  (Note that
-this plugin could be modified quite easily to perform a simple ICR/OCR
-deadtime correction.)</p></dd>
-	<dt><code>HXMA</code></dt>
-		<dd><p>Files from the HXMA beamline at the Canadian Light Source are readable
-by Ifeffit, but the columns are labeled in a way that Ifeffit is
-unable to use.  This plugin restructures the header for Ifeffit's
-convenience and keeps only the columns containing the ion chambers and
-the corrected (presumably by a simple ICR/OCR deadtime correction) ROI
-signals from the multi-element detector.</p></dd>
-	<dt><code>CMC</code></dt>
-		<dd><p>Files from APS beamline 9BM (CMC-XOR) are single-record Spec files.
-As a result, these data files contain lots of useless column (for
-example, each file inexplicably saves h, k, and l values).  This
-plugin discard all the useless columns, keeping only those from the
-ion chambers and the multi-element detector.  It also discards the
-problematic &quot;logi0i1&quot; column, which can result in NaN entries in the
-case of zero signal on the transmission detector.</p></dd>
-	<dt><code>X23A2MED</code></dt>
-		<dd><p>Data measured using the Vortex silicon drift detector at NSLS X23A2
-are imported and deadtime corrected using the point-by-point iterative
-algorithm developed and implemented by Joe Woicik and Bruce Ravel.
-The output data file contains columns for each corrected detector
-channel as well as columns for the various ion chambers.  This is an
-example of a file type plugin which uses Ifeffit dirrectly.</p></dd>
-	<dt><code>X23A2MultiChannel</code></dt>
-		<dd><p>Data measured using the multi-channel ion chambers at NSLS X23A2 are
-converted into an Athena project file.  This is an example of filetype
-plugin which sets the <code>output</code> attribute to &quot;project&quot;.</p></dd>
-	<dt><code>Lytle</code></dt>
-		<dd><p>Import files from the Lytle database.  This plugin imports those data
-that are recorded by encoder value and which have headers that start
-with the word <code>NPTS</code> and have the mono d-spacing and steps-per-degree
-in the second line.  There is another common file format in the Lytle
-database (the header begins with <code>CUEDGE</code> and does not record the
-mono parameters) that is not handled by this plugin.  See question 3
-at <a href="http://cars9.uchicago.edu/ifeffit/FAQ/Data_Handling">http://cars9.uchicago.edu/ifeffit/FAQ/Data_Handling</a>.</p></dd>
-	<dt><code>DUBBLE</code></dt>
-		<dd><p>Import files from the DUBBLE beamline at ESRF.  This plugin converts
-mono position stored as millidegrees into energy.  It also
-disentangles the lines of the data file containing signal recorded
-from a multi-element detector.</p></dd>
-</dl>
-<p>As you can see, the plugins serve multiple purposes.  On one hand,
-they massage unreadable data (as in the binary formats) into a
-readable form.  They can also be used to do some pre-processing of the
-data, as in the case of plugins which remove unnecessary columns from
-the converted data files.</p>
 
-<p>Plugins could be used for other sorts of data pre-processing.  For
-example, it would be possible to apply deadtime corrections using
-columns contained in the original data file.  As another example, a
-plugin could also be used to remove a dark current from a data file
-which records the dark current in the header but does not remove that
-dark signal from the recorded scalars.</p>
+<dt id="X10C"><code>X10C</code></dt>
+<dd>
+
+<p>Convert files from NSLS beamline X10C. These files have headers which confuse Ifeffit and sometimes fail to have white space separating numbers among the data columns. The plugin comments out the headers and corrects the problem with white space between columns.</p>
+
+</dd>
+<dt id="X15B"><code>X15B</code></dt>
+<dd>
+
+<p>Convert files from NSLS beamline X15B. This beamline uses an ancient data acquisition system which writes files in a cryptic binary format. This plugin converts these data to a simple column data file, saving only the scalars containing the XAS-relevant measurement channels.</p>
+
+</dd>
+<dt id="PFBL12C"><code>PFBL12C</code></dt>
+<dd>
+
+<p>Convert files from Photon Factory beamline 12C. These files have headers which will confuse Ifeffit&#39;s file import and store data as a function of monochromator angle. This plugin comments the header and converts mono angle to energy using information about the crystal type contained in the header.</p>
+
+</dd>
+<dt id="SSRLB"><code>SSRLB</code></dt>
+<dd>
+
+<p>Convert SSRL binary data file. Yes, SSRL does provide a program for converting these binary files to column ASCII data. This plugin does the same chore, yielding a file easily read by Ifeffit.</p>
+
+</dd>
+<dt id="SSRLA"><code>SSRLA</code></dt>
+<dd>
+
+<p>Convert SSRL ASCII data file. Presumably, these ASCII files are the result of the SSRL conversion program. These ASCII files are unreadable by Ifeffit. This plugin, comments out the header lines, constructs a column label line out of the Data: section, moves the first column (real time clock) to the third column, and swaps the requested and acheived energy columns.</p>
+
+</dd>
+<dt id="SSRLmicro"><code>SSRLmicro</code></dt>
+<dd>
+
+<p>Sam Webb&#39;s microprobe data acquisition program writes files with lots of columns and with a header structure that cannot be easily used by Ifeffit. This plugin massages that file format into a form more easily ready by Ifeffit, keeping only the ROI columns. (Note that this plugin could be modified quite easily to perform a simple ICR/OCR deadtime correction.)</p>
+
+</dd>
+<dt id="HXMA"><code>HXMA</code></dt>
+<dd>
+
+<p>Files from the HXMA beamline at the Canadian Light Source are readable by Ifeffit, but the columns are labeled in a way that Ifeffit is unable to use. This plugin restructures the header for Ifeffit&#39;s convenience and keeps only the columns containing the ion chambers and the corrected (presumably by a simple ICR/OCR deadtime correction) ROI signals from the multi-element detector.</p>
+
+</dd>
+<dt id="CMC"><code>CMC</code></dt>
+<dd>
+
+<p>Files from APS beamline 9BM (CMC-XOR) are single-record Spec files. As a result, these data files contain lots of useless column (for example, each file inexplicably saves h, k, and l values). This plugin discard all the useless columns, keeping only those from the ion chambers and the multi-element detector. It also discards the problematic &quot;logi0i1&quot; column, which can result in NaN entries in the case of zero signal on the transmission detector.</p>
+
+</dd>
+<dt id="X23A2MED"><code>X23A2MED</code></dt>
+<dd>
+
+<p>Data measured using the Vortex silicon drift detector at NSLS X23A2 are imported and deadtime corrected using the point-by-point iterative algorithm developed and implemented by Joe Woicik and Bruce Ravel. The output data file contains columns for each corrected detector channel as well as columns for the various ion chambers. This is an example of a file type plugin which uses Ifeffit dirrectly.</p>
+
+</dd>
+<dt id="X23A2MultiChannel"><code>X23A2MultiChannel</code></dt>
+<dd>
+
+<p>Data measured using the multi-channel ion chambers at NSLS X23A2 are converted into an Athena project file. This is an example of filetype plugin which sets the <code>output</code> attribute to &quot;project&quot;.</p>
+
+</dd>
+<dt id="Lytle"><code>Lytle</code></dt>
+<dd>
+
+<p>Import files from the Lytle database. This plugin imports those data that are recorded by encoder value and which have headers that start with the word <code>NPTS</code> and have the mono d-spacing and steps-per-degree in the second line. There is another common file format in the Lytle database (the header begins with <code>CUEDGE</code> and does not record the mono parameters) that is not handled by this plugin. See question 3 at <a href="http://cars9.uchicago.edu/ifeffit/FAQ/Data_Handling">http://cars9.uchicago.edu/ifeffit/FAQ/Data_Handling</a>.</p>
+
+</dd>
+<dt id="DUBBLE"><code>DUBBLE</code></dt>
+<dd>
+
+<p>Import files from the DUBBLE beamline at ESRF. This plugin converts mono position stored as millidegrees into energy. It also disentangles the lines of the data file containing signal recorded from a multi-element detector.</p>
+
+</dd>
+</dl>
+
+<p>As you can see, the plugins serve multiple purposes. On one hand, they massage unreadable data (as in the binary formats) into a readable form. They can also be used to do some pre-processing of the data, as in the case of plugins which remove unnecessary columns from the converted data files.</p>
+
+<p>Plugins could be used for other sorts of data pre-processing. For example, it would be possible to apply deadtime corrections using columns contained in the original data file. As another example, a plugin could also be used to remove a dark current from a data file which records the dark current in the header but does not remove that dark signal from the recorded scalars.</p>
 
 <h2 id="Boilerplate">Boilerplate</h2>
 
-<p>A file type plugin should start with the boilerplate like the
-following:</p>
+<p>A file type plugin should start with the boilerplate like the following:</p>
 
-<pre>  package Demeter::Plugins::X15B;
+<pre><code>  package Demeter::Plugins::X15B;
   use Moose;
-  extends 'Demeter::Plugins::FileType';
-  has '+is_binary'   =&gt; (default =&gt; 1);
-  has '+description' =&gt; (default =&gt; &quot;Read binary files from NSLS beamline X15B.&quot;);
-  has '+version'     =&gt; (default =&gt; 0.1);
+  extends &#39;Demeter::Plugins::FileType&#39;;
+  has &#39;+is_binary&#39;   =&gt; (default =&gt; 1);
+  has &#39;+description&#39; =&gt; (default =&gt; &quot;Read binary files from NSLS beamline X15B.&quot;);
+  has &#39;+version&#39;     =&gt; (default =&gt; 0.1);</code></pre>
 
-</pre><p>The final two executable lines of the plugin must be the following:</p>
+<p>The final two executable lines of the plugin must be the following:</p>
 
-<pre>  __PACKAGE__-&gt;meta-&gt;make_immutable;
-  1;
+<pre><code>  __PACKAGE__-&gt;meta-&gt;make_immutable;
+  1;</code></pre>
 
-</pre><p>This will set up the plugin as a class derived from the
-<a href="FileType.pm.html">Demeter::Plugins::FileType</a> base class and set the correct values
-for the <code>is_binary</code> and <code>description</code> attributes.  This boilerplate
-will be followed by the <code>is</code>, <code>fix</code> and <code>suggest</code> methods which
-define the file type plugin interface.</p>
+<p>This will set up the plugin as a class derived from the <a href="FileType.pm.html">Demeter::Plugins::FileType</a> base class and set the correct values for the <code>is_binary</code> and <code>description</code> attributes. This boilerplate will be followed by the <code>is</code>, <code>fix</code> and <code>suggest</code> methods which define the file type plugin interface.</p>
 
-<h2 id="Common_attributes">Common attributes</h2>
+<h2 id="Common-attributes">Common attributes</h2>
 
-<p>Every file type plugin has the following attributes, all of which are
-inherited from the <a href="https://metacpan.org/pod/Demeter%3A%3APlugin%3A%3AFileType">Demeter::Plugin::FileType</a> base class.  Normally,
-an individual file type plugin will need to override the <code>is_binary</code>
-and <code>description</code>, as shown above.  The <code>version</code> attribute should
-also be overriden by any plugin.</p>
+<p>Every file type plugin has the following attributes, all of which are inherited from the <a href="http://metacpan.org/module/Demeter::Plugin::FileType">Demeter::Plugin::FileType</a> base class. Normally, an individual file type plugin will need to override the <code>is_binary</code> and <code>description</code>, as shown above. The <code>version</code> attribute should also be overriden by any plugin.</p>
 
 <dl>
-	<dt><code>is_binary</code></dt>
-		<dd><p>This is a Boolean which indicates whether the original data file was
-in a binary format.  The use of this flag is indicate to a GUI program
-whether the original data file can be displayed as text.</p></dd>
-	<dt><code>description</code></dt>
-		<dd><p>A brief textual description of the purpose of the plugin.  This should
-be succinct and finish a sentence that begins &quot;This file appears to be
-from &quot;.</p></dd>
-	<dt><code>version</code></dt>
-		<dd><p>The version number of the plugin.</p></dd>
-	<dt><code>parent</code></dt>
-		<dd><p>A placeholder which may be needed by a GUI.  Currently not used by any
-plugin.</p></dd>
-	<dt><code>file</code></dt>
-		<dd><p>This takes the name of the original data file and is the only
-attribute typically supplied by the caller.</p></dd>
-	<dt><code>filename</code></dt>
-		<dd><p>This is the file name part of the value of the <code>file</code> attribute.
-This is set by a trigger when the <code>file</code> attribute is set.  All the
-file type plugins that ship with Demeter write the output column data
-file to the stash directory with the same name as the input file.  The
-bit of code that does that copying uses this attribute to name the
-output file.  You should never need to set this directly.</p></dd>
-	<dt><code>folder</code></dt>
-		<dd><p>This is the folder part of the value of the <code>file</code> attribute.  This
-is set by a trigger when the <code>file</code> attribute is set.  You should
-never need to set this directly.</p></dd>
-	<dt><code>fixed</code></dt>
-		<dd><p>This contains the fully resolved file name of the converted file.  The
-converted file typically sits in Demeter's stash folder.  For a
-list-returning plugin, this contains a reference to an array of fully
-resolved filenames, those files being the items extracted from the
-original file.</p></dd>
-	<dt><code>output</code></dt>
-		<dd><p>This string is either &quot;data&quot;, &quot;list&quot; or &quot;project&quot; to indicate what
-kind of file is written to the stash area by the plugin.  Most plugins
-filter an input data file into a stash file that Ifeffit can read.  A
-plugin can also return a reference to a list of files.  The plugin may
-or may not do some processing of each individual file in the list.
-You will need to process each returned file correctly.  A plugin can
-also make an Athena project file, in which case this attribute tells
-Demeter to interpret it that way.</p></dd>
-	<dt><code>conffile</code></dt>
-		<dd><p>If the plugin requires configuration parameters, these can be
-specified in an demeter-style configuration file whise name is given
-by this attribute.  The default is an empty string, which indicates
-that no configuration file is required.  The file must be a
-demeter_conf file so that a GUI (say, Athena) can provide a consistent
-mechanism for modifying the configuration.</p></dd>
-	<dt><code>metadata_ini</code></dt>
-		<dd><p>If the plugin is for a file from a beamline with metadata tabulated in
-Demeter's <cite>share/xdi/</cite> folder, this attribute should be set to <cite>.ini</cite>
-file for that beamline.</p></dd>
+
+<dt id="is_binary"><code>is_binary</code></dt>
+<dd>
+
+<p>This is a Boolean which indicates whether the original data file was in a binary format. The use of this flag is indicate to a GUI program whether the original data file can be displayed as text.</p>
+
+</dd>
+<dt id="description"><code>description</code></dt>
+<dd>
+
+<p>A brief textual description of the purpose of the plugin. This should be succinct and finish a sentence that begins &quot;This file appears to be from &quot;.</p>
+
+</dd>
+<dt id="version"><code>version</code></dt>
+<dd>
+
+<p>The version number of the plugin.</p>
+
+</dd>
+<dt id="parent"><code>parent</code></dt>
+<dd>
+
+<p>A placeholder which may be needed by a GUI. Currently not used by any plugin.</p>
+
+</dd>
+<dt id="file"><code>file</code></dt>
+<dd>
+
+<p>This takes the name of the original data file and is the only attribute typically supplied by the caller.</p>
+
+</dd>
+<dt id="filename"><code>filename</code></dt>
+<dd>
+
+<p>This is the file name part of the value of the <code>file</code> attribute. This is set by a trigger when the <code>file</code> attribute is set. All the file type plugins that ship with Demeter write the output column data file to the stash directory with the same name as the input file. The bit of code that does that copying uses this attribute to name the output file. You should never need to set this directly.</p>
+
+</dd>
+<dt id="folder"><code>folder</code></dt>
+<dd>
+
+<p>This is the folder part of the value of the <code>file</code> attribute. This is set by a trigger when the <code>file</code> attribute is set. You should never need to set this directly.</p>
+
+</dd>
+<dt id="fixed"><code>fixed</code></dt>
+<dd>
+
+<p>This contains the fully resolved file name of the converted file. The converted file typically sits in Demeter&#39;s stash folder. For a list-returning plugin, this contains a reference to an array of fully resolved filenames, those files being the items extracted from the original file.</p>
+
+</dd>
+<dt id="output"><code>output</code></dt>
+<dd>
+
+<p>This string is either &quot;data&quot;, &quot;list&quot; or &quot;project&quot; to indicate what kind of file is written to the stash area by the plugin. Most plugins filter an input data file into a stash file that Ifeffit can read. A plugin can also return a reference to a list of files. The plugin may or may not do some processing of each individual file in the list. You will need to process each returned file correctly. A plugin can also make an Athena project file, in which case this attribute tells Demeter to interpret it that way.</p>
+
+</dd>
+<dt id="conffile"><code>conffile</code></dt>
+<dd>
+
+<p>If the plugin requires configuration parameters, these can be specified in an demeter-style configuration file whise name is given by this attribute. The default is an empty string, which indicates that no configuration file is required. The file must be a demeter_conf file so that a GUI (say, Athena) can provide a consistent mechanism for modifying the configuration.</p>
+
+</dd>
+<dt id="metadata_ini"><code>metadata_ini</code></dt>
+<dd>
+
+<p>If the plugin is for a file from a beamline with metadata tabulated in Demeter&#39;s <i>share/xdi/</i> folder, this attribute should be set to <i>.ini</i> file for that beamline.</p>
+
+</dd>
+<dt id="display_new"><code>display_new</code></dt>
+<dd>
+
+<p>When true, this tells Athena to use the filename of the file copied to the stash folder in the group list. The value of this is that information can be inserted by a plugin into the filename. That information then makes its way into the group list label.</p>
+
+</dd>
 </dl>
-<h2 id="Common_methods">Common methods</h2>
+
+<h2 id="Common-methods">Common methods</h2>
 
 <p>All plugins inherit these methods:</p>
 
 <dl>
-	<dt><code>data_attributes</code></dt>
-		<dd><p>This returns a list which sets a number of data attributes of the Data
-object being set by the plugin, including <code>file</code>, <code>source</code>, and all
-the column selection attributes.</p></dd>
-<dd><pre>  my $plugin = Demeter::Plugins::Whatever-&gt;new(file=&gt;$file);
-  $plugin -&gt; fix;
-  my $mode = 'fluorescence';  # or 'transmission'
-  my $data = Demeter::Data-&gt;new($plugin-&gt;data_attributes($mode));
 
-</pre></dd>		<dd><p>The Data's <code>file</code> attribute will be set to the name of the stash
-file, the <code>source</code> attribute will be set to the raw data file, and
-the <code>energy</code>, <code>numerator</code>, <code>denominator</code>, and <code>ln</code> attributes will
-be set as suggested by the plugin.</p></dd>
-</dl>
-<h2 id="Required_methods">Required methods</h2>
-
-<p>All plugins <strong>must</strong> supply these three methods:</p>
-
-<dl>
-	<dt><code>is</code></dt>
-		<dd><p>The <code>is</code> method is used to recognize a data file of a particular
-format.  Typically, this recognition is made by examining the contents
-of the data file and finding some identifying feature of the contents.</p></dd>
-<dd><pre>  my $filetype = Demeter::Plugins::X15B-&gt;new(file=&gt;$file);
-  my $is_x15b  = $filetype-&gt;is;
-
-</pre></dd>		<dd><p>The <code>is</code> method returns a true value if the file is recognized and a
-false value if not.</p></dd>
-		<dd><p>Note that the <code>is</code> method must be fast.  It is possible that a data
-file will be checked against many different file types.  A poorly
-written <code>is</code> method can seriously impede the performance of a data
-processing program.</p></dd>
-	<dt><code>fix</code></dt>
-		<dd><p>The <code>fix</code> method opens the file contained in the <code>file</code> attribute,
-applies whatever processing needs to happen and writes that file as a
-normal column data file.  The fully-resolved filename of the output
-file is stored in the <code>fixed</code> attribute <strong>and</strong> is the return value of
-this method.  All plugins that come with Demeter write the output file
-to Demeter's stash folder and use the same name as the input data
-file.  This is good practice, but is not required.</p></dd>
+<dt id="data_attributes"><code>data_attributes</code></dt>
 <dd>
 
+<p>This returns a list which sets a number of data attributes of the Data object being set by the plugin, including <code>file</code>, <code>source</code>, and all the column selection attributes.</p>
 
-</dd><dd><pre>      my $filetype  = Demeter::Plugins::X15B-&gt;new(file=&gt;$file);
-      my $converted_file = $filetype-&gt;fix;
-       ## this also works after the call to fix:
-       ## my $converted_file = $filetype-&gt;fixed;
+<pre><code>  my $plugin = Demeter::Plugins::Whatever-&gt;new(file=&gt;$file);
+  $plugin -&gt; fix;
+  my $mode = &#39;fluorescence&#39;;  # or &#39;transmission&#39;
+  my $data = Demeter::Data-&gt;new($plugin-&gt;data_attributes($mode));</code></pre>
 
-</pre></dd><dd>
+<p>The Data&#39;s <code>file</code> attribute will be set to the name of the stash file, the <code>source</code> attribute will be set to the raw data file, and the <code>energy</code>, <code>numerator</code>, <code>denominator</code>, and <code>ln</code> attributes will be set as suggested by the plugin.</p>
 
-
-</dd>		<dd><p>The <code>fix</code> method can be written using virtually any tool, including
-tools provided by Demeter itself.  It can also call Ifeffit directly
-if you <code>use Ifeffit;</code> at the top of the plugin file.  You can even
-use external tools such as <a href="https://metacpan.org/pod/PDL">PDL</a>, <a href="https://metacpan.org/pod/Math%3A%3ACephes">Math::Cephes</a>, or other
-heavy-duty mathematics utilities.</p></dd>
-		<dd><p>Speed is appreciated, but correctness is essential.</p></dd>
-	<dt><code>suggest</code></dt>
-		<dd><p>This method returns an array containing values for the <code>energy</code>,
-<code>numerator</code>, <code>denominator</code>, and <code>ln</code> attributes of the
-<a href="../Data.pm.html">Demeter::Data</a> object.  If the <code>fix</code> method leaves the data file in
-a format for which correct column selection for transmission or
-fluorescence XAS is predictable, this method helps lower the barrier
-of using the plugin.</p></dd>
-<dd><pre>      my $filetype  = Demeter::Plugins::X15B-&gt;new(file=&gt;$file);
-      if ($filetype-&gt;is) {
-        my $converted = $filetype-&gt;fix;
-	my $data = Demeter::Data-&gt;new(file =&gt; $converted,
-	   	   	              $filetype -&gt; suggest(&quot;fluorescence&quot;)
-                                     );
-      };
-
-</pre></dd>		<dd><p>Here the suggested column numbers for the energy, fluorescence
-(numerator), and I0 (denominator) channels are returned by the
-<code>suggest</code> method for use in defining the <a href="../Data.pm.html">Demeter::Data</a> object.</p></dd>
-		<dd><p>This method takes a single argument, which should be either
-&quot;transmission&quot; or &quot;fluorescence&quot;.  A plugin can choose which to make
-as the default.  Most use &quot;transmission&quot; as the default, but a plugin
-for an instrument or beamline related to a fluorescence measurement
-will make &quot;fluorescence&quot; the default.  In any case, spell carefully!+</p></dd>
-		<dd><p>If the proper columns are not predictable, then this method should
-return an empty array.</p></dd>
-		<dd><p>The return value should be an array and not an array reference.</p></dd>
-	<dt><code>clean</code></dt>
-		<dd><p>A list-returning plugin, i.e. one which returns a reference to an
-array from the <code>fix</code> method, must provide a <code>clean</code> method.  This
-method, when invoked, will remove from disk the files listed in the
-return value of the <code>fix</code> method.  Plugins which return a single file
-or an Athena project file need not provide this method.</p></dd>
+</dd>
 </dl>
-<h2 id="Namespace_and_disk_locations">Namespace and disk locations</h2>
 
-<p>All plugins <strong>must</strong> live in the <code>Demeter::Plugins::</code> namespace.  In
-the Demeter distribution, therefore, they live in the
-<cite>Demeter/Plugins/</cite> folder beneath the installation location.</p>
+<h2 id="Required-methods">Required methods</h2>
 
-<p>An individual user can have additional plugins in user diskspace by
-placing them in ...</p>
+<p>All plugins <b>must</b> supply these three methods:</p>
 
 <dl>
-	<dt>unix</dt>
-<dd><pre>  $HOME/.horae/Demeter/Plugins/
 
-</pre></dd>	<dt>Windows</dt>
-<dd><pre>  %APPDATA%\horae\Demeter\Plugins\
+<dt id="is"><code>is</code></dt>
+<dd>
 
-</pre></dd></dl>
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<p>The <code>is</code> method is used to recognize a data file of a particular format. Typically, this recognition is made by examining the contents of the data file and finding some identifying feature of the contents.</p>
+
+<pre><code>  my $filetype = Demeter::Plugins::X15B-&gt;new(file=&gt;$file);
+  my $is_x15b  = $filetype-&gt;is;</code></pre>
+
+<p>The <code>is</code> method returns a true value if the file is recognized and a false value if not.</p>
+
+<p>Note that the <code>is</code> method must be fast. It is possible that a data file will be checked against many different file types. A poorly written <code>is</code> method can seriously impede the performance of a data processing program.</p>
+
+</dd>
+<dt id="fix"><code>fix</code></dt>
+<dd>
+
+<p>The <code>fix</code> method opens the file contained in the <code>file</code> attribute, applies whatever processing needs to happen and writes that file as a normal column data file. The fully-resolved filename of the output file is stored in the <code>fixed</code> attribute <b>and</b> is the return value of this method. All plugins that come with Demeter write the output file to Demeter&#39;s stash folder and use the same name as the input data file. This is good practice, but is not required.</p>
+
+<pre><code>      my $filetype  = Demeter::Plugins::X15B-&gt;new(file=&gt;$file);
+      my $converted_file = $filetype-&gt;fix;
+       ## this also works after the call to fix:
+       ## my $converted_file = $filetype-&gt;fixed;</code></pre>
+
+<p>The <code>fix</code> method can be written using virtually any tool, including tools provided by Demeter itself. It can also call Ifeffit directly if you <code>use Ifeffit;</code> at the top of the plugin file. You can even use external tools such as <a href="http://metacpan.org/module/PDL">PDL</a>, <a href="http://metacpan.org/module/Math::Cephes">Math::Cephes</a>, or other heavy-duty mathematics utilities.</p>
+
+<p>Speed is appreciated, but correctness is essential.</p>
+
+</dd>
+<dt id="suggest"><code>suggest</code></dt>
+<dd>
+
+<p>This method returns an array containing values for the <code>energy</code>, <code>numerator</code>, <code>denominator</code>, and <code>ln</code> attributes of the <a href="../Data.pm.html">Demeter::Data</a> object. If the <code>fix</code> method leaves the data file in a format for which correct column selection for transmission or fluorescence XAS is predictable, this method helps lower the barrier of using the plugin.</p>
+
+<pre><code>      my $filetype  = Demeter::Plugins::X15B-&gt;new(file=&gt;$file);
+      if ($filetype-&gt;is) {
+        my $converted = $filetype-&gt;fix;
+        my $data = Demeter::Data-&gt;new(file =&gt; $converted,
+                                      $filetype -&gt; suggest(&quot;fluorescence&quot;)
+                                     );
+      };</code></pre>
+
+<p>Here the suggested column numbers for the energy, fluorescence (numerator), and I0 (denominator) channels are returned by the <code>suggest</code> method for use in defining the <a href="../Data.pm.html">Demeter::Data</a> object.</p>
+
+<p>This method takes a single argument, which should be either &quot;transmission&quot; or &quot;fluorescence&quot;. A plugin can choose which to make as the default. Most use &quot;transmission&quot; as the default, but a plugin for an instrument or beamline related to a fluorescence measurement will make &quot;fluorescence&quot; the default. In any case, spell carefully!+</p>
+
+<p>If the proper columns are not predictable, then this method should return an empty array.</p>
+
+<p>The return value should be an array and not an array reference.</p>
+
+</dd>
+<dt id="clean"><code>clean</code></dt>
+<dd>
+
+<p>A list-returning plugin, i.e. one which returns a reference to an array from the <code>fix</code> method, must provide a <code>clean</code> method. This method, when invoked, will remove from disk the files listed in the return value of the <code>fix</code> method. Plugins which return a single file or an Athena project file need not provide this method.</p>
+
+</dd>
+</dl>
+
+<h2 id="Namespace-and-disk-locations">Namespace and disk locations</h2>
+
+<p>All plugins <b>must</b> live in the <code>Demeter::Plugins::</code> namespace. In the Demeter distribution, therefore, they live in the <i>Demeter/Plugins/</i> folder beneath the installation location.</p>
+
+<p>An individual user can have additional plugins in user diskspace by placing them in ...</p>
+
+<dl>
+
+<dt id="unix">unix</dt>
+<dd>
+
+<pre><code>  $HOME/.horae/Demeter/Plugins/</code></pre>
+
+</dd>
+<dt id="Windows">Windows</dt>
+<dd>
+
+<pre><code>  %APPDATA%\horae\Demeter\Plugins\</code></pre>
+
+</dd>
+</dl>
+
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
 <ul>
-	<li>Do I need the <code>parent</code> attribute?</li>
-	<li>None of the plugins have enough error testing.  It is certainly
-possible that <code>is</code> could return true but the rest of the file is
-malformed compared to the expectations of <code>fix</code>.</li>
+
+<li><p>Do I need the <code>parent</code> attribute?</p>
+
+</li>
+<li><p>None of the plugins have enough error testing. It is certainly possible that <code>is</code> could return true but the rest of the file is malformed compared to the expectations of <code>fix</code>.</p>
+
+</li>
 </ul>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel, <a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a></p>
 
 <p>http://bruceravel.github.io/demeter/</p>
 
-<h1 id="LICENSE_AND_COPYRIGHT">LICENSE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="LICENSE-AND-COPYRIGHT">LICENSE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

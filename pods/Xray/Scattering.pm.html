@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Xray::Scattering</title>
-<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Xray::Scattering &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,117 +15,127 @@
 </div>
 <div class="path">
   <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Xray-Scattering
+  Xray::Scattering
 </div>
 <div>
 <a href="../src/Xray/Scattering.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a></li>
+  <li><a href="#SUBCLASS-METHODS">SUBCLASS METHODS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Xray::Scattering - X-ray scattering data for the elements</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<pre>  use Xray::Scattering;
-  Xray::Scattering-&gt;load('CroMann');
+<pre><code>  use Xray::Scattering;
+  Xray::Scattering-&gt;load(&#39;CroMann&#39;);
   $fnot = Xray::Scattering-&gt;get_f($symb, $d);
 
-  Xray::Scattering-&gt;load('WaasKirt');
-  $fnot = Xray::Scattering-&gt;get_f($symb, $d);
+  Xray::Scattering-&gt;load(&#39;WaasKirt&#39;);
+  $fnot = Xray::Scattering-&gt;get_f($symb, $d);</code></pre>
 
-</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This module supports access to X-ray scattering data for atoms and ions.  It
-is designed to be a transparent interface to scattering data from a variety of
-sources.  Currently, the only sources of data are the Cromer-Mann tables from
-the International Tables of Crystallography and the 1995 Waasmaier-Kirfel
-tables.  More resources can be added easily.</p>
+<p>This module supports access to X-ray scattering data for atoms and ions. It is designed to be a transparent interface to scattering data from a variety of sources. Currently, the only sources of data are the Cromer-Mann tables from the International Tables of Crystallography and the 1995 Waasmaier-Kirfel tables. More resources can be added easily.</p>
 
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="METHODS">METHODS</h1>
 
 <dl>
-	<dt><code>available</code></dt>
-		<dd><p>This method returns a list of data resources available to this module.
-Currently this returns an array consisting of these strings:</p></dd>
-<dd><pre>  Cromer-Mann  Waasmaier-Kirfel  None
 
-</pre></dd>		<dd><p>The first two are functional interfaces to those databases.  The third is a
-fallback subclass which returns default values for all methods.</p></dd>
-	<dt><code>get_valence</code></dt>
-		<dd><p>This returns the element/valence symbol in the proper form for use with other
-methods.  <code>$elem</code> is a two-letter atomic symbol, and <code>$valence</code> is the
-valence of the ion.  <code>$valence</code> can be an integer, a float, a dot or the
-string &quot;va&quot;.</p></dd>
-<dd><pre>   $symbol = Xray::Scattering-&gt;get_valence($elem, $valence)
+<dt id="available"><code>available</code></dt>
+<dd>
 
-</pre></dd>		<dd><p>Unless the valence is a dot or the string &quot;va&quot;, the nearest integer to
-<code>$valence</code> is used with the element symbol to construct the element/valence
-symbol.  As an example, <code>$symbol eq &quot;Cu2+&quot;</code> if <code>$elem eq &quot;Cu&quot;</code> and
-<code>$valence == 2</code>.</p></dd>
+<p>This method returns a list of data resources available to this module. Currently this returns an array consisting of these strings:</p>
+
+<pre><code>  Cromer-Mann  Waasmaier-Kirfel  None</code></pre>
+
+<p>The first two are functional interfaces to those databases. The third is a fallback subclass which returns default values for all methods.</p>
+
+</dd>
+<dt id="get_valence"><code>get_valence</code></dt>
+<dd>
+
+<p>This returns the element/valence symbol in the proper form for use with other methods. <code>$elem</code> is a two-letter atomic symbol, and <code>$valence</code> is the valence of the ion. <code>$valence</code> can be an integer, a float, a dot or the string &quot;va&quot;.</p>
+
+<pre><code>   $symbol = Xray::Scattering-&gt;get_valence($elem, $valence)</code></pre>
+
+<p>Unless the valence is a dot or the string &quot;va&quot;, the nearest integer to <code>$valence</code> is used with the element symbol to construct the element/valence symbol. As an example, <code>$symbol eq &quot;Cu2+&quot;</code> if <code>$elem eq &quot;Cu&quot;</code> and <code>$valence == 2</code>.</p>
+
+</dd>
 </dl>
-<h1 id="SUBCLASS_METHODS">SUBCLASS METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>All the available subclasses corresponding to the data resources provide their
-own versions of the following methods:</p>
+<h1 id="SUBCLASS-METHODS">SUBCLASS METHODS</h1>
+
+<p>All the available subclasses corresponding to the data resources provide their own versions of the following methods:</p>
 
 <dl>
-	<dt><code>get_f</code></dt>
-		<dd><p>This function calculates the Thomson scattering for a given symbol
-and d-spacing.  The Thomson scattering depends only on the momentum
-transfer.  The d-spacing of the scattering planes is a closely related
-quantity and is easily calculated from the crystal structure, see
-<a href="https://metacpan.org/pod/Xtal.pm">Xtal.pm</a>.</p></dd>
-<dd><pre>  $symb = &quot;Ce3+&quot;;
-  $fnot = Xray::Scattering-&gt;get_f($symb, $d);
 
-</pre></dd>		<dd><p>If the symbol cannot be found in the table, <code>get_f</code> returns 0.  It
-also returns 0 when <code>$symbol</code> consists of whitespace or is &quot;null&quot; or
-&quot;nu&quot;.  If <code>$symbol</code> is a number or the name of an element, then it
-assumes you want the Thomson scattering for the neutral element.  The
-absolute value of <code>$d_spacing</code> is used by this function.</p></dd>
-		<dd><p>The <code>None</code> subclass always returns 0.</p></dd>
-		<dd><p>If you ask for a valence state that is not in the table but for an element
-whose 0+ state is in the table, this method returns the scattering factor for
-the 0 valent atom.</p></dd>
-	<dt><code>get_coefficients</code></dt>
-		<dd><p>This returns the 9 (Cromer-Mann) or 11 (Waasmaier-Kirfel) element list
-containing the coefficients for the given symbol.</p></dd>
-<dd><pre>   @coefs = Xray::Scattering-&gt;get_coefficients($symb)
+<dt id="get_f"><code>get_f</code></dt>
+<dd>
 
-</pre></dd>		<dd><p>See the documents for the subclasses for the order of the coefficients.  The
-None subclass always returns a list of 11 zeros.</p></dd>
-		<dd><p>If you ask for a valence state that is not in the table but for an element
-whose 0+ state is in the table, this method returns the coefficients for
-the 0 valent atom.</p></dd>
-	<dt><code>has</code></dt>
-		<dd><p>This is a test of whether a given symbol is tabulated in the selected data
-resource table.  It returns the symbol itself if found in the table or 0 if it
-is not in the table.</p></dd>
-<dd><pre>  $symb = &quot;Ce3+&quot;;
-  $has = Xray::Scattering-&gt;has($symb);
+<p>This function calculates the Thomson scattering for a given symbol and d-spacing. The Thomson scattering depends only on the momentum transfer. The d-spacing of the scattering planes is a closely related quantity and is easily calculated from the crystal structure, see <a href="http://metacpan.org/module/Xtal.pm">Xtal.pm</a>.</p>
 
-</pre></dd>		<dd><p>The None subclass returns the symbol itself.</p></dd>
+<pre><code>  $symb = &quot;Ce3+&quot;;
+  $fnot = Xray::Scattering-&gt;get_f($symb, $d);</code></pre>
+
+<p>If the symbol cannot be found in the table, <code>get_f</code> returns 0. It also returns 0 when <code>$symbol</code> consists of whitespace or is &quot;null&quot; or &quot;nu&quot;. If <code>$symbol</code> is a number or the name of an element, then it assumes you want the Thomson scattering for the neutral element. The absolute value of <code>$d_spacing</code> is used by this function.</p>
+
+<p>The <code>None</code> subclass always returns 0.</p>
+
+<p>If you ask for a valence state that is not in the table but for an element whose 0+ state is in the table, this method returns the scattering factor for the 0 valent atom.</p>
+
+</dd>
+<dt id="get_coefficients"><code>get_coefficients</code></dt>
+<dd>
+
+<p>This returns the 9 (Cromer-Mann) or 11 (Waasmaier-Kirfel) element list containing the coefficients for the given symbol.</p>
+
+<pre><code>   @coefs = Xray::Scattering-&gt;get_coefficients($symb)</code></pre>
+
+<p>See the documents for the subclasses for the order of the coefficients. The None subclass always returns a list of 11 zeros.</p>
+
+<p>If you ask for a valence state that is not in the table but for an element whose 0+ state is in the table, this method returns the coefficients for the 0 valent atom.</p>
+
+</dd>
+<dt id="has"><code>has</code></dt>
+<dd>
+
+<p>This is a test of whether a given symbol is tabulated in the selected data resource table. It returns the symbol itself if found in the table or 0 if it is not in the table.</p>
+
+<pre><code>  $symb = &quot;Ce3+&quot;;
+  $has = Xray::Scattering-&gt;has($symb);</code></pre>
+
+<p>The None subclass returns the symbol itself.</p>
+
+</dd>
 </dl>
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel, <a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a></p>
 
 <p>http://bruceravel.github.io/demeter</p>
 
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2008 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlartistic">perlartistic</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlartistic">perlartistic</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

@@ -1,0 +1,145 @@
+..
+   Athena document is copyright 2016 Bruce Ravel and released under
+   The Creative Commons Attribution-ShareAlike License
+   http://creativecommons.org/licenses/by-sa/3.0/
+
+Setting E0
+==========
+
+The :procparam:`e0` is central to many of the chores that
+:demeter:`athena` performs.  Understanding how :procparam:`e0` is used
+and how it is set is essential to understanding how :demeter:`athena`
+operates and essential to using :demeter:`athena` well.
+
+By default, :demeter:`athena` has :demeter:`ifeffit` determine
+:procparam:`e0` and uses the value that :demeter:`ifeffit`
+finds. :demeter:`ifeffit`'s algorithm is to find the first peak of the
+first derivative of |mu| (E). To avoid settling on a spot in a noisy
+pre-edge, :demeter:`ifeffit` makes a series of checks to verify that
+its guess for :procparam:`e0` comes after several points in the
+derivative of |mu| (E) that are increasing in energy and is followed
+by several points that are decreasing. The details of this
+implementation are such that :demeter:`ifeffit` often chooses a point
+that is slightly to the high energy side of peak that a person would
+choose, but it typically is a very good guess.
+
+The actual  value of :procparam:`e0`  is used  for many things.  It is
+compared to  a table of  edge energies to  determine the value  of the
+:procparam:`Z`  and :procparam:`edge`  parameters.  It  is the  energy
+reference for  the values of  the normalization, pre-edge,  and spline
+range parameters. And  it is the edge energy  in the :demeter:`autobk`
+algorithm.
+
+The `calibration <../process/cal.html>`__ and `alignment
+<../process/align.html>`__ tools can be used to refine the values for
+:procparam:`e0`. You can also edit its value directly by typing in its
+entry box. The :mark:`rightclick,..` right-click context menu for
+:procparam:`e0` and the :guilabel:`Energy` menu have several options
+for other ways of setting :procparam:`e0`.
+
+There are a few situations where the default algorithm will fail. Very
+noisy data can result in a spurious identification of
+:procparam:`e0`. Materials which have two inflections in the edge,
+such as zero-valent zirconium, might have the wrong inflection
+chosen. Materials with huge edge peaks, such as K\ :sub:`2`\ CrO\
+:sub:`4`, will have a point in the leading edge of the peak chosen
+rather than a point in the main edge.
+
+.. versionadded:: 0.9.18 features related to E\ :sub:`0` moved from
+   the :guilabel:`Group` menu to the :guilabel:`Energy` menu.
+
+
+Aside from the default method described above, :demeter:`athena`
+offers a few other algorithms for setting :procparam:`E0`.
+
+**Tabulated atomic value**
+    The tabulated value of the edge energy of the zero-valent element
+    will be used. To determine the element, a transitory value for e0
+    will be found using :demeter:`ifeffit`. Once :procparam:`Z` and
+    :procparam:`Edge` are found, :procparam:`E0` is set to the
+    tabulated value.
+    
+**Fraction of edge step**
+    In this algorithm, a transitory value for E\ :sub:`0` will be
+    found using :demeter:`ifeffit`. The data are normalized and the
+    point on the edge which has a height equal to a specified fraction
+    of the edge step is chosen as :procparam:`E0`. This normalization is iterated
+    up to 5 times to settle on a stable value. The value of the
+    fraction is set by the :configparam:`Bkg,fraction` preference,
+    which is 0.5 by default.
+
+**Zero crossing**
+    Again, a transitory value for E\ :sub:`0` will be found using
+    :demeter:`ifeffit`. The second derivative of |mu| (E) is computed and
+    :demeter:`athena` searches in both directions in energy for the
+    nearest zero-crossing of the second derivative, which is then used
+    for :procparam:`e0`.
+
+**Peak of L edge white line**
+    A transitory value for E\ :sub:`0` will
+    be found using :demeter:`ifeffit`. The peak of the white line is
+    then found as the zero crossing of the first derivative of |mu| (E)
+    after the initial value of E\ :sub:`0` and is used as :procparam:`e0`.
+
+Since all of these additional algorithms rely on :demeter:`ifeffit`'s
+initial guess of :procparam:`E0`, each is subject to the same caveats
+given for the default algorithm.
+
+The :configparam:`Bkg,e0` `configuration parameter
+<../other/prefs.html>`__ can be set to one of these options, setting
+the default algorithm for determining :procparam:`E0`.
+
+Submenus under the :guilabel:`Group` menu can be used to set
+:procparam:`E0` using one of these algorithms for all groups, or the
+set of marked groups.
+
+
+Enforcing an element and edge
+-----------------------------
+
+Sometimes you have data that is otherwise usable, but which contains a
+feature that confounds one of :demeter:`athena`'s data reduction
+algorithms.  An example is shown below.  There was some problem within
+a short data range at the beginning of the pre-edge resulting in a
+high level of noise in the data.  When searching for the value of the
+edge energy, :demeter:`athena` searches for a peak in the first
+derivative.  In the case of these data, that peak in the first
+derivative is found in the noisy region at the beginning of the
+pre-edge region.
+
+.. _fig-encorce_mu:
+.. figure:: ../../_images/enforce_mu.png
+   :target: ../_images/enforce_mu.png
+   :align: center
+
+   Data with a measurement problem that confounds :demeter:`athena`'s
+   algorithm for determining :procparam:`E0`.
+
+In a situation like this, it can be useful to supply :demeter:`athena`
+with a bit more information about the data.  The usual practice in
+:demeter:`athena` is to determine the absorbing element and edge from
+the data without input from the user.  This practice can be
+over-ridden by enforcing the element and edge for a data set.
+
+The dialog for this is located at :menuselection:`Energy --> Enforce
+element and edge`.  Selecting this pops uo the following dialog:
+
+.. _fig-enforce:
+.. figure:: ../../_images/enforce.png
+   :target: ../_images/enforce.png
+   :align: center
+
+   The element and edge enforcement dialog.
+
+Specify the element of the absorber and the edge you are measuring.
+Doing so will force :demeter:`athena` to consider data to be of that
+element and edge.  The :procparam:`E0` will first be set to the
+tabulated value for the zero-valent lement.  Then `default parameter
+values <defauls.html>`__ will be set, then the :procparam:`E0`
+parameter will be reset using the *Fraction of edge step* algorithm.
+
+If you wish to later import data of another element or edge, it is
+**imperative** that you stop enforcement by selecting
+:menuselection:`Energy --> Stop enforcing element and edge`.
+Enforcing the incorrect element or edge will have profoundly
+undesirable consequences on the data processing.

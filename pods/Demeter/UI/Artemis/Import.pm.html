@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::UI::Artemis::Import</title>
-<link rel="stylesheet" type="text/css" href="../../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::UI::Artemis::Import &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,91 +15,133 @@
 </div>
 <div class="path">
   <a href="../../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-UI-Artemis-Import
+  Demeter::UI::Artemis::Import
 </div>
 <div>
 <a href="../../../src/Demeter/UI/Artemis/Import.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#METHODS">METHODS</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::UI::Artemis::Import - Import various kinds of data into Artemis</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<p>This module exports the <code>Import</code> method, which is used to import
-various kinds of data into Artemis.</p>
+<p>This module exports the <code>Import</code> method, which is used to import various kinds of data into Artemis.</p>
 
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="METHODS">METHODS</h1>
 
 <dl>
-	<dt><code>Import</code></dt>
-		<dd><p>Import a specific data type.</p></dd>
-<dd><pre>  import($type, $filename);
 
-</pre></dd>		<dd><p>If the filename is omitted, the user will be prompted for a file using
-the file selection dialog.  The type can be one of:</p></dd>
-<dd><dl>
-	<dt><code>prj</code> or <code>athena</code></dt>
-		<dd><p>An Athena project file</p></dd>
-	<dt><code>chi</code></dt>
-		<dd><p>A column data file containing chi(k) data.  If the data are on a
-non-standard grid, they will be rebinned onto the proper grid.</p></dd>
-	<dt><code>dpj</code></dt>
-		<dd><p>A serialization file from a Fit object.  This sort of file is
-generated from a free-standing script using Demeter.</p></dd>
-	<dt><code>feff</code></dt>
-		<dd><p>A <cite>feff.inp</cite> file, an <cite>atoms.inp</cite> file, or a CIF file.</p></dd>
-	<dt><code>external</code></dt>
-		<dd><p>An entire Feff calculation.  Note that a <cite>feff.inp</cite> file by itself can be imported using </p></dd>
-	<dt><code>old</code></dt>
-		<dd><p>An project file from the Tk version of Artemis.</p></dd>
-</dl>
+<dt id="Import"><code>Import</code></dt>
+<dd>
+
+<p>Import a specific data type.</p>
+
+<pre><code>  import($type, $filename);</code></pre>
+
+<p>If the filename is omitted, the user will be prompted for a file using the file selection dialog. The type can be one of:</p>
+
+<dl>
+
+<dt id="prj-or-athena"><code>prj</code> or <code>athena</code></dt>
+<dd>
+
+<p>An Athena project file</p>
+
 </dd>
-	<dt><code>prjrecord</code></dt>
-		<dd><p>Post a dialog prompting for a record in an Athena project file.</p></dd>
+<dt id="chi"><code>chi</code></dt>
+<dd>
+
+<p>A column data file containing chi(k) data. If the data are on a non-standard grid, they will be rebinned onto the proper grid.</p>
+
+</dd>
+<dt id="dpj"><code>dpj</code></dt>
+<dd>
+
+<p>A serialization file from a Fit object. This sort of file is generated from a free-standing script using Demeter.</p>
+
+</dd>
+<dt id="feff"><code>feff</code></dt>
+<dd>
+
+<p>A <i>feff.inp</i> file, an <i>atoms.inp</i> file, or a CIF file.</p>
+
+</dd>
+<dt id="external"><code>external</code></dt>
+<dd>
+
+<p>An entire Feff calculation. Note that a <i>feff.inp</i> file by itself can be imported using</p>
+
+</dd>
+<dt id="old"><code>old</code></dt>
+<dd>
+
+<p>An project file from the Tk version of Artemis.</p>
+
+</dd>
 </dl>
-<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
 
-<p>Demeter's dependencies are in the <cite>Build.PL</cite> file.</p>
+</dd>
+<dt id="prjrecord"><code>prjrecord</code></dt>
+<dd>
 
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<p>Post a dialog prompting for a record in an Athena project file.</p>
+
+</dd>
+</dl>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
+
+<p>Demeter&#39;s dependencies are in the <i>Build.PL</i> file.</p>
+
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
 <ul>
-	<li>Not handling local parameters from feffit.inp files</li>
-	<li>While single-data-set fits with multiple k-weights does work
-correctly, MDS+MKW fits will not be imported properly from a
-feffit.inp file</li>
+
+<li><p>Not handling local parameters from feffit.inp files</p>
+
+</li>
+<li><p>While single-data-set fits with multiple k-weights does work correctly, MDS+MKW fits will not be imported properly from a feffit.inp file</p>
+
+</li>
 </ul>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>)</p>
 
 <p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

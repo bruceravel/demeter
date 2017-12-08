@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::Feff::Paths</title>
-<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::Feff::Paths &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,206 +15,204 @@
 </div>
 <div class="path">
   <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-Feff-Paths
+  Demeter::Feff::Paths
 </div>
 <div>
 <a href="../../src/Demeter/Feff/Paths.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a></li>
+  <li><a href="#CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::Feff::Paths - Semantic descriptions of Feff paths</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<pre>    $feff -&gt; Demeter::Feff -&gt; new(file=&gt;&quot;feff.inp&quot;);
+<pre><code>    $feff -&gt; Demeter::Feff -&gt; new(file=&gt;&quot;feff.inp&quot;);
     $feff -&gt; potph;
     $feff -&gt; pathfinder;
-    my $scatteringpath = $feff-&gt;find_path(lt=&gt;3.5, tag=&gt;'Dy');
+    my $scatteringpath = $feff-&gt;find_path(lt=&gt;3.5, tag=&gt;&#39;Dy&#39;);</code></pre>
 
-</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This role for the Feff object provides a mechanism for semantically
-describing paths from a Feff calculation.  The example in the synopsis
-finds the single scattering path that is less than 3.5 Angstroms long
-and scatters from a Dysprosium atom.</p>
+<p>This role for the Feff object provides a mechanism for semantically describing paths from a Feff calculation. The example in the synopsis finds the single scattering path that is less than 3.5 Angstroms long and scatters from a Dysprosium atom.</p>
 
-<p>This way of interacting with the Feff calculation really shines in a
-situation where structural distortions or modifications are introduced
-into Feff's input data.  Because Feff orders its paths by increasing
-half path length, the path index is not a reliable way of keeping
-track of a particular scattering geometry as different structural
-modifications are introduced.  Semantic mechanisms of probing the Feff
-calculation allow you to keep track of particular geometries
-regardless of the fine details of the strcuture provided to Feff.</p>
+<p>This way of interacting with the Feff calculation really shines in a situation where structural distortions or modifications are introduced into Feff&#39;s input data. Because Feff orders its paths by increasing half path length, the path index is not a reliable way of keeping track of a particular scattering geometry as different structural modifications are introduced. Semantic mechanisms of probing the Feff calculation allow you to keep track of particular geometries regardless of the fine details of the strcuture provided to Feff.</p>
 
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="METHODS">METHODS</h1>
 
 <dl>
-	<dt><code>find_path</code></dt>
-		<dd><p>This method searches through a Feff calculation for a path that
-matches <strong>each</strong> of the provided criteria.  The first such path is the
-one that returned.  The degeneracies associated with each path are
-also searched.  Thus order does not matter for the list-valued
-criteria and fuzzily degenerate paths will be found correctly.</p></dd>
-		<dd><p>This method returns 0 if a path meeting the criteria cannot be found
-or if there is an error in specifying the criteria.</p></dd>
-		<dd><p>The following criteria are available:</p></dd>
-<dd><dl>
-	<dt><code>lt</code></dt>
-		<dd><p>This criterion takes a number and requires that the returned path be
-shorter in half path length than that number.</p></dd>
-	<dt><code>gt</code></dt>
-		<dd><p>This criterion takes a number and requires that the returned path be
-longer in half path length than that number.</p></dd>
-	<dt><code>nleg</code></dt>
-		<dd><p>This criterion takes an integer and requires that the returned path
-have this number of scattering legs.  This criterion is redundant when
-the list-valued criteria are also used.</p></dd>
-	<dt><code>sp</code></dt>
-		<dd><p>This criterion takes a ScatteringPath object and requires that the
-returned path be longer in half path length than that path.</p></dd>
-	<dt><code>tag</code></dt>
-		<dd><p>This criterion takes a string or an anonymous array of strings and
-requires that the returned path contain the atoms which have this
-(these) tags.  The tag is the optional fifth column in a <cite>feff.inp</cite>
-file written by Demeter's Atoms.  This criterion requires that the
-tags are lexically equal.  See the <code>tagmatch</code> criterion for matching
-tags in the sense of regular expressions.</p></dd>
-	<dt><code>tagmatch</code></dt>
-		<dd><p>This criterion takes a string or an anonymous array of strings and
-requires that the returned path contain the atoms which have tags
-matching the arguments of this criterion.  The tag is the optional
-fifth column in a <cite>feff.inp</cite> file written by Demeter's Atoms.  This
-criterion requires that the tags match in the sense of regular
-expressions.  See the <code>tag</code> criterion for requiring that tags be
-lexically equal.</p></dd>
-	<dt><code>ipot</code></dt>
-		<dd><p>This criterion takes an integer from 0 to 7 or an anonymous array of
-such integers and requires that the returned path contain the atoms
-which have ipots equal to the arguments of this criterion.</p></dd>
-	<dt><code>element</code></dt>
-		<dd><p>This criterion takes a string identifying an element (its name, its
-one or two letter symbol or its Z number) or an anonymous array of
-such strings and requires that the returned path contain the atoms
-which have the elements specified.</p></dd>
-</dl>
-</dd>
-		<dd><p>For several of the criteria, care is taken to recognize singluar and
-plural forms.  That is, <code>nleg</code> and <code>nlegs</code> are synonymous as
-criteria.</p></dd>
-		<dd><p>The list-valued criterion are compared in order with the scattering
-atoms in a path.  As an example, this</p></dd>
-<dd><pre>    my $scatteringpath = $feff-&gt;find_path(lt=&gt;4, tag=&gt;['Fe1', 'C1']);
 
-</pre></dd>		<dd><p>would return the first double scattering path that scatters from a
-site with the tag <code>Fe1</code> then from a site with the tag <code>C1</code> before
-completing the loop and returning to the central atom.</p></dd>
-		<dd><p>Some more examples:</p></dd>
-<dd><pre>   my $scatteringpath = $feff-&gt;find_path(gt=&gt;4, ipots=&gt;[2]);
-
-</pre></dd>		<dd><p>In this example, the scattering path will be the first one that is
-longer than 4 Angstroms, is a single scattering path, and scatters
-from unique potential number 2.</p></dd>
-<dd><pre>   my $nextscatteringpath = $feff-&gt;find_path(sp=&gt;$scatteringpath);
-
-</pre></dd>		<dd><p>In this example, the path returned will be the next longer single
-scattering path than the previous example and which also scatters from
-unique potential number 2.</p></dd>
-<dd><pre>   my $scatteringpath = $feff-&gt;find_path(lt=&gt;5.3, element=&gt;[&quot;O&quot;, &quot;Ti&quot;, &quot;O&quot;]);
-
-</pre></dd>		<dd><p>This will return the shortest triple scattering path shorter than 5.3
-Angstroms which scatters from oxygen, then titanium, then oxygen.</p></dd>
-<dd><pre>   my $scatteringpath = $feff-&gt;find_path(tagmatch=&gt;[&quot;O[1-3]&quot;]);
-
-</pre></dd>		<dd><p>This will return the shortest first path (with no other length
-restriction) which scatters from a site whose tag matches the given
-regular expression -- in this case it will match any of O1, O2, or O3.</p></dd>
+<dt id="find_path"><code>find_path</code></dt>
 <dd>
 
+<p>This method searches through a Feff calculation for a path that matches <b>each</b> of the provided criteria. The first such path is the one that returned. The degeneracies associated with each path are also searched. Thus order does not matter for the list-valued criteria and fuzzily degenerate paths will be found correctly.</p>
 
-</dd>	<dt><code>find_all_paths</code></dt>
-		<dd><p>This returns a list of paths meeting the same criteria as for the
-<code>find_path</code> method.  This is just a wrapper around the <code>find_path</code>
-method which sequentially uses the <code>sp</code> criterion to find each
-subsequent path meeting the input criteria.</p></dd>
-<dd><pre>    my @list = $feff-&gt;find_all_paths(lt=&gt;6, element=&gt;['Fe', 'C']);
+<p>This method returns 0 if a path meeting the criteria cannot be found or if there is an error in specifying the criteria.</p>
 
-</pre></dd>		<dd><p>This returns all double scattering paths which scatter from iron and
-carbon atoms and are less than 6 Angstroms.  The order of paths in the
-list is in order of increasing half path length.</p></dd>
-		<dd><p>Another example:</p></dd>
-<dd><pre>   my @list =  $feff-&gt;find_all_paths(lt=&gt;6, nleg=&gt;2);
+<p>The following criteria are available:</p>
 
-</pre></dd>		<dd><p>This returns all single scattering paths less than 6 Angstroms.</p></dd>
-		<dd><p>An empty list is returned if no paths meet the criteria, so a logic
-test can be performed on the results.</p></dd>
-	<dt><code>find_nearest</code></dt>
-		<dd><p>This find the path that meets a semantic description and is closest in
-path length to a specified value.</p></dd>
-<dd><pre>  my $scatteringpath = $feff-&gt;find_nearest(reff=&gt;2.546, element=&gt;['Fe']);
+<dl>
 
-</pre></dd>		<dd><p>This example will find the single scattering path with Fe as the
-scatterer which has a half path length closest to 2.546 Ang.  The
-<code>reff</code> is required.  All other arguments are the same as for
-<code>find_all_paths</code>.  In fact, this method calls <code>find_all_paths</code> with
-all arguments other than <code>reff</code> then examines the list that gets
-returned for the path closest to the given value.</p></dd>
-		<dd><p>This method returns the reference to the ScatteringPath object which
-matches.</p></dd>
-		<dd><p>In the event that no paths are returned, the return value will be an
-empty string.  Thus you can do a logical check on the success of the
-method call.</p></dd>
-		<dd><p>In the event that multiple ScatteringPath objects meet the semantic
-criteria and are of the same path length (which could happen for
-multiple scattering paths), the first such path as ordered by
-Demeter's pathfinder will returned.  If this is not the path that you
-want, then you will have to search through the list returned by
-<code>find_all_paths</code> yourself.</p></dd>
+<dt id="lt"><code>lt</code></dt>
+<dd>
+
+<p>This criterion takes a number and requires that the returned path be shorter in half path length than that number.</p>
+
+</dd>
+<dt id="gt"><code>gt</code></dt>
+<dd>
+
+<p>This criterion takes a number and requires that the returned path be longer in half path length than that number.</p>
+
+</dd>
+<dt id="nleg"><code>nleg</code></dt>
+<dd>
+
+<p>This criterion takes an integer and requires that the returned path have this number of scattering legs. This criterion is redundant when the list-valued criteria are also used.</p>
+
+</dd>
+<dt id="sp"><code>sp</code></dt>
+<dd>
+
+<p>This criterion takes a ScatteringPath object and requires that the returned path be longer in half path length than that path.</p>
+
+</dd>
+<dt id="tag"><code>tag</code></dt>
+<dd>
+
+<p>This criterion takes a string or an anonymous array of strings and requires that the returned path contain the atoms which have this (these) tags. The tag is the optional fifth column in a <i>feff.inp</i> file written by Demeter&#39;s Atoms. This criterion requires that the tags are lexically equal. See the <code>tagmatch</code> criterion for matching tags in the sense of regular expressions.</p>
+
+</dd>
+<dt id="tagmatch"><code>tagmatch</code></dt>
+<dd>
+
+<p>This criterion takes a string or an anonymous array of strings and requires that the returned path contain the atoms which have tags matching the arguments of this criterion. The tag is the optional fifth column in a <i>feff.inp</i> file written by Demeter&#39;s Atoms. This criterion requires that the tags match in the sense of regular expressions. See the <code>tag</code> criterion for requiring that tags be lexically equal.</p>
+
+</dd>
+<dt id="ipot"><code>ipot</code></dt>
+<dd>
+
+<p>This criterion takes an integer from 0 to 7 or an anonymous array of such integers and requires that the returned path contain the atoms which have ipots equal to the arguments of this criterion.</p>
+
+</dd>
+<dt id="element"><code>element</code></dt>
+<dd>
+
+<p>This criterion takes a string identifying an element (its name, its one or two letter symbol or its Z number) or an anonymous array of such strings and requires that the returned path contain the atoms which have the elements specified.</p>
+
+</dd>
 </dl>
-<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>See <a href="../Config.pm.html">Demeter::Config</a> for a description of the configuration
-system.</p>
+<p>For several of the criteria, care is taken to recognize singluar and plural forms. That is, <code>nleg</code> and <code>nlegs</code> are synonymous as criteria.</p>
 
-<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<p>The list-valued criterion are compared in order with the scattering atoms in a path. As an example, this</p>
 
-<p>The dependencies of the Demeter system are in the
-<cite>Build.PL</cite> file.</p>
+<pre><code>    my $scatteringpath = $feff-&gt;find_path(lt=&gt;4, tag=&gt;[&#39;Fe1&#39;, &#39;C1&#39;]);</code></pre>
 
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<p>would return the first double scattering path that scatters from a site with the tag <code>Fe1</code> then from a site with the tag <code>C1</code> before completing the loop and returning to the central atom.</p>
 
+<p>Some more examples:</p>
 
+<pre><code>   my $scatteringpath = $feff-&gt;find_path(gt=&gt;4, ipots=&gt;[2]);</code></pre>
 
+<p>In this example, the scattering path will be the first one that is longer than 4 Angstroms, is a single scattering path, and scatters from unique potential number 2.</p>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<pre><code>   my $nextscatteringpath = $feff-&gt;find_path(sp=&gt;$scatteringpath);</code></pre>
+
+<p>In this example, the path returned will be the next longer single scattering path than the previous example and which also scatters from unique potential number 2.</p>
+
+<pre><code>   my $scatteringpath = $feff-&gt;find_path(lt=&gt;5.3, element=&gt;[&quot;O&quot;, &quot;Ti&quot;, &quot;O&quot;]);</code></pre>
+
+<p>This will return the shortest triple scattering path shorter than 5.3 Angstroms which scatters from oxygen, then titanium, then oxygen.</p>
+
+<pre><code>   my $scatteringpath = $feff-&gt;find_path(tagmatch=&gt;[&quot;O[1-3]&quot;]);</code></pre>
+
+<p>This will return the shortest first path (with no other length restriction) which scatters from a site whose tag matches the given regular expression -- in this case it will match any of O1, O2, or O3.</p>
+
+</dd>
+<dt id="find_all_paths"><code>find_all_paths</code></dt>
+<dd>
+
+<p>This returns a list of paths meeting the same criteria as for the <code>find_path</code> method. This is just a wrapper around the <code>find_path</code> method which sequentially uses the <code>sp</code> criterion to find each subsequent path meeting the input criteria.</p>
+
+<pre><code>    my @list = $feff-&gt;find_all_paths(lt=&gt;6, element=&gt;[&#39;Fe&#39;, &#39;C&#39;]);</code></pre>
+
+<p>This returns all double scattering paths which scatter from iron and carbon atoms and are less than 6 Angstroms. The order of paths in the list is in order of increasing half path length.</p>
+
+<p>Another example:</p>
+
+<pre><code>   my @list =  $feff-&gt;find_all_paths(lt=&gt;6, nleg=&gt;2);</code></pre>
+
+<p>This returns all single scattering paths less than 6 Angstroms.</p>
+
+<p>An empty list is returned if no paths meet the criteria, so a logic test can be performed on the results.</p>
+
+</dd>
+<dt id="find_nearest"><code>find_nearest</code></dt>
+<dd>
+
+<p>This find the path that meets a semantic description and is closest in path length to a specified value.</p>
+
+<pre><code>  my $scatteringpath = $feff-&gt;find_nearest(reff=&gt;2.546, element=&gt;[&#39;Fe&#39;]);</code></pre>
+
+<p>This example will find the single scattering path with Fe as the scatterer which has a half path length closest to 2.546 Ang. The <code>reff</code> is required. All other arguments are the same as for <code>find_all_paths</code>. In fact, this method calls <code>find_all_paths</code> with all arguments other than <code>reff</code> then examines the list that gets returned for the path closest to the given value.</p>
+
+<p>This method returns the reference to the ScatteringPath object which matches.</p>
+
+<p>In the event that no paths are returned, the return value will be an empty string. Thus you can do a logical check on the success of the method call.</p>
+
+<p>In the event that multiple ScatteringPath objects meet the semantic criteria and are of the same path length (which could happen for multiple scattering paths), the first such path as ordered by Demeter&#39;s pathfinder will returned. If this is not the path that you want, then you will have to search through the list returned by <code>find_all_paths</code> yourself.</p>
+
+</dd>
+</dl>
+
+<h1 id="CONFIGURATION-AND-ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</h1>
+
+<p>See <a href="../Config.pm.html">Demeter::Config</a> for a description of the configuration system.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
+
+<p>The dependencies of the Demeter system are in the <i>Build.PL</i> file.</p>
+
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
+
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel, <a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a></p>
 
 <p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>

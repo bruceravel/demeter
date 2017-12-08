@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::Plugins::SSRLB</title>
-<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::Plugins::SSRLB &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,80 +15,84 @@
 </div>
 <div class="path">
   <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-Plugins-SSRLB
+  Demeter::Plugins::SSRLB
 </div>
 <div>
 <a href="../../src/Demeter/Plugins/SSRLB.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#SSRL-files">SSRL files</a></li>
+  <li><a href="#VERSIONS">VERSIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::Plugins::SSRLB - SSRL XAFS Data Collector Binary filetype plugin</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
 <p>This plugin directly reads the files written by the SSRL XAFS Data Collector.</p>
 
-<h1 id="SSRL_files">SSRL files <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="SSRL-files">SSRL files</h1>
 
-<p>This plugin comments out the header lines, constructs a column label
-line out of the column labels section, moves the first column (real
-time clock) to the third column, and swaps the requested and acheived
-energy columns, all after streaming from the binary format to a nice,
-sane ascii format.  Also, all instances of the null character chr(0)
-are removed from the data.</p>
+<p>This plugin comments out the header lines, constructs a column label line out of the column labels section, moves the first column (real time clock) to the third column, and swaps the requested and acheived energy columns, all after streaming from the binary format to a nice, sane ascii format. Also, all instances of the null character chr(0) are removed from the data.</p>
 
-<p>The SSRL binary file is one perverse POS.  Nominally (and according to
-a Matlab script kindly provided by Tsu-Chien Weng) the structure is this:</p>
+<p>The SSRL binary file is one perverse POS. Nominally (and according to a Matlab script kindly provided by Tsu-Chien Weng) the structure is this:</p>
 
-<pre>  1. 800 bytes = 40 bytes (title MUST start with 'SSRL -') '\n' '0'
-               + 40 bytes (recording date:time) '\n' '0'
-               + 40 bytes (data info) '\n' '0'
-               + 40 bytes (scaler_file) '\n' '0'
-               + 40 bytes (region_file) '\n' '0'
-               + 80 bytes (mirror_info) '\n' '0'
-               + 40 bytes (mirror param) '\n' '0'
-               + 80 bytes X 6 (User comments) '\n' '0'
+<pre><code>  1. 800 bytes = 40 bytes (title MUST start with &#39;SSRL -&#39;) &#39;\n&#39; &#39;0&#39;
+               + 40 bytes (recording date:time) &#39;\n&#39; &#39;0&#39;
+               + 40 bytes (data info) &#39;\n&#39; &#39;0&#39;
+               + 40 bytes (scaler_file) &#39;\n&#39; &#39;0&#39;
+               + 40 bytes (region_file) &#39;\n&#39; &#39;0&#39;
+               + 80 bytes (mirror_info) &#39;\n&#39; &#39;0&#39;
+               + 40 bytes (mirror param) &#39;\n&#39; &#39;0&#39;
+               + 80 bytes X 6 (User comments) &#39;\n&#39; &#39;0&#39;
   2. NCOL*4 bytes (offsets)
      NCOL*4 bytes (weights)
   3. NCOL*20 bytes (labels for each column)
   4. 4 bytes integer (npts)
   5. myterious 12 bytes starting w/ char(8),char(0), char(1), char(0)
-     probably it's not important.
-  6. NCOL*NPTS*4 bytes (data)
+     probably it&#39;s not important.
+  6. NCOL*NPTS*4 bytes (data)</code></pre>
 
-</pre><p>That's not untrue and I am very grateful to Tsu-Chien for showing me
-this, but there is an endian-ness problem in reading the floats on
-most modern computers.  To interpret the floats, you need to reorder
-the bytes in every four-byte word.  That is the purpose of the _ieee
-subroutine.  Without that reordering, the floats will not be
-interpreted correctly.</p>
+<p>That&#39;s not untrue and I am very grateful to Tsu-Chien for showing me this, but there is an endian-ness problem in reading the floats on most modern computers. To interpret the floats, you need to reorder the bytes in every four-byte word. That is the purpose of the _ieee subroutine. Without that reordering, the floats will not be interpreted correctly.</p>
 
-<p>I must give credit where credit is due.  I swiped this solution from
-SixPack.  I owe Sam a pitcher of beer for figuring out that bit of
-insanity.</p>
+<p>I must give credit where credit is due. I swiped this solution from SixPack. I owe Sam a pitcher of beer for figuring out that bit of insanity.</p>
 
-<h1 id="VERSIONS">VERSIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="VERSIONS">VERSIONS</h1>
 
 <dl>
-	<dt>0.2</dt>
-		<dd><p>Add support for version 2.0 of the SSRL XAS Data Collector, which no
-longer uses the crazy byte ordering.  Again, the solution was swiped
-from SixPack.  The bar tab grows.</p></dd>
-	<dt>0.1</dt>
-		<dd><p>initial version, replicating functionality of the original Athena plugin</p></dd>
+
+<dt id="pod0.2">0.2</dt>
+<dd>
+
+<p>Add support for version 2.0 of the SSRL XAS Data Collector, which no longer uses the crazy byte ordering. Again, the solution was swiped from SixPack. The bar tab grows.</p>
+
+</dd>
+<dt id="pod0.1">0.1</dt>
+<dd>
+
+<p>initial version, replicating functionality of the original Athena plugin</p>
+
+</dd>
 </dl>
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<pre>  Bruce Ravel, L&lt;http://bruceravel.github.io/home&gt;
-  http://bruceravel.github.io/demeter
+<h1 id="AUTHOR">AUTHOR</h1>
 
-</pre>
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>
+<pre><code>  Bruce Ravel, L&lt;http://bruceravel.github.io/home&gt;
+  http://bruceravel.github.io/demeter</code></pre>
+
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
+

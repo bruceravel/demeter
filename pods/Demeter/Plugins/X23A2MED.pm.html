@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::Plugin::X23A2MED</title>
-<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::Plugins::X23A2MED &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,191 +15,180 @@
 </div>
 <div class="path">
   <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-Plugins-X23A2MED
+  Demeter::Plugins::X23A2MED
 </div>
 <div>
 <a href="../../src/Demeter/Plugins/X23A2MED.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#METHODS">METHODS</a></li>
+  <li><a href="#ADDITIONAL-ATTRIBUTE">ADDITIONAL ATTRIBUTE</a>
+    <ul>
+      <li><a href="#Deadtime-correction-parameters">Deadtime correction parameters</a></li>
+      <li><a href="#Other-column-labels">Other column labels</a></li>
+      <li><a href="#Integration-time">Integration time</a></li>
+    </ul>
+  </li>
+  <li><a href="#THE-CORRECTION-ALGORITHM">THE CORRECTION ALGORITHM</a></li>
+  <li><a href="#MULTIEDGE-FILES">MULTIEDGE FILES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHORS">AUTHORS</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
 
 <p>Demeter::Plugin::X23A2MED - filetype plugin for X23A2 Vortex data</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<p>This plugin performs a deadtime correction on data recorded using the
-X23A2 Vortex silicon drift detector.  Both the single-element and
-four-element detectors are supported.</p>
+<p>This plugin performs a deadtime correction on data recorded using the X23A2 Vortex silicon drift detector. Both the single-element and four-element detectors are supported.</p>
 
-<p>This plugin requires configuration to provide all the information
-needed to correct each channel, including the known deadtime (in
-nanoseconds) for each channel and the columns in the file containing
-the ROI, fast, and slow channels.</p>
+<p>This plugin requires configuration to provide all the information needed to correct each channel, including the known deadtime (in nanoseconds) for each channel and the columns in the file containing the ROI, fast, and slow channels.</p>
 
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="METHODS">METHODS</h1>
 
 <dl>
-	<dt><code>is</code></dt>
-		<dd><p>An X23A2 file is recognized by the second comment line identifying the
-beamline at which the data were collected.  An MED file is recognized
-by having a large (&gt;7) number of columns.  Care is taken to be sure
-that the file is an energy scan and has many lines of data.  Care is
-not, however, taken to be sure that the I0 column does not have any
-zero-valued entries.</p></dd>
-	<dt><code>fix</code></dt>
-		<dd><p>An ini file is used to specify the deadtime for each channel and is
-prompted for the column labels for the ROI, fast, and slow channels
-for each element of the detector.  The default deadtime (280
-nanoseconds) is very good for channels 1 and 2 and quite close for
-channels 3 and 4.</p></dd>
-		<dd><p>Once all of this information is supplied, the deadtime correction is
-done point-by-point for each channel and written out to a temporary
-file in the stash directory.  The columns in the stash directory are
-energy, I0, the four corrected channels, It, and Ir.  It and Ir are
-written out if present in the original file.  Ir can also be called
-Iref.</p></dd>
-	<dt><code>suggest</code></dt>
-		<dd><p>This method returns a list which can be used in a Demeter script
-define a Data object which will correctly process the output file as
-fluorescence XAS data.</p></dd>
-</dl>
-<h1 id="ADDITIONAL_ATTRIBUTE">ADDITIONAL ATTRIBUTE <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This plugin also provides the <code>inifile</code> attribute which points at an
-ini file containing the various paremeters of the deadtime correction.</p>
+<dt id="is"><code>is</code></dt>
+<dd>
+
+<p>An X23A2 file is recognized by the second comment line identifying the beamline at which the data were collected. An MED file is recognized by having a large (&gt;7) number of columns. Care is taken to be sure that the file is an energy scan and has many lines of data. Care is not, however, taken to be sure that the I0 column does not have any zero-valued entries.</p>
+
+</dd>
+<dt id="fix"><code>fix</code></dt>
+<dd>
+
+<p>An ini file is used to specify the deadtime for each channel and is prompted for the column labels for the ROI, fast, and slow channels for each element of the detector. The default deadtime (280 nanoseconds) is very good for channels 1 and 2 and quite close for channels 3 and 4.</p>
+
+<p>Once all of this information is supplied, the deadtime correction is done point-by-point for each channel and written out to a temporary file in the stash directory. The columns in the stash directory are energy, I0, the four corrected channels, It, and Ir. It and Ir are written out if present in the original file. Ir can also be called Iref.</p>
+
+</dd>
+<dt id="suggest"><code>suggest</code></dt>
+<dd>
+
+<p>This method returns a list which can be used in a Demeter script define a Data object which will correctly process the output file as fluorescence XAS data.</p>
+
+</dd>
+</dl>
+
+<h1 id="ADDITIONAL-ATTRIBUTE">ADDITIONAL ATTRIBUTE</h1>
+
+<p>This plugin also provides the <code>inifile</code> attribute which points at an ini file containing the various paremeters of the deadtime correction.</p>
 
 <p>Demeter ships with a demeter_conf file for configuring this plugin.</p>
 
-<h2 id="Deadtime_correction_parameters">Deadtime correction parameters</h2>
+<h2 id="Deadtime-correction-parameters">Deadtime correction parameters</h2>
 
-<p>To apply the correction algorithm, this plugin needs to know which
-columns contain which data channels.  For each channel N, we need:</p>
+<p>To apply the correction algorithm, this plugin needs to know which columns contain which data channels. For each channel N, we need:</p>
 
 <dl>
-	<dt><code>dtN</code></dt>
-		<dd><p>The fast channel deadtime (which Joe measured to be approximately 280
-nsec for each channel) for detector N.</p></dd>
-	<dt><code>roiN</code></dt>
-		<dd><p>The column label for the region of interest (i.e. the discriminator
-window channel) for detector N.</p></dd>
-	<dt><code>fastN</code></dt>
-		<dd><p>The column label for the fast channel (i.e. the input count
-rate) for detector N.</p></dd>
-	<dt><code>fastN</code></dt>
-		<dd><p>The column label for the slow channel (i.e. the output count
-rate) for detector N.</p></dd>
-</dl>
-<h2 id="Other_column_labels">Other column labels</h2>
 
-<p>Additionally, the implementation of the algorithm needs to know the
-column labels for:</p>
+<dt id="dtN"><code>dtN</code></dt>
+<dd>
+
+<p>The fast channel deadtime (which Joe measured to be approximately 280 nsec for each channel) for detector N.</p>
+
+</dd>
+<dt id="roiN"><code>roiN</code></dt>
+<dd>
+
+<p>The column label for the region of interest (i.e. the discriminator window channel) for detector N.</p>
+
+</dd>
+<dt id="fastN"><code>fastN</code></dt>
+<dd>
+
+<p>The column label for the fast channel (i.e. the input count rate) for detector N.</p>
+
+</dd>
+<dt id="fastN1"><code>fastN</code></dt>
+<dd>
+
+<p>The column label for the slow channel (i.e. the output count rate) for detector N.</p>
+
+</dd>
+</dl>
+
+<h2 id="Other-column-labels">Other column labels</h2>
+
+<p>Additionally, the implementation of the algorithm needs to know the column labels for:</p>
 
 <ul>
-	<li>The energy column.  Oddly, Ifeffit removes the leading character from
-the line in the data file containing the column labels.  So &quot;energy&quot;
-becomes &quot;nergy&quot;.  Go figure.</li>
-	<li>The I0 column label</li>
+
+<li><p>The energy column. Oddly, Ifeffit removes the leading character from the line in the data file containing the column labels. So &quot;energy&quot; becomes &quot;nergy&quot;. Go figure.</p>
+
+</li>
+<li><p>The I0 column label</p>
+
+</li>
 </ul>
 
-<h2 id="Integration_time">Integration time</h2>
+<h2 id="Integration-time">Integration time</h2>
 
-<p>The implementation of the algorithm also needs to know how integration
-times were done in the measurement.</p>
+<p>The implementation of the algorithm also needs to know how integration times were done in the measurement.</p>
 
-<p>I strongly recommend that the integration time be recorded in the
-file.  (that can be set in XDAC).  in that case, you set the <code>intcol</code>
-parameter to the name of the column label containing the per-point
-integration time (which is called inttime) in XDAC.  If that column is
-missing, then the integration time must be specified by the <code>inttime</code>
-parameters.</p>
+<p>I strongly recommend that the integration time be recorded in the file. (that can be set in XDAC). in that case, you set the <code>intcol</code> parameter to the name of the column label containing the per-point integration time (which is called inttime) in XDAC. If that column is missing, then the integration time must be specified by the <code>inttime</code> parameters.</p>
 
-<p>The <code>time</code> parameter is set to either <code>column</code> or <code>constant</code> to
-choose between the <code>intcol</code> and <code>inttime</code> options.</p>
+<p>The <code>time</code> parameter is set to either <code>column</code> or <code>constant</code> to choose between the <code>intcol</code> and <code>inttime</code> options.</p>
 
-<h1 id="THE_CORRECTION_ALGORITHM">THE CORRECTION ALGORITHM <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="THE-CORRECTION-ALGORITHM">THE CORRECTION ALGORITHM</h1>
 
-<p>If the deadtime is known for a channel, that will be used to correct
-the fast channel (aka input count rate, or ICR) by iteratively solving
-the transcendental equation which describes the attenuation of the
-fast channel due to deadtime:</p>
+<p>If the deadtime is known for a channel, that will be used to correct the fast channel (aka input count rate, or ICR) by iteratively solving the transcendental equation which describes the attenuation of the fast channel due to deadtime:</p>
 
-<pre>   y = x*exp(-x*tau)
+<pre><code>   y = x*exp(-x*tau)</code></pre>
 
-</pre><p>where tau is the deadtime, x is the actual input rate on the fast
-channel, and y is the measured rate on the fast channel.  The
-iterative solution encoded in the <code>_correct</code> subroutine thus solves
-point-by-point for x using a value for tau and the column containing
-y.</p>
+<p>where tau is the deadtime, x is the actual input rate on the fast channel, and y is the measured rate on the fast channel. The iterative solution encoded in the <code>_correct</code> subroutine thus solves point-by-point for x using a value for tau and the column containing y.</p>
 
-<p>If the deadtime is set to 0 (or negative) for a channel, then the
-standard correction of the ratio of the fast and slow channels (or
-ICR/OCR) will be applied to that channel.</p>
+<p>If the deadtime is set to 0 (or negative) for a channel, then the standard correction of the ratio of the fast and slow channels (or ICR/OCR) will be applied to that channel.</p>
 
-<p>For high count rates, the proper deadtime correction is considerably
-more accurate than the standard correction.  For details see Woicik,
-Ravel, Fischer, and Newburgh, J. Synchrotron Rad. (2010). 17, 409-413
-https://doi:org/10.1107/S0909049510009064</p>
+<p>For high count rates, the proper deadtime correction is considerably more accurate than the standard correction. For details see Woicik, Ravel, Fischer, and Newburgh, J. Synchrotron Rad. (2010). 17, 409-413 https://doi:org/10.1107/S0909049510009064</p>
 
-<h1 id="MULTIEDGE_FILES">MULTIEDGE FILES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="MULTIEDGE-FILES">MULTIEDGE FILES</h1>
 
-<p>At X23A2, we have four quad single channel analyzers, one for each
-detector element of our four-element Vortex.  Each quad SCA is
-modified to have the input channels tied together.  We use the fourth
-output channel as the slow channel, or OCR, signal.  This is done by
-setting the discriminator window over the entire energy range.  In
-principle, we could record three regions of interest for each detector
-element.  However, we only have enough scalar input channels to our
-crate to record two ROIs, along with the slow and fast (OCR and ICR)
-signals.</p>
+<p>At X23A2, we have four quad single channel analyzers, one for each detector element of our four-element Vortex. Each quad SCA is modified to have the input channels tied together. We use the fourth output channel as the slow channel, or OCR, signal. This is done by setting the discriminator window over the entire energy range. In principle, we could record three regions of interest for each detector element. However, we only have enough scalar input channels to our crate to record two ROIs, along with the slow and fast (OCR and ICR) signals.</p>
 
-<p>Recording even two channels is useful for switching between edges as
-part of a measurement macro.  To this end, this plugin will recognize
-when the system is configured that why by recognizing channel labels
-that are different from the configured <code>roiN</code> column labels, as
-discussed above and typically <code>Ifch1</code> through <code>Ifch4</code>.  Currently,
-this is <i>hard-wired</i> to be</p>
+<p>Recording even two channels is useful for switching between edges as part of a measurement macro. To this end, this plugin will recognize when the system is configured that why by recognizing channel labels that are different from the configured <code>roiN</code> column labels, as discussed above and typically <code>Ifch1</code> through <code>Ifch4</code>. Currently, this is <i>hard-wired</i> to be</p>
 
-<pre>  roi1_1 roi1_2 roi1_3 roi1_4
+<pre><code>  roi1_1 roi1_2 roi1_3 roi1_4</code></pre>
 
-</pre><p>for the ROI corresponding to one edge, and</p>
+<p>for the ROI corresponding to one edge, and</p>
 
-<pre>  roi2_1 roi2_2 roi2_3 roi2_4
+<pre><code>  roi2_1 roi2_2 roi2_3 roi2_4</code></pre>
 
-</pre><p>for the ROI corresponding to the second edge.  For example, in PbGeO3,
-the <code>roi1_N</code> might be configured to measure the Ge K alpha line while
-the <code>roi2_N</code> would then be configured for the Pb L alpha line.</p>
+<p>for the ROI corresponding to the second edge. For example, in PbGeO3, the <code>roi1_N</code> might be configured to measure the Ge K alpha line while the <code>roi2_N</code> would then be configured for the Pb L alpha line.</p>
 
-<p>When processed and presented to the user in the column selection
-dialog, the corrected columns are then labeled</p>
+<p>When processed and presented to the user in the column selection dialog, the corrected columns are then labeled</p>
 
-<pre>  c1_1 c1_2 c1_3 c1_4
+<pre><code>  c1_1 c1_2 c1_3 c1_4</code></pre>
 
-</pre><p>and</p>
+<p>and</p>
 
-<pre>  c2_1 c2_2 c2_3 c2_4
+<pre><code>  c2_1 c2_2 c2_3 c2_4</code></pre>
 
-</pre><p>It is then up to the user to select the correct group of four when
-importing the data.</p>
+<p>It is then up to the user to select the correct group of four when importing the data.</p>
 
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHORS">AUTHORS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="AUTHORS">AUTHORS</h1>
 
-<pre>  Joe Woicik, NIST (algorithm)
+<pre><code>  Joe Woicik, NIST (algorithm)
   Bruce Ravel, L&lt;http://bruceravel.github.io/home&gt; (implementation)
-  http://bruceravel.github.io/demeter
+  http://bruceravel.github.io/demeter</code></pre>
 
-</pre>
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
+

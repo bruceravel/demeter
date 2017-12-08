@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.4. Plot object &mdash; Demeter Programming Guide 0.9.26 documentation</title>
+    <title>4.4. Plot object &#8212; Demeter Programming Guide 0.9.26 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -17,15 +17,15 @@
         VERSION:     '0.9.26',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/wheat.ico"/>
-    <link rel="top" title="Demeter Programming Guide 0.9.26 documentation" href="../index.html" />
-    <link rel="up" title="4. High level actions of the object model" href="index.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="4.5. Config object" href="config.html" />
     <link rel="prev" title="4.3. Mode object" href="mode.html" />
 
@@ -44,8 +44,8 @@
         <li class="right" >
           <a href="mode.html" title="4.3. Mode object"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">4. High level actions of the object model</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">4. High level actions of the object model</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -76,7 +76,7 @@ like so:</p>
 <p>Any method of the plot object is easily called by chaining with the
 <code class="docutils literal"><span class="pre">po</span></code> method. For example to start a new plot (as opposed to
 overplotting), you do this</p>
-<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$any_object</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$any_object</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>The <code class="docutils literal"><span class="pre">start_plot</span></code> method reinitializes the Plot object to begin a new
@@ -94,8 +94,8 @@ colors and resets the plot title.</p>
              <span class="n">emin</span>      <span class="o">=&gt;</span> <span class="o">-</span><span class="mi">200</span><span class="p">,</span>  <span class="n">emax</span>      <span class="o">=&gt;</span> <span class="mi">2000</span><span class="p">,</span>
              <span class="n">space</span>     <span class="o">=&gt;</span> <span class="s">&#39;E&#39;</span><span class="p">,</span>
             <span class="p">);</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="nv">@eplot</span><span class="p">);</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="nv">@eplot</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">;</span>
 </pre></div>
 </div>
@@ -130,9 +130,9 @@ it</a>.</p>
              <span class="n">emin</span>      <span class="o">=&gt;</span> <span class="o">-</span><span class="mi">200</span><span class="p">,</span>  <span class="n">emax</span>      <span class="o">=&gt;</span> <span class="mi">2000</span><span class="p">,</span>
              <span class="n">space</span>     <span class="o">=&gt;</span> <span class="s">&#39;E&#39;</span><span class="p">,</span>
             <span class="p">);</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="nv">@eplot</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="nv">@eplot</span><span class="p">);</span>
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">bkg_flatten</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">;</span>
 </pre></div>
 </div>
@@ -154,9 +154,9 @@ normalization.</span></p>
              <span class="n">emin</span>      <span class="o">=&gt;</span> <span class="o">-</span><span class="mi">200</span><span class="p">,</span>  <span class="n">emax</span>      <span class="o">=&gt;</span> <span class="mi">2000</span><span class="p">,</span>
              <span class="n">space</span>     <span class="o">=&gt;</span> <span class="s">&#39;E&#39;</span><span class="p">,</span>
             <span class="p">);</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="nv">@eplot</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="nv">@eplot</span><span class="p">);</span>
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">bkg_flatten</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">;</span>
 </pre></div>
 </div>
@@ -182,9 +182,9 @@ flattened.</p>
              <span class="n">emin</span>      <span class="o">=&gt;</span> <span class="o">-</span><span class="mi">20</span><span class="p">,</span>   <span class="n">emax</span>      <span class="o">=&gt;</span> <span class="mi">120</span><span class="p">,</span>
              <span class="n">space</span>     <span class="o">=&gt;</span> <span class="s">&#39;E&#39;</span><span class="p">,</span>
             <span class="p">);</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">name</span><span class="o">=&gt;</span><span class="s">&#39;derivative&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">;</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">e_norm</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">e_norm</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">name</span><span class="o">=&gt;</span><span class="s">&#39;norm. deriv.&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">;</span>
 </pre></div>
 </div>
@@ -216,7 +216,7 @@ subsequent line. The cahined calls are a bit more concise.</p>
              <span class="n">emin</span>      <span class="o">=&gt;</span> <span class="o">-</span><span class="mi">20</span><span class="p">,</span>   <span class="n">emax</span>      <span class="o">=&gt;</span> <span class="mi">120</span><span class="p">,</span>
              <span class="n">space</span>     <span class="o">=&gt;</span> <span class="s">&#39;E&#39;</span><span class="p">,</span>
             <span class="p">);</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">;</span>
 </pre></div>
 </div>
@@ -237,8 +237,8 @@ plot nicely with the data.</span></p>
               <span class="n">bkg_nor2</span>    <span class="o">=&gt;</span> <span class="mi">1800</span><span class="p">,</span>
               <span class="n">bkg_flatten</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
              <span class="p">);</span>
-<span class="k">my</span> <span class="nv">@data</span> <span class="o">=</span> <span class="p">(</span><span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(),</span>
-            <span class="nn">Demeter::</span><span class="n">Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(),</span>
+<span class="k">my</span> <span class="nv">@data</span> <span class="o">=</span> <span class="p">(</span><span class="nn">Demeter::Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(),</span>
+            <span class="nn">Demeter::Data</span> <span class="o">-&gt;</span> <span class="k">new</span><span class="p">(),</span>
            <span class="p">);</span>
 <span class="k">foreach</span> <span class="p">(</span><span class="nv">@data</span><span class="p">)</span> <span class="p">{</span> <span class="nv">$_</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="nv">@common</span><span class="p">)</span> <span class="p">};</span>
 <span class="nv">$data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">file</span> <span class="o">=&gt;</span> <span class="s">&quot;$where/data/fe.060.xmu&quot;</span><span class="p">,</span>
@@ -253,7 +253,7 @@ plot nicely with the data.</span></p>
              <span class="n">e_zero</span>  <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
              <span class="n">emin</span>    <span class="o">=&gt;</span> <span class="o">-</span><span class="mi">30</span><span class="p">,</span> <span class="n">emax</span>    <span class="o">=&gt;</span> <span class="mi">150</span><span class="p">,</span>
             <span class="p">);</span>
-<span class="nv">$data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
 <span class="k">foreach</span> <span class="p">(</span><span class="nv">@data</span><span class="p">)</span> <span class="p">{</span> <span class="nv">$_</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;E&#39;</span><span class="p">)</span> <span class="p">};</span>
 </pre></div>
 </div>
@@ -274,8 +274,8 @@ edge will show up at 0 in the plot.</span></p>
 <h2>4.4.2. Plotting in k<a class="headerlink" href="#plotting-in-k" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="plotting-in-k-space">
 <h3>4.4.2.1. Plotting in k-space<a class="headerlink" href="#plotting-in-k-space" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">kweight</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">kweight</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;k&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -290,8 +290,8 @@ plotting is an attribute of the Plot object.</span></p>
 </div>
 <div class="section" id="plotting-in-chi-k-in-energy">
 <h3>4.4.2.2. Plotting in chi(k) in energy<a class="headerlink" href="#plotting-in-chi-k-in-energy" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">kweight</span><span class="o">=&gt;</span><span class="mi">2</span><span class="p">,</span> <span class="n">chie</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">);</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">kweight</span><span class="o">=&gt;</span><span class="mi">2</span><span class="p">,</span> <span class="n">chie</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">);</span>
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;k&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -305,7 +305,7 @@ absolute energy.</span></p>
 </div>
 <div class="section" id="k-space-with-all-three-k-weights">
 <h3>4.4.2.3. k-space with all three k-weights<a class="headerlink" href="#k-space-with-all-three-k-weights" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;k123&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -327,9 +327,9 @@ are chosen to be appropriate to the data.</span></p>
 <h2>4.4.3. Plotting in R<a class="headerlink" href="#plotting-in-r" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="magnitude-in-r-space-r-space-window">
 <h3>4.4.3.1. Magnitude in R-space &amp; R-space window<a class="headerlink" href="#magnitude-in-r-space-r-space-window" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">kweight</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="n">r_pl</span> <span class="o">=&gt;</span> <span class="s">&#39;m&#39;</span><span class="p">,</span> <span class="n">space</span> <span class="o">=&gt;</span> <span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="p">);</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span> <span class="o">-&gt;</span> <span class="n">plot_window</span><span class="p">;</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">kweight</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="n">r_pl</span> <span class="o">=&gt;</span> <span class="s">&#39;m&#39;</span><span class="p">,</span> <span class="n">space</span> <span class="o">=&gt;</span> <span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">plot</span> <span class="o">-&gt;</span> <span class="n">plot_window</span><span class="p">;</span>
 </pre></div>
 </div>
 <div class="figure align-left" id="id10">
@@ -350,16 +350,16 @@ R-space window will be plotted.</p>
 </div>
 <div class="section" id="data-in-r-space-as-envelope-real-part-imaginary-part">
 <h3>4.4.3.2. Data in R-space as envelope, real part, &amp; imaginary part<a class="headerlink" href="#data-in-r-space-as-envelope-real-part-imaginary-part" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">kweight</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="n">r_pl</span> <span class="o">=&gt;</span> <span class="s">&#39;e&#39;</span><span class="p">,</span> <span class="n">space</span> <span class="o">=&gt;</span> <span class="s">&#39;r&#39;</span><span class="p">);</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">kweight</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="n">r_pl</span> <span class="o">=&gt;</span> <span class="s">&#39;e&#39;</span><span class="p">,</span> <span class="n">space</span> <span class="o">=&gt;</span> <span class="s">&#39;r&#39;</span><span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">;</span>
 
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">name</span><span class="o">=&gt;</span><span class="s">&#39;Real part&#39;</span><span class="p">);</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">r_pl</span> <span class="o">=&gt;</span> <span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">r_pl</span> <span class="o">=&gt;</span> <span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="p">);</span>
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">;</span>
 
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">name</span><span class="o">=&gt;</span><span class="s">&#39;Imaginary part&#39;</span><span class="p">);</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="n">r_pl</span> <span class="o">=&gt;</span> <span class="s">&#39;i&#39;</span><span class="p">,</span> <span class="p">);</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="n">r_pl</span> <span class="o">=&gt;</span> <span class="s">&#39;i&#39;</span><span class="p">,</span> <span class="p">);</span>
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">;</span>
 
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">name</span><span class="o">=&gt;</span><span class="s">&#39;fe.060&#39;</span><span class="p">);</span>  <span class="c1">## reset original name</span>
@@ -378,7 +378,7 @@ plotted twice, multiplied by -1.</span></p>
 </div>
 <div class="section" id="r-space-with-all-three-k-weights">
 <h3>4.4.3.3. R-space with all three k-weights<a class="headerlink" href="#r-space-with-all-three-k-weights" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;r123&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -397,8 +397,8 @@ the Plot object.</span></p>
 </div>
 <div class="section" id="magnitude-and-real-part-in-r-space">
 <h3>4.4.3.4. Magnitude and real part in R space<a class="headerlink" href="#magnitude-and-real-part-in-r-space" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">kweight</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">kweight</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;rmr&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -418,7 +418,7 @@ data and fit are overplotted as magnitude and real.</span></p>
 <h2>4.4.4. Plotting in q<a class="headerlink" href="#plotting-in-q" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="plotting-in-back-transform-k-space">
 <h3>4.4.4.1. Plotting in back-transform k-space<a class="headerlink" href="#plotting-in-back-transform-k-space" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">kweight</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="sx">q_pl =&gt; &#39;r&#39;);</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">set</span><span class="p">(</span><span class="n">kweight</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="sx">q_pl =&gt; &#39;r&#39;);</span>
 <span class="sx">$data -&gt; po -&gt; start_</span><span class="n">plot</span><span class="p">;</span>
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;q&#39;</span><span class="p">);</span>
 </pre></div>
@@ -434,8 +434,8 @@ in q. The part of the complex χ(q) is specified using the
 </div>
 <div class="section" id="k-space-the-real-part-of-back-transform-k-space">
 <h3>4.4.4.2. k-space &amp; the real part of back-transform k-space<a class="headerlink" href="#k-space-the-real-part-of-back-transform-k-space" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
-<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">po</span> <span class="o">-&gt;</span> <span class="n">kweight</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<div class="highlight-perl"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">start_plot</span><span class="p">;</span>
+<span class="nv">$data</span> <span class="o">-&gt;</span> <span class="nn">po</span> <span class="o">-&gt;</span> <span class="n">kweight</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
 <span class="nv">$data</span> <span class="o">-&gt;</span> <span class="n">plot</span><span class="p">(</span><span class="s">&#39;kq&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -478,7 +478,7 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
 <li class="toctree-l2"><a class="reference internal" href="dispose.html">4.1. Command disposal and command templates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="templates.html">4.2. Demeter's templating system</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mode.html">4.3. Mode object</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">4.4. Plot object</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">4.4. Plot object</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config.html">4.5. Config object</a></li>
 <li class="toctree-l2"><a class="reference internal" href="methods.html">4.6. Other high level object methods</a></li>
 </ul>
@@ -497,7 +497,7 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">16. Full examples</a></li>
 </ul>
 <h3>Helpful Links</h3>
-<p>Current version: <b>0.9.26</b></p>
+<p>Current Demeter version: <b>0.9.26</b></p>
 
 <ul>
   <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/demeter/">Demeter homepage</a>
@@ -505,6 +505,7 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
   <li>&nbsp; &nbsp; <a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">Ifeffit mailing list</a>
   <li>&nbsp; &nbsp; <a href="http://xraypy.github.io/xraylarch/">Larch homepage</a>
   <li>&nbsp; &nbsp; <a href="https://github.com/newville/ifeffit">Ifeffit @ github</a>
+  <li>&nbsp; &nbsp; <a href="http://bruceravel.github.io/XAS-Education/">Bruce's XAS Education page</a>
   <li>&nbsp; &nbsp; <a href="http://xafs.org/">xafs.org</a>
 </ul>
 <ul>
@@ -518,20 +519,17 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/highlevel/plot.txt"
+      <li><a href="../_sources/highlevel/plot.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -548,13 +546,13 @@ consider <a class="reference external" href="https://creativecommons.org/donate/
         <li class="right" >
           <a href="mode.html" title="4.3. Mode object"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >4. High level actions of the object model</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Demeter Programming Guide 0.9.26 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >4. High level actions of the object model</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, Bruce Ravel.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+        &#169; Copyright 2016, Bruce Ravel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
     </div>
   </body>
 </html>

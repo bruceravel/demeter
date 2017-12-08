@@ -1,32 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
 <head>
-	<title>Demeter::UI::Hephaestus::Formulas</title>
-<link rel="stylesheet" type="text/css" href="../../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script type="text/javascript">
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  </script></head>
-<body>
-<div class="box">
+<title>Demeter::UI::Hephaestus::Formulas &mdash; Demeter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
   <h1 class="t1">Demeter</h1>
   <table>
     <tr>
@@ -37,88 +15,82 @@
 </div>
 <div class="path">
   <a href="../../../index.html">Demeter</a> &gt; Perl Modules &gt;
-  Demeter-UI-Hephaestus-Formulas
+  Demeter::UI::Hephaestus::Formulas
 </div>
 <div>
 <a href="../../../src/Demeter/UI/Hephaestus/Formulas.pm">Source</a>
 </div>
 
-
 <div class="pod">
-<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
 
-<p>Demeter::UI::Hephaestus::Formulas - Hephaestus' formulas utility</p>
 
-<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONFIGURATION">CONFIGURATION</a></li>
+  <li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+  <li><a href="#BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Demeter::UI::Hephaestus::Formulas - Hephaestus&#39; formulas utility</p>
+
+<h1 id="VERSION">VERSION</h1>
 
 <p>This documentation refers to Demeter version 0.9.26.</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<p>The contents of Hephaestus' formulas utility can be added to any Wx
-application.</p>
+<p>The contents of Hephaestus&#39; formulas utility can be added to any Wx application.</p>
 
-<pre>  my $page = Demeter::UI::Hephaestus::Formulas-&gt;new($parent,$statusbar);
-  $sizer -&gt; Add($page, 1, wxGROW|wxEXPAND|wxALL, 0);
+<pre><code>  my $page = Demeter::UI::Hephaestus::Formulas-&gt;new($parent,$statusbar);
+  $sizer -&gt; Add($page, 1, wxGROW|wxEXPAND|wxALL, 0);</code></pre>
 
-</pre><p>The arguments to the constructor method are a reference to the parent
-in which this is placed and a reference to a mechanism for displaying
-progress and warning messages.  <code>$statusbar</code> is the StatusBar of the
-parent window.</p>
+<p>The arguments to the constructor method are a reference to the parent in which this is placed and a reference to a mechanism for displaying progress and warning messages. <code>$statusbar</code> is the StatusBar of the parent window.</p>
 
-<p><code>$page</code> contains most of what is displayed in the main part of the
-Hephaestus frame.  Only the label at the top is not included in
-<code>$page</code>.</p>
+<p><code>$page</code> contains most of what is displayed in the main part of the Hephaestus frame. Only the label at the top is not included in <code>$page</code>.</p>
 
-<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
 
-<p>This utility presents a short list of known materials and allows you
-to either select one or to enter the chemical formula of some other
-material.  There is also a button to open a periodic table pop-up for
-selecting an element and its natural density.  From the specified
-density and measurement energy, the absorption of that material will
-be calculated using tables of x-ray absorption coefficients.  This is
-useful for planning sample preparation and for predicting the response
-of your sample and other parts of the experiment when exposed ot the
-x-ray beam.</p>
+<p>This utility presents a short list of known materials and allows you to either select one or to enter the chemical formula of some other material. There is also a button to open a periodic table pop-up for selecting an element and its natural density. From the specified density and measurement energy, the absorption of that material will be calculated using tables of x-ray absorption coefficients. This is useful for planning sample preparation and for predicting the response of your sample and other parts of the experiment when exposed ot the x-ray beam.</p>
 
-<h1 id="CONFIGURATION">CONFIGURATION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="CONFIGURATION">CONFIGURATION</h1>
 
+<h1 id="DEPENDENCIES">DEPENDENCIES</h1>
 
+<p>Demeter&#39;s dependencies are in the <i>Build.PL</i> file.</p>
 
-
-<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
-
-<p>Demeter's dependencies are in the <cite>Build.PL</cite> file.</p>
-
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="BUGS-AND-LIMITATIONS">BUGS AND LIMITATIONS</h1>
 
 <ul>
-	<li>Add and delete user materials using an ini file.</li>
+
+<li><p>Add and delete user materials using an ini file.</p>
+
+</li>
 </ul>
 
-<p>Please report problems to the Ifeffit Mailing List
-(<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
+<p>Please report problems to the Ifeffit Mailing List (<a href="http://cars9.uchicago.edu/mailman/listinfo/ifeffit/">http://cars9.uchicago.edu/mailman/listinfo/ifeffit/</a>)</p>
 
 <p>Patches are welcome.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="AUTHOR">AUTHOR</h1>
 
 <p>Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>)</p>
 
 <p><a href="http://bruceravel.github.io/demeter/">http://bruceravel.github.io/demeter/</a></p>
 
-<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+<h1 id="LICENCE-AND-COPYRIGHT">LICENCE AND COPYRIGHT</h1>
 
 <p>Copyright (c) 2006-2017 Bruce Ravel (<a href="http://bruceravel.github.io/home">http://bruceravel.github.io/home</a>). All rights reserved.</p>
 
-<p>This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See <a href="https://metacpan.org/pod/perlgpl">perlgpl</a>.</p>
+<p>This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See <a href="http://metacpan.org/module/perlgpl">perlgpl</a>.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
 
-</div><div class="footer">generated by <a href="https://metacpan.org/pod/Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
-</html>
