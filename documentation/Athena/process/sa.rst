@@ -163,9 +163,10 @@ that samples are infinitely thick.
    Booth algorithm.
 
 After selecting an algorithm, you can use the other controls to enter
-the incident and outgoing angles in degree and the thickness of the
-sample in microns. All algorithms require that you specify the formula
-of the sample with stoichiometries in atomic percent.
+the incident and outgoing angles in degree, the thickness of the
+sample in microns, and the density as specific gravity.  All
+algorithms require that you specify the formula of the sample with
+stoichiometries in atomic percent.
 
 These two data groups were measured from the same thin copper foil, one
 in transmission and the other in fluorescence. These data were provided
