@@ -507,6 +507,7 @@ const my $TIP 		        => Wx::NewId();
 const my $DEMO			=> Wx::NewId();
 const my $BUG			=> Wx::NewId();
 const my $QUESTION		=> Wx::NewId();
+const my $CHANGELOG		=> Wx::NewId();
 
 sub menubar {
   my ($app) = @_;
@@ -784,6 +785,7 @@ sub menubar {
   $helpmenu->Append($BUG,      "Report a bug",    "How to report a bug in Athena" );
   $helpmenu->Append($QUESTION, "Ask a question",  "How to ask a question about Athena" );
   $helpmenu->AppendSeparator;
+  $helpmenu->Append($CHANGELOG, "Demeter change log" );
   $helpmenu->Append(wxID_ABOUT, "&About Athena" );
 
   $bar->Append( $filemenu,    "&File" );
@@ -1609,6 +1611,10 @@ sub OnMenuClick {
     };
     ($id == $QUESTION) and do {
       Wx::LaunchDefaultBrowser(q{http://bruceravel.github.io/demeter/documents/SinglePage/help.html});
+      return;
+    };
+    ($id == $CHANGELOG) and do {
+      Wx::LaunchDefaultBrowser(q{http://bruceravel.github.io/demeter/Changes.html});
       return;
     };
 
