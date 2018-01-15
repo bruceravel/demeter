@@ -357,7 +357,7 @@ Bruce Ravel (L<http://bruceravel.github.io/home>)
 
 L<http://bruceravel.github.io/demeter/>
 
-Larch is copyright (c) 2017, Matthew Newville and Tom Trainor
+Larch is copyright (c) 2018, Matthew Newville and Tom Trainor
 
 =head1 SEE ALSO
 

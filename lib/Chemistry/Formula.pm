@@ -1,5 +1,5 @@
 ######################################################################
-##  This module is copyright (c) 2001-2017 Bruce Ravel
+##  This module is copyright (c) 2001-2018 Bruce Ravel
 ##  http://bruceravel.github.io/home
 ##  http://bruceravel.github.io/demeter
 ##

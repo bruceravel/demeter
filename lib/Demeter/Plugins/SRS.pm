@@ -240,4 +240,4 @@ this sort of data -- the one I have does not appear to be XAS data.
 
   Bruce Ravel L<http://bruceravel.github.io/home>
   http://bruceravel.github.io/demeter
-  Athena copyright (c) 2001-2017
+  Athena copyright (c) 2001-2018
