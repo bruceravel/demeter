@@ -497,6 +497,8 @@ sub _data {
       $data->DEMOLISH;
       return 0;
     };
+    Demeter->pjoin('--------', $data, $data->group);
+    #$data->sort_data if ($data->is_larch);
     my $busy = Wx::BusyCursor->new();
     $med = ($colsel->{each}->IsEnabled and $colsel->{each}->GetValue);
     $yaml->{each}  = $colsel->{each}->GetValue;

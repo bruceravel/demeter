@@ -19,7 +19,7 @@ use Carp;
 
 use File::Basename;
 use List::MoreUtils qw(any);
-use Demeter::Constants qw($NUMBER $PI $NULLFILE);
+use Demeter::Constants qw($NUMBER $PI $NULLFILE $EPSILON3);
 use Scalar::Util qw(looks_like_number);
 use YAML::Tiny;
 
@@ -843,6 +843,11 @@ sub explain_recordtype {
 
 sub sort_data {
   my ($self) = @_;
+  if ($self->is_larch) {
+    Demeter->trace;
+    $self->dispense('process', 'sort');
+    return $self;
+  };
   my @x = ();
   if ($self->is_col) {
 
@@ -875,7 +880,8 @@ sub sort_data {
     ## now fish thru lol looking for repeated energy points
     my $ii = 0;
     while ($ii < $#lol) {
-      ($lol[$ii+1]->[0] > $lol[$ii]->[0]) ? ++$ii : splice(@lol, $ii+1, 1);
+      ($lol[$ii+1]->[0] - $lol[$ii]->[0] > $EPSILON3) ? ++$ii : splice(@lol, $ii+1, 1);
+      #($lol[$ii+1]->[0] > $lol[$ii]->[0]) ? ++$ii : splice(@lol, $ii+1, 1);
     };
 
     ## now feed columns back to ifeffit
@@ -886,6 +892,10 @@ sub sort_data {
       my @array;
       foreach (@lol) {push @array, $_->[$c]};
       $self->place_array("$group.$cols[$c]", \@array);
+      if ($self->is_larch) {
+	my $cc = $c-1;
+	$self->place_array("$group.data".'['.$cc.']', \@array);
+      };
     };
     # @array = $self->get_array($cols[$ecol]);
     # print join(" ", @array), $/, $/, $/;

@@ -236,6 +236,7 @@ sub place_array {
   if ($self->is_ifeffit) {
     Ifeffit::put_array($param, $arrayref);
   } elsif ($self->is_larch) {
+    print '>>>>', $param, $/;
     Larch::put_larch_array($param, $arrayref);
   };
   return 1;

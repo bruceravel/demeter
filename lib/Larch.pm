@@ -284,7 +284,8 @@ if (!$larchconn) {
 
 END {
   #my $action = ($ENV{DEMETER_LARCH_PERSIST}) ? 'status' : 'stop';
-  system "$larch_exe -p $larch_port stop";
+  my $quiet = ($ENV{DEMETER_LARCH_VERBOSE}) ? q{} : q{-q};
+  system "$larch_exe $quiet -p $larch_port stop";
 }
 
 
