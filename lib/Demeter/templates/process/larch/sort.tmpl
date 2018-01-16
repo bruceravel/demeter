@@ -1,0 +1,17 @@
+##| sort data group's data table using numpy, skipping Demeter's sorting
+
+sort___ing = {$D->group}.data.transpose()
+sort___ing = sort(sort___ing,axis=0)
+sort___ing = sort___ing.transpose()
+uni___que  = unique(sort___ing[0], return_index=True)
+{$D->group}.uniq = uni___que[1]
+{$D->group}.data = sort___ing[:,({$D->group}.uniq)]
+
+#i=-1
+#for col in {$D->group}.column_labels:
+#    i = i+1
+#    if (i == 0): continue
+#    setattr({$D->group}, col, {$D->group}.data[i, :])
+##endfor
+
+del sort___ing uni___que
