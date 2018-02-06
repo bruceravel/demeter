@@ -7,6 +7,7 @@
 {$D->group}.energy = {$D->energy_string}
 {$D->group}.xmu    = {$D->xmu_string}
 __xmu_max      = abs(max({$D->group}.xmu))
+{$D->group}.xmu    = {$D->group}.xmu[{$D->group}.uniq]
 
 if '{$D->i0_string}' == '1': 
    {$D->group}.i0 = ones(size({$D->group}.energy));
@@ -15,8 +16,10 @@ else:
    {$D->group}.i0 = {$D->i0_string}
     __i0_scale     = __xmu_max / max({$D->group}.i0)
 #endif
+{$D->group}.i0    = {$D->group}.i0[{$D->group}.uniq]
 
 {$D->group}.signal = {$D->signal_string}
 __signal_scale = __xmu_max / max({$D->group}.signal)
+{$D->group}.signal    = {$D->group}.signal[{$D->group}.uniq]
 
 del(__xmu_max)

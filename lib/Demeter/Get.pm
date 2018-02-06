@@ -151,7 +151,7 @@ sub fetch_string {
   } elsif ($self->is_larch) {
     if ($param eq 'column_label') {
       my $gp = ($self->attribute_exists('group') and $self->group) ? $self->group : Demeter->mo->throwaway_group;
-      $param = $gp.'.column_labels';
+      $param = $gp.'.array_labels';
       $self->dispose("show $param");
       my $list = Larch::get_larch_scalar($param);
       $list = eval($list) if ($list and ref($list) ne 'ARRAY');

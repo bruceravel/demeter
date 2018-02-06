@@ -844,10 +844,12 @@ sub explain_recordtype {
 sub sort_data {
   my ($self) = @_;
   if ($self->is_larch) {
-    Demeter->trace;
-    $self->dispense('process', 'sort');
     return $self;
   };
+  #  #Demeter->trace;
+  #  $self->dispense('process', 'sort');
+  #  return $self;
+  #};
   my @x = ();
   if ($self->is_col) {
 
@@ -918,6 +920,9 @@ sub _read_data_command {
   } else {
     $string  = $self->template("process", "read");
     $self->provenance("column data file ".$self->file);
+  };
+  if ($self->is_larch) {
+    $string .= $self->template("process", "sort");
   };
   return $string;
 };
