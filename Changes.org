@@ -5,7 +5,7 @@
 #+OPTIONS: toc:2
 
 * 0.9 series
-** 0.9.26   21 December  2017
+** 0.9.26    8 February  2018
 *** Athena
     + [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-September/008818.html][fix XDI headers]] in "save marked groups" output files, also add
       templates to provide for the special case in k of two abscissa
@@ -33,6 +33,9 @@
       a user-specified element and edge (thanks to Shelly Kelly)
     + Fixed a bug related to when default parameter values are set
       during data import
+    + Fixed a bug sorting data using larch. This fixed a problem
+      related to repeated energy rows in the data table of the input
+      data file (Thanks to Carlo Segre)
 
 *** Artemis
     + Actually use the user-supplied value of epsilon_k (Thanks to
