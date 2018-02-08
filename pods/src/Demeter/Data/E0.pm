@@ -2,7 +2,7 @@ package Demeter::Data::E0;
 
 =for Copyright
  .
- Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2018 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -32,7 +32,7 @@ use Chemistry::Elements qw(get_symbol);
 sub e0 {
   my ($self, $how) = @_;
   #print '>>>> ', $how, $/;
-  #sDemeter->trace;
+  #Demeter->trace;
   ($how = "ifeffit") if (!$how);
   ($how = "ifeffit") if (($how !~ m{\A(?:atomic|dmax|fraction|zero|peak|$NUMBER)\z}) and (ref($how) !~ m{Data}));
   $self->_update('normalize');
@@ -92,6 +92,7 @@ sub e0_ifeffit {
   $self->dispense('process', 'find_e0');
   my $was = $self->bkg_e0;
   my $e0 = $self->fetch_scalar('e0');
+  #print '>>>>> ', $e0, $/;
   if (abs($was - $e0) > $EPSILON3) {
     $self->bkg_e0(sprintf("%.5f", $e0));
     return $e0;
@@ -496,7 +497,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2018 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

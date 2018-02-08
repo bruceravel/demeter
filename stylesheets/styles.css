@@ -156,7 +156,7 @@ img {
   max-width: 650px;
   padding: 5px;
   margin: 10px 0 10px 0;
-  border: 1px solid #ccc;
+  border: 0px solid #ccc;
   z-index:1;
 }
 
@@ -414,13 +414,14 @@ section {
 /* Footer */
 
 footer {
-    width:190px;
+    width:17%;
     /* float:left; */
     position:fixed;
     bottom:10px;
-    padding-left: 85%;
+    padding-left: 80%;
     /* padding-left: 10px; */
 }
+
 
 @media print, screen and (max-width: 960px) {
 

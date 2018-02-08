@@ -53,6 +53,6 @@ Chemistry::Elements will report on them correctly.
 =head1 AUTHOR
 
 Bruce Ravel, L<http://bruceravel.github.io/home>
-copyright (c) 2016-2017 Bruce Ravel
+copyright (c) 2016-2018 Bruce Ravel
 
 http://bruceravel.github.io/demeter/

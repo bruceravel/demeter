@@ -497,6 +497,8 @@ sub _data {
       $data->DEMOLISH;
       return 0;
     };
+    #Demeter->pjoin('--------', $data, $data->group);
+    #$data->sort_data if ($data->is_larch);
     my $busy = Wx::BusyCursor->new();
     $med = ($colsel->{each}->IsEnabled and $colsel->{each}->GetValue);
     $yaml->{each}  = $colsel->{each}->GetValue;
@@ -1155,7 +1157,7 @@ Bruce Ravel, L<http://bruceravel.github.io/home>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2018 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.
