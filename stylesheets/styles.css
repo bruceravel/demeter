@@ -420,6 +420,7 @@ footer {
     bottom:10px;
     padding-left: 80%;
     /* padding-left: 10px; */
+    z-index:-100;
 }
 
 
