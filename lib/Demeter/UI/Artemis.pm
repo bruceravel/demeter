@@ -96,6 +96,7 @@ const my $DOCUMENT_FEFF   => Wx::NewId();
 const my $DOCUMENT_FIT    => Wx::NewId();
 const my $BUG             => Wx::NewId();
 const my $QUESTION        => Wx::NewId();
+const my $CHANGELOG       => Wx::NewId();
 const my $PLOT_PNG        => Wx::NewId();
 const my $PLOT_GIF	  => Wx::NewId();
 const my $PLOT_JPG	  => Wx::NewId();
@@ -294,6 +295,7 @@ sub OnInit {
   $helpmenu->Append($BUG,      "Report a bug",    "How to report a bug in Artemis" );
   $helpmenu->Append($QUESTION, "Ask a question",  "How to ask a question about Artemis" );
   $helpmenu->AppendSeparator;
+  $helpmenu->Append($CHANGELOG, "Demeter change log",  "View the Demeter change log online" );
   $helpmenu->Append(wxID_ABOUT, "&About Artemis" );
 
   $bar->Append( $filemenu,      "&File" );
@@ -980,6 +982,10 @@ sub OnMenuClick {
     };
     ($id == $QUESTION) and do {
       Wx::LaunchDefaultBrowser(q{http://bruceravel.github.io/demeter/documents/SinglePage/help.html});
+      return;
+    };
+    ($id == $CHANGELOG) and do {
+      Wx::LaunchDefaultBrowser(q{http://bruceravel.github.io/demeter/Changes.html});
       return;
     };
 
@@ -1763,7 +1769,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2018 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

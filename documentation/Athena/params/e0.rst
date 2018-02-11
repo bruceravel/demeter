@@ -93,3 +93,53 @@ Submenus under the :guilabel:`Group` menu can be used to set
 :procparam:`E0` using one of these algorithms for all groups, or the
 set of marked groups.
 
+
+Enforcing an element and edge
+-----------------------------
+
+Sometimes you have data that is otherwise usable, but which contains a
+feature that confounds one of :demeter:`athena`'s data reduction
+algorithms.  An example is shown below.  There was some problem within
+a short data range at the beginning of the pre-edge resulting in a
+high level of noise in the data.  When searching for the value of the
+edge energy, :demeter:`athena` searches for a peak in the first
+derivative.  In the case of these data, that peak in the first
+derivative is found in the noisy region at the beginning of the
+pre-edge region.
+
+.. _fig-encorce_mu:
+.. figure:: ../../_images/enforce_mu.png
+   :target: ../_images/enforce_mu.png
+   :align: center
+
+   Data with a measurement problem that confounds :demeter:`athena`'s
+   algorithm for determining :procparam:`E0`.
+
+In a situation like this, it can be useful to supply :demeter:`athena`
+with a bit more information about the data.  The usual practice in
+:demeter:`athena` is to determine the absorbing element and edge from
+the data without input from the user.  This practice can be
+over-ridden by enforcing the element and edge for a data set.
+
+The dialog for this is located at :menuselection:`Energy --> Enforce
+element and edge`.  Selecting this pops uo the following dialog:
+
+.. _fig-enforce:
+.. figure:: ../../_images/enforce.png
+   :target: ../_images/enforce.png
+   :align: center
+
+   The element and edge enforcement dialog.
+
+Specify the element of the absorber and the edge you are measuring.
+Doing so will force :demeter:`athena` to consider data to be of that
+element and edge.  The :procparam:`E0` will first be set to the
+tabulated value for the zero-valent lement.  Then `default parameter
+values <defauls.html>`__ will be set, then the :procparam:`E0`
+parameter will be reset using the *Fraction of edge step* algorithm.
+
+If you wish to later import data of another element or edge, it is
+**imperative** that you stop enforcement by selecting
+:menuselection:`Energy --> Stop enforcing element and edge`.
+Enforcing the incorrect element or edge will have profoundly
+undesirable consequences on the data processing.

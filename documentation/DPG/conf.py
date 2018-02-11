@@ -23,7 +23,7 @@ sys.path.insert(0, os.path.abspath(os.path.join('..', 'sphinx', 'ext')))
 
 # from sphinxtr
 import html_mods
-import latex_mods
+#import latex_mods
 
 # -- General configuration ------------------------------------------------
 
@@ -49,7 +49,7 @@ extensions.extend([
     'figtable',
     'singlehtml_toc',
     'singletext',
-    'sphinx_clatex',
+    #'sphinx_clatex',
     'demeterdocs',
     'sphinxcontrib.bibtex'
 ])
@@ -292,8 +292,6 @@ latex_elements = {'pointsizee': '11pt',
                   'preamble': """
 \input{preamble._tex}
 \usepackage{sphinx}
-""",
-                 'footer':"""
 input{biblio.tex}
 """
 }

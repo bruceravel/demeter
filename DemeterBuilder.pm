@@ -431,7 +431,7 @@ sub ACTION_doctree {
 				 index    => 0,
 				 title    => 'Demeter',
 				 desc     => "Perl tools for X-ray Absorption Spectroscopy",
-				 except   => [qr(Savitzky), qr(ToolTemplate), qr(XDI), qr(PCA_new), qr(Larch_inline), qr(LarchServer)],
+				 except   => [qw(Savitzky ToolTemplate XDI PCA_new Larch_inline LarchServer)],
 				);
   $pd->gen();
   foreach my $d (@list) {

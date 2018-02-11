@@ -85,8 +85,9 @@ For more hints about how to ask good questions `How To Ask Questions
 The Smart Way <http://www.catb.org/~esr/faqs/smart-questions.html>`_
 by Eric Raymond and Rick Moen is very useful.  (Please note that
 neither Raymond nor Moen are associated in any way with
-:demeter:`demeter` or :demeter:`ifeffit` nor should they be contacted
-with questions about :demeter:`demeter` or :demeter:`ifeffit`.)
+:demeter:`demeter`, :demeter:`larch`, or :demeter:`ifeffit` nor should
+they be contacted with questions about :demeter:`demeter`,
+:demeter:`larch`, or :demeter:`ifeffit`.)
 
 
 Other XAFS Resources on the Web

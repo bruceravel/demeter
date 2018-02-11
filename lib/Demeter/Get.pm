@@ -2,7 +2,7 @@ package Demeter::Get;
 
 =for Copyright
  .
- Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2018 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -151,7 +151,7 @@ sub fetch_string {
   } elsif ($self->is_larch) {
     if ($param eq 'column_label') {
       my $gp = ($self->attribute_exists('group') and $self->group) ? $self->group : Demeter->mo->throwaway_group;
-      $param = $gp.'.column_labels';
+      $param = $gp.'.array_labels';
       $self->dispose("show $param");
       my $list = Larch::get_larch_scalar($param);
       $list = eval($list) if ($list and ref($list) ne 'ARRAY');
@@ -236,6 +236,7 @@ sub place_array {
   if ($self->is_ifeffit) {
     Ifeffit::put_array($param, $arrayref);
   } elsif ($self->is_larch) {
+    print '>>>>', $param, $/;
     Larch::put_larch_array($param, $arrayref);
   };
   return 1;
@@ -366,7 +367,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2018 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

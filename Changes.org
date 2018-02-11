@@ -5,7 +5,7 @@
 #+OPTIONS: toc:2
 
 * 0.9 series
-** 0.9.26   ?? April     2017
+** 0.9.26    8 February  2018
 *** Athena
     + [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-September/008818.html][fix XDI headers]] in "save marked groups" output files, also add
       templates to provide for the special case in k of two abscissa
@@ -31,6 +31,11 @@
     + fix a bug identifying reference group when no ref group exists
     + Added ability to enforce that a group imported be recognized as
       a user-specified element and edge (thanks to Shelly Kelly)
+    + Fixed a bug related to when default parameter values are set
+      during data import
+    + Fixed a bug sorting data using larch. This fixed a problem
+      related to repeated energy rows in the data table of the input
+      data file (Thanks to Carlo Segre)
 
 *** Artemis
     + Actually use the user-supplied value of epsilon_k (Thanks to
@@ -39,8 +44,8 @@
       paths.  This is a loss for dnd a path to another data set, but I
       suspect that is not much used.
     + Fix several bugs in multiple data set fits using Larch
-    + Change the symbol for an excluded path from [[https://en.wikipedia.org/wiki/Triple_parentheses][three parens (((path)))
-     ]] to ~--(path)--~
+    + Change the symbol for an excluded path from
+      [[https://en.wikipedia.org/wiki/Triple_parentheses][three parens (((path))) ]] to ~--(path)--~
     + Improved validator for N path parameter -- it can now be blank.
       Also selecting all then typing works sensibly
     + Put in a more rigorous check for exceeding ~&max_data_sets~ when
@@ -67,7 +72,7 @@
 
 *** Demeter
     + Try to start Larch, if no success fall back to Ifeffit.  Accept
-      a PR from Matt related to this.
+      several PRs from Matt related to this.
     + Delay loading of more stuff to speed start-up
     + Update non-root installation instructions (Thanks to [[https://github.com/bruceravel/demeter/issues/36][Patrick Browne]])
     + DEMETER_MODE and DEMETER_NO_BACKEND environment variables
@@ -84,10 +89,15 @@
     + All tests passing with Larch (also still pass with Ifeffit)!
     + Do not require the presence of Ifeffit to build Demeter (Thanks
       to Tom Schoonjans and Matt)
+    + Put a link to the change log in the help menu of each program
 
 *** Windows
     + Upgrade to Strawberry with perl 5.24, upgrade to 64 bit Gnuplot
       5.0.4
+    + Fix a problem with demeter.ini files having outdated locations
+      for gnuplot->program and feff->executable (thanks to Kirill
+      Lomachenko, Kathy Dardenne, and Robert Gordon)
+    + Updated documentation in installer
 
 ** 0.9.25   24 August    2016
 *** Athena

@@ -2,7 +2,7 @@ package Demeter::UI::HephaestusApp;
 
 =for Copyright
  .
- Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2018 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -256,6 +256,7 @@ const my $CONFIG    => Wx::NewId();
 const my $DOCUMENT  => Wx::NewId();
 const my $BUG	    => Wx::NewId();
 const my $QUESTION  => Wx::NewId();
+const my $CHANGELOG => Wx::NewId();
 const my $ABS	    => Wx::NewId();
 const my $FORM	    => Wx::NewId();
 const my $ION	    => Wx::NewId();
@@ -347,6 +348,7 @@ sub OnInit {
   $help->AppendSeparator;
   $help->Append( $SHOW_BUFFER, "Show command buffer",    'Show the '.Demeter->backend_name.' and plotting commands buffer' );
   $help->AppendSeparator;
+  $help->Append( $CHANGELOG, "Demeter change log",  "View the Demeter change log online" );
   $help->Append( wxID_ABOUT, "&About Hephaestus" );
 
   $bar->Append( $file, "H&ephaestus" );
@@ -371,6 +373,7 @@ sub OnInit {
   EVT_MENU( $frame, $SHOW_BUFFER, sub{ shift->{Buffer}->Show(1)});
 
   EVT_MENU( $frame, $QUESTION, sub{Wx::LaunchDefaultBrowser(q{http://bruceravel.github.io/demeter/documents/SinglePage/help.html})});
+  EVT_MENU( $frame, $CHANGELOG, sub{Wx::LaunchDefaultBrowser(q{http://bruceravel.github.io/demeter/Changes.html})});
   EVT_MENU( $frame, wxID_ABOUT, \&on_about );
   EVT_MENU( $frame, wxID_EXIT, sub{Demeter->stop_larch_server; shift->Close} );
 
@@ -558,7 +561,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2018 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

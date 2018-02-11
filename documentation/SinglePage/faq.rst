@@ -178,6 +178,11 @@ Questions about Athena
       an example of the data file when you post your question on the
       mailing list.
 
+      The real problem here is that your beamline saves its data in an
+      ill-conceived format.  You should convince your beamline
+      scientist to implement the `XAS Data Interchange format
+      <https://github.com/XraySpectroscopy/XAS-Data-Interchange>`__
+
 
 #. .. admonition:: Why can't :demeter:`athena` import data from my 36-element detector?
       :class: faq
@@ -233,9 +238,10 @@ Questions about Artemis
 
       A better question is: Why do you think you need a different
       version of :demeter:`feff`?  `Read this
-      <http://bruceravel.github.io/SCFtests/scf.html>`_ for Bruce's
-      take on the scant effect of self-consistent potentials on EXAFS
-      analysis. 
+      <http://bruceravel.github.io/SCFtests/scf.html>`_ or `this
+      <https://doi.org/10.1107/S1600577517011651>`__ for Bruce's take
+      on the scant effect of self-consistent potentials on EXAFS
+      analysis.
 
 
 Questions about Hephaestus

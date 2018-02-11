@@ -2,7 +2,7 @@ package Demeter::Data::Mu;
 
 =for Copyright
  .
- Copyright (c) 2006-2017 Bruce Ravel (http://bruceravel.github.io/home).
+ Copyright (c) 2006-2018 Bruce Ravel (http://bruceravel.github.io/home).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -287,13 +287,23 @@ sub fix_chik {
 
 sub initialize_e0 {
   my ($self) = @_;
-  $self->e0('ifeffit') if not $self->bkg_e0;
+  if (is_Element($self->is_z) and is_Edge($self->is_edge)) {
+    $self->e0(Xray::Absorption->get_energy( $self->is_z, $self->is_edge));
+    $self->update_norm(1);
+    $self->_update('all');
+  } else {
+    $self->e0('ifeffit') if not $self->bkg_e0;
+  };
   $self->resolve_defaults;
+  if (is_Element($self->is_z) and is_Edge($self->is_edge)) {
+    $self->e0('fraction');
+  };
 };
 
 sub normalize {
   my ($self) = @_;
   my $group = $self->group;
+  return $self if $self->update_norm == 0;
 
   if ($self->datatype eq 'detector') {
     carp($self->name . " is a detector group, which cannot be normalized\n\n");
@@ -1173,7 +1183,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2017 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
+Copyright (c) 2006-2018 Bruce Ravel (L<http://bruceravel.github.io/home>). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.
