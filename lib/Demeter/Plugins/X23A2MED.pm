@@ -13,7 +13,7 @@ const my $INIFILE => 'x23a2med.demeter_conf';
 use List::MoreUtils qw(any);
 
 has '+is_binary'    => (default => 0);
-has '+description'  => (default => "the NSLS X23A2 Vortex");
+has '+description'  => (default => "the NIST 4-element Vortex");
 has '+version'      => (default => 0.2);
 has '+metadata_ini' => (default => File::Spec->catfile(File::Basename::dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'xdi', 'xdac.x23a2.ini'));
 has 'nelements'     => (is => 'rw', isa => 'Int', default => 4);
@@ -31,27 +31,31 @@ sub is {
   ## lines, multiedge gives 4 more
   return 0 if (count_lines($self->file) < 30);
 
-  open(my $D, $self->file) or $self->Croak("could not open " . $self->file . " as an X23A2MED file\n");
+  open(my $D, $self->file) or $self->Croak("could not open " . $self->file . " as a BMM/X23A2MED file\n");
   my $line = <$D>;
+  my $is_bmm   = ($line =~ m{BMM});
   $line = <$D>;
   my $is_x23a2 = ($line =~ m{X-23A2});
+  my $is_nist  = ($is_x23a2 or $is_bmm);
+  
   while (<$D>) {
-    last if ($_ =~ m{------+});
+      last if ($_ =~ m{------+});
   };
   $line = <$D> || q{};
   my @headers = split(" ", $line);
-
   #my $cfg = new Config::IniFiles( -file => $self->inifile );
   my $enr  = Demeter->co->default("x23a2med", "energy");
   my $ch1  = Demeter->co->default("x23a2med", "roi1");
   # my $mere = Demeter->co->default("x23a2med", "multiedge_regex");
   my $sl1  = Demeter->co->default("x23a2med", "slow1");
   my $fa1  = Demeter->co->default("x23a2med", "fast1");
+  #Demeter->pjoin($enr, $ch1, $sl1, $fa1);
   my $seems_escan = ($line =~ m{$enr\b}i);
   my $seems_med = (($line =~ m{\b$ch1\b}i) or ($line =~ m{\broi\d_\d\b}i)); # hard wired multiedge labels
   my $is_med = (($line =~ m{\b$sl1\b}i) and ($line =~ m{\b$fa1\b}i));
+  #Demeter->pjoin($is_nist, $seems_escan, $seems_med, $is_med);
   close $D;
-  return ($is_x23a2 and $seems_escan and $seems_med and $is_med);
+  return ($is_nist and $seems_escan and $seems_med and $is_med);
 };
 
 sub fix {
