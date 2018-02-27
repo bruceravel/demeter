@@ -892,19 +892,36 @@ sub sg {
 			 : (q{}, q{});
   ## typo?
   return q{} if (not is_SpaceGroup($which));
+
+  ## ---------------------------------
   ## number of positions
   if ($which eq "npos") {
-    my @positions = @ {$$rhash{positions}};
+    my @positions;
+    if (defined($$rhash{positions})) {
+      @positions = @ {$$rhash{positions}};
+    } else {
+      @positions = @ {$$rhash{$cell->group->{setting}}};
+    }
     return $#positions + 1;
   };
+
+  ## ---------------------------------
   ## key is absent from this entry in database
-  return "$prefix<none>$postfix" if ((not exists($$rhash{$which})) and ($which ne "bravais"));
+  return "$prefix<none>$postfix" if ((not exists($$rhash{$which})) and ($which ne "bravais") and ($which ne "positions"));
+
+  ## ---------------------------------
   ## schoenflies
   return ucfirst($$rhash{schoenflies}) if ($which eq "schoenflies");
+
+  ## ---------------------------------
   ## number or symbol
   return $$rhash{$which} if ($which =~ m{(?:number|full|new_symbol|thirtyfive)});
+
+  ## ---------------------------------
   ## nicknames
   return join(", ", @{$$rhash{shorthand}}) if ($which eq "shorthand");
+
+  ## ---------------------------------
   ## shift vector from Int'l Tables
   if ($which eq "shiftvec") {
     #my @shift = map {fract($FRAC*$_, $FRAC)} @{ $$rhash{shiftvec} };
@@ -912,6 +929,8 @@ sub sg {
     my @shift = map {$self->fract($_)} @{ $$rhash{shiftvec} };
     return sprintf($pattern, @shift);
   };
+
+  ## ---------------------------------
   ## Bravais translations
   if ($which eq "bravais") {
     my @bravais = @{ $cell->group->bravais };
@@ -930,9 +949,16 @@ sub sg {
     };
     return $string;
   };
+
+  ## ---------------------------------
   ## symetric positions
   if ($which eq "positions") {
-    my @positions = @ {$$rhash{positions}};
+    my @positions;
+    if (defined($$rhash{positions})) {
+      @positions = @ {$$rhash{positions}};
+    } else {
+      @positions = @ {$$rhash{$cell->group->{setting}}};
+    }
     my $string = q{};
     my $npos = $#positions + 1;
     #$string .= "  $npos positions:\n";

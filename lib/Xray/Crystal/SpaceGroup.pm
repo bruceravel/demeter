@@ -140,9 +140,48 @@ sub _canonicalize_group {
 				# this is the standard symbol
   if (exists($r_sg->{$symbol})) {
     $self->group($symbol);
-    my $setting = (any {$r_sg->{$symbol}->{number} eq $_} (3..6, 10..12) ) ? "b_unique"
-                : (any {$r_sg->{$symbol}->{number} eq $_} (7..9, 13..15) ) ? "b_unique_1"
-	        :                                                            "positions";
+    my $setting = "positions";
+    if (any {$r_sg->{$symbol}->{number} eq $_} (3..6, 10..12) ) {
+      if ($symbol eq $r_sg->{$symbol}->{settings}->[0]) {
+	$setting = "b_unique";
+      } elsif ($symbol eq $r_sg->{$symbol}->{settings}->[1]) {
+	$setting = "b_unique";
+      } elsif ($symbol eq $r_sg->{$symbol}->{settings}->[2]) {
+	$setting = "b_unique";
+      } elsif ($symbol eq $r_sg->{$symbol}->{settings}->[3]) {
+	$setting = "c_unique";
+      } elsif ($symbol eq $r_sg->{$symbol}->{settings}->[4]) {
+	$setting = "c_unique";
+      } elsif ($symbol eq $r_sg->{$symbol}->{settings}->[5]) {
+	$setting = "c_unique";
+      } elsif ($symbol eq $r_sg->{$symbol}->{settings}->[6]) {
+	$setting = "a_unique";
+      } elsif ($symbol eq $r_sg->{$symbol}->{settings}->[7]) {
+	$setting = "a_unique";
+      } elsif ($symbol eq $r_sg->{$symbol}->{settings}->[8]) {
+	$setting = "a_unique";
+      }
+    } elsif (any {$r_sg->{$symbol}->{number} eq $_} (7..9, 13..15) ) {
+      if ($symbol eq $r_sg->{$symbol}->{settings}->[0]) {
+	$setting = "b_unique_1";
+      } elsif ($symbol eq $r_sg->{$symbol}->{settings}->[1]) {
+	$setting = "b_unique_2";
+      } elsif ($symbol eq $r_sg->{$symbol}->{settings}->[2]) {
+	$setting = "b_unique_3";
+      } elsif ($symbol eq $r_sg->{$symbol}->{settings}->[3]) {
+	$setting = "c_unique_1";
+      } elsif ($symbol eq $r_sg->{$symbol}->{settings}->[4]) {
+	$setting = "c_unique_2";
+      } elsif ($symbol eq $r_sg->{$symbol}->{settings}->[5]) {
+	$setting = "c_unique_3";
+      } elsif ($symbol eq $r_sg->{$symbol}->{settings}->[6]) {
+	$setting = "a_unique_1";
+      } elsif ($symbol eq $r_sg->{$symbol}->{settings}->[7]) {
+	$setting = "a_unique_2";
+      } elsif ($symbol eq $r_sg->{$symbol}->{settings}->[8]) {
+	$setting = "a_unique_3";
+      }
+    };
     $self->setting($setting);
 
     my $rhash = $r_sg->{$symbol};
@@ -335,7 +374,8 @@ sub _set_bravais {
 		b => [1/2,   0, 1/2],
 		r => [2/3, 1/3, 1/3, 1/3, 2/3, 2/3],
 	      );
-  my $group   = $self->group;
+  #my $group   = $self->group;
+  my $group   = $self->given;
   my $g       = lc(substr($group, 0, 1));
   if ($g !~ m{[ficabr]}) {
     $group   = $self->group;
