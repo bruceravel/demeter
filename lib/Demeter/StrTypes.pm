@@ -335,7 +335,7 @@ subtype AtomsOutput,
 
 ## -------- Spacegroup database keys
 use vars qw(@sg_list $sg_regexp);
-@sg_list = qw(number full new_symbol thirtyfive schoenflies bravais
+@sg_list = qw(number full newsymbol thirtyfive schoenflies bravais
 	      shorthand positions shiftvec npos);
 $sg_regexp = Regexp::Assemble->new()->add(@sg_list)->re;
 subtype SpaceGroup,

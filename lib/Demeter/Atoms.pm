@@ -906,16 +906,22 @@ sub sg {
   };
 
   ## ---------------------------------
+  ## number or symbol
+  #return $$rhash{$which} if ($which =~ m{(?:number|full|newsymbol|thirtyfive)});
+  if (($which =~ m{(?:number|newsymbol|thirtyfive)})) {
+    return ucfirst($self->cell->group->$which) || '<none>';
+  };
+  if ($which eq 'full') {
+    return ucfirst($self->cell->group->full);
+  };
+
+  ## ---------------------------------
   ## key is absent from this entry in database
   return "$prefix<none>$postfix" if ((not exists($$rhash{$which})) and ($which ne "bravais") and ($which ne "positions"));
 
   ## ---------------------------------
   ## schoenflies
   return ucfirst($$rhash{schoenflies}) if ($which eq "schoenflies");
-
-  ## ---------------------------------
-  ## number or symbol
-  return $$rhash{$which} if ($which =~ m{(?:number|full|new_symbol|thirtyfive)});
 
   ## ---------------------------------
   ## nicknames

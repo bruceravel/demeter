@@ -162,6 +162,7 @@ sub _canonicalize_group {
 	$setting = "a_unique";
       }
     } elsif (any {$r_sg->{$symbol}->{number} eq $_} (7..9, 13..15) ) {
+      $self->full($symbol);
       if ($symbol eq $r_sg->{$symbol}->{settings}->[0]) {
 	$setting = "b_unique_1";
       } elsif ($symbol eq $r_sg->{$symbol}->{settings}->[1]) {
@@ -244,8 +245,10 @@ sub _canonicalize_group {
 	    if (any {$field eq $_} qw(settings short)) {
 	      if (any {$r_sg->{$sym}->{number} eq $_} (3..6, 10..12) ) {
 		$self->setting($mono3[$count]);
+		$self->full($$rhash{settings}->[$count]);
 	      } elsif (any {$r_sg->{$sym}->{number} eq $_} (7..9, 13..15) ) {
 		$self->setting($mono9[$count]);
+		$self->full($$rhash{settings}->[$count]);
 	      } else {
 		$self->setting($i);
 	      };
@@ -357,7 +360,7 @@ sub _other_symbols {
   #print Data::Dumper->Dump([$rhash]);
   $self->number($$rhash{number} || 0);
   $self->schoenflies($$rhash{schoenflies} || q{});
-  $self->full($$rhash{full} || $sym);
+  $self->full($$rhash{full} || $sym) if $self->class ne 'monoclinic';
   $self->thirtyfive($$rhash{thirtyfive}) if exists($$rhash{thirtyfive});
   $self->newsymbol ($$rhash{newsymbol})  if exists($$rhash{newsymbol});
   $self->nicknames ($$rhash{shorthand})  if exists($$rhash{shorthand});
