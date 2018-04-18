@@ -889,19 +889,19 @@ sub _prj {
     ## found an LCF entry in the project file
     if (%{$prj->lcf}) {
       $app->make_page('LCF') if (not exists $app->{main}->{LCF});
-      $app->{main}->{LCF}->reinstate($prj->lcf);
+      #$app->{main}->{LCF}->reinstate($prj->lcf);
     };
 
     ## found a PCA entry in the project file
     if (%{$prj->pca}) {
       $app->make_page('PCA') if (not exists $app->{main}->{PCA});
-      $app->{main}->{PCA}->reinstate($prj->pca);
+      #$app->{main}->{PCA}->reinstate($prj->pca);
     };
 
     ## found a PCA entry in the project file
     if (%{$prj->peakfit}) {
       $app->make_page('PeakFit') if (not exists $app->{main}->{PeakFit});
-      $app->{main}->{PeakFit}->reinstate($prj->peakfit, $prj->lineshapes);
+      #$app->{main}->{PeakFit}->reinstate($prj->peakfit, $prj->lineshapes);
     };
 
     ## a Metis-specific, "it's good to be charge" block of code

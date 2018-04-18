@@ -55,6 +55,8 @@ eval "PGPLOT->import" if $PGPLOT_exists;
 }
 use List::MoreUtils qw(none zip);
 #use YAML::Tiny;
+use Graphics::GnuplotIF;
+
 
 ## why do these not get inherited properly?
 has 'group'     => (is => 'rw', isa => 'Str',  default => sub{shift->_get_group()});

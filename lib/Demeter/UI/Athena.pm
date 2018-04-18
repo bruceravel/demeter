@@ -1987,8 +1987,7 @@ sub move_group {
   my $from_object  = $app->{main}->{list}->GetIndexedData($i);
   my $from_label   = $app->{main}->{list}->GetString($i);
   my $from_checked = $app->{main}->{list}->IsChecked($i);
-
-  my $to_label     = $app->{main}->{list}->GetString($i-1);
+  #my $to_label     = $app->{main}->{list}->GetString($i-1);
 
   $app->{main}->{list} -> DeleteData($i);
   my $to = ($dir eq 'down') ? $i+1 : $i-1;

@@ -292,7 +292,7 @@ sub merge {
   $merged -> name("data merged as " . $howstring{$how});
   ($how =~ m{^k}) ? $merged -> datatype('chi') : $merged -> datatype('xmu');
   if ($#excluded != -1) {
-    $merged->annotation("These groups were excluded from the merge for being too short: " . join(", ", map {$_->name} @excluded));
+    $merged->annotation("These groups were excluded (see sec 9.3.3 of the user manual) from the merge for being too short: " . join(", ", map {$_->name} @excluded));
   };
 
   (ref($standard) =~ m{Data}) ? $standard->standard : $self->unset_standard;

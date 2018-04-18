@@ -562,7 +562,7 @@ sub _prep {
   my $busy = Wx::BusyCursor->new();
   $this->fetch;
   $this->{LCF}->clear;
-  $this->{LCF}->clean if not $nofit;
+  #$this->{LCF}->clean if not $nofit;
   $this->{LCF}->data($::app->current_data);
   foreach my $i (0 .. $this->{nstan}-1) {
     my $n = scalar $this->{'standard'.$i}->GetSelection;

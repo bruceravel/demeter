@@ -913,18 +913,22 @@ sub template {
   $rhash ||= {};
 
   #my $compartment = new Safe;
-  my $string = $template->fill_in(HASH => {S  => \$self,
-					   D  => \$data,
-					   P  => \$pf,
-					   C  => \$config,
-					   F  => \$fit,
-					   DS => \$standard,
-					   T  => \$theory,
-					   PT => \$path,
-					   %$rhash},
-				  PACKAGE => "Demeter::Templates",
-				  #SAFE => $compartment,
-				 );
+  my $string;
+  {
+    no warnings 'once';
+    $string = $template->fill_in(HASH => {S  => \$self,
+					  D  => \$data,
+					  P  => \$pf,
+					  C  => \$config,
+					  F  => \$fit,
+					  DS => \$standard,
+					  T  => \$theory,
+					  PT => \$path,
+					  %$rhash},
+				 PACKAGE => "Demeter::Templates",
+				 #SAFE => $compartment,
+				);
+  };
   $string ||= q{};
   $string =~ s{^\s+}{};		      # remove leading white space
   $string =~ s{\n(?:[ \t]+\n)+}{\n};  # regularize white space between blocks of text

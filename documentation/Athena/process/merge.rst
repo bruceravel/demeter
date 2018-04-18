@@ -116,6 +116,32 @@ Merging options
     default choice of weighting option between the three options
     explained above.
 
+Merging groups of different lengths
+-----------------------------------
+
+:demeter:`athena` is able to merge groups of different lengths.  For
+example, you can merge together groups measured to 15 |AA|\ :sup:`-1`
+with groups measured to 12 |AA|\ :sup:`-1`.  The resulting merged
+group will go out to 12 |AA|\ :sup:`-1`.
+
+A potential stumbling block is that, depending on the
+:configparam:`Merge,exclude\_short\_data` and
+:configparam:`Merge,short\_data\_margin` settings, :demeter:`athena`
+might decline to include the shorter groups in the fit.  The reason is
+that :demeter:`athena` tries to avoid including very short groups |nd|
+such as a XANES-length scan or a scan aborted by a beam dump |nd| in a
+merge group.  If :demeter:`athena` sees that some of the groups are
+much shorter than the first group in the list, it will exclude them
+from the merge.
+
+To use the example above, if the first group goes out to 15 |AA|\
+:sup:`-1` and subsequent groups are enough shorter, this exclusion
+mechanism will be triggered and the short groups will not be included
+in the merge.  There are two ways to get around this.  First, simply
+`set <../other/prefs.html>`_
+:configparam:`Merge,exclude\_short\_data` to a false value.  Second,
+`reorder <../ui/glist.html#reorganizing-the-group-list>`_ the group
+list so that one of the shorter groups is the first in the list.
 
 
 Keyboard shortcuts

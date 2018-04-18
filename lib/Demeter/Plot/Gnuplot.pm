@@ -25,6 +25,10 @@ use File::Spec;
 use Demeter::Constants qw($NUMBER);
 #use Capture::Tiny qw(capture_merged);
 
+# print $Demeter::mode->iwd, $/;
+# print $Demeter::mode->external_plot_object, $/;
+# print $Demeter::mode->external_plot_object->{__error_log}, $/;
+
 has '+error_log' => (default => File::Spec->catfile($Demeter::mode->iwd,
 						    $Demeter::mode->external_plot_object->{__error_log}));
 has '+backend'  => (default => q{gnuplot});

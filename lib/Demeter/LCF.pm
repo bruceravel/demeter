@@ -470,7 +470,7 @@ sub report {
 
 sub plot_fit {
   my ($self) = @_;
-  $self->prep_arrays('set');
+  #$self->prep_arrays('set');
   $self->po->start_plot;
   my $step = 0;
   if ($self->space =~ m{\Achi}) {
