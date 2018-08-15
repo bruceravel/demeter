@@ -978,6 +978,10 @@ Demeter->dispense('process', 'init') if Demeter->is_larch;
 __PACKAGE__->meta->make_immutable;
 1;
 
+package Demeter::Templates;
+use vars qw($S $D $P $C $F $DS $T $PT);
+1;
+
 
 =head1 NAME
 

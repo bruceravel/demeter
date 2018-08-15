@@ -243,10 +243,10 @@ provides a useful metric for whether a film sample can be considered
 Algorithm references
 --------------------
 
-**Fluo algorithm**
-    The program documentation for Fluo can be found at Dani's web site
-    and includes the mathematical derivation:
-    http://www.aps.anl.gov/~haskel/fluo.html
+**Fluo algorithm** 
+    The `program documentation
+    <http://www.aps.anl.gov/~haskel/fluo.html>`_ for Fluo and includes
+    the mathematical derivation:
 
 **Booth Algorithm**
     .. bibliography:: ../athena.bib

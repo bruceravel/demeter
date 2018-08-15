@@ -5,6 +5,19 @@
 #+OPTIONS: toc:2
 
 * 0.9 series
+** 0.9.27    XX April    2018
+*** Athena
+    * clarify merge procedure in manual
+    * fix a bug moving (Alt-k) a group from the top of the list
+    * comment out reinstate functions for LCF, PCA, peak fitting when
+      reading a prj file.  This effectively undoes the persistence
+      work from 0.9.25.
+
+*** Demeter
+    * Fix a noisy bug at startup involving the template package
+      variables.  This seems to be involved with certain
+      Text::Template versions.
+
 ** 0.9.26    8 February  2018
 *** Athena
     + [[http://millenia.cars.aps.anl.gov/pipermail/ifeffit/2016-September/008818.html][fix XDI headers]] in "save marked groups" output files, also add

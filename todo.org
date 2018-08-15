@@ -338,10 +338,11 @@
 * Atoms and Feff
 
 
-** CIF [0/3] [0%]
+** CIF [0/4] [0%]
   - [ ] CIF issue: CIF file with "_eof" token at end of file, as in [[file:notes/H16PW12O46.cif][this cif file]]
   - [ ] Handle CIF import problems more gracefully (See Shelly's other email from 17 June 2011)
   - [ ] CIF errors are not handled gracefully (e.g. multiple occupancy)
+  - [ ] NaReO4, I 41/a :2
 
 ** Atoms [7/10] [70%]
   - [ ] Parsing an atoms.inp file for the space group is fragile.  It

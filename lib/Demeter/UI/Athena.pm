@@ -1651,6 +1651,7 @@ sub main_window {
 
   $app->{main}->{save}   = Wx::Button->new($viewpanel, wxID_SAVE, q{},  wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
   $app->{main}->{all}    = Wx::Button->new($viewpanel, -1,        q{A}, wxDefaultPosition, [25,-1]);#, wxBU_EXACTFIT);
+  $app->{main}->{all}   -> SetForegroundColour( Wx::Colour->new('#000000') );
   $app->{main}->{none}   = Wx::Button->new($viewpanel, -1,        q{U}, wxDefaultPosition, [25,-1]);#, wxBU_EXACTFIT);
   $app->{main}->{invert} = Wx::Button->new($viewpanel, -1,        q{I}, wxDefaultPosition, [25,-1]);#, wxBU_EXACTFIT);
   $topbar -> Add($app->{main}->{save},   0, wxGROW|wxTOP|wxBOTTOM, 2);

@@ -1,0 +1,86 @@
+#------------------------------------------------------------------------------
+#$Date: 2016-03-02 09:51:31 +0200 (Wed, 02 Mar 2016) $
+#$Revision: 177123 $
+#$URL: file:///home/coder/svn-repositories/cod/cif/5/91/01/5910163.cif $
+#------------------------------------------------------------------------------
+#
+# This file is available in the Crystallography Open Database (COD),
+# http://www.crystallography.net/
+#
+# All data on this site have been placed in the public domain by the
+# contributors.
+#
+data_5910163
+loop_
+_publ_author_name
+'Wyckoff, R. W. G.'
+_publ_section_title
+;
+Pages 19-21 from the Structure of Crystals, vol. 3 by Wyckoff R W G. 
+published by Interscience Publishers, Inc. in 1951 
+;
+_journal_name_full               'The Structure of Crystals'
+_journal_page_first              19
+_journal_page_last               19
+_journal_volume                  3
+_journal_year                    1951
+_chemical_formula_structural     NaReO4
+_chemical_formula_sum            'Na O4 Re'
+_space_group_IT_number           88
+_symmetry_cell_setting           tetragonal
+_symmetry_Int_Tables_number      88
+_symmetry_space_group_name_Hall  '-I 4ad'
+_symmetry_space_group_name_H-M   'I 41/a :2'
+_audit_creation_date             2006-02-07
+_audit_creation_method
+;
+Pages 19-21 from the Structure of Crystals, vol. 3 by Wyckoff R W G. 
+published by Interscience Publishers, Inc. in 1951 
+;
+_audit_update_record
+'created by Girish Upreti, Portland State University'
+_cell_angle_alpha                90
+_cell_angle_beta                 90
+_cell_angle_gamma                90
+_cell_length_a                   5.362
+_cell_length_b                   5.362
+_cell_length_c                   11.718
+_cell_volume                     336.905
+_cod_original_sg_symbol_H-M      'I 41/a'
+_cod_original_formula_sum        'Na Re O4'
+_cod_database_code               5910163
+loop_
+_symmetry_equiv_pos_as_xyz
+x,y,z
+-y+1/4,x+3/4,z+3/4
+y+1/4,-x+1/4,z+1/4
+-x,-y+1/2,z
+-x,-y,-z
+y+3/4,-x+1/4,-z+1/4
+-y+3/4,x+3/4,-z+3/4
+x,y+1/2,-z
+x+1/2,y+1/2,z+1/2
+-y+3/4,x+1/4,z+1/4
+y+3/4,-x+3/4,z+3/4
+-x+1/2,-y,z+1/2
+-x+1/2,-y+1/2,-z+1/2
+y+1/4,-x+3/4,-z+3/4
+-y+1/4,x+1/4,-z+1/4
+x+1/2,y,-z+1/2
+loop_
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_label
+0.00000 0.00000 0.50000 Na1
+0.50000 0.00000 0.25000 Na2
+0.00000 0.00000 0.00000 Re1
+0.00000 0.50000 0.25000 Re2
+0.25000 0.11000 0.07000 O1
+-0.25000 -0.11000 0.07000 O2
+0.25000 0.61000 0.18000 O3
+-0.25000 0.39000 0.18000 O4
+-0.11000 0.25000 -0.07000 O5
+0.11000 -0.25000 -0.07000 O6
+-0.11000 0.75000 0.32000 O7
+0.11000 0.25000 0.32000 O8
