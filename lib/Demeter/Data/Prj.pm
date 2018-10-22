@@ -30,6 +30,7 @@ use List::MoreUtils qw(any none);
 use Safe;
 
 use Data::Dumper;
+use filetest 'access';
 
 has 'file'    => (is => 'rw', isa => FileName,  default => q{},
 		  trigger => sub{shift -> Read} );
