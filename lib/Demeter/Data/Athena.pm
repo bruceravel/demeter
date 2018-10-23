@@ -28,7 +28,7 @@ sub write_athena {
   my ($self, $filename, @list) = @_;
   croak("You must supply a filename to the write_athena method") if ( (not defined($filename)) or
 								      (ref($filename) =~ m{Data}) );
-  my $gzout = gzopen($filename, 'wb9');
+  my $gzout = gzopen($filename, 'wb9') or croak("$gzerrno");
 
   ##$gzout->gzwrite('$filename = ' . $filename . ";\n\n");
 
