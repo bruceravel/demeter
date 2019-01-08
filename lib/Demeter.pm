@@ -73,7 +73,13 @@ BEGIN {
 #use Ifeffit qw(ifeffit);
 #ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 if ($ENV{DEMETER_BACKEND} eq 'ifeffit') {
- ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
+  ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
+};
+
+if ($0 =~ m{athena|artemis|hephaestus|horae|atoms}) {
+  require Wx::Perl::Carp;
+  $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
+  $SIG{__DIE__}  = sub {Wx::Perl::Carp::warn($_[0])};
 };
 
 use Cwd;
@@ -217,7 +223,14 @@ if (defined($ENV{DEMETER_MODE}) and ($ENV{DEMETER_MODE} eq 'web')) {
 };
 $STAR_Parser_exists = 1;
 use STAR::Parser;
-$XDI_exists         = eval "require Xray::XDI" || 0;
+$XDI_exists = 0;
+{
+  local $SIG{__DIE__} = sub {};
+  eval "require Xray::XDI";
+  if (not $@) {
+    $XDI_exists = 1;
+  }
+};
 Inline->init()        if $XDI_exists;
 $PDL_exists         = 0;
 $PSG_exists         = 0;

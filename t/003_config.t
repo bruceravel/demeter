@@ -29,7 +29,7 @@ my $here  = dirname($0);
 
 my @plugins = qw(10bmmultichannel x23a2med x15b);
 my $plregex = join("|", @plugins);
-my $number_of_groups = 39;
+my $number_of_groups = 41;
 
 use Demeter qw(:none);
 
@@ -62,6 +62,7 @@ ok( $demeter2->co->get("var1") == 7,              'wrote and read an arbitrary c
 ok( $demeter2->co->get("var2") eq 'foo',          'wrote and read an arbitrary config parameter: string');
 
 my @groups = grep {$_ !~ m{$plregex}} $demeter->co->groups;
+use Data::Dumper;
 ok( ($groups[1] eq 'artemis' and $#groups == $number_of_groups-1), 'configuration system introspection works: groups '.$#groups.' '.$groups[1]);
 my $groups = $demeter->co->main_groups;
 ## includes 3 plugin groups

@@ -122,9 +122,13 @@ sub fetch_scalar {
     } elsif ($param eq 'filter_top') {
       $param = "f1f2.$param";
 
-    } elsif (Demeter->mo->fit) { # a fit is happenening, this is a Parameter, need its value
+    } elsif (Demeter->mo->fit) { # a fit is happening, this is a Parameter, need its value
       if ($param !~ m{\.(?:value|stderr)\z}) {
-	$param = $param.'.value';
+	if (ref($self) =~ m{GDS}) {
+	  $param = 'gds.'.$param.'.value';
+	} else {
+	  $param = $param.'.value';
+	};
       };
     }
     $param = Larch::get_larch_scalar($param);

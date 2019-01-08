@@ -119,7 +119,8 @@ sub first {			# see prep_vpath.tmpl
 ## really?!? do I need to bring each consituent up to date in spaces other than k???
 sub _update {
   my ($self, $which) = @_;
-  foreach my $p ( @{ $self->paths } ) {  # bring each constituent path up to date
+  foreach my $p ( @{ $self->paths } ) {  # forcibly bring each constituent path up to date
+    $p->update_path(1);
     $p->_update('fft');
   };
   $self->dispose($self->sum);

@@ -496,6 +496,7 @@ sub use_marked {
   $this->_remove_all;
   foreach my $i (0 .. $::app->{main}->{list}->GetCount-1) {
     next if not $::app->{main}->{list}->IsChecked($i);
+    next if not defined $this->{'standard'.$count};
     $this->{'standard'.$count}->SetStringSelection($::app->{main}->{list}->GetIndexedData($i)->name);
     $this->{'fite0'.$count}->SetValue(0);
     $this->{'require'.$count}->SetValue(0);

@@ -208,6 +208,7 @@ sub fetch {
 		 datatype    => 'xmu',
 		);
   };
+  $data->_update('background');
   return $data;
 };
 
@@ -232,15 +233,14 @@ sub plot {
   return "You do not have perl's libwww installed, so remote files cannot be plotted." if ($thisfile eq '^^PLOP^^: nolibwww');
 
   my $data = $self->fetch($choice, $thisfile);
-
   my $rebinned;
   if ($self->get($choice, 'rebin')) {
     $rebinned = $data->rebin;
     $rebinned -> name($data->name);
   };
   my $ddd = ($self->get($choice, 'rebin')) ? $rebinned : $data;
-  $ddd->update_norm(1);
   $ddd->calibrate(split(/,\s*/, $self->get($choice, 'calibrate'))) if not ($self->get($choice, 'record'));
+  $ddd->update_norm(1);
 
   return $ddd if ($target eq 'athena');
 

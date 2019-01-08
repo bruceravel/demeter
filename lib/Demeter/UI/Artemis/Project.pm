@@ -614,6 +614,7 @@ sub restore_fit {
   $rframes->{main}->status("Restoring VPaths", 'wait|nobuffer') if ($#{$lastfit->vpaths} > -1);
   foreach my $vp (@{$lastfit->vpaths}) {
     $rframes->{Plot}->{VPaths}->{vpathlist}->Append($vp->name, $vp);
+    $vp->_update('all');
   };
 
   ## -------- labels and suchlike

@@ -5,13 +5,20 @@
 #+OPTIONS: toc:2
 
 * 0.9 series
-** 0.9.27    XX April    2018
+** 0.9.27    XX January  2019
 *** Athena
     * clarify merge procedure in manual
     * fix a bug moving (Alt-k) a group from the top of the list
     * comment out reinstate functions for LCF, PCA, peak fitting when
       reading a prj file.  This effectively undoes the persistence
       work from 0.9.25.
+
+*** Artemis
+    * Forcibly update paths when importing a VPath from a project
+      file, that way the VPath is immediately available for plotting
+
+*** Hephaestus
+    * fix a bug plotting standards with Ifeffit backend
 
 *** Demeter
     * Fix a noisy bug at startup involving the template package

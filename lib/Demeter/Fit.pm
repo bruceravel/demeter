@@ -1103,6 +1103,7 @@ sub fetch_correlations {
     };
 
   } elsif (Demeter->is_larch) {
+    #print join('.', $self->group, 'params', 'covar_vars'), $/;
     my @params = $self->fetch_array(join('.', $self->group, 'params', 'covar_vars'));
     foreach my $p1 (@params) {
       my %correls = $self->fetch_array(join('.', $self->group, 'params', $p1, 'correl'));

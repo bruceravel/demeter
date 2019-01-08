@@ -420,7 +420,7 @@ sub icon {
 sub templates {
   my ($self) = @_;
   return ['Feff6 - elem', 'Feff6 - tags', 'Feff6 - sites',
-	  #'Feff8 - elem', 'Feff8 - tags', 'Feff8 - sites',
+	  'Feff8 - elem', 'Feff8 - tags', 'Feff8 - sites',
 	 ];
 };
 
