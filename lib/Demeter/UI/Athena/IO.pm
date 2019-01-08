@@ -56,7 +56,13 @@ sub Export {
   Demeter->co->set("athena_compatibility" => $app->project_compatibility);
   $app->make_page('Journal') if (not exists $app->{main}->{Journal});
   $app->{main}->{Journal}->{object}->text($app->{main}->{Journal}->{journal}->GetValue);
-  $data[0]->write_athena($fname, @data, $app->{main}->{Journal}->{object});
+  eval {
+    $data[0]->write_athena($fname, @data, $app->{main}->{Journal}->{object});
+  };
+  if ($@) {
+    undef $busy;
+    return $fname;
+  }
   if (dirname($fname) ne Demeter->stash_folder) {
     $data[0]->push_mru("xasdata", $fname);
     $data[0]->push_mru("athena", $fname);
