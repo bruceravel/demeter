@@ -183,4 +183,4 @@ To be tested: BM23@ESRF
 =head1 AUTHOR
 
   Eric Breynaert 
-  Athena copyright (c) 2001-2018
+  Athena copyright (c) 2001-2019

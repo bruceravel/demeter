@@ -1,5 +1,5 @@
 package Xray::FluorescenceEXAFS;
-##  This module is copyright (c) 1998-2009, 2014-2018 Bruce Ravel
+##  This module is copyright (c) 1998-2009, 2014-2019 Bruce Ravel
 ##  <L<http://bruceravel.github.io/home>>
 ##  http://bruceravel.github.io/demeter/
 

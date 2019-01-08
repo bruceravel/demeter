@@ -84,7 +84,7 @@ L<http://bruceravel.github.io/demeter/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2018 Bruce Ravel (L<http://bruceravel.github.io/home>). All
+Copyright (c) 2006-2019 Bruce Ravel (L<http://bruceravel.github.io/home>). All
 rights reserved.
 
 This module is free software; you can redistribute it and/or modify it

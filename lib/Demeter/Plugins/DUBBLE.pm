@@ -215,4 +215,4 @@ true value be the number of subsequent lines which contain MED data.
 
   Bruce Ravel <L<http://bruceravel.github.io/home>>
   http://bruceravel.github.io/demeter
-  Athena copyright (c) 2001-2018
+  Athena copyright (c) 2001-2019
