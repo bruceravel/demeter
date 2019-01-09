@@ -19,7 +19,7 @@ use Carp;
 
 use File::Basename;
 use List::MoreUtils qw(any);
-use Demeter::Constants qw($NUMBER $PI $NULLFILE $EPSILON3);
+use Demeter::Constants qw($NUMBER $PI $NULLFILE $EPSILON3 $EPSILON6);
 use Scalar::Util qw(looks_like_number);
 use YAML::Tiny;
 
@@ -868,7 +868,7 @@ sub sort_data {
     my $ecol = $self->energy || '$1';
     $ecol =~ s{^\$}{};
     my @array = $self->get_array($cols[$ecol]);
-    # print join(" ", @array), $/, $/;
+    #print $#array, $/, $/;
     foreach (0 .. $#array) {push @{$lol[$_]}, $array[$_]};
     foreach my $c (@cols) {
       next unless $c;
@@ -881,8 +881,11 @@ sub sort_data {
 
     ## now fish thru lol looking for repeated energy points
     my $ii = 0;
+
+    my $eps = $EPSILON3;
+    $eps = $EPSILON6 if $self->is_kev;
     while ($ii < $#lol) {
-      ($lol[$ii+1]->[0] - $lol[$ii]->[0] > $EPSILON3) ? ++$ii : splice(@lol, $ii+1, 1);
+      ($lol[$ii+1]->[0] - $lol[$ii]->[0] > $eps) ? ++$ii : splice(@lol, $ii+1, 1);
       #($lol[$ii+1]->[0] > $lol[$ii]->[0]) ? ++$ii : splice(@lol, $ii+1, 1);
     };
 
