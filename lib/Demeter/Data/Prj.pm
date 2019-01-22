@@ -133,8 +133,10 @@ sub Read {
     ## background removal with a standard can be performed correctly
     $ {$cpt->varglob('old_group')} = $cpt->reval( $line );
     my $og = $ {$cpt->varglob('old_group')};
-    $self -> add_entry([$nline, $og]);
-    ++$count;
+    if ($og ne 'Default Parameters') {
+      $self -> add_entry([$nline, $og]);
+      ++$count;
+    };
   };
   $self->n($count);
   $athena_fh->gzclose();

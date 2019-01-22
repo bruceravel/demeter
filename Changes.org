@@ -12,6 +12,8 @@
     * comment out reinstate functions for LCF, PCA, peak fitting when
       reading a prj file.  This effectively undoes the persistence
       work from 0.9.25.
+    * deal gracefully with the 'Default Parameters' feature of
+      extremely old (circa 2006) project files
 
 *** Artemis
     * Forcibly update paths when importing a VPath from a project

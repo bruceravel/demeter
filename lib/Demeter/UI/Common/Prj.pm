@@ -62,6 +62,7 @@ sub new {
   $hbox -> Add($left, 1, wxGROW|wxALL, 0);
 
   my $sty = ($style eq 'single') ? wxLB_SINGLE : wxLB_EXTENDED;
+  ##Demeter->pjoin($this, wxDefaultPosition, $names, $sty);
   $this->{grouplist} = Wx::ListBox->new($this, -1, wxDefaultPosition, [125,500], $names, $sty);
   $left -> Add($this->{grouplist}, 1, wxGROW|wxALL, 5);
   EVT_LISTBOX( $this, $this->{grouplist}, sub{plot_selection(@_, $prj, $names, $positions)} );

@@ -494,6 +494,7 @@ sub trace {
 sub pjoin {
   my ($self, @stuff) = @_;
   local $|=1;
+  local $SIG{__WARN__} = sub{};
   print join("|", @stuff) . $/;
   return join("|", @stuff) . $/;
 };
