@@ -48,7 +48,7 @@ sub new {
 
   my $hbox  = Wx::BoxSizer->new( wxHORIZONTAL );
 
-  my $leftpane = Wx::Panel->new($this, -1, wxDefaultPosition, [350,-1],); #wxDefaultSize);
+  my $leftpane = Wx::Panel->new($this, -1, wxDefaultPosition, wxDefaultSize);
   my $left = Wx::BoxSizer->new( wxVERTICAL );
   $hbox->Add($leftpane, 1, wxGROW|wxALL, 0);
 
@@ -125,8 +125,10 @@ sub columns {
   #my $column_string = $self->fetch_string('column_label');
   my @cols = split(" ", $data->columns);
 
-  my $columnbox = Wx::ScrolledWindow->new($parent, -1, wxDefaultPosition, [350, 150], wxHSCROLL);
+  #my $columnbox = Wx::ScrolledWindow->new($parent, -1, wxDefaultPosition, [350, 150], wxHSCROLL);
+  my $columnbox = Wx::ScrolledWindow->new($parent, -1, wxDefaultPosition, wxDefaultSize, wxHSCROLL);
   $columnbox->SetScrollbars(30, 0, 50, 0);
+  #$columnbox->SetScrollbars(0, 16, 50, 15);
   $this->{left}     -> Add($columnbox, 1, wxGROW|wxALL, 10);
 
   #my $columnbox      = Wx::StaticBox->new($parent, -1, 'Columns', wxDefaultPosition, wxDefaultSize);
@@ -195,7 +197,7 @@ sub columns {
 
   $this->display_plot($data) if (($data->numerator ne '1') or ($data->denominator ne '1'));
   #$columnbox->SetVirtualSize([200,300]);
-  $columnbox->SetSizer($gbs);
+  $columnbox->SetSizerAndFit($gbs);
   #$columnbox->SetMaxSize(Wx::Size->new(350,-1));
   return $this;
 };
