@@ -284,9 +284,9 @@ sub bkg {
   EVT_SPIN($this, $this->{bkg_rbkg_pluck}, sub{spin_rbkg(@_)});
   ## kweight, step, fix step
   $this->{bkg_kw_label}   = Wx::StaticText -> new($this, -1, "k-weight");
-  $this->{bkg_kw}         = Wx::SpinCtrl   -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER|wxSP_ARROW_KEYS, 0, 3);
+  $this->{bkg_kw}         = Wx::SpinCtrl   -> new($this, -1, q{}, wxDefaultPosition, [120,-1], wxTE_PROCESS_ENTER|wxSP_ARROW_KEYS, 0, 3);
   $gbs -> Add($this->{bkg_kw_label},   Wx::GBPosition->new(0,3), Wx::GBSpan->new(1,2));
-  $gbs -> Add($this->{bkg_kw},         Wx::GBPosition->new(0,5));
+  $gbs -> Add($this->{bkg_kw},         Wx::GBPosition->new(0,5), Wx::GBSpan->new(1,2));
   push @bkg_parameters, qw(bkg_kw bkg_step bkg_fixstep);
 
 

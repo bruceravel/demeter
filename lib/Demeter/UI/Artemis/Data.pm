@@ -1620,6 +1620,7 @@ sub save_fit {
     $filename = $fd->GetPath;
     #return if $self->overwrite_prompt($filename); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   };
+  $data->po->kweight($Demeter::UI::Artemis::frames{Plot}->{kweight}->GetStringSelection);
   $data->save('fit', $filename, $how);
   $self->status("Saved data and fit as $how to $filename." );
 };
