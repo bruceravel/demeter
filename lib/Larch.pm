@@ -261,8 +261,8 @@ sub run_selftest {
       dispose("fc$i.mu = fc$i.mutrans");
       dispose("autobk(fc$i, rbkg=$rbkg)");
 
-      @array = get_larch_array("fc$i.column_labels");
-      print "Column Labels: ", join(', ', @array), "\n";
+      @array = get_larch_array("fc$i.array_labels");
+      print "Array Labels: ", join(', ', @array), "\n";
 
       @array = get_larch_array("fc$i.chi[:5]");
       print "Chi(k): ", join(', ', @array), "\n";
