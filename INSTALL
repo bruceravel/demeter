@@ -38,7 +38,7 @@ Once finished, do
 
    perl Build.PL
 
-again to verify that all the dependencies are in place.  The do
+again to verify that all the dependencies are in place.  Then do
 
    ./Build
    sudo ./Build install
@@ -51,6 +51,6 @@ Here is a much more complete explanation of the installation process:
 
    https://gist.github.com/3959252
 
-It is tailored to Ubuntu system, but should provide insight to anyone
+It is tailored to an Ubuntu system, but should provide insight to anyone
 installing from source.
 
