@@ -26,7 +26,7 @@ sub new {
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
   if($ENV{DEMETER_BACKEND} ne 'larch'){
-    $box->Add(Wx::StaticText->new($this, -1, "This part of Athena has not yet been implemented."), 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+    $box->Add(Wx::StaticText->new($this, -1, "Athena can only perform deconvolution\n via the Larch backend at this time."), 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
 
     $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
 
