@@ -5,9 +5,13 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON);
+use Wx::Event qw(EVT_BUTTON EVT_CHAR EVT_CHOICE EVT_TEXT_ENTER);
+use Wx::Perl::TextValidator;
+use Scalar::Util qw(looks_like_number);
 
 #use Demeter::UI::Wx::SpecialCharacters qw(:all);
+
+#xas_deconvolve(energy, norm=None, group=None, form='lorentzian',
 
 use vars qw($label);
 $label = "Deconvolute data";	# used in the Choicebox and in status bar messages to identify this tool
@@ -21,13 +25,49 @@ sub new {
   my $box = Wx::BoxSizer->new( wxVERTICAL);
   $this->{sizer}  = $box;
 
-  $box->Add(Wx::StaticText->new($this, -1, "This part of Athena has not yet been implemented."), 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+  my $gbs = Wx::GridBagSizer->new( 5, 5 );
+
+  $gbs->Add(Wx::StaticText->new($this, -1, 'Group'),                         Wx::GBPosition->new(0,0));
+  $gbs->Add(Wx::StaticText->new($this, -1, 'Convolution function'),          Wx::GBPosition->new(1,0));
+  $gbs->Add(Wx::StaticText->new($this, -1, 'Convolution width'),             Wx::GBPosition->new(2,0));
+  $gbs->Add(Wx::StaticText->new($this, -1, 'Noise (fraction of edge step)'), Wx::GBPosition->new(3,0));
+
+  $this->{group}    = Wx::StaticText->new($this, -1, q{});
+  $this->{function} = Wx::Choice->new($this, -1, wxDefaultPosition, wxDefaultSize,
+				      ["Gaussian", 'Lorentzian']);
+  $this->{width}    = Wx::TextCtrl->new($this, -1, 0,  wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+  $this->{noise}    = Wx::TextCtrl->new($this, -1, 0,  wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+
+  $gbs->Add($this->{group},    Wx::GBPosition->new(0,1));
+  $gbs->Add($this->{function}, Wx::GBPosition->new(1,1));
+  $gbs->Add($this->{width},    Wx::GBPosition->new(2,1));
+  $gbs->Add($this->{noise},    Wx::GBPosition->new(3,1));
+  $this->{width} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
+  $this->{noise} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
+  EVT_CHOICE($this, $this->{function}, sub{ $this->{make}->Enable(0) });
+  EVT_CHAR($this->{width}, sub{ $this->{make}->Enable(0); $_[1]->Skip(1) });
+  EVT_CHAR($this->{noise}, sub{ $this->{make}->Enable(0); $_[1]->Skip(1) });
+  EVT_TEXT_ENTER($this, $this->{width}, sub{$this->plot($app->current_data)});
+  EVT_TEXT_ENTER($this, $this->{noise}, sub{$this->plot($app->current_data)});
+  $this->{function}->SetSelection(0);
+
+  $box -> Add($gbs, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+  $this->{convolute} = Wx::Button->new($this, -1, 'Plot data and data with convolution and/or noise');
+  $this->{make}      = Wx::Button->new($this, -1, 'Make data group');
+  $box->Add($this->{convolute}, 0, wxALL|wxGROW, 5);
+  $box->Add($this->{make},      0, wxALL|wxGROW, 5);
+  EVT_BUTTON($this, $this->{convolute}, sub{$this->plot($app->current_data)});
+  EVT_BUTTON($this, $this->{make},      sub{$this->make($app)});
+  $this->{make}->Enable(0);
 
   $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
 
-  $this->{document} = Wx::Button->new($this, -1, 'Document section: deconvolution');
+  $this->{document} = Wx::Button->new($this, -1, 'Document section: convolution and noise');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
-  EVT_BUTTON($this, $this->{document}, sub{  $app->document("process.deconv")});
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("process.conv")});
+
+  $this->{processed} = q{};
 
   $this->SetSizerAndFit($box);
   return $this;
