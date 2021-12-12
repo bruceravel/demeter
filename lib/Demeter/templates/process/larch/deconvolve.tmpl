@@ -12,5 +12,5 @@
 ##|
 ##| {$type} convolution of {$D->group}.{$C->get("conv_which")}
 {$D->group}.{$C->get("conv_which")} = smooth({$D->group}.{$x}, {$D->group}.{$C->get("conv_which")}, sigma={$C->get("conv_width")}, form='{$type}')
-open("{$D->group}", w+)
+open("/tmp/test24/a.df", w+)
 ##|

@@ -152,7 +152,7 @@ sub plot {
   $data->po->start_plot;
   $data -> plot('E');
   $this->{processed}  = $data -> Clone(name=>sprintf("%s: %.2f eV %s, %.3f noise", $data->name, $width, ucfirst($function), $noise));
-  $this->{processed} -> convolve(width=>$width, type=>$function) if ($width > 0);
+  $this->{processed} -> deconvolve(width=>$width, type=>$function) if ($width > 0);
   $this->{processed} -> noise(noise=>$noise, which=>'xmu') if ($noise > 0);
   $this->{processed} -> plot('E');
   $this->{make}->Enable(1);
@@ -174,6 +174,7 @@ sub make {
   $app->modified(1);
   $app->heap_check(0);
 };
+
 
 1;
 

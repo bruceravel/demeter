@@ -607,6 +607,38 @@ sub convolve {
 };
 
 
+sub deconvolve {
+  my ($self, @args) = @_;
+  my $config = $self->mo->config;;
+  #croak("usage: \$self->convolve(width=>\$width, type=>\$type, which=>\$which)"), return
+  #  if (ref($args) !~ /HASH/);
+  my %args = @args;
+  $args{width} ||= 0;
+  ($args{width}  = 0) if ($args{width} < 0);
+  $args{type}  ||= $config->default("convolve", "type");
+  $args{type}    = lc($args{type});
+  ($args{type}   = $config->default("convolve", "type")) if ($args{type} !~ m{\A[gl]});
+  $args{which} ||= 'xmu';
+  $args{which}   = lc($args{which});
+  ($args{which}  = 'xmu')      if ($args{type} !~ m{\A[cx]});
+  if ($args{which} eq 'xmu') {
+    $self -> _update("normalize");
+  };
+  $config->set(conv_type  => $args{type},
+	       conv_width => $args{width},
+	       conv_which => $args{which},
+	      );
+  my $string = $self->template("process", "deconvolve");
+  $self->dispose($string);
+  if ($args{which} eq 'xmu') {
+    $self->update_norm(1);
+  } elsif ($args{which} eq 'chi') {
+    $self->update_fft(1);
+  };
+};
+
+
+
 
 =for LiteratureReference (noise)
   No one seems to ever have seen [a Banshee]; they are less a shape
