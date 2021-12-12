@@ -1,53 +1,9 @@
-package Demeter::PeakFit::Larch;
+package Demeter::Deconvolute::Larch;
 
 use Moose::Role;
 use Demeter::StrTypes qw( LarchLineshape );
 use Scalar::Util qw(looks_like_number);
 
-has 'defwidth'    => (is => 'ro', isa => 'LaxNum', default => 1);
-has 'my_file'     => (is => 'ro', isa => 'Str',    default => 'Demeter/PeakFit/Larch.pm');
-has 'sigil'       => (is => 'ro', isa => 'Str',    default => q{});
-has 'function_hash' => (is => 'ro', isa => 'HashRef',
-			default => sub{
-			  {
-			    linear       => 2,
-			    gaussian     => 3,
-			    lorentzian   => 3,
-			    pvoigt       => 4,
-			    pseudo_voigt => 4,
-			    atan         => 3,
-			    erf          => 3,
-			    voigt        => 4,
-			    pearson7     => 4,
-			    breit_wigner => 4,
-			    logistic     => 2,
-			    lognormal    => 2,
-			    students_t   => 2,
-			  }});
-has 'correlations' => (
-		       traits    => ['Hash'],
-		       is        => 'rw',
-		       isa       => 'HashRef[HashRef]',
-		       default   => sub { {} },
-		       handles   => {
-				     'exists_in_correlations' => 'exists',
-				     'keys_in_correlations'   => 'keys',
-				     'get_correlations'       => 'get',
-				     'set_correlations'       => 'set',
-				    }
-		      );
-has 'mappings' => (
-		   traits    => ['Hash'],
-		   is        => 'rw',
-		   isa       => 'HashRef',
-		   default   => sub { {} },
-		   handles   => {
-				 'exists_in_mappings' => 'exists',
-				 'keys_in_mappings'   => 'keys',
-				 'get_mappings'       => 'get',
-				 'set_mappings'       => 'set',
-				}
-		  );
 
 sub DEMOLISH {
   my ($self) = @_;
@@ -58,33 +14,10 @@ sub initialize {
   return $self;
 };
 
-
-sub normalize_function {
-  my ($self, $function) = @_;
-  foreach my $f (@Demeter::StrTypes::larchlineshape_list) {
-    return $f if (lc($function) eq lc($f));
-  };
-  return 0;
-};
-
-sub valid {
-  my ($self, $function) = @_;
-  return is_LarchLineshape($function);
-};
-
-sub cleanup {
-  my ($self, $ref) = @_;
-  my $string = q{};
-  foreach my $g (@$ref) {
-    $string .= "del ".$self->group.".$g\n";
-  };
-  $self->pf_dispose($string);
-  return $self;
-};
+  $self->data->_update("background");
 
 sub prep_data {
   my ($self) = @_;
-  $self->data->_update("background");
   my $e1 = $self->xmin;
   my $i1 = $self->data->iofx('energy', $e1);
   my $e2 = $self->xmax;
@@ -94,29 +27,10 @@ sub prep_data {
 };
 
 
-sub isvary {
-  my ($self, $ls, $n) = @_;
-  my $att = 'fix'.$n;
-  return ($ls->$att) ? 'False' : 'True';
-};
-
-sub define {
-  my ($self, $ls) = @_;
-  $self->dispense('analysis', 'peak_param', {L=>\$ls});
-  #my $template = "peak_".$ls->function;
-  #$self->dispense('analysis', $template, {L=>\$ls});
-  return $self;
-};
-
 sub fit_command {
   my ($self, $nofit) = @_;
   $nofit ||= 0;
   return $self->template('analysis', 'peak_fit', {nofit=>$nofit});
-};
-
-sub fetch_data_x {
-  my ($self) = @_;
-  return ();
 };
 
 sub fetch_model_y {
@@ -124,61 +38,8 @@ sub fetch_model_y {
   return $self->fetch_array($self->group.".func");
 };
 
-sub put_arrays {
-  my ($self, $ls, $rx) = @_;
-  1;
-  #$self->dispense('analysis', 'peak_put', {L=>\$ls});
-};
+ $self->fetch_scalar('dempeak.rfactor')));
 
-sub resid {
-  my ($self) = @_;
-  return $self;
-};
-
-sub post_fit {
-  my ($self, $rall) = @_;
-  return $self;
-};
-
-sub fetch_statistics {
-  my ($self) = @_;
-
-  $self->rfactor(sprintf("%.7f", $self->fetch_scalar('dempeak.rfactor')));
-  $self->chisqr(sprintf("%.5f", $self->fetch_scalar('dempeak.chi_square')));
-  $self->chinu(sprintf("%.7f", $self->fetch_scalar('dempeak.chi_reduced')));
-  #$self->nvarys($self->fetch_scalar('demlcf.nvarys'));
-  #$self->npoints($self->nvarys+$self->fetch_scalar('demlcf.nfree'));
-
-
-  my @which = qw(height centroid width 4th);
-  foreach my $ls (@{$self->lineshapes}) {
-    foreach my $n (0 .. $ls->np-1) {
-      my $att = 'a'.$n;
-      my $scalar = sprintf("dempeak.%s_%d", $ls->group, $n);
-      $ls->$att(sprintf("%.5f", $self->fetch_scalar($scalar)));
-      $att = 'e'.$n;
-
-      my %correls = $self->fetch_array($scalar.'.correl');
-      my $this = sprintf("%s_%d", $ls->group, $n);
-      $self->set_correlations($this, \%correls);
-      $self->set_mappings($this, sprintf("%s %s", $ls->name, $which[$n]));
-
-      $scalar = $scalar.'.stderr';
-      my $value = $self->fetch_scalar($scalar);
-      $value = 0 if not looks_like_number($value);
-      $ls->$att(sprintf("%.5f", $value));
-    };
-    $ls->area($ls->a0);
-  };
-  #Demeter->Dump($self->correlations);
-  #Demeter->Dump($self->mappings);
-};
-
-sub pf_dispose {
-  my ($self, $string) = @_;
-  $self->dispose($string);
-  return $self;
-};
 
 
 
