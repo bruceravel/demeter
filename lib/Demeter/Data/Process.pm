@@ -628,6 +628,7 @@ sub deconvolve {
 	       conv_width => $args{width},
 	       conv_which => $args{which},
 	      );
+  printf("called\n")
   my $string = $self->template("process", "deconvolve");
   $self->dispose($string);
   if ($args{which} eq 'xmu') {
