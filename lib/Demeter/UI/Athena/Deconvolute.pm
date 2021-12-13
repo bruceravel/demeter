@@ -39,8 +39,9 @@ sub new {
   }
 
   $gbs->Add(Wx::StaticText->new($this, -1, 'Group'),                         Wx::GBPosition->new(0,0));
-  $gbs->Add(Wx::StaticText->new($this, -1, 'Deconvolution kernel'),          Wx::GBPosition->new(1,0));
-  $gbs->Add(Wx::StaticText->new($this, -1, 'Deconvolution width'),             Wx::GBPosition->new(2,0));
+  $gbs->Add(Wx::StaticText->new($this, -1, 'Convolution function'),          Wx::GBPosition->new(1,0));
+  $gbs->Add(Wx::StaticText->new($this, -1, 'Convolution width'),             Wx::GBPosition->new(2,0));
+  $gbs->Add(Wx::StaticText->new($this, -1, 'Noise (fraction of edge step)'), Wx::GBPosition->new(3,0));
 
   $this->{group}    = Wx::StaticText->new($this, -1, q{});
   $this->{function} = Wx::Choice->new($this, -1, wxDefaultPosition, wxDefaultSize,
@@ -51,15 +52,19 @@ sub new {
   $gbs->Add($this->{group},    Wx::GBPosition->new(0,1));
   $gbs->Add($this->{function}, Wx::GBPosition->new(1,1));
   $gbs->Add($this->{width},    Wx::GBPosition->new(2,1));
+  $gbs->Add($this->{noise},    Wx::GBPosition->new(3,1));
   $this->{width} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
+  $this->{noise} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   EVT_CHOICE($this, $this->{function}, sub{ $this->{make}->Enable(0) });
   EVT_CHAR($this->{width}, sub{ $this->{make}->Enable(0); $_[1]->Skip(1) });
+  EVT_CHAR($this->{noise}, sub{ $this->{make}->Enable(0); $_[1]->Skip(1) });
   EVT_TEXT_ENTER($this, $this->{width}, sub{$this->plot($app->current_data)});
+  EVT_TEXT_ENTER($this, $this->{noise}, sub{$this->plot($app->current_data)});
   $this->{function}->SetSelection(0);
 
   $box -> Add($gbs, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  $this->{convolute} = Wx::Button->new($this, -1, 'Plot data and data with deconvolution');
+  $this->{convolute} = Wx::Button->new($this, -1, 'Plot data and data with convolution and/or noise');
   $this->{make}      = Wx::Button->new($this, -1, 'Make data group');
   $box->Add($this->{convolute}, 0, wxALL|wxGROW, 5);
   $box->Add($this->{make},      0, wxALL|wxGROW, 5);
@@ -69,9 +74,9 @@ sub new {
 
   $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
 
-  $this->{document} = Wx::Button->new($this, -1, 'Document section: deconvolution and noise');
+  $this->{document} = Wx::Button->new($this, -1, 'Document section: convolution and noise');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
-  EVT_BUTTON($this, $this->{document}, sub{  $app->document("process.deconv")});
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("process.conv")});
 
   $this->{processed} = q{};
 
@@ -126,6 +131,14 @@ sub get_values {
     $this->{width}->SetValue(0);
     $width = 0;
   };
+  if (not looks_like_number($noise)) {
+    $::app->{main}->status("Not plotting -- your value for the noise is not a number!", 'error|nobuffer');
+    return ($function, $width, $noise, 0);
+  };
+  if ($noise < 0) {
+    $this->{noise}->SetValue(0);
+    $noise = 0;
+  };
   return ($function, $width, $noise, 1);
 };
 
@@ -138,7 +151,7 @@ sub plot {
   return if not $ok;
   $data->po->start_plot;
   $data -> plot('E');
-  $this->{processed}  = $data -> Clone(name=>sprintf("%s: %.2f eV %s", $data->name, $width, ucfirst($function)));
+  $this->{processed}  = $data -> Clone(name=>sprintf("%s: %.2f eV %s, %.3f noise", $data->name, $width, ucfirst($function), $noise));
   $this->{processed} -> deconvolve(width=>$width, type=>$function) if ($width > 0);
   $this->{processed} -> plot('E');
   $this->{make}->Enable(1);
@@ -156,7 +169,7 @@ sub make {
   } else {
     $app->{main}->{list}->InsertData($this->{processed}->name, $index+1, $this->{processed});
   };
-  $app->{main}->status(sprintf("Deconvolved %s and made a new data group", $app->current_data->name));
+  $app->{main}->status(sprintf("Convolved and/or added noise to %s and made a new data group", $app->current_data->name));
   $app->modified(1);
   $app->heap_check(0);
 };
