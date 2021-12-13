@@ -12,5 +12,15 @@
 }
 ##|
 ##| {$type} convolution of {$D->group}.{$C->get("conv_which")}
-{$D->group}.{$C->get("conv_which")} = smooth({$D->group}.{$x}, {$D->group}.{$C->get("conv_which")}, sigma={$C->get("conv_width")}, form='{$type}')
+
+# Smooth returns an interpolated array. xas_deconvolve modifies the group in-place.
+#def smooth(x, y, sigma=1, gamma=None, npad=None, form='lorentzian'):
+#{$D->group}.{$C->get("conv_which")} = smooth({$D->group}.{$x}, {$D->group}.{$C->get("conv_which")}, sigma={$C->get("conv_width")}, form='{$type}')
+
+# command buffer is useful for troubleshooting this
+# but where are the larch server logs?
+
+xas_deconvolve({$D->group}.{$x}, norm={$D->group}.xmu, group={$D->group}, esigma={$C->get("conv_width")}, form='gaussian')
+{$D->group}.xmu = {$D->group}.deconv
+#
 ##|
