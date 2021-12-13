@@ -39,8 +39,8 @@ sub new {
   }
 
   $gbs->Add(Wx::StaticText->new($this, -1, 'Group'),                         Wx::GBPosition->new(0,0));
-  $gbs->Add(Wx::StaticText->new($this, -1, 'Convolution function'),          Wx::GBPosition->new(1,0));
-  $gbs->Add(Wx::StaticText->new($this, -1, 'Convolution width'),             Wx::GBPosition->new(2,0));
+  $gbs->Add(Wx::StaticText->new($this, -1, 'Deconvolution kernel'),          Wx::GBPosition->new(1,0));
+  $gbs->Add(Wx::StaticText->new($this, -1, 'Deconvolution width'),             Wx::GBPosition->new(2,0));
 
   $this->{group}    = Wx::StaticText->new($this, -1, q{});
   $this->{function} = Wx::Choice->new($this, -1, wxDefaultPosition, wxDefaultSize,
@@ -52,10 +52,8 @@ sub new {
   $gbs->Add($this->{function}, Wx::GBPosition->new(1,1));
   $gbs->Add($this->{width},    Wx::GBPosition->new(2,1));
   $this->{width} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
-  $this->{noise} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   EVT_CHOICE($this, $this->{function}, sub{ $this->{make}->Enable(0) });
   EVT_CHAR($this->{width}, sub{ $this->{make}->Enable(0); $_[1]->Skip(1) });
-  EVT_CHAR($this->{noise}, sub{ $this->{make}->Enable(0); $_[1]->Skip(1) });
   EVT_TEXT_ENTER($this, $this->{width}, sub{$this->plot($app->current_data)});
   $this->{function}->SetSelection(0);
 
@@ -128,14 +126,6 @@ sub get_values {
     $this->{width}->SetValue(0);
     $width = 0;
   };
-  if (not looks_like_number($noise)) {
-    $::app->{main}->status("Not plotting -- your value for the noise is not a number!", 'error|nobuffer');
-    return ($function, $width, $noise, 0);
-  };
-  if ($noise < 0) {
-    $this->{noise}->SetValue(0);
-    $noise = 0;
-  };
   return ($function, $width, $noise, 1);
 };
 
@@ -166,7 +156,7 @@ sub make {
   } else {
     $app->{main}->{list}->InsertData($this->{processed}->name, $index+1, $this->{processed});
   };
-  $app->{main}->status(sprintf("Convolved and/or added noise to %s and made a new data group", $app->current_data->name));
+  $app->{main}->status(sprintf("Deconvolved %s and made a new data group", $app->current_data->name));
   $app->modified(1);
   $app->heap_check(0);
 };
