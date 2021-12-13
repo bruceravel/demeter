@@ -1,15 +1,16 @@
 { # -*- ifm -*-
-  # deconvolve a data set
+  # convolute a data set
   #   {$D->group}  returns the ifeffit group name
   #   {$D->parameter} returns the value of that parameter
   #   {$C->parameter} returns the generic parameter
 
   $x = ($C->get("conv_which") eq 'xmu') ? 'energy' : 'k';
   $type = ($C->get("conv_type") =~ m{\Al}i) ? 'lorentzian'
+        : ($C->get("conv_type") =~ m{\Av}i) ? 'voight'
         :                                      'gaussian';
   q{}
 }
 ##|
 ##| {$type} convolution of {$D->group}.{$C->get("conv_which")}
-{$D->group}.{$C->get("conv_which")} = smooth({$D->group}.{$x}, {$D->group}.{$C->get("conv_which")}, sigma={$C->get("conv_width")}, form='{$type}')
+{$D->group}.{$C->get("conv_which")} = xas_deconvolve({$D->group}.{$x}, {$D->group}.{$C->get("conv_which")}, esigma={$C->get("conv_width")}, form='{$type}')
 ##|

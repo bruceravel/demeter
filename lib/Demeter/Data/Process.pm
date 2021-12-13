@@ -19,6 +19,8 @@ use autodie qw(open close);
 
 use Moose::Role;
 
+# *TODO*: add checkbox to remove exactly the core-hole energy
+
 use Carp;
 use List::Util qw(reduce);
 use List::MoreUtils qw(minmax firstval uniq);
@@ -610,7 +612,10 @@ sub convolve {
 sub deconvolve {
   my ($self, @args) = @_;
   my $config = $self->mo->config;;
-  #croak("usage: \$self->convolve(width=>\$width, type=>\$type, which=>\$which)"), return
+  printf("called\n");
+  # $::app->{main}->status(sprintf("test test test "));
+
+  #croak("usage: \$self->deconvolve(width=>\$width, type=>\$type, which=>\$which)"), return
   #  if (ref($args) !~ /HASH/);
   my %args = @args;
   $args{width} ||= 0;
@@ -628,7 +633,6 @@ sub deconvolve {
 	       conv_width => $args{width},
 	       conv_which => $args{which},
 	      );
-  printf("called\n")
   my $string = $self->template("process", "deconvolve");
   $self->dispose($string);
   if ($args{which} eq 'xmu') {
