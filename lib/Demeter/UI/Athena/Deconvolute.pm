@@ -12,7 +12,7 @@ use Scalar::Util qw(looks_like_number);
 #use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 use vars qw($label);
-$label = "Convolute and add noise to data";	# used in the Choicebox and in status bar messages to identify this tool
+$label = "Deconvolute data";	# used in the Choicebox and in status bar messages to identify this tool
 
 my $tcsize = [60,-1];
 
@@ -41,30 +41,24 @@ sub new {
   $gbs->Add(Wx::StaticText->new($this, -1, 'Group'),                         Wx::GBPosition->new(0,0));
   $gbs->Add(Wx::StaticText->new($this, -1, 'Convolution function'),          Wx::GBPosition->new(1,0));
   $gbs->Add(Wx::StaticText->new($this, -1, 'Convolution width'),             Wx::GBPosition->new(2,0));
-  $gbs->Add(Wx::StaticText->new($this, -1, 'Noise (fraction of edge step)'), Wx::GBPosition->new(3,0));
 
   $this->{group}    = Wx::StaticText->new($this, -1, q{});
   $this->{function} = Wx::Choice->new($this, -1, wxDefaultPosition, wxDefaultSize,
 				      ["Gaussian", 'Lorentzian']);
   $this->{width}    = Wx::TextCtrl->new($this, -1, 0,  wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
-  $this->{noise}    = Wx::TextCtrl->new($this, -1, 0,  wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
 
   $gbs->Add($this->{group},    Wx::GBPosition->new(0,1));
   $gbs->Add($this->{function}, Wx::GBPosition->new(1,1));
   $gbs->Add($this->{width},    Wx::GBPosition->new(2,1));
-  $gbs->Add($this->{noise},    Wx::GBPosition->new(3,1));
   $this->{width} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
-  $this->{noise} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   EVT_CHOICE($this, $this->{function}, sub{ $this->{make}->Enable(0) });
   EVT_CHAR($this->{width}, sub{ $this->{make}->Enable(0); $_[1]->Skip(1) });
-  EVT_CHAR($this->{noise}, sub{ $this->{make}->Enable(0); $_[1]->Skip(1) });
   EVT_TEXT_ENTER($this, $this->{width}, sub{$this->plot($app->current_data)});
-  EVT_TEXT_ENTER($this, $this->{noise}, sub{$this->plot($app->current_data)});
   $this->{function}->SetSelection(0);
 
   $box -> Add($gbs, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  $this->{convolute} = Wx::Button->new($this, -1, 'Plot data and data with convolution and/or noise');
+  $this->{convolute} = Wx::Button->new($this, -1, 'Plot data and data with deconvolution');
   $this->{make}      = Wx::Button->new($this, -1, 'Make data group');
   $box->Add($this->{convolute}, 0, wxALL|wxGROW, 5);
   $box->Add($this->{make},      0, wxALL|wxGROW, 5);
@@ -74,9 +68,9 @@ sub new {
 
   $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
 
-  $this->{document} = Wx::Button->new($this, -1, 'Document section: convolution and noise');
+  $this->{document} = Wx::Button->new($this, -1, 'Document section: deconvolution');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
-  EVT_BUTTON($this, $this->{document}, sub{  $app->document("process.conv")});
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("process.deconv")});
 
   $this->{processed} = q{};
 
@@ -121,25 +115,16 @@ sub get_values {
   my ($this) = @_;
   my $function = ($this->{function}->GetSelection) ? 'lorentzian' : 'gaussian';
   my $width    = $this->{width}->GetValue || 0;
-  my $noise    = $this->{noise}->GetValue || 0;
 
   if (not looks_like_number($width)) {
     $::app->{main}->status("Not plotting -- your value for the width is not a number!", 'error|nobuffer');
-    return ($function, $width, $noise, 0);
+    return ($function, $width, 0);
   };
   if ($width < 0) {
     $this->{width}->SetValue(0);
     $width = 0;
   };
-  if (not looks_like_number($noise)) {
-    $::app->{main}->status("Not plotting -- your value for the noise is not a number!", 'error|nobuffer');
-    return ($function, $width, $noise, 0);
-  };
-  if ($noise < 0) {
-    $this->{noise}->SetValue(0);
-    $noise = 0;
-  };
-  return ($function, $width, $noise, 1);
+  return ($function, $width, 1);
 };
 
 sub plot {
@@ -147,11 +132,11 @@ sub plot {
   my $busy = Wx::BusyCursor->new();
   $::app->{main}->{PlotE}->pull_single_values;
   $data->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
-  my ($function, $width, $noise, $ok) = $this->get_values($data);
+  my ($function, $width, $ok) = $this->get_values($data);
   return if not $ok;
   $data->po->start_plot;
   $data -> plot('E');
-  $this->{processed}  = $data -> Clone(name=>sprintf("%s: %.2f eV %s, %.3f noise", $data->name, $width, ucfirst($function), $noise));
+  $this->{processed}  = $data -> Clone(name=>sprintf("%s: %.2f eV %s", $data->name, $width, ucfirst($function)));
   $this->{processed} -> deconvolve(width=>$width, type=>$function) if ($width > 0);
   $this->{processed} -> plot('E');
   $this->{make}->Enable(1);
@@ -169,7 +154,7 @@ sub make {
   } else {
     $app->{main}->{list}->InsertData($this->{processed}->name, $index+1, $this->{processed});
   };
-  $app->{main}->status(sprintf("Convolved and/or added noise to %s and made a new data group", $app->current_data->name));
+  $app->{main}->status(sprintf("Deconvolved %s and made a new data group", $app->current_data->name));
   $app->modified(1);
   $app->heap_check(0);
 };
@@ -180,7 +165,7 @@ sub make {
 
 =head1 NAME
 
-Demeter::UI::Athena::ConvoluteNoise - A convolution and artficial noise tool for Athena
+Demeter::UI::Athena::Deconvolute - A deconvolution tool for Athena
 
 =head1 VERSION
 
@@ -188,8 +173,7 @@ This documentation refers to Demeter version 0.9.26.
 
 =head1 SYNOPSIS
 
-This module provides a tool for convolving mu(E) data and adding
-artifical noise to mu(E) or chi(k) data.
+This module provides a tool for deconvolving mu(E) data
 
 =head1 CONFIGURATION
 
