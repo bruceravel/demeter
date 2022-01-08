@@ -16,6 +16,12 @@ $label = "Deconvolute data";	# used in the Choicebox and in status bar messages 
 
 my $tcsize = [60,-1];
 
+
+# *TODO*: 
+# add checkbox to remove exactly the core-hole energy
+# add entry for non-default smoothing 
+
+
 sub new {
   my ($class, $parent, $app) = @_;
   my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
