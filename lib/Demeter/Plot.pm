@@ -419,7 +419,7 @@ sub plot_qylabel {
 
 sub outfile {
   my ($self, $type, $file) = @_;
-  my %devices = (png => '/png', ps => '/cps');
+  my %devices = (png => 'png', ps => '/cps');
   my $command = $self->template("plot", "file", { device => $devices{$type},
 						  file   => $file });
   $self -> dispose($command, "plotting");

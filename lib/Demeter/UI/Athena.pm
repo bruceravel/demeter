@@ -2017,6 +2017,7 @@ sub OnGroupSelect {
   my $is  = $app->{main}->{list}->GetIndexedData($is_index);
   $app->{selecting_data_group}=1;
 
+
   my $view = $app->get_view(scalar $app->{main}->{views}->GetSelection);
   $app->make_page($view) if (not exists $app->{main}->{$view});
   my $showing = $app->{main}->{$view};
@@ -2110,6 +2111,7 @@ sub make_page {
   $app->{main}->status("Creating the $view page for the first time.");
   my $busy = Wx::BusyCursor->new();
   Demeter->register_plugins if (($view eq 'PluginRegistry') and not @{Demeter->mo->Plugins});
+  return if not $view;
 
   require "Demeter/UI/Athena/$view.pm";
   my $pm = "Demeter::UI::Athena::$view";

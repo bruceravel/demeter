@@ -3,6 +3,6 @@
   #   {$device} is one of png ps etc
 }
 set output '{$file}'
-#set terminal {$device} color font '{$C->default("gnuplot","font")},{$C->default("gnuplot","fontsize")}' enhanced
-set terminal {$device} enhanced
+set terminal {$device} size 650,650 font '{$C->default("gnuplot","font")},{$C->default("gnuplot","fontsize")}' enhanced
+#set terminal {$device} enhanced
 

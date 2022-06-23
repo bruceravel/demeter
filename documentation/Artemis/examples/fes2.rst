@@ -383,11 +383,11 @@ already in the fit.
 
 Consider these two triangular paths on a leg-by-leg basis.  For the
 :guilabel:`S.1 Fe.1` path, the first and last leg are of the distance
-between the absorber and the Fe scatterer in the fourth shell.  The
-remaining leg is the first shell distance.  In terms of length, this
-path covers the full distance of the fourth shell path and half the
-distance of the first shell path.  Thus we will approximate its
-|sigma|\ :sup:`2` as ``ssfe+ss/2``.
+between the absorber and the first shell S.  The remaining leg is the
+distance of Fe scatterer in the fourth shell.  In terms of length,
+this path covers the full distance of the first shell path and half
+the distance of the fourth shell path.  Thus we will approximate its
+|sigma|\ :sup:`2` as ``ss+ssfe/2``.
 
 The :guilabel:`S.1 S.2` triangle is a bit more ambiguous, since we do
 not have a parameter describing the leg that goes from the first shell
