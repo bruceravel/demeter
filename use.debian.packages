@@ -1,0 +1,1 @@
+xargs < debian-packages apt-get install -y

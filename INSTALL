@@ -27,7 +27,7 @@ Download Demeter from github:
 
 cd into the demeter directory and do
 
-   perl Build.PL
+   perl -I. Build.PL
    sudo ./Build installdeps
 
 This step is quite time consuming the first time you install Demeter.
@@ -36,7 +36,7 @@ installed.  Answer "yes" to every question you are asked.
 
 Once finished, do
 
-   perl Build.PL
+   perl -I. Build.PL
 
 again to verify that all the dependencies are in place.  Then do
 
