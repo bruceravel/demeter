@@ -171,7 +171,7 @@ sub new {
   $hbox -> Add($grid, 1, wxGROW|wxALL, 5);
 
 
-  $this->{toolbar} = Wx::ToolBar->new($this, -1, wxDefaultPosition, wxDefaultSize,   wxTB_VERTICAL|wxTB_3DBUTTONS|wxTB_HORZ_LAYOUT|wxTB_TEXT);
+  $this->{toolbar} = Wx::ToolBar->new($this, -1, wxDefaultPosition, wxDefaultSize,   wxTB_VERTICAL|wxTB_HORZ_LAYOUT|wxTB_TEXT);
   $this->{toolbar} -> AddTool(-1, " Use best fit", Demeter::UI::Artemis::icon("bestfit"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{grab} );
   $this->{toolbar} -> AddTool(-1, "Reset all",     Demeter::UI::Artemis::icon("reset"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{reset} );
   $this->{toolbar} -> AddCheckTool($HIGHLIGHT, "Highlight",   Demeter::UI::Artemis::icon("highlight"), wxNullBitmap, q{}, $hints{highlight} );

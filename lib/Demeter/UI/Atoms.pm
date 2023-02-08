@@ -61,7 +61,7 @@ sub new {
   $self->{statusbar} = $statusbar;
 
   if ($component) {
-    $self->{toolbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_3DBUTTONS|wxTB_TEXT|wxTB_HORZ_LAYOUT);
+    $self->{toolbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_TEXT|wxTB_HORZ_LAYOUT);
     EVT_MENU( $self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolClick($toolbar, $event, $self)} );
     $self->{toolbar} -> AddTool(-1, " Rename",     $self->icon("reset"),   wxNullBitmap, wxITEM_NORMAL, q{}, "Rename this Feff calculation" );
     $self->{toolbar} -> AddTool(-1, "Discard",    $self->icon("discard"), wxNullBitmap, wxITEM_NORMAL, q{}, "Discard this Feff calculation" );
