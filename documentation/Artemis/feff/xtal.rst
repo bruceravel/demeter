@@ -56,7 +56,7 @@ is determined from the elements in the atoms list. The choices are
 
 Remember that :demeter:`feff` only allows for 7 unique potentials
 other than the absorber. The tags and sites options can often result
-in more than 7 potnatials, which will result in an unrunnable
+in more than 7 potentials, which will result in an unrunnable
 :file:`feff.inp` file. Specifying unique potentials by tags is a good
 way of differentiating between dissimilar atoms of the same
 species. For example, in an oxygenyl species, it is often useful to
