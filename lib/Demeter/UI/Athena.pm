@@ -1650,10 +1650,10 @@ sub main_window {
   $topbar -> Add(1,1,1);
 
   $app->{main}->{save}   = Wx::Button->new($viewpanel, wxID_SAVE, q{},  wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-  $app->{main}->{all}    = Wx::Button->new($viewpanel, -1,        q{A}, wxDefaultPosition, [25,-1]);#, wxBU_EXACTFIT);
+  $app->{main}->{all}    = Wx::Button->new($viewpanel, -1,        q{A}, wxDefaultPosition, [35,-1]);#, wxBU_EXACTFIT);
   $app->{main}->{all}   -> SetForegroundColour( Wx::Colour->new('#000000') );
-  $app->{main}->{none}   = Wx::Button->new($viewpanel, -1,        q{U}, wxDefaultPosition, [25,-1]);#, wxBU_EXACTFIT);
-  $app->{main}->{invert} = Wx::Button->new($viewpanel, -1,        q{I}, wxDefaultPosition, [25,-1]);#, wxBU_EXACTFIT);
+  $app->{main}->{none}   = Wx::Button->new($viewpanel, -1,        q{U}, wxDefaultPosition, [35,-1]);#, wxBU_EXACTFIT);
+  $app->{main}->{invert} = Wx::Button->new($viewpanel, -1,        q{I}, wxDefaultPosition, [35,-1]);#, wxBU_EXACTFIT);
   $topbar -> Add($app->{main}->{save},   0, wxGROW|wxTOP|wxBOTTOM, 2);
   $topbar -> Add(Wx::StaticText->new($viewpanel, -1, q{    }), 0, wxGROW|wxTOP|wxBOTTOM, 2);
   $topbar -> Add($app->{main}->{all},    0, wxGROW|wxTOP|wxBOTTOM, 2);
