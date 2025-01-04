@@ -105,6 +105,7 @@ my $build = DemeterBuilder
 				'YAML::Tiny'		    => '0',
 
 				'PDL'                       => '2.4.9',
+				'PDL::Filter::Linear'       => '0',
 				#'PDL::Slatec'               => '0',
 				'PDL::Stats'                => '0.5.5',
 
