@@ -188,7 +188,6 @@ sub new {
     };
 
     EVT_BUTTON( $parent, $button, sub{&$command($element)} );
-    printf("%s: %s, element #%d\n", $sym, get_name($element), get_Z($element));
     my $text = sprintf("%s: %s, element #%d", $sym, get_name($element), get_Z($element));
     EVT_ENTER_WINDOW($button, sub{$statusbar->PushStatusText($text) if $statusbar; $_[1]->Skip});
     EVT_LEAVE_WINDOW($button, sub{$statusbar->PopStatusText         if $statusbar; $_[1]->Skip});
