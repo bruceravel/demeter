@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+
+Name=Athena
+Comment=Process X-ray Absorption Spectroscopy Data
+Categories=Science;Physics;
+
+Icon=/home/akiss/software/demeter/lib/Demeter/UI/Athena/share/athena_icon.png
+Exec=dathena
+Terminal=false
