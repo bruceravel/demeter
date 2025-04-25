@@ -7,5 +7,5 @@ Comment=Process X-ray Absorption Spectroscopy Data
 Categories=Science;Physics;
 
 Icon=/home/akiss/software/demeter/lib/Demeter/UI/Athena/share/athena_icon.png
-Exec=dathena
+Exec=env GTK_THEME=Adwaita:Light dathena
 Terminal=false
