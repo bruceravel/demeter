@@ -125,10 +125,10 @@ sub group {
 				      $_[1]->Skip});
 
   my @elements = map {sprintf "%-2d: %s", $_, get_name($_)} (1 .. 96);
-  $this->{bkg_z_label}      = Wx::StaticText -> new($this, -1, "Element", wxDefaultPosition, [50,-1]);
+  $this->{bkg_z_label}      = Wx::StaticText -> new($this, -1, "Element", wxDefaultPosition, [75,-1]);
   $this->{bkg_z}            = Wx::ComboBox   -> new($this, -1, 'Hydrogen', wxDefaultPosition, [130,-1], \@elements, wxCB_READONLY );
   $this->{fft_edge_label}   = Wx::StaticText -> new($this, -1, "Edge");
-  $this->{fft_edge}         = Wx::ComboBox   -> new($this, -1, 'K', wxDefaultPosition, [50,-1],
+  $this->{fft_edge}         = Wx::ComboBox   -> new($this, -1, 'K', wxDefaultPosition, [75,-1],
 						    [qw(K L1 L2 L3 M1 M2 M3 M4 M5)], wxCB_READONLY);
   $this->{bkg_eshift_label} = Wx::StaticText -> new($this, -1, "Energy shift");
   $this->{bkg_eshift}       = Wx::TextCtrl   -> new($this, -1, q{}, wxDefaultPosition, [40,-1] );
