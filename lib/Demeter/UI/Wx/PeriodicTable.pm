@@ -139,7 +139,7 @@ my @elements = (['H',  0, 0,  'g'],
 		['No', 8, 15, 'a'],
 		['Lr', 8, 16, 'a'],
 		['Rf', 6, 3,  'm'],
-		['Ha', 6, 4,  'm'],
+		['Db', 6, 4,  'm'],
 		['Sg', 6, 5,  'm'],
 		['Bh', 6, 6,  'm'],
 		['Hs', 6, 7,  'm'],
@@ -188,6 +188,7 @@ sub new {
     };
 
     EVT_BUTTON( $parent, $button, sub{&$command($element)} );
+    printf("%s: %s, element #%d\n", $sym, get_name($element), get_Z($element));
     my $text = sprintf("%s: %s, element #%d", $sym, get_name($element), get_Z($element));
     EVT_ENTER_WINDOW($button, sub{$statusbar->PushStatusText($text) if $statusbar; $_[1]->Skip});
     EVT_LEAVE_WINDOW($button, sub{$statusbar->PopStatusText         if $statusbar; $_[1]->Skip});
