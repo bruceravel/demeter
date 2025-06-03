@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+
+Name=Hephaestus
+Comment=Process X-ray Absorption Spectroscopy Data
+Categories=Science;Physics;
+
+Icon=/home/akiss/software/demeter/lib/Demeter/share/Demeter_icon.png
+Exec=env GTK_THEME=Adwaita:Light dhephaestus
+Terminal=false
